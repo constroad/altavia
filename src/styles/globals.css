@@ -1,0 +1,84 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  --foreground-rgb: 0, 0, 0;
+  --background-start-rgb: 214, 219, 220;
+  --background-end-rgb: 255, 255, 255;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --foreground-rgb: 255, 255, 255;
+    --background-start-rgb: 0, 0, 0;
+    --background-end-rgb: 0, 0, 0;
+  }
+}
+
+body {
+  color: black !important;
+  background: white;
+  font-family: 'Rubik', sans-serif;
+}
+
+.font-roboto {
+  font-family: 'Roboto', sans-serif;
+}
+
+.font-logo {
+  font-family: 'Anek Devanagari', sans-serif;
+}
+
+.transicion-div {
+  opacity: 0;
+  transition: opacity 2s ease-in-out;
+}
+
+.visible {
+  opacity: 1;
+}
+
+.invisible {
+  opacity: 0;
+}
+
+.container {
+  width: 100vw;
+  padding: 40px;
+}
+
+.triangle {
+  max-width: 0px;
+  max-height: 0px;
+  border-left: 28px solid transparent;
+  border-right: 0px solid transparent;
+  border-top: 28px solid #9a6601;
+}
+
+@media (max-width: 768px) {
+  .triangle {
+    max-width: 0px;
+    max-height: 0px;
+    border-left: 20px solid transparent;
+    border-right: 0px solid transparent;
+    border-top: 20px solid #9a6601;
+  }
+}
+
+@keyframes unfold {
+  0% {
+    clip-path: polygon(0% 0%, 100% 0%, 100% 0%, 0% 0%);
+  }
+  100% {
+    clip-path: polygon(0% 0%, 100% 0%, 100% 100%, 0% 100%);
+  }
+}
+
+.unfold {
+  animation: unfold 1s ease-in-out;
+}
+
+.unfold-03 {
+  animation: unfold 0.3s ease-in-out;
+}

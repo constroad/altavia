@@ -67,12 +67,12 @@ const Footer = () => {
             </Text>
           </Flex>
 
-          <div className='mt-[5px] !flex space-x-2 items-center'>
+          <Flex marginTop='5px' gap={2} alignItems='center'>
             <IoMdMail />
             <Text className='w-[100%] text-justify text-[14px] font-[300]'>
               administracion@constroad.com
             </Text>
-          </div>
+          </Flex>
 
           <FooterLink
             href='https://api.whatsapp.com/send?phone=51949376824'

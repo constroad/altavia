@@ -1,11 +1,10 @@
 import { Box, Flex, Image, Text } from '@chakra-ui/react'
-
-import { WebLayout } from 'src/components'
-import { CarouselComponent } from 'src/components/layout/Carousel'
+import { PortalLayout } from 'src/components'
+import { CarouselComponent } from 'src/components/layout/Portal/Carousel'
 
 const Home = () => {
-  return (  
-    <WebLayout noPaddingTop >
+  return (
+    <PortalLayout noPaddingTop >
       <CarouselComponent />
       <Flex width='100%' mt={{ base: '40px', md: '50px'}}>
         <Flex
@@ -61,7 +60,7 @@ const Home = () => {
           </Flex>
         </Flex>
       </Flex>
-    </WebLayout>
+    </PortalLayout>
   )
 }
 

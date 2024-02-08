@@ -5,15 +5,21 @@ import nodemailer from 'nodemailer';
 
 export default async function handler(req: NextApiRequest, res: NextApiResponse) {
   if (req.method === 'POST') {
-    const { sender, name, message, phone, nroCubos, company } = req.body;
+    const { sender, name, message, phone, nroCubos, razonSocial, ruc } = req.body;
+
+    const phoneNumber = phone === '' ? '- - -' : phone
+    const cubos = nroCubos === '' ? '1' : nroCubos
+    const Ruc = ruc === '' ? '- - -' : ruc  
 
     const msg = `
 <html>
   <body>
+    <strong>Estamos procesando tu cotización!</strong><br><br>
     <strong>Nombre:</strong> ${name}<br>
-    <strong>Empresa:</strong> ${company}<br>
-    <strong>Teléfono:</strong> ${phone}<br>
-    <strong>Nro. cubos:</strong> ${nroCubos}<br>
+    <strong>Razón Social:</strong> ${razonSocial}<br>
+    <strong>RUC:</strong> ${Ruc}<br>
+    <strong>Teléfono:</strong> ${phoneNumber}<br>
+    <strong>Nro. cubos:</strong> ${cubos}<br>
     <strong>Mensaje:</strong> ${message}<br>
   </body>
 </html>
@@ -30,9 +36,9 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
 
       const mailOptions = {
         from: process.env.EMAIL,
-        cc: sender,
-        to: process.env.EMAIL,
-        subject: `Solicitud de cotizacion de ${sender}`,
+        cc: process.env.EMAIL,
+        to: sender,
+        subject: `Solicitud de cotizacion para ${razonSocial}`,
         html: msg,
       };
 

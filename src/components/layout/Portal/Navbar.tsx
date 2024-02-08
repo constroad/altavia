@@ -3,7 +3,10 @@ import { ImMenu3, ImMenu4 } from "react-icons/im";
 
 import { Box, Button, Flex, Image, Link, Text } from '@chakra-ui/react'
 import { APP_ROUTES } from 'src/common/consts';
-import { navOptions, nosotrosOptions, serviciosOptions } from './config'
+import { GenerateNavOptions, nosotrosOptions, serviciosOptions } from './config'
+import { signOut, useSession } from 'next-auth/react';
+import { toast } from 'src/components/Toast';
+import { useEffect } from 'react';
 
 interface INavbar {
   isHoverButton: boolean
@@ -17,12 +20,19 @@ interface INavbar {
 export const Navbar = (props: INavbar) => {
   const router = useRouter()
   const path = router.pathname
+  const { data: session } = useSession()
+
+  const handleSignOut = async() => {
+    await signOut({redirect: false});
+    router.push(APP_ROUTES.home)
+    toast.info('Cerraste sesión');
+  }
 
   const menuItemClick = (option: any) => {
     if (option.label === 'Nosotros') {
-      return router.push(`${APP_ROUTES.nosotros + APP_ROUTES.mision}`)
+      router.push(`${APP_ROUTES.nosotros}` + APP_ROUTES.mision)
     } else if (option.label === 'Servicios') {
-      return router.push(`${APP_ROUTES.servicios + APP_ROUTES.mezclaAsfaltica}`)
+      router.push(`${APP_ROUTES.servicios + APP_ROUTES.mezclaAsfaltica}`)
     } else {
       router.push(option.path)
     }
@@ -58,7 +68,7 @@ export const Navbar = (props: INavbar) => {
         </Flex>
 
         <Flex as='ul' gap={1} display={{ base: 'none', md: 'flex' }} alignItems='end' height='95px'>
-          {navOptions.map(opt => (
+          {GenerateNavOptions().map(opt => (
             <Box
               as='li'
               key={opt.label}
@@ -188,6 +198,63 @@ export const Navbar = (props: INavbar) => {
               )}
             </Box>
           ))}
+
+          {!session && (
+            <Box
+              as='li'
+              fontWeight={500}
+              display='flex'
+              justifyContent='center'
+              alignItems='end'
+              paddingBottom='10px'
+              paddingX={5}
+              height='50px'
+              color='black'
+              position='relative'
+              roundedTop='4px'
+              _hover={{
+                background: '#feb100',
+                color: 'white',
+                cursor: 'pointer',
+              }}
+              className={
+                path === APP_ROUTES.login ?
+                'bg-[#feb100] !text-white hover:text-white' : ''
+              }
+              onClick={() => router.push(APP_ROUTES.login)}
+            >
+              <Text>
+                Login
+              </Text>
+            </Box>
+          )}
+
+          {session && (
+            <Box
+              as='li'
+              fontWeight={500}
+              display='flex'
+              justifyContent='center'
+              alignItems='end'
+              paddingBottom='10px'
+              paddingX={5}
+              height='50px'
+              color='black'
+              position='relative'
+              roundedTop='4px'
+              _hover={{
+                background: '#feb100',
+                color: 'white',
+                cursor: 'pointer',
+              }}
+              onClick={handleSignOut}
+            >
+              <Text>
+                Logout
+              </Text>
+            </Box>
+          )}
+
         </Flex>
 
         <Flex display={{ base: 'block', md: 'none' }} textColor='black'>

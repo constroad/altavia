@@ -1,11 +1,11 @@
 
 import { Box, Flex, Image, Text } from '@chakra-ui/react'
 import React from 'react'
-import { WebLayout } from 'src/components'
+import { PortalLayout } from 'src/components'
 
 const MezclaAsfaltica = () => {
   return (
-    <WebLayout>
+    <PortalLayout>
       <Flex width='100%'>
         <Flex
           flexDir={{ base: 'column', md: 'row' }}
@@ -63,7 +63,7 @@ const MezclaAsfaltica = () => {
 
         </Flex>
       </Flex>
-    </WebLayout>
+    </PortalLayout>
   )
 }
 

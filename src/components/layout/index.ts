@@ -1,1 +1,2 @@
-export * from './WebLayout'
+export * from './Portal'
+export * from './Intranet'

@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 
 import { Box, Flex, Link, Text } from '@chakra-ui/react';
 
@@ -8,13 +8,14 @@ import { MobileMenu } from './MobileMenu';
 import { CustomHead } from './CustomHead';
 import { IoLogoWhatsapp } from "react-icons/io";
 import { useScreenSize } from 'src/common/hooks';
+import { useSession } from 'next-auth/react';
 
-interface IWebLayout {
+interface IPortalLayout {
   children: React.ReactNode
   noPaddingTop?: boolean
 }
 
-export const WebLayout = (props: IWebLayout) => {
+export const PortalLayout = (props: IPortalLayout) => {
   const { children } = props
   const [isHoverButton, setIsHoverButton] = useState(false)
   const [buttonHovered, setButtonHovered] = useState<string | undefined>(undefined)
@@ -23,6 +24,15 @@ export const WebLayout = (props: IWebLayout) => {
   const [nosotrosMenu, setNosotrosMenu] = useState<string | undefined>(undefined)
   const [serviciosMenu, setServiciosMenu] = useState<string | undefined>(undefined)
   const { isMobile } = useScreenSize()
+
+  const { status } = useSession()
+  const [logged, setLogged] = useState(status)
+
+  useEffect(() => {
+    if (status) setLogged(status)
+  }, [status])
+  
+  console.log('logged:', logged)
 
   
   const displayMobileMenu = isMobile && showMobileOptions

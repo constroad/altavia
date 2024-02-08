@@ -1,11 +1,11 @@
 
 import { Flex, Image, Text } from '@chakra-ui/react'
 import React from 'react'
-import { WebLayout } from 'src/components'
+import { PortalLayout } from 'src/components'
 
 const Mision = () => {
   return (
-    <WebLayout>
+    <PortalLayout>
       <Flex width='100%'>
         <Flex
           flexDir={{ base: 'column', md: 'row' }}
@@ -42,7 +42,7 @@ const Mision = () => {
           </Flex>
         </Flex>
       </Flex>
-    </WebLayout>
+    </PortalLayout>
   )
 }
 

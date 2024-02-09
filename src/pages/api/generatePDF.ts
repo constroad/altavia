@@ -1,43 +1,51 @@
-// import { NextApiRequest, NextApiResponse } from 'next';
+import { NextApiRequest, NextApiResponse } from 'next';
 
-// import fs from 'fs';
-// import path from 'path';
+import fs from 'fs';
+import path from 'path';
 
-// import { templatePDF } from 'src/components/templates';
+import { templatePDF } from 'src/components/templates';
+import puppeteer from 'puppeteer-core';
+import chromium from '@sparticuz/chromium';
 
 
-// export default async function handler(req: NextApiRequest, res: NextApiResponse) {
-//   res.setHeader('Access-Control-Allow-Origin', '*');
+export default async function handler(req: NextApiRequest, res: NextApiResponse) {
+  res.setHeader('Access-Control-Allow-Origin', '*');
 
-//   if (req.method === 'POST') {
+  if (req.method === 'POST') {
 
-//     const backgroundBuffer = fs.readFileSync(path.resolve(process.cwd(), 'public', 'bg-cotizacion.svg'));
-//     const base64bg = backgroundBuffer.toString('base64');
+    const backgroundBuffer = fs.readFileSync(path.resolve(process.cwd(), 'public', 'bg-cotizacion.svg'));
+    const base64bg = backgroundBuffer.toString('base64');
 
-//     const logoBuffer = fs.readFileSync(path.resolve(process.cwd(), 'public', 'constroad.jpeg'));
-//     const base64Logo = logoBuffer.toString('base64');
+    const logoBuffer = fs.readFileSync(path.resolve(process.cwd(), 'public', 'constroad.jpeg'));
+    const base64Logo = logoBuffer.toString('base64');
 
-//     const htmlTemplate = templatePDF(req.body, base64bg, base64Logo);
-//     const browser = await puppeteer.launch();
-//     const page = await browser.newPage();
-//     await page.setContent(htmlTemplate);
-//     const pdfBuffer = await page.pdf({
-//       format: 'A4',
-//       margin: {
-//         top: '0',
-//         right: '0',
-//         bottom: '0',
-//         left: '0',
-//       },
-//       printBackground: true
-//     });
-//     const pdfBase64 = pdfBuffer.toString('base64');
-//     await browser.close();
+    const htmlTemplate = templatePDF(req.body, base64bg, base64Logo);
 
-//     res.status(200).json({ pdfBase64 });
+    const browser = await puppeteer.launch({
+      args: chromium.args,
+      defaultViewport: chromium.defaultViewport,
+      executablePath: await chromium.executablePath()
+    });
+
+    const page = await browser.newPage();
+    await page.setContent(htmlTemplate);
+    const pdfBuffer = await page.pdf({
+      format: 'A4',
+      margin: {
+        top: '0',
+        right: '0',
+        bottom: '0',
+        left: '0',
+      },
+      printBackground: true
+    });
+    const pdfBase64 = pdfBuffer.toString('base64');
+    await browser.close();
+
+    res.status(200).json({ pdfBase64 });
     
-//   } else {
-//     res.setHeader('Allow', 'POST');
-//     res.status(405).json({ message: 'Método no permitido' });
-//   }
-// }
+  } else {
+    res.setHeader('Allow', 'POST');
+    res.status(405).json({ message: 'Método no permitido' });
+  }
+}

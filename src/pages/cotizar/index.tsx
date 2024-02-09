@@ -14,6 +14,7 @@ const CotizacionPage = () => {
   const router = useRouter()
   const { data: session } = useSession()
   const [client, setClient] = useState<Client>(initialClient)
+  // const [isLoading, setIsLoading] = useState(false)
   const { data, run, isLoading } = useAsync({ onSuccess: successFunction })
 
   const handleSubmit = async (event: { preventDefault: () => void; }) => {
@@ -31,37 +32,23 @@ const CotizacionPage = () => {
     }
 
     try {
-      const response = await axios.post('/api/pdf2', data, { responseType: 'blob' });
-        const pdfName = `Cotización ${client.nroCotizacion}_ConstRoad.pdf`
-      const url = window.URL.createObjectURL(new Blob([response.data]));
+      const response = await run(postPDF(API_ROUTES.pdf, data))
+      const { pdfBase64 } = response.data;
+      const pdfName = `Cotización ${client.nroCotizacion}_ConstRoad.pdf`
+
+      const blob = b64toBlob(pdfBase64, 'application/pdf');
+      const url = window.URL.createObjectURL(blob);
       const a = document.createElement('a');
       a.href = url;
       a.download = pdfName;
       document.body.appendChild(a);
       a.click();
       window.URL.revokeObjectURL(url);
-    } catch (error) {
-      console.error('Error generando PDF:', error);
-    }
-
-    // try {
-    //   const response = await run(postPDF(API_ROUTES.pdf, data))
-    //   const { pdfBase64 } = response.data;
-    //   const pdfName = `Cotización ${client.nroCotizacion}_ConstRoad.pdf`
-
-    //   const blob = b64toBlob(pdfBase64, 'application/pdf');
-    //   const url = window.URL.createObjectURL(blob);
-    //   const a = document.createElement('a');
-    //   a.href = url;
-    //   a.download = pdfName;
-    //   document.body.appendChild(a);
-    //   a.click();
-    //   window.URL.revokeObjectURL(url);
       
-    // } catch (error) {
-    //   console.error('Error al generar la cotización:', error);
-    //   toast.error('Hubo un error al generar la cotización');
-    // }
+    } catch (error) {
+      console.error('Error al generar la cotización:', error);
+      toast.error('Hubo un error al generar la cotización');
+    }
   };
 
   function successFunction() {

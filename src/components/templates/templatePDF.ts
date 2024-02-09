@@ -255,8 +255,8 @@ export const templatePDF = (clientData: Client, bgImg: any, logoImg: any): strin
             <div class="table-cell-body" style="justify-content: center; width: 92%;">
               <span style="text-transform: uppercase; font-weight: bold;">total presupuesto</span>
             </div>
-            <div class="table-cell-body" style="justify-content: center; align-items: end; width: 8%; background-color: #ffc100;">
-              <span>${formatPriceNumber(totalPresupuesto)}</span>
+            <div class="table-cell-body" style="justify-content: center; align-items: end; text-align: end; width: 8%; background-color: #ffc100;">
+              <span style="text-align: end;">${formatPriceNumber(totalPresupuesto)}</span>
             </div>
           </div>
         </div>

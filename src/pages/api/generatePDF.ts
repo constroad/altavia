@@ -8,6 +8,8 @@ import { templatePDF } from 'src/components/templates';
 
 
 export default async function handler(req: NextApiRequest, res: NextApiResponse) {
+  res.setHeader('Access-Control-Allow-Origin', '*');
+
   if (req.method === 'POST') {
 
     const backgroundBuffer = fs.readFileSync(path.resolve(process.cwd(), 'public', 'bg-cotizacion.svg'));
@@ -37,6 +39,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     res.send(pdfBuffer);
     
   } else {
+    res.setHeader('Allow', 'POST');
     res.status(405).json({ message: 'Método no permitido' });
   }
 }

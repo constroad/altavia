@@ -48,7 +48,7 @@ const CotizacionPage = () => {
       console.error('Error al generar la cotización:', error);
       toast.error('Hubo un error al generar la cotización');
     }
-};
+  };
 
   function successFunction() {
     toast.success('Cotización generada con éxito')

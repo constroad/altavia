@@ -32,10 +32,11 @@ const CotizacionPage = () => {
 
     try {
       const response = await axios.post('/api/pdf2', data, { responseType: 'blob' });
+        const pdfName = `Cotización ${client.nroCotizacion}_ConstRoad.pdf`
       const url = window.URL.createObjectURL(new Blob([response.data]));
       const a = document.createElement('a');
       a.href = url;
-      a.download = 'generated-pdf.pdf';
+      a.download = pdfName;
       document.body.appendChild(a);
       a.click();
       window.URL.revokeObjectURL(url);

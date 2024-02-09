@@ -1,9 +1,7 @@
-// pages/api/pdf.ts
-
 import { NextApiRequest, NextApiResponse } from 'next';
-import { chromium } from 'playwright-core';
 import fs from 'fs';
 import path from 'path';
+import { chromium } from 'playwright';
 import { templatePDF } from 'src/components';
 
 export default async function handler(req: NextApiRequest, res: NextApiResponse) {

@@ -32,9 +32,6 @@ export const PortalLayout = (props: IPortalLayout) => {
     if (status) setLogged(status)
   }, [status])
   
-  console.log('logged:', logged)
-
-  
   const displayMobileMenu = isMobile && showMobileOptions
 
   const handleEnterMouse = (opt: string) => {

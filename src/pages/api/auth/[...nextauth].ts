@@ -10,8 +10,6 @@ export default NextAuth({
         password: {  label: "Password", type: "password" },
       },
       authorize: async (credentials, req) => {
-        console.log('credentials:', credentials)
-        console.log('req:', req)
         if (
           credentials &&
           credentials.username === process.env.USERNAME &&
@@ -25,6 +23,6 @@ export default NextAuth({
     })
   ],
   session: {
-    maxAge: 1800, // 1 hora
+    maxAge: 1800, // 1 hour
   },
 })

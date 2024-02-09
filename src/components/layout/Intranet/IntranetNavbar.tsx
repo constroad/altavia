@@ -47,13 +47,14 @@ export const IntranetNavbar = () => {
         
         {session && (
           <Flex gap='20px' alignItems='center'>
-            <Text fontWeight={500}>Bienvenido: Admin</Text>
+            <Text fontWeight={600} fontSize={{base: 10, md: 'normal'}}>Bienvenido: Admin</Text>
             <Button
               fontWeight={500}
-              height='40px'
+              height={{base: '25px', md: '40px'}}
               color='white'
               onClick={handleSignOut}
               colorScheme="blue"
+              fontSize={{base: 10, md: 'normal'}}
             >
               Logout
             </Button>

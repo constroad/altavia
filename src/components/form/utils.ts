@@ -1,9 +1,11 @@
-export const initialUser = {
-  sender: '',
+export const initialClient = {
+  email: '',
   name: '',
   razonSocial: '',
   ruc: '',
   message: '',
   phone: '',
-  nroCubos: '',
+  nroCubos: '1',
+  precioUnitario: '480',
+  nroCotizacion: '',
 }

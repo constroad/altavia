@@ -21,3 +21,8 @@ export const formatPriceNumber = (number: number) => {
   const formattedNumber = number.toFixed(2).replace(/\B(?=(\d{3})+(?!\d))/g, ",");
   return formattedNumber
 }
+
+export const addZerosAhead = (number: number) => {
+  const numberWithZeros = number.toString().padStart(7, '0');
+  return numberWithZeros;
+}

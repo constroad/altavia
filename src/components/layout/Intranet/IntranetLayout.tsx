@@ -23,8 +23,6 @@ export const IntranetLayout = (props: IIntranetLayout) => {
   useEffect(() => {
     if (status) setLogged(status)
   }, [status])
-  
-  console.log('logged:', logged)
 
   return (
     <div className='w-full min-h-screen'>

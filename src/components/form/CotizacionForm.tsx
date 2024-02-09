@@ -1,32 +1,45 @@
 import React, { ChangeEvent } from 'react'
 import { Button, Flex, FormControl, FormLabel, Input, Text, Textarea, VStack } from '@chakra-ui/react'
-import { User } from 'src/common/types';
+import { Client } from 'src/common/types';
 
 type CotizacionFormProps = {
   handleSubmit: (event: { preventDefault: () => void }) => Promise<void>;
-  user: User;
-  setter: React.Dispatch<React.SetStateAction<User>>;
+  client: Client;
+  setter: React.Dispatch<React.SetStateAction<Client>>;
   isLoading: boolean;
   session?: boolean;
 }
 
 export const CotizacionForm = (props: CotizacionFormProps) => {
-  const { user, setter, handleSubmit, isLoading, session } = props
+  const { client, setter, handleSubmit, isLoading, session } = props
 
   const handleChangeValue = (e: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>, key: string) => {
     const value = e.target.value
-    setter({...user, [key]: value})
+    setter({...client, [key]: value})
   }
 
   const handleNroCubosChange = (event: { target: { value: any } }) => {
     const value = event.target.value;
     if (/^\d*$/.test(value)) {
-      setter({...user, nroCubos: value})
+      setter({...client, nroCubos: value})
     }
   };
 
   return (
     <VStack as="form" onSubmit={handleSubmit} spacing={3} mt='20px'>
+      <FormControl id="nro-cotizacion" display={session ? 'block' : 'none'}>
+        <FormLabel mb='6px' fontSize={{ base: 12, md: 14 }}>Cotizacion Nro. <Text color='red' display='inline-flex'>*</Text></FormLabel>
+        <Input
+          fontSize={{ base: 12, md: 14 }}
+          lineHeight='14px'
+          height='32px'
+          type="number"
+          value={client.nroCotizacion}
+          placeholder="108"
+          onChange={(e) => handleChangeValue(e, 'nroCotizacion')}
+          required
+        />
+      </FormControl>
       <FormControl id="nombre" display={session ? 'none' : 'block'}>
         <FormLabel mb='6px' fontSize={{ base: 12, md: 14 }}>Nombre <Text color='red' display='inline-flex'>*</Text></FormLabel>
         <Input
@@ -34,7 +47,7 @@ export const CotizacionForm = (props: CotizacionFormProps) => {
           lineHeight='14px'
           height='32px'
           type="text"
-          value={user.name}
+          value={client.name}
           onChange={(e) => handleChangeValue(e, 'name')}
           placeholder="Nombre"
           required={session ? false : true}
@@ -53,8 +66,8 @@ export const CotizacionForm = (props: CotizacionFormProps) => {
           lineHeight='14px'
           height='32px'
           type="email"
-          value={user.sender}
-          onChange={(e) => handleChangeValue(e, 'sender')}
+          value={client.email}
+          onChange={(e) => handleChangeValue(e, 'email')}
           placeholder="Correo electrónico"
           required={session ? false : true}
         />
@@ -67,7 +80,7 @@ export const CotizacionForm = (props: CotizacionFormProps) => {
             lineHeight='14px'
             height='32px'
             type="text"
-            value={user.razonSocial}
+            value={client.razonSocial}
             onChange={(e) => handleChangeValue(e, 'razonSocial')}
             placeholder="Empresa"
             required
@@ -80,7 +93,7 @@ export const CotizacionForm = (props: CotizacionFormProps) => {
             lineHeight='14px'
             height='32px'
             type="number"
-            value={user.ruc}
+            value={client.ruc}
             onChange={(e) => handleChangeValue(e, 'ruc')}
             placeholder="RUC"
           />
@@ -93,21 +106,31 @@ export const CotizacionForm = (props: CotizacionFormProps) => {
           lineHeight='14px'
           height='32px'
           type="number"
-          value={user.phone}
+          value={client.phone}
           onChange={(e) => handleChangeValue(e, 'phone')}
           placeholder="Celular"
         />
       </FormControl>
-      <FormControl id="Nro-cubos">
+      <FormControl id="nro-cubos">
         <FormLabel mb='6px' fontSize={{ base: 12, md: 14 }}>Número de cubos <Text color='gray' fontSize={12} display='inline-flex'>(opcional)</Text></FormLabel>
         <Input
           fontSize={{ base: 12, md: 14 }}
           lineHeight='14px'
           height='32px'
           type='text'
-          value={user.nroCubos}
+          value={client.nroCubos}
           onChange={handleNroCubosChange}
-          placeholder="Número de cubos"
+        />
+      </FormControl>
+      <FormControl id="precio-unitario" display={session ? 'block' : 'none'}>
+        <FormLabel mb='6px' fontSize={{ base: 12, md: 14 }}>Precio unitario <Text color='gray' fontSize={12} display='inline-flex'>(opcional)</Text></FormLabel>
+        <Input
+          fontSize={{ base: 12, md: 14 }}
+          lineHeight='14px'
+          height='32px'
+          type='number'
+          value={client.precioUnitario}
+          onChange={(e) => handleChangeValue(e, 'precioUnitario')}
         />
       </FormControl>
       <FormControl id="mensaje" display={session ? 'none' : 'block'}>
@@ -115,7 +138,7 @@ export const CotizacionForm = (props: CotizacionFormProps) => {
         <Textarea
           fontSize={{ base: 12, md: 14 }}
           lineHeight='14px'
-          value={user.message}
+          value={client.message}
           onChange={(e) => handleChangeValue(e, 'message')}
           placeholder="Escribe detalles sobre tu pedido: fecha, lugar, etc"
           required={session ? false : true}

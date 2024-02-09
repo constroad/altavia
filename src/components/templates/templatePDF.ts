@@ -1,12 +1,14 @@
 import { CONSTROAD } from "src/common/consts";
-import { formatPriceNumber, getDate } from "src/common/utils";
+import { Client } from "src/common/types";
+import { addZerosAhead, formatPriceNumber, getDate } from "src/common/utils";
 
-export const templatePDF = (userData: any, nroCotizacion: any, bgImg: any, logoImg: any): string => {
+export const templatePDF = (clientData: Client, bgImg: any, logoImg: any): string => {
   const { currentDayName, currentDayMonth, currentYear } = getDate()
 
-  const totalCubos = userData.nroCubos === '' ? '1' : userData.nroCubos
-  const rucCliente = userData.ruc === '' ? '- - -' : userData.ruc
-  const precioUnitario = '440'
+  const nroCotizacion = addZerosAhead(+clientData.nroCotizacion)
+  const totalCubos = clientData.nroCubos === '' ? '1' : clientData.nroCubos
+  const rucCliente = clientData.ruc === '' ? '- - -' : clientData.ruc
+  const precioUnitario = clientData.precioUnitario === '' ? '480' : clientData.precioUnitario
   const totalWithoutIgv = +totalCubos * +precioUnitario
   const igv = totalWithoutIgv * 0.18
   const totalPresupuesto = totalWithoutIgv + igv
@@ -71,7 +73,7 @@ export const templatePDF = (userData: any, nroCotizacion: any, bgImg: any, logoI
 
         .cliente {
           width: 100%;
-          margin-top: 65px;
+          margin-top: 70px;
           display: flex;
           flex-direction: column;
           font-size: 16px;
@@ -79,7 +81,7 @@ export const templatePDF = (userData: any, nroCotizacion: any, bgImg: any, logoI
 
         .data {
           width: 100%;
-          margin-top: 75px;
+          margin-top: 70px;
           display: flex;
           flex-direction: column;
           font-size: 12px;
@@ -127,7 +129,7 @@ export const templatePDF = (userData: any, nroCotizacion: any, bgImg: any, logoI
           font-size: 12px;
           bottom: 15px;
           left: 0;
-          right: 0;
+          right: 60;
         }
       </style>
     </head>
@@ -153,7 +155,7 @@ export const templatePDF = (userData: any, nroCotizacion: any, bgImg: any, logoI
         <div class="cliente">
           <div style="display: flex; gap: 5px;">
             <span>Señor:</span>
-            <span style="text-transform: uppercase;">${userData.razonSocial}</span>
+            <span style="text-transform: uppercase;">${clientData.razonSocial}</span>
           </div>
 
           <div style="display: flex; margin-top: 12px;">
@@ -168,7 +170,7 @@ export const templatePDF = (userData: any, nroCotizacion: any, bgImg: any, logoI
 
           <div style="display: flex; margin-top: 15px; gap: 5px;">
             <span style="width: 100px;">RAZON SOCIAL:</span>
-            <span style="text-transform: uppercase;">${userData.razonSocial}</span>
+            <span style="text-transform: uppercase;">${clientData.razonSocial}</span>
           </div>
           <div style="display: flex; margin-top: 5px; gap: 5px;">
             <span style="width: 100px;">RUC:</span>

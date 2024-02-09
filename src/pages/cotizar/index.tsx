@@ -4,14 +4,14 @@ import { useRouter } from 'next/router'
 import React, { useState } from 'react'
 import { API_ROUTES, APP_ROUTES } from 'src/common/consts'
 import { useAsync } from 'src/common/hooks'
-import { User } from 'src/common/types'
-import { CotizacionForm, IntranetLayout, initialUser, toast } from 'src/components'
+import { Client } from 'src/common/types'
+import { CotizacionForm, IntranetLayout, initialClient, toast } from 'src/components'
 import axios from 'axios'
 
 const CotizacionPage = () => {
   const router = useRouter()
   const { data: session } = useSession()
-  const [user, setUser] = useState<User>(initialUser)
+  const [client, setClient] = useState<Client>(initialClient)
   const [isLoading, setIsLoading] = useState(false)
   // const { data, run, isLoading } = useAsync({ onSuccess: successFunction })
 
@@ -19,22 +19,25 @@ const CotizacionPage = () => {
     setIsLoading(true)
     event.preventDefault();
     const data = {
-      sender: user.sender,
-      name: user.name,
-      razonSocial: user.razonSocial,
-      ruc: user.ruc,
-      message: user.message,
-      phone: user.phone,
-      nroCubos: user.nroCubos
+      email: client.email,
+      name: client.name,
+      razonSocial: client.razonSocial,
+      ruc: client.ruc,
+      message: client.message,
+      phone: client.phone,
+      nroCubos: client.nroCubos,
+      precioUnitario: client.precioUnitario,
+      nroCotizacion: client.nroCotizacion
     }
 
     try {
       const response = await axios.post(API_ROUTES.generatePDF, data, { responseType: 'blob' });
+      const pdfName = `Cotización ${client.nroCotizacion}_ConstRoad.pdf`
       
       const url = window.URL.createObjectURL(new Blob([response.data]));
       const a = document.createElement('a');
       a.href = url;
-      a.download = `cotización_${user.razonSocial}.pdf`;
+      a.download = pdfName;
       document.body.appendChild(a);
       a.click();
       window.URL.revokeObjectURL(url);
@@ -50,6 +53,7 @@ const CotizacionPage = () => {
   function successFunction() {
     toast.success('Cotización generada con éxito')
   }
+
   return (
     <IntranetLayout>
       {session && (
@@ -65,8 +69,8 @@ const CotizacionPage = () => {
             Generar cotización
           </Text>
           <CotizacionForm
-            user={user}
-            setter={setUser}
+            client={client}
+            setter={setClient}
             isLoading={isLoading}
             handleSubmit={handleSubmit}
             session

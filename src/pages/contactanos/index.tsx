@@ -3,30 +3,32 @@ import axios from 'axios'
 
 import { Flex, Text } from '@chakra-ui/react'
 
-import { CotizacionForm, PortalLayout, initialUser, toast } from 'src/components'
+import { CotizacionForm, PortalLayout, initialClient, toast } from 'src/components'
 import { useAsync } from 'src/common/hooks'
 import { API_ROUTES } from 'src/common/consts'
-import { User } from 'src/common/types'
+import { Client } from 'src/common/types'
 
-const postEmail = (path: string, data: User) => axios.post(path, data);
+const postEmail = (path: string, data: Client) => axios.post(path, data);
 const Contactanos = () => {
-  const [user, setUser] = useState<User>(initialUser)
+  const [client, setClient] = useState<Client>(initialClient)
   const { run, isLoading } = useAsync({ onSuccess: successFunction })
 
   const handleSubmit = async (event: { preventDefault: () => void; }) => {
     event.preventDefault();
     const data = {
-      sender: user.sender,
-      name: user.name,
-      razonSocial: user.razonSocial,
-      ruc: user.ruc,
-      message: user.message,
-      phone: user.phone,
-      nroCubos: user.nroCubos
+      email: client.email,
+      name: client.name,
+      razonSocial: client.razonSocial,
+      ruc: client.ruc,
+      message: client.message,
+      phone: client.phone,
+      nroCubos: client.nroCubos,
+      precioUnitario: client.precioUnitario,
+      nroCotizacion: client.nroCotizacion,
     }
     await run( postEmail( API_ROUTES.sendEmail, data ) )
 
-    setUser(initialUser)
+    setClient(initialClient)
   };
 
   function successFunction() {
@@ -52,8 +54,8 @@ const Contactanos = () => {
             </Text>
             
             <CotizacionForm
-              user={user}
-              setter={setUser}
+              client={client}
+              setter={setClient}
               isLoading={isLoading}
               handleSubmit={handleSubmit}
             />

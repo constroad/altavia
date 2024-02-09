@@ -9,7 +9,6 @@ const LoginPage = () => {
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
   const router = useRouter()
-  const { data: session, status } = useSession()
 
   const handleSignIn = async () => {
     const result = await signIn('credentials', {

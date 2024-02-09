@@ -17,6 +17,7 @@ export const APP_ROUTES = {
 export const API_ROUTES = {
   sendEmail: '/api/sendEmail',
   generatePDF: '/api/generatePDF',
+  pdf: '/api/pdf',
 }
 
 export const CONSTROAD = {

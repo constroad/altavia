@@ -32,11 +32,10 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
       },
       printBackground: true
     });
+    const pdfBase64 = pdfBuffer.toString('base64');
     await browser.close();
 
-    res.setHeader('Content-Type', 'application/pdf');
-    res.setHeader('Content-Disposition', 'attachment; filename=documento.pdf');
-    res.send(pdfBuffer);
+    res.status(200).json({ pdfBase64 });
     
   } else {
     res.setHeader('Allow', 'POST');

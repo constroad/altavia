@@ -7,6 +7,7 @@ import { useAsync } from 'src/common/hooks'
 import { Client } from 'src/common/types'
 import { CotizacionForm, IntranetLayout, initialClient, toast } from 'src/components'
 import axios from 'axios'
+import { b64toBlob } from 'src/common/utils'
 
 const CotizacionPage = () => {
   const router = useRouter()
@@ -31,16 +32,28 @@ const CotizacionPage = () => {
     }
 
     try {
-      const response = await axios.post(API_ROUTES.generatePDF, data, { responseType: 'blob' });
+      const response = await axios.post(API_ROUTES.generatePDF, data);
+      const { pdfBase64 } = response.data;
+      // const response = await axios.post(API_ROUTES.generatePDF, data, { responseType: 'blob' });
       const pdfName = `Cotización ${client.nroCotizacion}_ConstRoad.pdf`
-      
-      const url = window.URL.createObjectURL(new Blob([response.data]));
+
+      const blob = b64toBlob(pdfBase64, 'application/pdf');
+      const url = window.URL.createObjectURL(blob);
       const a = document.createElement('a');
       a.href = url;
-      a.download = pdfName;
+      a.download = `Cotización ${client.nroCotizacion}_ConstRoad.pdf`;
       document.body.appendChild(a);
       a.click();
       window.URL.revokeObjectURL(url);
+      
+      
+      // const url = window.URL.createObjectURL(new Blob([response.data]));
+      // const a = document.createElement('a');
+      // a.href = url;
+      // a.download = pdfName;
+      // document.body.appendChild(a);
+      // a.click();
+      // window.URL.revokeObjectURL(url);
       
       successFunction();
       setIsLoading(false)

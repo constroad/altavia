@@ -4,7 +4,7 @@ import fs from 'fs';
 import path from 'path';
 
 import { templatePDF } from 'src/components/templates';
-import puppeteer from 'puppeteer';
+import puppeteer from 'puppeteer-core';
 import chromium from '@sparticuz/chromium';
 
 
@@ -24,7 +24,8 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     const browser = await puppeteer.launch({
       args: chromium.args,
       defaultViewport: chromium.defaultViewport,
-      executablePath: await chromium.executablePath()
+      executablePath: await chromium.executablePath(),
+      headless: true
     });
 
     const page = await browser.newPage();

@@ -7,7 +7,6 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     return res.status(405).json({ error: 'Method Not Allowed' });
   }
   try {
-    // Aquí maneja los datos enviados desde el frontend
     const { data } = req.body;
 
     // Genera el PDF

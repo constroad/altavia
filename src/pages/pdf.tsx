@@ -72,8 +72,10 @@ export default function Home() {
         }
         
       }
-
-      const respp = pdfMake.createPdf(pdfDocDefinition).download('quote.pdf');
+      const win = window.open('', '_blank');
+      pdfMake.createPdf(pdfDocDefinition).open({}, win);
+      // const respp = pdfMake.createPdf(pdfDocDefinition)
+      //.download('quote.pdf');
       // console.log(respp)
 
     } catch (error) {

@@ -20,13 +20,13 @@ export default function Home() {
        // Convierte el HTML a una estructura de pdfmake
        const pdfContent = htmlToPdfmake(response.data);
 
-       console.log('pdfContent:', pdfContent)
+      //  console.log('pdfContent:', pdfContent)
        
       const pdfDocDefinition = {
-        // content: [
-        //   { text: sampleHtml }
-        // ]
-        content: pdfContent
+        content: [
+          { text: response.data }
+        ]
+        // content: pdfContent
       };
 
       pdfMake.createPdf(pdfDocDefinition).download('quote.pdf');

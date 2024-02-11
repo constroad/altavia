@@ -1,5 +1,5 @@
 import { PDFDocument, StandardFonts, rgb } from 'pdf-lib'
-
+import htmlToPdf from 'html-pdf';
 export async function createQuotePdf(data: any): Promise<Uint8Array> {
   // Create a new PDFDocument
   const pdfDoc = await PDFDocument.create()
@@ -26,4 +26,17 @@ export async function createQuotePdf(data: any): Promise<Uint8Array> {
   // Serialize the PDFDocument to bytes (a Uint8Array)
   const pdfBytes = await pdfDoc.save()
   return pdfBytes;
+}
+
+export async function createHtmlToPdf(html: string): Promise<Buffer> {
+  // Convierte el HTML en PDF usando html-pdf
+  return new Promise((resolve, reject) => {
+    htmlToPdf.create(html).toBuffer((err, buffer) => {
+      if (err) {
+        reject(err);
+      } else {
+        resolve(buffer);
+      }
+    });
+  });
 }

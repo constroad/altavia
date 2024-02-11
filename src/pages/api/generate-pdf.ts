@@ -6,7 +6,6 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
   if (req.method !== 'POST') {
     return res.status(405).json({ error: 'Method Not Allowed' });
   }
-  // const fileName = 
   try {
     // Aquí maneja los datos enviados desde el frontend
     const { data } = req.body;
@@ -14,12 +13,10 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     // Genera el PDF
     const pdfBuffer = await createQuotePdf(data);
 
-    // Crea un flujo de lectura desde el buffer
     const pdfStream = new Readable();
     pdfStream.push(pdfBuffer);
     pdfStream.push(null); // Indica que no hay más datos en el flujo
 
-    // Envía el PDF como respuesta
     res.setHeader('Content-Type', 'application/pdf');
     res.setHeader('Content-Disposition', 'attachment; filename=quote.pdf');
     pdfStream.pipe(res);

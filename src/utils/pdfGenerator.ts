@@ -1,5 +1,7 @@
 import { PDFDocument, StandardFonts, rgb } from 'pdf-lib'
 import htmlToPdf from 'html-pdf';
+
+
 export async function createQuotePdf(data: any): Promise<Uint8Array> {
   // Create a new PDFDocument
   const pdfDoc = await PDFDocument.create()
@@ -40,3 +42,4 @@ export async function createHtmlToPdf(html: string): Promise<Buffer> {
     });
   });
 }
+

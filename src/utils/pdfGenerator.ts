@@ -65,12 +65,14 @@ export async function createQuotePdf(data: any): Promise<Uint8Array> {
 }
 
 export async function createHtmlToPdf(html: string): Promise<Buffer> {
+  const phantomjsPath = path.join(process.cwd(), 'public/templates/phantomjs', 'bin/phantomjs')
+  console.log('phantomjsPath:', phantomjsPath)
   const option ={
-    "phantomPath": "./node_modules/phantomjs/bin/phantomjs", 
+    "phantomPath": phantomjsPath, 
     }
   // Convierte el HTML en PDF usando html-pdf
   return new Promise((resolve, reject) => {
-    htmlToPdf.create(html).toBuffer((err, buffer) => {
+    htmlToPdf.create(html, option).toBuffer((err, buffer) => {
       if (err) {
         reject(err);
       } else {

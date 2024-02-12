@@ -37,7 +37,7 @@ export const CotizacionForm = (props: CotizacionFormProps) => {
           value={client.nroCotizacion}
           placeholder="108"
           onChange={(e) => handleChangeValue(e, 'nroCotizacion')}
-          required
+          required={session ? true : false}
         />
       </FormControl>
       <FormControl id="nombre" display={session ? 'none' : 'block'}>

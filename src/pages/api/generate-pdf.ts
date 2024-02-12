@@ -35,9 +35,9 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     // const pdfBuffer = await createQuotePdf(data);
 
     // Genera el PDF desde de un html
-    const pdfBuffer = await createHtmlToPdf(htmlSample);
+    // const pdfBuffer = await createHtmlToPdf(htmlSample);
 
-    // const pdfBuffer = await generateConstroadPDF()
+    const pdfBuffer = await generateConstroadPDF()
   
 
     const pdfStream = new Readable();

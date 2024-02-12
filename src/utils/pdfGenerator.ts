@@ -31,6 +31,13 @@ export const generateConstroadPDF = async () => {
     rotate: degrees(-45),
   })
 
+  firstPage.drawText('Select your favorite gundams:', { x: 50, y: 440, size: 20 })
+
+  firstPage.drawText('Exia', { x: 120, y: 400, size: 18 })
+  firstPage.drawText('Kyrios', { x: 120, y: 340, size: 18 })
+  firstPage.drawText('Virtue', { x: 340, y: 400, size: 18 })
+  firstPage.drawText('Dynames', { x: 340, y: 340, size: 18 })
+
   const pdfBytes = await pdfDoc.save()
 
   return pdfBytes

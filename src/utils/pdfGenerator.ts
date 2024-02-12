@@ -3,7 +3,9 @@ import htmlToPdf from 'html-pdf';
 import fs from 'fs';
 import path from 'path';
 
-export const generateConstroadPDF = async () => {
+export const generateConstroadPDF = async (data: any) => {
+  const name = data.name.toUpperCase()
+  const nroCotizacion = data.nroCotizacion
   // read pdf from public
   const pdfPath = path.join(process.cwd(), 'public/templates', 'plantilla_constroad_portal.pdf');
   const existingPdfBytes = fs.readFileSync(pdfPath);
@@ -22,18 +24,18 @@ export const generateConstroadPDF = async () => {
   const firstPage = pages[ 0 ]
   const { width, height } = firstPage.getSize()
 
-  firstPage.drawText('This text was added by jzena constroadt!', {
-    x: 5,
-    y: height / 2 + 300,
-    size: 50,
-    font: helveticaFont,
-    color: rgb(0.95, 0.1, 0.1),
-    rotate: degrees(-45),
-  })
+  // firstPage.drawText('This text was added by jzena constroadt!', {
+  //   x: 5,
+  //   y: height / 2 + 300,
+  //   size: 50,
+  //   font: helveticaFont,
+  //   color: rgb(0.95, 0.1, 0.1),
+  //   rotate: degrees(-45),
+  // })
 
-  firstPage.drawText('Select your favorite gundams:', { x: 50, y: 440, size: 20 })
+  firstPage.drawText(name, { x: 90, y: 687, size: 12 })
 
-  firstPage.drawText('Exia', { x: 120, y: 400, size: 18 })
+  firstPage.drawText(nroCotizacion, { x: 310, y: 592, size: 10, font: helveticaFont })
   firstPage.drawText('Kyrios', { x: 120, y: 340, size: 18 })
   firstPage.drawText('Virtue', { x: 340, y: 400, size: 18 })
   firstPage.drawText('Dynames', { x: 340, y: 340, size: 18 })

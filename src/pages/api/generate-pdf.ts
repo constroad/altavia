@@ -37,7 +37,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     // Genera el PDF desde de un html
     // const pdfBuffer = await createHtmlToPdf(htmlSample);
 
-    const pdfBuffer = await generateConstroadPDF()
+    const pdfBuffer = await generateConstroadPDF(data)
   
 
     const pdfStream = new Readable();

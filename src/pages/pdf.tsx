@@ -14,7 +14,14 @@ export default function Home() {
     setLoading(true);
     try {
       const response = await axios.post('/api/generate-pdf', {
-        data: {/* Aquí coloca los datos que quieres enviar a la API */}
+        data: {
+          name: 'Constroad s.a.c',
+          nroCotizacion: '0000109',
+          ruc: '453453534',
+          nroCubos: '3',
+          precioUnitario: '480',
+          totalsinigv: '480',
+        }
       }, {
         responseType: 'arraybuffer',
       });

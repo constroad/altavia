@@ -1,5 +1,5 @@
 import { degrees, PDFDocument, StandardFonts, rgb } from 'pdf-lib'
-// import htmlToPdf from 'html-pdf';
+import htmlToPdf from 'html-pdf';
 import fs from 'fs';
 import path from 'path';
 
@@ -64,16 +64,19 @@ export async function createQuotePdf(data: any): Promise<Uint8Array> {
   return pdfBytes;
 }
 
-// export async function createHtmlToPdf(html: string): Promise<Buffer> {
-//   // Convierte el HTML en PDF usando html-pdf
-//   return new Promise((resolve, reject) => {
-//     htmlToPdf.create(html).toBuffer((err, buffer) => {
-//       if (err) {
-//         reject(err);
-//       } else {
-//         resolve(buffer);
-//       }
-//     });
-//   });
-// }
+export async function createHtmlToPdf(html: string): Promise<Buffer> {
+  const option ={
+    "phantomPath": "./node_modules/phantomjs/bin/phantomjs", 
+    }
+  // Convierte el HTML en PDF usando html-pdf
+  return new Promise((resolve, reject) => {
+    htmlToPdf.create(html).toBuffer((err, buffer) => {
+      if (err) {
+        reject(err);
+      } else {
+        resolve(buffer);
+      }
+    });
+  });
+}
 

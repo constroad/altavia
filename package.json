@@ -25,6 +25,7 @@
     "pdf-lib": "^1.17.1",
     "pdfmake": "^0.2.9",
     "pdfmake-utils": "^0.5.2",
+    "phantomjs": "^2.1.7",
     "react": "^18",
     "react-click-away-listener": "^2.2.3",
     "react-dom": "^18",

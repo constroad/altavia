@@ -2,10 +2,9 @@ import { NextApiRequest, NextApiResponse } from 'next';
 
 import fs from 'fs';
 import path from 'path';
-
 import { templatePDF } from 'src/components/templates';
-import puppeteer from 'puppeteer-core';
-import chromium from '@sparticuz/chromium';
+import chromium from 'chrome-aws-lambda';
+
 
 export default async function handler(req: NextApiRequest, res: NextApiResponse) {
   res.setHeader('Access-Control-Allow-Origin', '*');
@@ -20,12 +19,13 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
 
     const htmlTemplate = templatePDF(req.body, base64bg, base64Logo);
 
-    const browser = await puppeteer.launch({
-      args: chromium.args,
+    const browser = await chromium.puppeteer.launch({
+      args: [...chromium.args, "--hide-scrollbars", "--disable-web-security"],
       defaultViewport: chromium.defaultViewport,
-      executablePath: await chromium.executablePath(),
-      // headless: true
-    });
+      executablePath: await chromium.executablePath,
+      headless: true,
+      ignoreHTTPSErrors: true,
+    })
 
     const page = await browser.newPage();
     await page.setContent(htmlTemplate);
@@ -43,7 +43,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     await browser.close();
 
     res.status(200).json({ pdfBase64 });
-    
+
   } else {
     res.setHeader('Allow', 'POST');
     res.status(405).json({ message: 'Método no permitido' });

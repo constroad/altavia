@@ -23,6 +23,8 @@ const Contactanos = () => {
       message: client.message,
       phone: client.phone,
       nroCubos: client.nroCubos,
+      precioUnitario: '',
+      nroCotizacion: ''
     }
     await run( postEmail( API_ROUTES.sendEmail, data ) )
 

@@ -1,20 +1,25 @@
 import { degrees, PDFDocument, StandardFonts, rgb } from 'pdf-lib'
 // import htmlToPdf from 'html-pdf';
-
+import fs from 'fs';
+import path from 'path';
 
 export const generateConstroadPDF = async () => {
-  const url = 'https://constroad-portal.s3.us-east-2.amazonaws.com/plantilla_constroad_portal.pdf';
-  
-  const existingPdfBytes = await fetch(url).then(res => res.arrayBuffer())
+  // read pdf from public
+  const pdfPath = path.join(process.cwd(), 'public/templates', 'plantilla_constroad_portal.pdf');
+  const existingPdfBytes = fs.readFileSync(pdfPath);
+
+  // const url = 'https://constroad-portal.s3.us-east-2.amazonaws.com/plantilla_constroad_portal.pdf';
+
+  // const existingPdfBytes = await fetch(url).then(res => res.arrayBuffer())
 
   // Cargar el PDF desde el buffer
   const pdfDoc = await PDFDocument.load(existingPdfBytes);
 
 
   const helveticaFont = await pdfDoc.embedFont(StandardFonts.Helvetica)
-  
+
   const pages = pdfDoc.getPages()
-  const firstPage = pages[0]
+  const firstPage = pages[ 0 ]
   const { width, height } = firstPage.getSize()
 
   firstPage.drawText('This text was added by jzena constroadt!', {

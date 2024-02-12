@@ -30,6 +30,22 @@ export default function Document() {
         <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Rubik:wght@400;500;600;700&display=swap" />
         <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;600;700&display=swap" />
         <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Anek+Devanagari:wght@400;600;800&display=swap" />
+
+        <script
+        async
+        src="https://www.googletagmanager.com/gtag/js?id=AW-16451484138"
+      />
+      <script
+        dangerouslySetInnerHTML={{
+          __html: `
+            window.dataLayer = window.dataLayer || [];
+            function gtag(){dataLayer.push(arguments);}
+            gtag('js', new Date());
+
+            gtag('config', 'AW-16451484138');
+          `,
+        }}
+      />
       </Head>
       <body className="min-h-[100vh] w-full flex flex-col">
         <Main />

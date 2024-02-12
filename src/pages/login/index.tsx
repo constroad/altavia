@@ -39,7 +39,7 @@ const LoginPage = () => {
         <Box width='400px' paddingX='30px' marginTop={{ base: '30px', md: '60px' }} textAlign='center'>
           <FormControl id="username">
             <FormLabel>Usuario</FormLabel>
-            <Input type="text" value={username} onChange={(e) => setUsername(e.target.value)} />
+            <Input type="text" value={username} onChange={(e) => setUsername(e.target.value.toLowerCase())} />
           </FormControl>
           <FormControl id="password" marginTop='15px'>
             <FormLabel>Contraseña</FormLabel>

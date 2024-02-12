@@ -14,11 +14,13 @@ const CotizacionPage = () => {
   const router = useRouter()
   const { data: session } = useSession()
   const [client, setClient] = useState<Client>(initialClient)
-  // const [isLoading, setIsLoading] = useState(false)
-  const { data, run, isLoading } = useAsync({ onSuccess: successFunction })
+  const [isLoading, setIsLoading] = useState(false)
+  // const { data, run, isLoading } = useAsync({ onSuccess: successFunction })
 
   const handleSubmit = async (event: { preventDefault: () => void; }) => {
     event.preventDefault();
+    setIsLoading(true)
+
     const data = {
       email: client.email,
       name: client.name,
@@ -32,21 +34,26 @@ const CotizacionPage = () => {
     }
 
     try {
-      const response = await run(postPDF(API_ROUTES.pdf, data))
-      const { pdfBase64 } = response.data;
+      const response = await axios.post( API_ROUTES.generatePDF, { data }, {responseType: 'arraybuffer'} )
+      const blob = new Blob([response.data], { type: 'application/pdf' });
       const pdfName = `Cotización ${client.nroCotizacion}_ConstRoad.pdf`
 
-      const blob = b64toBlob(pdfBase64, 'application/pdf');
-      const url = window.URL.createObjectURL(blob);
-      const a = document.createElement('a');
-      a.href = url;
-      a.download = pdfName;
-      document.body.appendChild(a);
-      a.click();
-      window.URL.revokeObjectURL(url);
-      
+      const pdfUrl = URL.createObjectURL(blob);
+      const link = document.createElement('a');
+      link.href = pdfUrl;
+      link.setAttribute('download', pdfName);
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+
+      setClient(initialClient)
+      successFunction()
+      setIsLoading(false)
+
     } catch (error) {
-      console.error('Error al generar la cotización:', error);
+      console.error("Error generating PDF:", error);
+
+      setIsLoading(false)
       toast.error('Hubo un error al generar la cotización');
     }
   };

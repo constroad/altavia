@@ -1,5 +1,8 @@
 import { NextApiRequest, NextApiResponse } from 'next';
-import { createHtmlToPdf, createQuotePdf } from '../../utils/pdfGenerator';
+import { 
+  // createHtmlToPdf, 
+  createQuotePdf, 
+  generateConstroadPDF } from '../../utils/pdfGenerator';
 import { Readable } from 'stream';
 
 const htmlSample = `
@@ -19,6 +22,7 @@ const htmlSample = `
 
 `
 
+
 export default async function handler(req: NextApiRequest, res: NextApiResponse) {
   if (req.method !== 'POST') {
     return res.status(405).json({ error: 'Method Not Allowed' });
@@ -27,10 +31,12 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     const { data } = req.body;
 
     // Genera el PDF con pdf-lib
-    const pdfBuffer = await createQuotePdf(data);
+    // const pdfBuffer = await createQuotePdf(data);
 
     // Genera el PDF desde de un html
     // const pdfBuffer = await createHtmlToPdf(htmlSample);
+
+    const pdfBuffer = await generateConstroadPDF()
   
 
     const pdfStream = new Readable();

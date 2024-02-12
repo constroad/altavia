@@ -2,6 +2,7 @@ import { useState } from 'react';
 import axios from 'axios';
 import pdfMake from 'pdfmake/build/pdfmake';
 import pdfFonts from 'pdfmake/build/vfs_fonts';
+import { generateConstroadPDF } from 'src/utils/pdfGenerator';
 // import htmlToPdfmake from 'html-to-pdfmake';
 
 // Configura pdfMake con las fuentes necesarias
@@ -73,7 +74,8 @@ export default function Home() {
         
       }
       const win = window.open('', '_blank');
-      pdfMake.createPdf(pdfDocDefinition).open({}, win);
+      pdfMake.createPdf(pdfDocDefinition)
+      //.open({}, win);
       // const respp = pdfMake.createPdf(pdfDocDefinition)
       //.download('quote.pdf');
       // console.log(respp)
@@ -86,9 +88,37 @@ export default function Home() {
     }
   };
 
+  const generatePdf = async () => {
+    setLoading(true);
+    try {
+      const response = await axios.post('/api/generate-pdf', {
+        data: {/* Aquí coloca los datos que quieres enviar a la API */}
+      }, {
+        responseType: 'arraybuffer',
+      });
+
+      // const data = await generateConstroadPDF()
+      const blob = new Blob([response.data], { type: 'application/pdf' });
+      const pdfUrl = URL.createObjectURL(blob);
+
+      // Crear un enlace temporal para descargar el PDF
+      const link = document.createElement('a');
+      link.href = pdfUrl;
+      link.setAttribute('download', 'quote.pdf');
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+    } catch (error) {
+      console.error("Error generating PDF:", error);
+      setPdfError('Error generating PDF');
+    } finally {
+      setLoading(false);
+    }
+  };
+
   return (
     <div>
-      <button onClick={generatePdf2} disabled={loading}>
+      <button onClick={generatePdf} disabled={loading}>
         {loading ? 'Generating PDF......' : 'Generate and Download PDF:'}
       </button>
       {pdfError && <p>{pdfError}</p>}

@@ -2,7 +2,7 @@ import { CONSTROAD } from "src/common/consts";
 import { Client } from "src/common/types";
 import { addZerosAhead, formatPriceNumber, getDate } from "src/common/utils";
 
-export const templatePDF = (clientData: Client, bgImg: any, logoImg: any): string => {
+export const htmlCotizacion = (clientData: Client, bgImg: any, logoImg: any): string => {
   const { currentDayName, currentDayMonth, currentYear } = getDate()
 
   const nroCotizacion = addZerosAhead(+clientData.nroCotizacion)
@@ -51,7 +51,7 @@ export const templatePDF = (clientData: Client, bgImg: any, logoImg: any): strin
 
         .header {
           width: 100%;
-          margin-top: 95px;
+          margin-top: 85.5px;
           display: flex;
           align-items: center;
           gap: 8px
@@ -73,7 +73,7 @@ export const templatePDF = (clientData: Client, bgImg: any, logoImg: any): strin
 
         .cliente {
           width: 100%;
-          margin-top: 70px;
+          margin-top: 60px;
           display: flex;
           flex-direction: column;
           font-size: 16px;
@@ -81,7 +81,7 @@ export const templatePDF = (clientData: Client, bgImg: any, logoImg: any): strin
 
         .data {
           width: 100%;
-          margin-top: 70px;
+          margin-top: 60px;
           display: flex;
           flex-direction: column;
           font-size: 12px;
@@ -115,7 +115,7 @@ export const templatePDF = (clientData: Client, bgImg: any, logoImg: any): strin
           display: flex;
           flex-direction: column;
           font-size: 11px;
-          padding: 0 2px;
+          padding: 1px 2px;
         }
 
         .payment {
@@ -147,15 +147,13 @@ export const templatePDF = (clientData: Client, bgImg: any, logoImg: any): strin
             <div style="font-size: 32px;" >ConstRoad</div>
           </div>
           <div class="date-container">
-            <div class="date">Lima ${currentDayMonth}</div>
-            <div class="date">${currentYear}</div>
           </div>
         </div>
 
         <div class="cliente">
           <div style="display: flex; gap: 5px;">
             <span>Señor:</span>
-            <span style="text-transform: uppercase;">${clientData.razonSocial}</span>
+            <span style="text-transform: uppercase;"></span>
           </div>
 
           <div style="display: flex; margin-top: 12px;">
@@ -165,41 +163,41 @@ export const templatePDF = (clientData: Client, bgImg: any, logoImg: any): strin
 
         <div class="data">
           <div style="border: 1px solid #000; background-color: #ffff00; width: 100%; text-align: center; font-size: 14px;">
-            COTIZACION No ${nroCotizacion} - ${currentYear}
+            COTIZACION No <span style="color: #ffff00; margin-left: 5px">0000000 - 2024</span>
           </div>
 
           <div style="display: flex; margin-top: 15px; gap: 5px;">
             <span style="width: 100px;">RAZON SOCIAL:</span>
-            <span style="text-transform: uppercase;">${clientData.razonSocial}</span>
+            <span style="text-transform: uppercase;"></span>
           </div>
           <div style="display: flex; margin-top: 5px; gap: 5px;">
             <span style="width: 100px;">RUC:</span>
-            <span>${rucCliente}</span>
+            <span></span>
           </div>
           <div style="display: flex; margin-top: 15px; gap: 5px">
             <span style="width: 100px;">FECHA:</span>
             <span style="font-weight: normal;">
-              ${currentDayName}, ${currentDayMonth} de ${currentYear}
+              
             </span>
           </div>
         </div>
 
         <div class="table">
           <div class="table-row table-header" style="height: 28px;">
-            <div class="table-cell-header" style="width: 11%">ITEM</div>
+            <div class="table-cell-header" style="width: 10%">ITEM</div>
             <div class="table-cell-header" style="width: 57.4%">DESCRIPCION</div>
-            <div class="table-cell-header" style="width: 6.8%">UNIDAD</div>
-            <div class="table-cell-header" style="width: 8.5%">CANTIDAD</div>
-            <div class="table-cell-header" style="width: 8%">
+            <div class="table-cell-header" style="width: 5.8%">UNIDAD</div>
+            <div class="table-cell-header" style="width: 8.3%">CANTIDAD</div>
+            <div class="table-cell-header" style="width: 7.8%">
               <span>PRECIO</span>
               <span>UNITARIO</span>
             </div>
-            <div class="table-cell-header" style="width: 8.3%">TOTAL</div>
+            <div class="table-cell-header" style="width: 10.5%">TOTAL</div>
           </div>
 
           <div class="table-row" style="height: 135px;">
-            <div class="table-cell-body" style="width: 11%;"></div>
-            <div class="table-cell-body" style="width: 57.4%;">
+            <div class="table-cell-body" style="width: 10%;"></div>
+            <div class="table-cell-body" style="width: 57.2%;">
               <span style="text-transform: uppercase; font-weight: bold; font-size: 10px; margin-top: 28px;">
                 Suministro de mezcla asfaltica en caliente tipo "mac 2"
               </span>
@@ -216,47 +214,47 @@ export const templatePDF = (clientData: Client, bgImg: any, logoImg: any): strin
                 FORMA DE PAGO: Adelanto 80% y el 20% el día de la producción
               </span>
             </div>
-            <div class="table-cell-body" style="align-items: center; width: 6.8%;">
-              <span style="margin-top: 28px; font-weight: normal">M3</span>
+            <div class="table-cell-body" style="align-items: center; width: 6.2%">
+              <span style="margin-top: 28px; font-weight: normal"></span>
             </div>
-            <div class="table-cell-body" style="align-items: center; width: 8.5%;">
-              <span style="margin-top: 28px; font-weight: normal">${totalCubos}</span>
+            <div class="table-cell-body" style="align-items: center; width: 8.3%;">
+              <span style="margin-top: 28px; font-weight: normal"></span>
             </div>
-            <div class="table-cell-body" style="align-items: center; width: 8%; flex-direction: column;">
-              <span style="margin-top: 28px; font-weight: normal">${precioUnitario}</span>
+            <div class="table-cell-body" style="align-items: center; width: 7.8%; flex-direction: column;">
+              <span style="margin-top: 28px; font-weight: normal"></span>
             </div>
-            <div class="table-cell-body" style="align-items: end; width: 8.3%;">
-              <span style="margin-top: 28px; font-weight: normal">${formatPriceNumber(totalWithoutIgv)}</span>
-            </div>
-          </div>
-
-          <div style="display: flex; height: 28px; font-size: 10px; width: 100%;">
-            <div class="table-cell-body" style="justify-content: space-between; text-transform: uppercase; width: 92%;">
-              <span>costo directo</span>
-              <span>gastos generales y utilidades</span>
-            </div>
-            <div class="table-cell-body" style="justify-content: center; align-items: end; width: 8%;">
-              <span style="font-weight: normal">${formatPriceNumber(totalWithoutIgv)}</span>
+            <div class="table-cell-body" style="align-items: end; width: 10.5%;">
+              <span style="margin-top: 28px; font-weight: normal"></span>
             </div>
           </div>
 
           <div style="display: flex; height: 28px; font-size: 10px; width: 100%;">
-            <div class="table-cell-body" style="justify-content: space-between; text-transform: uppercase; width: 92%;">
-              <span>sub total</span>
-              <span>impuesto general a las ventas</span>
+            <div class="table-cell-body" style="justify-content: space-between; text-transform: uppercase; width: 90%;">
+              <span style="font-size: 9.5px">costo directo</span>
+              <span style="font-size: 9.5px">gastos generales y utilidades</span>
             </div>
-            <div class="table-cell-body" style=" justify-content: space-between; align-items: end; width: 8%;">
-              <span style="font-weight: normal">${formatPriceNumber(totalWithoutIgv)}</span>
-              <span style="font-weight: normal">${formatPriceNumber(igv)}</span>
+            <div class="table-cell-body" style="justify-content: center; align-items: end; width: 10%;">
+              <span style="font-weight: normal"></span>
+            </div>
+          </div>
+
+          <div style="display: flex; height: 28px; font-size: 10px; width: 100%;">
+            <div class="table-cell-body" style="justify-content: space-between; text-transform: uppercase; width: 90%;">
+              <span style="font-size: 9.5px">sub total</span>
+              <span style="font-size: 9.5px">impuesto general a las ventas</span>
+            </div>
+            <div class="table-cell-body" style=" justify-content: space-between; align-items: end; width: 10%;">
+              <span style="font-weight: normal"></span>
+              <span style="font-weight: normal"></span>
             </div>
           </div>
 
           <div style="display: flex; height: 15px; font-size: 10px; width: 100%;">
-            <div class="table-cell-body" style="justify-content: center; width: 92%;">
+            <div class="table-cell-body" style="justify-content: center; width: 90%;">
               <span style="text-transform: uppercase; font-weight: bold;">total presupuesto</span>
             </div>
-            <div class="table-cell-body" style="justify-content: center; align-items: end; text-align: end; width: 8%; background-color: #ffc100;">
-              <span style="text-align: end;">${formatPriceNumber(totalPresupuesto)}</span>
+            <div class="table-cell-body" style="justify-content: center; align-items: end; text-align: end; width: 10%; background-color: #ffc100;">
+              <span style="text-align: end;"></span>
             </div>
           </div>
         </div>
@@ -269,19 +267,19 @@ export const templatePDF = (clientData: Client, bgImg: any, logoImg: any): strin
             El pago debe ser abonado en una de nuestras cuentas a nombre de:
           </span>
           <div style="display: flex; margin-top: 10px; gap: 5px;">
-            <span style="width: 100px;">RAZON SOCIAL:</span>
+            <span style="width: 105px;">RAZON SOCIAL:</span>
             <span style="text-transform: uppercase;">${CONSTROAD.razonSocial}</span>
           </div>
           <div style="display: flex; margin-top: 5px; gap: 5px;">
-            <span style="width: 100px;">RUC:</span>
+            <span style="width: 105px;">RUC:</span>
             <span style="text-transform: uppercase;">${CONSTROAD.ruc}</span>
           </div>
           <div style="display: flex; margin-top: 5px; gap: 5px;">
-            <span style="width: 100px;">CORREO:</span>
+            <span style="width: 105px;">CORREO:</span>
             <span>${CONSTROAD.email}</span>
           </div>
           <div style="display: flex; margin-top: 5px; gap: 5px;">
-            <span style="width: 100px;">TELÉFONO:</span>
+            <span style="width: 105px;">TELÉFONO:</span>
             <span style="text-transform: uppercase;">${CONSTROAD.phone1}</span>
           </div>
         </div>
@@ -299,6 +297,13 @@ export const templatePDF = (clientData: Client, bgImg: any, logoImg: any): strin
               <div class="table-cell-body" style="justify-content: center; width: 25%;">Interbank</div>
               <div class="table-cell-body" style="justify-content: center; align-items: center; width: 25%;">200-3005742011</div>
               <div class="table-cell-body" style="justify-content: center; align-items: center; width: 25%;">003-200-003005742011-36</div>
+              <div class="table-cell-body" style="justify-content: center; align-items: center; width: 25%;">Cuenta corriente</div>
+            </div>
+
+            <div class="table-row" style="height: 25px;">
+              <div class="table-cell-body" style="justify-content: center; width: 25%;">BCP</div>
+              <div class="table-cell-body" style="justify-content: center; align-items: center; width: 25%;">1912467635004</div>
+              <div class="table-cell-body" style="justify-content: center; align-items: center; width: 25%;">00219100246763500454</div>
               <div class="table-cell-body" style="justify-content: center; align-items: center; width: 25%;">Cuenta corriente</div>
             </div>
 

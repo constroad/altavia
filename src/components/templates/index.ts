@@ -1,1 +1,1 @@
-export * from './templatePDF'
+export * from './htmlCotizacion'

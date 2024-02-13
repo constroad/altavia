@@ -13,14 +13,17 @@ export default function Home() {
   const generatePdf = async () => {
     setLoading(true);
     try {
-      const response = await axios.post('/api/generate-pdf', {
+      const response = await axios.post('/api/pdf', {
         data: {
-          name: 'Constroad s.a.c',
-          nroCotizacion: '0000109',
-          ruc: '453453534',
-          nroCubos: '3',
-          precioUnitario: '480',
-          totalsinigv: '480',
+          name: '',
+          email: '',
+          razonSocial: '',
+          nroCotizacion: '109',
+          ruc: '',
+          nroCubos: '',
+          precioUnitario: '',
+          message: '',
+          phnoe: '',
         }
       }, {
         responseType: 'arraybuffer',

@@ -25,3 +25,14 @@ export const CONSTROAD = {
   email: process.env.EMAIL,
   phone1: '907 579 704',
 }
+
+export const PDF_TEMPLATE = {
+  cotizacion: {
+    path: 'public/templates/cotizacion',
+    filename : 'plantilla_cotizacion.pdf'
+  },
+  ordenCompra: {
+    path: 'public/templates/orden-de-compra',
+    filename: ''
+  },
+}

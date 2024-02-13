@@ -10,10 +10,18 @@ export const getDate = () => {
   const currentDayMonth = date.toLocaleDateString('es-ES', {day: '2-digit', month: 'long'})
   const currentYear = date.toLocaleDateString('es-ES', {year: 'numeric'})
 
+
+  const year = date.getFullYear().toString().slice(-2);
+  const month = (date.getMonth() + 1).toString().padStart(2, '0');
+  const day = date.getDate().toString().padStart(2, '0');
+
+  const shortDate = `${day}-${month}-${year}`;
+
   return {
     currentDayName,
     currentDayMonth,
-    currentYear
+    currentYear,
+    shortDate
   }
 }
 

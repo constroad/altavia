@@ -11,12 +11,17 @@ export const APP_ROUTES = {
   colocacionAsfaltica: '/colocacion-de-mezcla-asfaltica',
   transporte: '/transporte-de-carga',
   login: '/login',
-  cotizar: '/cotizar',
+  admin: '/admin',
+}
+
+export const ADMIN_ROUTES = {
+  generateQuotation: '/admin/cotizar',
+  purchaseOrder: '/admin/orden-de-compra'
 }
 
 export const API_ROUTES = {
   sendEmail: '/api/sendEmail',
-  generatePDF: '/api/generate-pdf',
+  generateQuotationPDF: '/api/generate-quotation-pdf',
 }
 
 export const CONSTROAD = {
@@ -29,10 +34,10 @@ export const CONSTROAD = {
 export const PDF_TEMPLATE = {
   cotizacion: {
     path: 'public/templates/cotizacion',
-    filename : 'plantilla_cotizacion.pdf'
+    filename : 'plantilla_cotizacion.pdf',
   },
   ordenCompra: {
     path: 'public/templates/orden-de-compra',
-    filename: ''
+    filename: 'plantilla_orden_de_compra.pdf'
   },
 }

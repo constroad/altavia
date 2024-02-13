@@ -1,4 +1,6 @@
-export const initialClient = {
+import { Quotation } from "src/common/types";
+
+export const initialClient: Quotation = {
   email: '',
   name: '',
   razonSocial: '',

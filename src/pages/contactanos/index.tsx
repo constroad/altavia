@@ -6,11 +6,11 @@ import { Flex, Text } from '@chakra-ui/react'
 import { CotizacionForm, PortalLayout, initialClient, toast } from 'src/components'
 import { useAsync } from 'src/common/hooks'
 import { API_ROUTES } from 'src/common/consts'
-import { Client } from 'src/common/types'
+import { Quotation } from 'src/common/types'
 
-const postEmail = (path: string, data: Client) => axios.post(path, data);
+const postEmail = (path: string, data: Quotation) => axios.post(path, data);
 const Contactanos = () => {
-  const [client, setClient] = useState<Client>(initialClient)
+  const [client, setClient] = useState<Quotation>(initialClient)
   const { run, isLoading } = useAsync({ onSuccess: successFunction })
 
   const handleSubmit = async (event: { preventDefault: () => void; }) => {

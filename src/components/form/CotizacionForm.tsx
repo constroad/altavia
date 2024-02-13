@@ -1,11 +1,11 @@
 import React, { ChangeEvent } from 'react'
 import { Button, Flex, FormControl, FormLabel, Input, Text, Textarea, VStack } from '@chakra-ui/react'
-import { Client } from 'src/common/types';
+import { Quotation } from 'src/common/types';
 
 type CotizacionFormProps = {
   handleSubmit: (event: { preventDefault: () => void }) => Promise<void>;
-  client: Client;
-  setter: React.Dispatch<React.SetStateAction<Client>>;
+  client: Quotation;
+  setter: React.Dispatch<React.SetStateAction<Quotation>>;
   isLoading: boolean;
   session?: boolean;
 }
@@ -26,7 +26,7 @@ export const CotizacionForm = (props: CotizacionFormProps) => {
   };
 
   return (
-    <VStack as="form" onSubmit={handleSubmit} spacing={3} mt='20px'>
+    <VStack as="form" onSubmit={handleSubmit} spacing={3} mt='10px'>
       <FormControl id="nro-cotizacion" display={session ? 'block' : 'none'}>
         <FormLabel mb='6px' fontSize={{ base: 12, md: 14 }}>Cotizacion Nro. <Text color='red' display='inline-flex'>*</Text></FormLabel>
         <Input
@@ -149,7 +149,7 @@ export const CotizacionForm = (props: CotizacionFormProps) => {
         isLoading={isLoading}
         loadingText="Enviando"
         colorScheme="blue"
-        marginTop={session ? '30px' : ''}
+        marginTop={session ? '20px' : ''}
       >
         { session ? 'Generar cotización' : 'Solicitar cotización' }
       </Button>

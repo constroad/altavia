@@ -2,7 +2,7 @@ import { KeyboardEvent, useEffect, useState } from 'react';
 import { signIn, useSession } from 'next-auth/react';
 import { FormControl, FormLabel, Input, Button, Flex, Box } from '@chakra-ui/react';
 import { useRouter } from 'next/router';
-import { IntranetLayout, toast } from 'src/components';
+import { IntranetLayout, PortalLayout, toast } from 'src/components';
 import { APP_ROUTES } from 'src/common/consts';
 
 const LoginPage = () => {
@@ -18,7 +18,7 @@ const LoginPage = () => {
     });
 
     if (result && !result.error) {
-      router.push(APP_ROUTES.cotizar);
+      router.push(APP_ROUTES.admin);
       toast.info('Iniciaste sesión')
     } else {
       toast.error('Usuario o contraseña incorrecta')
@@ -32,7 +32,7 @@ const LoginPage = () => {
   };
 
   return (
-    <IntranetLayout>
+    <PortalLayout>
       <Flex flexDir='column' alignItems='center'>
         <Box as='h1' fontWeight={600} fontSize={26}>Inicia sesion</Box>
 
@@ -48,7 +48,7 @@ const LoginPage = () => {
           <Button onClick={handleSignIn} marginTop='40px' marginX='auto'>Ingresar</Button>
         </Box>
       </Flex>
-    </IntranetLayout>
+    </PortalLayout>
   );
 };
 

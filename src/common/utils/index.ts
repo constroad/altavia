@@ -46,3 +46,5 @@ export function b64toBlob(base64Data: any, contentType = '', sliceSize = 512) {
   const blob = new Blob(byteArrays, { type: contentType });
   return blob;
 }
+
+export * from './api'

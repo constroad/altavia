@@ -12,11 +12,14 @@ export const APP_ROUTES = {
   transporte: '/transporte-de-carga',
   login: '/login',
   cotizar: '/cotizar',
+  quote: '/quote',
+  quoteNew: '/quote/new',
 }
 
 export const API_ROUTES = {
   sendEmail: '/api/sendEmail',
   generatePDF: '/api/generate-pdf',
+  quote: '/api/quotes',
 }
 
 export const CONSTROAD = {

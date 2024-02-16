@@ -1,17 +1,9 @@
 import { CONSTROAD } from "src/common/consts";
 import { Quotation } from "src/common/types";
-import { addZerosAhead, formatPriceNumber, getDate } from "src/common/utils";
+import { getDate } from "src/common/utils";
 
 export const htmlCotizacion = (clientData: Quotation, bgImg: any, logoImg: any): string => {
-  const { currentDayName, currentDayMonth, currentYear } = getDate()
-
-  const nroCotizacion = addZerosAhead(+clientData.nroCotizacion)
-  const totalCubos = clientData.nroCubos === '' ? '1' : clientData.nroCubos
-  const rucCliente = clientData.ruc === '' ? '- - -' : clientData.ruc
-  const precioUnitario = clientData.precioUnitario === '' ? '480' : clientData.precioUnitario
-  const totalWithoutIgv = +totalCubos * +precioUnitario
-  const igv = totalWithoutIgv * 0.18
-  const totalPresupuesto = totalWithoutIgv + igv
+  const { currentYear } = getDate()
 
   return `
   <html lang="es">
@@ -268,7 +260,7 @@ export const htmlCotizacion = (clientData: Quotation, bgImg: any, logoImg: any):
           </span>
           <div style="display: flex; margin-top: 10px; gap: 5px;">
             <span style="width: 105px;">RAZON SOCIAL:</span>
-            <span style="text-transform: uppercase;">${CONSTROAD.razonSocial}</span>
+            <span style="text-transform: uppercase;">${CONSTROAD.companyName}</span>
           </div>
           <div style="display: flex; margin-top: 5px; gap: 5px;">
             <span style="width: 105px;">RUC:</span>
@@ -280,7 +272,7 @@ export const htmlCotizacion = (clientData: Quotation, bgImg: any, logoImg: any):
           </div>
           <div style="display: flex; margin-top: 5px; gap: 5px;">
             <span style="width: 105px;">TELÉFONO:</span>
-            <span style="text-transform: uppercase;">${CONSTROAD.phone1}</span>
+            <span style="text-transform: uppercase;">${CONSTROAD.phoneCarin}</span>
           </div>
         </div>
 

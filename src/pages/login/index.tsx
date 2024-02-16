@@ -1,8 +1,8 @@
-import { KeyboardEvent, useEffect, useState } from 'react';
-import { signIn, useSession } from 'next-auth/react';
+import { KeyboardEvent, useState } from 'react';
+import { signIn } from 'next-auth/react';
 import { FormControl, FormLabel, Input, Button, Flex, Box } from '@chakra-ui/react';
 import { useRouter } from 'next/router';
-import { IntranetLayout, PortalLayout, toast } from 'src/components';
+import { PortalLayout, toast } from 'src/components';
 import { APP_ROUTES } from 'src/common/consts';
 
 const LoginPage = () => {

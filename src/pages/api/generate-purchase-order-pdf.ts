@@ -1,6 +1,8 @@
 import { NextApiRequest, NextApiResponse } from 'next';
-import { generateQuotationPDF } from '../../utils/pdfGeneratorQuotation';
+import { generatePurchaseOrderPDF } from '../../utils/pdfGeneratorPurchaseOrder';
 import { Readable } from 'stream';
+import fs from 'fs';
+import path from 'path';
 
 export default async function handler(req: NextApiRequest, res: NextApiResponse) {
   if (req.method !== 'POST') {
@@ -9,13 +11,16 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
   try {
     const { data } = req.body;
 
+    const signatureBuffer = fs.readFileSync(path.resolve(process.cwd(), 'public', 'signature-jose-zena.png'));
+    const base64Signature = signatureBuffer.toString('base64')
+
     // Genera el PDF con pdf-lib
     // const pdfBuffer = await createQuotePdf(data);
 
     // Genera el PDF desde de un html
     // const pdfBuffer = await createHtmlToPdf(htmlSample);
 
-    const pdfBuffer = await generateQuotationPDF(data)
+    const pdfBuffer = await generatePurchaseOrderPDF(data, base64Signature)
   
 
     const pdfStream = new Readable();

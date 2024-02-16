@@ -1,13 +1,12 @@
 import { useRouter } from 'next/router'
 
 import { Button, Flex, Image, Link, Text } from '@chakra-ui/react'
-import { ADMIN_ROUTES, APP_ROUTES } from 'src/common/consts';
+import { APP_ROUTES } from 'src/common/consts';
 import { signOut, useSession } from 'next-auth/react';
 import { toast } from 'src/components/Toast';
 
 export const IntranetNavbar = () => {
   const router = useRouter()
-  const path = router.pathname
   const { data: session } = useSession()
 
   const handleSignOut = async() => {

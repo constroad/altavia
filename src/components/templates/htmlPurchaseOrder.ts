@@ -1,24 +1,17 @@
 import { CONSTROAD } from "src/common/consts";
-import { Quotation } from "src/common/types";
-import { addZerosAhead, formatPriceNumber, getDate } from "src/common/utils";
+import { PurchaseOrder } from "src/common/types";
+import { getDate } from "src/common/utils";
+import { CONSTROAD_COLORS } from "src/styles/shared";
 
-export const htmlPurchaseOrder = (clientData: Quotation, bgImg: any, logoImg: any): string => {
-  const { currentDayName, currentDayMonth, currentYear } = getDate()
-
-  const nroCotizacion = addZerosAhead(+clientData.nroCotizacion)
-  const totalCubos = clientData.nroCubos === '' ? '1' : clientData.nroCubos
-  const rucCliente = clientData.ruc === '' ? '- - -' : clientData.ruc
-  const precioUnitario = clientData.precioUnitario === '' ? '480' : clientData.precioUnitario
-  const totalWithoutIgv = +totalCubos * +precioUnitario
-  const igv = totalWithoutIgv * 0.18
-  const totalPresupuesto = totalWithoutIgv + igv
+export const htmlPurchaseOrder = (clientData: PurchaseOrder, bgImg: any, logoImg: any): string => {
+  const { currentYear } = getDate()
 
   return `
   <html lang="es">
     <head>
       <meta charset="UTF-8">
       <meta name="viewport" content="width=device-width, initial-scale=1.0">
-      <title>PDF Cotizacion Template</title>
+      <title>PDF Orden de Compra Template</title>
       <style>
         body {
           font-family: Arial, sans-serif;
@@ -51,8 +44,9 @@ export const htmlPurchaseOrder = (clientData: Quotation, bgImg: any, logoImg: an
 
         .header {
           width: 100%;
-          margin-top: 85.5px;
+          margin-top: 50px;
           display: flex;
+          justify-content: space-between;
           align-items: center;
           gap: 8px
         }
@@ -93,8 +87,8 @@ export const htmlPurchaseOrder = (clientData: Quotation, bgImg: any, logoImg: an
           margin-top: 14px;
           display: flex;
           flex-direction: column;
-          border: 1px solid #000;
           background-color: transparent;
+          border: 0.5px solid ${CONSTROAD_COLORS.bgPDF};
         }
         .table-row {
           width: 100%;
@@ -103,7 +97,9 @@ export const htmlPurchaseOrder = (clientData: Quotation, bgImg: any, logoImg: an
           font-weight: bold;
         }
         .table-cell-header {
-          border: 1px solid #000;
+          border-right: 0.5px solid ${CONSTROAD_COLORS.black};
+          background: ${CONSTROAD_COLORS.bgPDF};
+          color: white;
           display: flex;
           justify-content: center;
           align-items: center;
@@ -111,7 +107,7 @@ export const htmlPurchaseOrder = (clientData: Quotation, bgImg: any, logoImg: an
           padding: 0 2px;
         }
         .table-cell-body {
-          border: 1px solid #000;
+          border-right: 0.5px solid ${CONSTROAD_COLORS.bgPDF};
           display: flex;
           flex-direction: column;
           font-size: 11px;
@@ -142,177 +138,188 @@ export const htmlPurchaseOrder = (clientData: Quotation, bgImg: any, logoImg: an
 
       <div class="pdf-container">
         <div class="header">
-          <div style="display: flex; gap: 8px">
+          <div style="display: flex; align-items: center; gap: 5px">
             <img src="data:image/jpeg;base64, ${logoImg}" alt="constroad-logo" style="width: 40px; height: 40px; border-radius: 10px;" />
-            <div style="font-size: 32px;" >ConstRoad</div>
+            <div style="font-size: 20px; font-weight: 600;" >ConstRoad</div>
           </div>
-          <div class="date-container">
+
+          <div style="display: flex; flex-direction: column; justify-content: center; align-items: center; text-align: center; font-size: 14px;">
+            <div style="font-weight: 600;">${CONSTROAD.companyName}</div>
+            <div style="font-weight: 600">RUC: ${CONSTROAD.ruc}</div>
+            <div style="font-size: 11px; margin-top: 5px;">${CONSTROAD.address}</div>
+          </div>
+
+          <div style="border-radius: 4px; border: 1.5px solid ${CONSTROAD_COLORS.bgPDF}; min-width: 210px; font-size: 14px;">
+            <div style="display: flex; justify-content: center; padding: 5px 0; font-weight: 600;">
+              R.U.C.: ${CONSTROAD.ruc}
+            </div>
+            <div style="background: ${CONSTROAD_COLORS.bgPDF}; padding: 5px 0; font-weight: 600; font-size: 15; color: white; display: flex; justify-content: center;">
+              ORDEN DE COMPRA
+            </div>
+            <div style="display: flex; justify-content: center; padding: 5px 0; font-weight: 600; ">Nro. <span style="color: white; margin-left: 5px">0000000</span></div>
           </div>
         </div>
 
-        <div class="cliente">
-          <div style="display: flex; gap: 5px;">
-            <span>Señor:</span>
-            <span style="text-transform: uppercase;"></span>
+        <div style="widht: 100%; margin-top: 30px; font-size: 10px; display: flex; justify-content: space-between;">
+          <div style="width: 67%; display: flex; flex-direction: column; border: 1px solid ${CONSTROAD_COLORS.bgPDF}">
+            <div style="background: ${CONSTROAD_COLORS.bgPDF}; color: white; width: 100%; text-align: center; padding: 7.5px 0; font-weight: 600; font-size: 8px; border-bottom: 0.5px solid ${CONSTROAD_COLORS.black}">
+              DATOS PROVEEDOR
+            </div>
+            <div style="widht: 100%; display: flex;">
+              <div style="background: ${CONSTROAD_COLORS.bgPDF}; color: white; width: 16%; padding: 7px 5px; text-align: end; font-weight: 600;">
+                RUC Nro:
+              </div>
+              <div style="width: 84%; background-color: #fff; padding: 0 5px; display: flex; align-items: center; text-transform: uppercase"></div>
+            </div>
+            <div style="width: 100%; display: flex;">
+              <div style="background: ${CONSTROAD_COLORS.bgPDF}; color: white; width: 16%; padding: 7px 5px; text-align: end; font-weight: 600;">
+                Razón social:
+              </div>
+              <div style="width: 84%; background-color: #fff; padding: 0 5px; display: flex; align-items: center; text-transform: uppercase"></div>
+            </div>
+            <div style="width: 100%; display: flex;">
+              <div style="background: ${CONSTROAD_COLORS.bgPDF}; color: white; width: 16%; padding: 7px 5px; text-align: end; font-weight: 600;">
+                Dirección:
+              </div>
+              <div style="width: 84%; background-color: #fff; padding: 0 5px; display: flex; align-items: center; text-transform: uppercase"></div>
+            </div>
           </div>
 
-          <div style="display: flex; margin-top: 12px;">
-            Atención: Mediante la presente, es grato dirigirme a usted para saludarlo y a la vez transcribir nuestra propuesta económica por el servicio solicitado:
-          </div>
-        </div>
-
-        <div class="data">
-          <div style="border: 1px solid #000; background-color: #ffff00; width: 100%; text-align: center; font-size: 14px;">
-            COTIZACION No <span style="color: #ffff00; margin-left: 5px">0000000 - 2024</span>
-          </div>
-
-          <div style="display: flex; margin-top: 15px; gap: 5px;">
-            <span style="width: 100px;">RAZON SOCIAL:</span>
-            <span style="text-transform: uppercase;"></span>
-          </div>
-          <div style="display: flex; margin-top: 5px; gap: 5px;">
-            <span style="width: 100px;">RUC:</span>
-            <span></span>
-          </div>
-          <div style="display: flex; margin-top: 15px; gap: 5px">
-            <span style="width: 100px;">FECHA:</span>
-            <span style="font-weight: normal;">
-              
-            </span>
+          <div style="width: 32%; display: flex; flex-direction: column; border: 1px solid ${CONSTROAD_COLORS.bgPDF}">
+            <div style="widht: 100%; display: flex; text-align: center">
+              <div style="background: ${CONSTROAD_COLORS.bgPDF}; color: white; width: 35%; padding: 7px 5px; text-align: end; font-weight: 600;">Fecha:</div>
+              <div style="width: 65%; background-color: #fff; padding: 0 5px; text-transform: uppercase; display: flex; align-items: center"></div>
+            </div>
+            <div style="width: 100%; display: flex; text-align: center">
+              <div style="background: ${CONSTROAD_COLORS.bgPDF}; color: white; width: 35%; padding: 7px 5px; text-align: end; font-weight: 600;">Forma Pago:</div>
+              <div style="width: 65%; background-color: #fff; padding: 0 5px; text-transform: uppercase; display: flex; align-items: center"></div>
+            </div>
+            <div style="width: 100%; display: flex; text-align: center">
+              <div style="background: ${CONSTROAD_COLORS.bgPDF}; color: white; width: 35%; padding: 7px 5px; text-align: end; font-weight: 600;">Moneda:</div>
+              <div style="width: 65%; background-color: #fff; padding: 0 5px; text-transform: uppercase; display: flex; align-items: center"></div>
+            </div>
+            <div style="width: 100%; display: flex; text-align: center">
+              <div style="background: ${CONSTROAD_COLORS.bgPDF}; color: white; width: 35%; padding: 7px 5px; text-align: end; font-weight: 600;">Proyecto:</div>
+              <div style="width: 65%; background-color: #fff; padding: 0 5px; text-transform: uppercase; display: flex; align-items: center"></div>
+            </div>
           </div>
         </div>
 
         <div class="table">
-          <div class="table-row table-header" style="height: 28px;">
-            <div class="table-cell-header" style="width: 10%">ITEM</div>
-            <div class="table-cell-header" style="width: 57.4%">DESCRIPCION</div>
-            <div class="table-cell-header" style="width: 5.8%">UNIDAD</div>
-            <div class="table-cell-header" style="width: 8.3%">CANTIDAD</div>
-            <div class="table-cell-header" style="width: 7.8%">
+          <div class="table-row table-header" style="height: 28px; font-size: 8px;">
+            <div class="table-cell-header" style="width: 4.5%">ITEM</div>
+            <div class="table-cell-header" style="width: 64.5%">DESCRIPCION</div>
+            <div class="table-cell-header" style="width: 5%">UNIDAD</div>
+            <div class="table-cell-header" style="width: 7%">CANTIDAD</div>
+            <div class="table-cell-header" style="width: 6.8%">
               <span>PRECIO</span>
               <span>UNITARIO</span>
             </div>
-            <div class="table-cell-header" style="width: 10.5%">TOTAL</div>
+            <div class="table-cell-header" style="width: 12%; border-right: none;">TOTAL</div>
           </div>
 
-          <div class="table-row" style="height: 135px;">
-            <div class="table-cell-body" style="width: 10%;"></div>
-            <div class="table-cell-body" style="width: 57.2%;">
-              <span style="text-transform: uppercase; font-weight: bold; font-size: 10px; margin-top: 28px;">
-                Suministro de mezcla asfaltica en caliente tipo "mac 2"
-              </span>
-              <span style="text-transform: uppercase; font-weight: bold; margin-top: 27px;">
-                Nota:
-              </span>
-              <span style="font-weight: normal;">
-                Certificado de calidad del PEN, tipo de MAC y ensayo de marshall
-              </span>
-              <span style="margin-top: 18px; font-weight: normal;">
-                Atención con 24h de anticipación
-              </span>
-              <span style="font-weight: bold;">
-                FORMA DE PAGO: Adelanto 80% y el 20% el día de la producción
-              </span>
+          <div class="table-row" style="height: 20px; background: white; height: 410px;">
+            <div class="table-cell-body" style="width: 4.5%;"></div>
+            <div class="table-cell-body" style="width: 64.5%;">
             </div>
-            <div class="table-cell-body" style="align-items: center; width: 6.2%">
+            <div class="table-cell-body" style="align-items: center; width: 5%">
               <span style="margin-top: 28px; font-weight: normal"></span>
             </div>
-            <div class="table-cell-body" style="align-items: center; width: 8.3%;">
+            <div class="table-cell-body" style="align-items: center; width: 7%;">
               <span style="margin-top: 28px; font-weight: normal"></span>
             </div>
-            <div class="table-cell-body" style="align-items: center; width: 7.8%; flex-direction: column;">
+            <div class="table-cell-body" style="align-items: center; width: 6.8%; flex-direction: column;">
               <span style="margin-top: 28px; font-weight: normal"></span>
             </div>
-            <div class="table-cell-body" style="align-items: end; width: 10.5%;">
+            <div class="table-cell-body" style="align-items: end; width: 12%; border-right: none;">
               <span style="margin-top: 28px; font-weight: normal"></span>
-            </div>
-          </div>
-
-          <div style="display: flex; height: 28px; font-size: 10px; width: 100%;">
-            <div class="table-cell-body" style="justify-content: space-between; text-transform: uppercase; width: 90%;">
-              <span style="font-size: 9.5px">costo directo</span>
-              <span style="font-size: 9.5px">gastos generales y utilidades</span>
-            </div>
-            <div class="table-cell-body" style="justify-content: center; align-items: end; width: 10%;">
-              <span style="font-weight: normal"></span>
-            </div>
-          </div>
-
-          <div style="display: flex; height: 28px; font-size: 10px; width: 100%;">
-            <div class="table-cell-body" style="justify-content: space-between; text-transform: uppercase; width: 90%;">
-              <span style="font-size: 9.5px">sub total</span>
-              <span style="font-size: 9.5px">impuesto general a las ventas</span>
-            </div>
-            <div class="table-cell-body" style=" justify-content: space-between; align-items: end; width: 10%;">
-              <span style="font-weight: normal"></span>
-              <span style="font-weight: normal"></span>
-            </div>
-          </div>
-
-          <div style="display: flex; height: 15px; font-size: 10px; width: 100%;">
-            <div class="table-cell-body" style="justify-content: center; width: 90%;">
-              <span style="text-transform: uppercase; font-weight: bold;">total presupuesto</span>
-            </div>
-            <div class="table-cell-body" style="justify-content: center; align-items: end; text-align: end; width: 10%; background-color: #ffc100;">
-              <span style="text-align: end;"></span>
             </div>
           </div>
         </div>
 
-        <div class="data" style="width: 90%; margin: 110px auto 0;">
-          <div style="border: 1px solid #000; background-color: #ffff00; width: 100%; text-align: center; font-size: 14px;">
-            Información de pago
-          </div>
-          <span style="margin-top: 14px">
-            El pago debe ser abonado en una de nuestras cuentas a nombre de:
+        <div style="width: 100%; border: 0.5px solid ${CONSTROAD_COLORS.bgPDF}; padding: 5px 0; background: white; margin-top: 1px;">
+          <span style="padding-left: 5px; font-size: 9px; text-transform: uppercase; font-weight: 600">
+            
           </span>
-          <div style="display: flex; margin-top: 10px; gap: 5px;">
-            <span style="width: 105px;">RAZON SOCIAL:</span>
-            <span style="text-transform: uppercase;">${CONSTROAD.razonSocial}</span>
+        </div>
+
+        <div style="width: 100%; border: 0.5px solid ${CONSTROAD_COLORS.bgPDF}; display: flex; margin-top: 1px; background: white; justify-content: space-between; height: 60px;">
+          <div style="width: 67%; height: 60px; font-size: 7px; padding: 5px;">
+            <span style="width: 100%; text-align: justify;">
+              LOS PRODUCTOS COMPRADOS DEBEN CUMPLIR LOS REQUERIMIENTOS DE CALIDAD ESPECIFICADOS. LOS NO CONFORMES SE DEVOLVERAN AL PROVEEDOR CON CARGO A SU CUENTA.
+              CUANDO SEA NECESARIO SE REALIZARAN INSPECCIONES DE LOS PRODUCTOS EN LOS LOCALES DEL PROVEEDOR.
+              LOS PRECIOS DE LA FACTURACION DEBEN COINDICIR CON LOS PRECIOS DE LA ORDEN DE COMPRA, EN CASO CONTRARIO SE HARA DEVOLUCION DE LA FACTURA.
+              FAVOR VERIFICAR ANTES DE FACTURAR. LA FACTURACION SE RECIBE HASTA EL 26 DE CADA MES.
+            </span>
           </div>
-          <div style="display: flex; margin-top: 5px; gap: 5px;">
-            <span style="width: 105px;">RUC:</span>
-            <span style="text-transform: uppercase;">${CONSTROAD.ruc}</span>
-          </div>
-          <div style="display: flex; margin-top: 5px; gap: 5px;">
-            <span style="width: 105px;">CORREO:</span>
-            <span>${CONSTROAD.email}</span>
-          </div>
-          <div style="display: flex; margin-top: 5px; gap: 5px;">
-            <span style="width: 105px;">TELÉFONO:</span>
-            <span style="text-transform: uppercase;">${CONSTROAD.phone1}</span>
+          <div style="width: 33%; height: 60px; display: flex; flex-direction: column; border-left: 0.5px solid ${CONSTROAD_COLORS.bgPDF};">
+            <div style="height: 20px; width: 100%; display: flex; border-bottom: 0.5px solid ${CONSTROAD_COLORS.bgPDF};">
+              <div style="background: ${CONSTROAD_COLORS.bgPDF}; color: white; width: 37%; padding: 0 5px; justify-content: end; font-weight: 600; font-size: 9px; display: flex; align-items: center">
+                Subtotal:
+              </div>
+              <div style="width: 63%; background-color: #fff; padding: 0 5px; text-transform: uppercase; display: flex; align-items: center; font-size: 9px;"></div>
+            </div>
+            <div style="height: 20px; width: 100%; display: flex; border-bottom: 0.5px solid ${CONSTROAD_COLORS.bgPDF};">
+              <div style="background: ${CONSTROAD_COLORS.bgPDF}; color: white; width: 37%; padding: 0 5px; justify-content: end; font-weight: 600; font-size: 9px; display: flex; align-items: center">
+                I.G.V:
+              </div>
+              <div style="width: 63%; background-color: #fff; padding: 0 5px; text-transform: uppercase; display: flex; align-items: center; font-size: 9px;"></div>
+            </div>
+            <div style="height: 20px; width: 100%; display: flex; border-bottom: 0.5px solid ${CONSTROAD_COLORS.bgPDF};">
+              <div style="background: ${CONSTROAD_COLORS.bgPDF}; color: white; width: 37%; padding: 0 5px; justify-content: end; font-weight: 600; font-size: 9px; display: flex; align-items: center">
+                Total:
+              </div>
+              <div style="width: 63%; background-color: #fff; padding: 0 5px; text-transform: uppercase; display: flex; align-items: center; font-size: 9px;"></div>
+            </div>
           </div>
         </div>
 
-        <div style="width: 90%; margin: 0 auto; margin-top: 12px;">
-          <div class="table">
-            <div class="table-row table-header" style="height: 20px;">
-              <div class="table-cell-header" style="width: 25%">Banco</div>
-              <div class="table-cell-header" style="width: 25%">Nro CUENTA</div>
-              <div class="table-cell-header" style="width: 25%">CCI</div>
-              <div class="table-cell-header" style="width: 25%">TIPO DE CUENTA</div>
+        <div style="width: 100%; border: 0.5px solid ${CONSTROAD_COLORS.bgPDF}; display: flex; margin-top: 1px; background: white;">
+          <div style="width: 67.5%; height: 90px; display: flex; flex-direction: column;">
+            <div style="background: ${CONSTROAD_COLORS.bgPDF}; width: 100%; text-transform: uppercase; font-size: 7px; color: white; text-align: center; padding: 3px 0; font-weight: 600; border-bottom: 0.5px solid ${CONSTROAD_COLORS.black}">
+              Cuentas bancarias proveedor
             </div>
+            
+            <div style="display: flex; width: 100%; font-size: 7px; background: ${CONSTROAD_COLORS.bgPDF}; color: white; padding: 3px 0">
+              <div style="width: 25%; text-align: center; font-weight: 600;">BANCO</div>
+              <div style="width: 25%; text-align: center; font-weight: 600;">NRO. CUENTA</div>
+              <div style="width: 25%; text-align: center; font-weight: 600;">CCI</div>
+              <div style="width: 25%; text-align: center; font-weight: 600;">TIPO DE CUENTA</div>
+            </div>
+            <div style="display: flex; width: 100%; font-size: 7px; margin-top: 4px;">
+              <div style="width: 25%; text-align: start; font-weight: 600; padding-left: 5px;">Interbank</div>
+              <div style="width: 25%; text-align: center; font-weight: 600;">200-3005742011</div>
+              <div style="width: 25%; text-align: center; font-weight: 600;">003-200-003005742011-36</div>
+              <div style="width: 25%; text-align: center; font-weight: 600;">Cuenta corriente</div>
+            </div>
+            <div style="display: flex; width: 100%; font-size: 7px; margin-top: 3px;">
+              <div style="width: 25%; text-align: start; font-weight: 600; padding-left: 5px;">BCP</div>
+              <div style="width: 25%; text-align: center; font-weight: 600;">1912467635004</div>
+              <div style="width: 25%; text-align: center; font-weight: 600;">00219100246763500454</div>
+              <div style="width: 25%; text-align: center; font-weight: 600;">Cuenta corriente</div>
+            </div>
+            <div style="display: flex; width: 100%; font-size: 7px; margin-top: 3px;">
+              <div style="width: 25%; text-align: start; font-weight: 600; padding-left: 5px;">Banco de la Nación</div>
+              <div style="width: 25%; text-align: center; font-weight: 600;">00-091-126443</div>
+              <div style="width: 25%; text-align: center; font-weight: 600;">01809100009112644390</div>
+              <div style="width: 25%; text-align: center; font-weight: 600;">Cuenta de detracción</div>
+            </div>
+          </div>
 
-            <div class="table-row" style="height: 25px;">
-              <div class="table-cell-body" style="justify-content: center; width: 25%;">Interbank</div>
-              <div class="table-cell-body" style="justify-content: center; align-items: center; width: 25%;">200-3005742011</div>
-              <div class="table-cell-body" style="justify-content: center; align-items: center; width: 25%;">003-200-003005742011-36</div>
-              <div class="table-cell-body" style="justify-content: center; align-items: center; width: 25%;">Cuenta corriente</div>
+          <div style="width: 32.5%; height: 90px; border-left: 0.5px solid ${CONSTROAD_COLORS.black};">
+            <div style="background: ${CONSTROAD_COLORS.bgPDF}; width: 100%; text-transform: uppercase; font-size: 8px; color: white; font-weight: 600; height: 27px; display: flex; align-items: center; justify-content: center;">
+              Observaciones
             </div>
+          </div>
+        </div>
 
-            <div class="table-row" style="height: 25px;">
-              <div class="table-cell-body" style="justify-content: center; width: 25%;">BCP</div>
-              <div class="table-cell-body" style="justify-content: center; align-items: center; width: 25%;">1912467635004</div>
-              <div class="table-cell-body" style="justify-content: center; align-items: center; width: 25%;">00219100246763500454</div>
-              <div class="table-cell-body" style="justify-content: center; align-items: center; width: 25%;">Cuenta corriente</div>
-            </div>
-
-            <div class="table-row" style="height: 25px;">
-              <div class="table-cell-body" style="justify-content: center; width: 25%;">Banco de la Nación</div>
-              <div class="table-cell-body" style="justify-content: center; align-items: center; width: 25%;">00-091-126443</div>
-              <div class="table-cell-body" style="justify-content: center; align-items: center; width: 25%;">01809100009112644390</div>
-              <div class="table-cell-body" style="justify-content: center; align-items: center; width: 25%;">Cuenta de detracción</div>
-            </div>
+        <div style="width: 100%; display: flex; justify-content: center; aling-items: center; font-size: 9px; font-weight: 600; margin-top: 120px;">
+          <div>
+          </div>
+          <div style="width: 150px; border-top: 1px solid black; display: flex; flex-direction: column; justify-content: center; align-items-center;">
+            <span style="text-align: center; margin-top: 2px;">Aprobado por:</span>
+            <span style="text-align: center; margin-top: 2px;">Jose Zeña Zamora</span>
+            <span style="text-align: center">Gerente</span>
           </div>
         </div>
       </div>

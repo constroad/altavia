@@ -13,7 +13,7 @@ export default function Home() {
   const generatePdf = async () => {
     setLoading(true);
     try {
-      const response = await axios.post('/api/pdf', {
+      const response = await axios.post('/api/get-purchase-order-pdf', {
         data: {
           name: '',
           email: '',

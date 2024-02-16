@@ -1,11 +1,11 @@
-import { degrees, PDFDocument, StandardFonts, rgb } from 'pdf-lib'
+import { PDFDocument, StandardFonts, rgb } from 'pdf-lib'
 import htmlToPdf from 'html-pdf';
 import fs from 'fs';
 import path from 'path';
 import { addZerosAhead, formatPriceNumber, getDate } from 'src/common/utils';
 import { PDF_TEMPLATE } from 'src/common/consts';
 
-export const generateConstroadPDF = async (data: any) => {
+export const generateQuotationPDF = async (data: any) => {
   const { currentDayName, currentDayMonth, currentYear } = getDate()
 
   const nroCotizacion = addZerosAhead(+data.nroCotizacion)
@@ -23,10 +23,6 @@ export const generateConstroadPDF = async (data: any) => {
   // read pdf from public
   const pdfPath = path.join(process.cwd(), PDF_TEMPLATE.cotizacion.path, PDF_TEMPLATE.cotizacion.filename);
   const existingPdfBytes = fs.readFileSync(pdfPath);
-
-  // const url = 'https://constroad-portal.s3.us-east-2.amazonaws.com/plantilla_constroad_portal.pdf';
-
-  // const existingPdfBytes = await fetch(url).then(res => res.arrayBuffer())
 
   // Cargar el PDF desde el buffer
   const pdfDoc = await PDFDocument.load(existingPdfBytes);

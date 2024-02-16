@@ -70,9 +70,9 @@ const CotizacionPage = () => {
         width={{base: '100%', md: '45%'}}
         alignItems={{base: '', md: ''}}
         marginX='auto'
-        gap='20px'
+        gap='10px'
       >
-        <Text fontSize={{ base: 25, md: 36 }} fontWeight={700} color='black' lineHeight={{ base: '28px', md: '39px' }} marginX='auto' marginTop='15px'>
+        <Text fontSize={{ base: 25, md: 36 }} fontWeight={700} color='black' lineHeight={{ base: '28px', md: '39px' }} marginX='auto' marginTop='10px'>
           Generar cotización
         </Text>
         <CotizacionForm

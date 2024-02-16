@@ -10,10 +10,13 @@ export default function Home() {
   const [pdfError, setPdfError] = useState('');
   const [loading, setLoading] = useState(false);
 
-  const generatePdf = async () => {
+  const purchaseOrderAPI = '/api/get-purchase-order-pdf'
+  const quotationAPI = '/api/get-quotation-pdf'
+
+  const generatePDF = async (apiUrl: string) => {
     setLoading(true);
     try {
-      const response = await axios.post('/api/get-purchase-order-pdf', {
+      const response = await axios.post(apiUrl, {
         data: {
           name: '',
           email: '',
@@ -49,9 +52,12 @@ export default function Home() {
   };
 
   return (
-    <div>
-      <button onClick={generatePdf} disabled={loading}>
-        {loading ? 'Generating PDF......' : 'Generate and Download PDF:'}
+    <div className='flex flex-col gap-[40px] w-[100%] justify-start mt-[30px]'>
+      <button onClick={() => generatePDF(quotationAPI)} disabled={loading}>
+        {loading ? 'Generating PDF......' : 'Generate and Download Quotation PDF:'}
+      </button>
+      <button onClick={() => generatePDF(purchaseOrderAPI)} disabled={loading}>
+        {loading ? 'Generating PDF......' : 'Generate and Download Purchase Order PDF:'}
       </button>
       {pdfError && <p>{pdfError}</p>}
     </div>

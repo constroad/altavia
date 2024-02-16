@@ -1,6 +1,7 @@
 import React, { ChangeEvent } from 'react'
-import { Button, Flex, FormControl, FormLabel, Input, Text, Textarea, VStack } from '@chakra-ui/react'
+import { Box, Button, Flex, FormControl, FormLabel, Input, Text, Textarea, VStack } from '@chakra-ui/react'
 import { Quotation } from 'src/common/types';
+import { formatPriceNumber } from 'src/common/utils';
 
 type CotizacionFormProps = {
   handleSubmit: (event: { preventDefault: () => void }) => Promise<void>;
@@ -13,20 +14,21 @@ type CotizacionFormProps = {
 export const CotizacionForm = (props: CotizacionFormProps) => {
   const { client, setter, handleSubmit, isLoading, session } = props
 
+  const subtotal = +client.nroCubos * +client.precioUnitario
+  const igv = subtotal * 0.18
+  const total = subtotal + igv
+
+  const formattedSubtotal = formatPriceNumber(subtotal)
+  const formattedIGV = formatPriceNumber(igv)
+  const formattedTotal = formatPriceNumber(total)
+
   const handleChangeValue = (e: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>, key: string) => {
     const value = e.target.value
     setter({...client, [key]: value})
   }
 
-  const handleNroCubosChange = (event: { target: { value: any } }) => {
-    const value = event.target.value;
-    if (/^\d*$/.test(value)) {
-      setter({...client, nroCubos: value})
-    }
-  };
-
   return (
-    <VStack as="form" onSubmit={handleSubmit} spacing={3} mt='10px'>
+    <VStack as="form" onSubmit={handleSubmit} spacing={2.5} mt='5px'>
       <FormControl id="nro-cotizacion" display={session ? 'block' : 'none'}>
         <FormLabel mb='6px' fontSize={{ base: 12, md: 14 }}>Cotizacion Nro. <Text color='red' display='inline-flex'>*</Text></FormLabel>
         <Input
@@ -117,9 +119,9 @@ export const CotizacionForm = (props: CotizacionFormProps) => {
           fontSize={{ base: 12, md: 14 }}
           lineHeight='14px'
           height='32px'
-          type='text'
+          type='number'
           value={client.nroCubos}
-          onChange={handleNroCubosChange}
+          onChange={(e) => handleChangeValue(e, 'nroCubos')}
         />
       </FormControl>
       <FormControl id="precio-unitario" display={session ? 'block' : 'none'}>
@@ -133,6 +135,20 @@ export const CotizacionForm = (props: CotizacionFormProps) => {
           onChange={(e) => handleChangeValue(e, 'precioUnitario')}
         />
       </FormControl>
+      <Flex width='100%' display={session ? 'flex' : 'none'} justifyContent='space-between' fontSize={12}>
+        <Flex flexDir='column'>
+          <Text fontWeight={600}>Subtotal</Text>
+          <Box paddingY='2px' paddingX='4px' rounded='4px' border='0.5px solid' borderColor='lightgray'>{formattedSubtotal}</Box>
+        </Flex>
+        <Flex flexDir='column'>
+          <Text fontWeight={600}>IGV</Text>
+          <Box paddingY='2px' paddingX='4px' rounded='4px' border='0.5px solid' borderColor='lightgray'>{formattedIGV}</Box>
+        </Flex>
+        <Flex flexDir='column'>
+          <Text fontWeight={600}>Total</Text>
+          <Box paddingY='2px' paddingX='4px' rounded='4px' border='0.5px solid' borderColor='lightgray' bg='#ffaf52'>{formattedTotal}</Box>
+        </Flex>
+      </Flex>
       <FormControl id="mensaje" display={session ? 'none' : 'block'}>
         <FormLabel mb='6px' fontSize={{ base: 12, md: 14 }}>Mensaje <Text color='red' display='inline-flex'>*</Text></FormLabel>
         <Textarea
@@ -149,7 +165,7 @@ export const CotizacionForm = (props: CotizacionFormProps) => {
         isLoading={isLoading}
         loadingText="Enviando"
         colorScheme="blue"
-        marginTop={session ? '20px' : ''}
+        marginTop={session ? '10px' : ''}
       >
         { session ? 'Generar cotización' : 'Solicitar cotización' }
       </Button>

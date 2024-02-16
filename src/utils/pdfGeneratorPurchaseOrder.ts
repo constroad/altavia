@@ -46,8 +46,8 @@ export const generatePurchaseOrderPDF = async (data: PurchaseOrder, base64Signat
 
   const nroOrderWidth = helveticaFont.widthOfTextAtSize(nroOrder, 7.5)
   const subtotalWidth = helveticaFont.widthOfTextAtSize(subtotalProducts, 7.5)
-  const igvWidth = helveticaFont.widthOfTextAtSize(igv.toString(), 7.5)
-  const totalWidth = helveticaFont.widthOfTextAtSize(totalProducts.toString(), 7.5)
+  const igvWidth = helveticaFont.widthOfTextAtSize(formatPriceNumber(igv), 7.5)
+  const totalWidth = helveticaFont.widthOfTextAtSize(formatPriceNumber(totalProducts), 7.5)
 
   const rightMargin = 52;
   const nroOrderX = width - nroOrderWidth - 110;

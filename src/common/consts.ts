@@ -11,17 +11,36 @@ export const APP_ROUTES = {
   colocacionAsfaltica: '/colocacion-de-mezcla-asfaltica',
   transporte: '/transporte-de-carga',
   login: '/login',
-  cotizar: '/cotizar',
+  admin: '/admin',
+}
+
+export const ADMIN_ROUTES = {
+  generateQuotation: '/admin/cotizar',
+  purchaseOrder: '/admin/orden-de-compra'
 }
 
 export const API_ROUTES = {
   sendEmail: '/api/sendEmail',
-  generatePDF: '/api/generate-pdf',
+  generateQuotationPDF: '/api/generate-quotation-pdf',
+  generateOrderPDF: '/api/generate-purchase-order-pdf'
 }
 
 export const CONSTROAD = {
-  razonSocial: 'RJZ CONSTRUCTORES S.A.C',
+  companyName: 'RJZ CONSTRUCTORES S.A.C',
   ruc: '20612003905',
   email: process.env.EMAIL,
-  phone1: '907 579 704',
+  phoneCarin: '907 579 704',
+  phoneJose: '949 376 824',
+  address: 'AV. MARIANO MELGAR LOTE. 9E DPTO. 301 URB. MARIANO MELGAR - LIMA - LIMA - ATE',
+}
+
+export const PDF_TEMPLATE = {
+  cotizacion: {
+    path: 'public/templates/cotizacion',
+    filename : 'plantilla_cotizacion.pdf',
+  },
+  ordenCompra: {
+    path: 'public/templates/orden-de-compra',
+    filename: 'plantilla_orden_de_compra.pdf'
+  },
 }

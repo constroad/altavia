@@ -2,6 +2,16 @@ export const onApiNoMatch = (req: any, res: any) => {
   res.status(405).end(`Method ${req.method} Not Allowed`);
 }
 
+export const capitalizeText = (text: string) => {
+  const capitalizedText = text
+    .toLowerCase()
+    .split(' ')
+    .map(word => word.charAt(0).toUpperCase() + word.slice(1))
+    .join(' ');
+
+  return capitalizedText
+}
+
 export const getDate = () => {
   const date = new Date()
   const dayIndex = date.getDay();
@@ -16,12 +26,14 @@ export const getDate = () => {
   const day = date.getDate().toString().padStart(2, '0');
 
   const shortDate = `${day}-${month}-${year}`;
+  const slashDate = `${day}/${month}/${year}`;
 
   return {
     currentDayName,
     currentDayMonth,
     currentYear,
-    shortDate
+    shortDate,
+    slashDate
   }
 }
 

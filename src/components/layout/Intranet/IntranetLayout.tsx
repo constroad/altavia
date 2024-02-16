@@ -1,12 +1,13 @@
-import { useEffect, useState } from 'react'
+import { useRouter } from 'next/router';
+import { Box, Button, Flex, Text } from '@chakra-ui/react';
 
-import { Box, Flex, Link, Text } from '@chakra-ui/react';
-
-import { IoLogoWhatsapp } from "react-icons/io";
 import { useScreenSize } from 'src/common/hooks';
 import { CustomHead } from '../Portal/CustomHead';
 import { IntranetNavbar } from './IntranetNavbar';
 import { useSession } from 'next-auth/react';
+import { APP_ROUTES } from 'src/common/consts';
+import { IoArrowBackOutline } from "react-icons/io5";
+
 
 interface IIntranetLayout {
   children: React.ReactNode
@@ -16,54 +17,61 @@ interface IIntranetLayout {
 export const IntranetLayout = (props: IIntranetLayout) => {
   const { children } = props
   const { isMobile } = useScreenSize()
-
-  const { status } = useSession()
-  const [logged, setLogged] = useState(status)
-
-  useEffect(() => {
-    if (status) setLogged(status)
-  }, [status])
+  const { data: session, status } = useSession()
+  const router = useRouter()
 
   return (
     <div className='w-full min-h-screen'>
       <CustomHead />
       <IntranetNavbar/>
-      <Box
-        as='main'
-        width='100%'
-        minHeight='calc(100vh - 305px)'
-        paddingTop={{
-          base: props.noPaddingTop ? '0px' : '40px',
-          md: props.noPaddingTop ? '0px' : '50px'
-        }}
-        paddingBottom={{ base: '40px', md: '50px'}}
-        position='relative'
-      >
-        {children}
-
-        <Link
-          href="https://api.whatsapp.com/send?phone=51949376824"
-          target="_blank"
-          position='fixed'
-          right={ isMobile ? 2 : 5 }
-          bottom={isMobile ? 14 : 12}
-          width={isMobile ? '130px' : '150px'}
-          rounded='10px'
-          background='white'
-          zIndex={200}
-          shadow='md'
-          border='1px solid'
-          borderColor='lightgrey'
+      {session && (
+        <Box
+          as='main'
+          width='100%'
+          minHeight={{base:'calc(100vh - 65px)', md: 'calc(100vh - 95px)'}}
+          paddingTop={{
+            base: props.noPaddingTop ? '0px' : '40px',
+            md: props.noPaddingTop ? '0px' : '50px'
+          }}
+          paddingBottom={{ base: '40px', md: '50px'}}
+          paddingX={{ base: '30px', md: '70px' }}
+          position='relative'
         >
-          <Flex justifyContent='center' alignItems='center' padding='10px' gap='6px'>
-            <IoLogoWhatsapp fontSize={24} color='green' />
-            <Text color='GrayText' fontSize={isMobile ? '14px' : '16px'}>
-              Contáctanos
-            </Text>
-          </Flex>
-        </Link>
+          {children}
 
-      </Box>
+          {router.pathname !== '/admin' && (
+            <Box position='absolute' top={{ base: '10px', md: '10px' }} left={{ base: '30px', md: '70px' }}>
+              <Button
+                fontSize={{ base: 12, md: 15 }}
+                width={{ base: '70px', md: '184px' }}
+                height={{ base: '25px', md: '40px' }}
+                bg='transparent'
+                color='black'
+                _hover={{bg: 'gray.100'}}
+                fontWeight={500}
+                onClick={() => router.push(APP_ROUTES.admin)}
+                gap='10px'
+                justifyContent='center'
+                paddingX='5px'
+              >
+                <IoArrowBackOutline color='black' fontSize={18}/>
+                <Text>Volver</Text>
+              </Button>
+            </Box>
+          )}
+
+        </Box>
+      )}
+
+      {!session && (
+        <Flex flexDir='column' gap='10px' justifyContent='center' alignItems='center' marginTop='150px'>
+          <Text>Debes iniciar sesión para ingresar a la intranet</Text>
+          <Flex gap="20px">
+            <Button onClick={() => router.push(APP_ROUTES.home)}>Ir al inicio</Button>
+            <Button onClick={() => router.push(APP_ROUTES.login)}>Iniciar sesión</Button>
+          </Flex>
+        </Flex>
+      )}
     </div>
   )
 }

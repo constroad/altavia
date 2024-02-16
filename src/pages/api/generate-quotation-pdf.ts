@@ -1,28 +1,6 @@
 import { NextApiRequest, NextApiResponse } from 'next';
-import { 
-  createHtmlToPdf, 
-  createQuotePdf, 
-  generateConstroadPDF } from '../../utils/pdfGenerator';
+import { generateQuotationPDF } from '../../utils/pdfGeneratorQuotation';
 import { Readable } from 'stream';
-
-
-const htmlSample = `
-<!DOCTYPE html>
-<html lang="en">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Ejemplo de HTML para PDF</title>
-</head>
-<body>
-  <h1 style="font-size: 24px; color: #333; text-align: center;">Ejemplo de HTML para PDF</h1>
-  <p style="font-size: 16px; color: #666; text-align: center;">Este es un ejemplo de HTML con estilos en línea para generar un PDF.</p>
-  <div style="width: 200px; height: 200px; background-color: #007bff; margin: 0 auto;"></div>
-</body>
-</html>
-
-`
-
 
 export default async function handler(req: NextApiRequest, res: NextApiResponse) {
   if (req.method !== 'POST') {
@@ -37,7 +15,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     // Genera el PDF desde de un html
     // const pdfBuffer = await createHtmlToPdf(htmlSample);
 
-    const pdfBuffer = await generateConstroadPDF(data)
+    const pdfBuffer = await generateQuotationPDF(data)
   
 
     const pdfStream = new Readable();

@@ -17,7 +17,6 @@ export const GenerateNavOptions = () => {
     {label: 'Servicios', path: APP_ROUTES.servicios, display: true},
     {label: 'PROVEEDORES', path: APP_ROUTES.proveedores, display: false},
     {label: 'Contáctanos', path: APP_ROUTES.contactanos, display: true},
-    {label: 'Cotizar', path: APP_ROUTES.cotizar, display: logged === 'authenticated' ? true : false},
   ]
 
   return navOptions.filter(x => x.display === true)

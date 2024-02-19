@@ -16,7 +16,9 @@ export const APP_ROUTES = {
 
 export const ADMIN_ROUTES = {
   generateQuotation: '/admin/cotizar',
-  purchaseOrder: '/admin/orden-de-compra'
+  purchaseOrder: '/admin/orden-de-compra',
+  dispatch: '/admin/despacho',
+  // controlHighway: '/admin/control-highway',
 }
 
 export const API_ROUTES = {

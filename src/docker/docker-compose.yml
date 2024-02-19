@@ -1,0 +1,20 @@
+version: '3.8'
+
+name: constroad
+
+networks:
+  mongo-network:
+    driver: bridge
+
+services:
+  constroad-mongo:
+    image: mongo
+    command: mongod --replSet rs0
+    ports:
+      - "27017:27017"
+    volumes:
+      - ./mongo-init.js:/docker-entrypoint-initdb.d/mongo-init.js:ro
+    restart: always
+    container_name: constroad-mongo
+    networks:
+      - mongo-network

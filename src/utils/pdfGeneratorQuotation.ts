@@ -1,10 +1,11 @@
-import { degrees, PDFDocument, StandardFonts, rgb } from 'pdf-lib'
+import { PDFDocument, StandardFonts, rgb } from 'pdf-lib'
 import htmlToPdf from 'html-pdf';
 import fs from 'fs';
 import path from 'path';
 import { addZerosAhead, formatPriceNumber, getDate } from 'src/common/utils';
+import { PDF_TEMPLATE } from 'src/common/consts';
 
-export const generateConstroadPDF = async (data: any) => {
+export const generateQuotationPDF = async (data: any) => {
   const { currentDayName, currentDayMonth, currentYear } = getDate()
 
   const nroCotizacion = addZerosAhead(+data.nroCotizacion)
@@ -20,12 +21,8 @@ export const generateConstroadPDF = async (data: any) => {
   const totalPresupuesto = totalWithoutIgv + igv
 
   // read pdf from public
-  const pdfPath = path.join(process.cwd(), 'public/templates', 'plantilla_constroad_portal.pdf');
+  const pdfPath = path.join(process.cwd(), PDF_TEMPLATE.cotizacion.path, PDF_TEMPLATE.cotizacion.filename);
   const existingPdfBytes = fs.readFileSync(pdfPath);
-
-  // const url = 'https://constroad-portal.s3.us-east-2.amazonaws.com/plantilla_constroad_portal.pdf';
-
-  // const existingPdfBytes = await fetch(url).then(res => res.arrayBuffer())
 
   // Cargar el PDF desde el buffer
   const pdfDoc = await PDFDocument.load(existingPdfBytes);
@@ -51,8 +48,8 @@ export const generateConstroadPDF = async (data: any) => {
   const textWidth3 = helveticaFont.widthOfTextAtSize(totalPresupuestoStr, 7);
 
   // const pageWidth = page.getWidth();
-  const rightMargin1 = 52;
-  const x = width - textWidth - 137;
+  const rightMargin1 = 51.5;
+  const x = width - textWidth - 146;
   const x1 = width - textWidth1 - rightMargin1;
   const x2 = width - textWidth2 - rightMargin1;
   const x3 = width - textWidth3 - rightMargin1;
@@ -68,9 +65,9 @@ export const generateConstroadPDF = async (data: any) => {
   firstPage.drawText(rucCliente, { x: 128, y: 555.6, size: 9, font: helveticaBoldFont })
   firstPage.drawText(fecha, { x: 128, y: 533.6, size: 9 })
 
-  firstPage.drawText(unidad, { x: 393, y: 470.8, size: 7 })
+  firstPage.drawText(unidad, { x: 388, y: 470.8, size: 7 })
   firstPage.drawText(totalCubosStr, { x: x, y: 470.8, size: 7 })
-  firstPage.drawText(Number(precioUnitario).toFixed(2).toString(), { x: 478, y: 470.8, size: 7 })
+  firstPage.drawText(Number(precioUnitario).toFixed(2).toString(), { x: 469.5, y: 470.8, size: 7 })
 
   firstPage.drawText(totalWithoutIgvStr, { x: x1, y: 470.8, size: 7 })
   firstPage.drawText(totalWithoutIgvStr, { x: x1, y: 384, size: 7 })

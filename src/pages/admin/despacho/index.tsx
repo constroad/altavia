@@ -67,7 +67,7 @@ const DispatchPage = () => {
     { key: 'price', label: 'Precio', width: '5%' },
     { key: 'igv', label: 'IGV', width: '10%' },
     { key: 'total', label: 'Total a Pagar', width: '10%' },
-    { key: 'paymentDone', label: 'Pagos Realizados', width: '5%' },
+    { key: 'paymentDone', label: 'Pagos', width: '5%' },
 ];
 
   return (

@@ -1,7 +1,7 @@
 import fs from 'fs';
 import path from 'path';
-import { PDFDocument, StandardFonts } from 'pdf-lib'
-import { addZerosAhead, capitalizeText, formatPriceNumber, getDate } from 'src/common/utils';
+import { PDFDocument, StandardFonts, degrees } from 'pdf-lib'
+import { addZerosAhead, capitalizeText, NumberToWords, formatPriceNumber, getDate } from 'src/common/utils';
 import { PDF_TEMPLATE } from 'src/common/consts';
 import { PurchaseOrder } from 'src/common/types';
 
@@ -24,6 +24,11 @@ export const generatePurchaseOrderPDF = async (data: PurchaseOrder, base64Signat
   const subtotalProducts = data.total
   const igv = +subtotalProducts.replace(/,/g, '') * 0.18
   const totalProducts = +subtotalProducts.replace(/,/g, '') + igv
+
+  const number = Number(totalProducts.toFixed(2))
+  const roundedNumber = Math.round(number * 100) / 100;
+  const totalProductsLetters = NumberToWords( roundedNumber )
+  const formattedTotalLetters = `SON ${totalProductsLetters.toUpperCase()} SOLES`
 
   const observaciones = data.observations.toUpperCase()
   const attachSignature = data.attachSignature
@@ -94,6 +99,7 @@ export const generatePurchaseOrderPDF = async (data: PurchaseOrder, base64Signat
   })
 
   // SUBTOTAL - IGV - TOTAL
+  firstPage.drawText(formattedTotalLetters, { x: 55 , y: 286, size: 7.5, font: helveticaBoldFont });
   firstPage.drawText(subtotalProducts, { x: subtotalX , y: 268, size: 7.5, font: helveticaFont });
   firstPage.drawText(formatPriceNumber(igv), { x: igvX , y: 253.5, size: 7.5, font: helveticaFont });
   firstPage.drawText(formatPriceNumber(totalProducts), { x: totalX , y: 239, size: 7.5, font: helveticaFont });
@@ -130,6 +136,7 @@ export const generatePurchaseOrderPDF = async (data: PurchaseOrder, base64Signat
     const imageHeight = 100;
 
     firstPage.drawImage(embeddedImage, {
+        rotate: degrees(8),
         x: 272,
         y: 60,
         width: imageWidth,

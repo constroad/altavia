@@ -1,12 +1,21 @@
 import Quote, { QuoteModel } from '../models/quote';
 
 export class QuoteRepository {
-  constructor() { }
 
   async getAll(): Promise<QuoteModel[]> {
     try {
       const quotes = await Quote.find({});
       return quotes;
+    } catch (error) {
+      console.error('Error getting quotes:', error);
+      throw new Error('Error getting quotes');
+    }
+  }
+
+  async getById(id: string): Promise<QuoteModel | null> {
+    try {
+      const quote = await Quote.findById(id);
+      return quote;
     } catch (error) {
       console.error('Error getting quotes:', error);
       throw new Error('Error getting quotes');

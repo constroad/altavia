@@ -1,28 +1,28 @@
 import { NextApiRequest, NextApiResponse } from 'next';
 import { connectToMongoDB } from 'src/config/mongoose';
+import { ProductRepository } from 'src/repositories/productRepository';
 import { NextHandler, createRouter } from "next-connect";
 import { ApiTimeTracker, onApiError, onApiNoMatch } from 'src/common/utils';
-import { ProviderModel, providerValidationSchema } from 'src/models/provider';
-import { ProviderRepository } from 'src/repositories/providerRepository';
+import { ProductModel, productValidationSchema } from 'src/models/products';
 
 const router = createRouter<NextApiRequest, NextApiResponse>();
 
 const getAll = async (req: NextApiRequest, res: NextApiResponse) => {
-  const repo = new ProviderRepository();
+  const quoteRepo = new ProductRepository();
   try {
-    const result = await repo.getAll();
-    res.status(200).json(result);
+    const response = await quoteRepo.getAll();
+    res.status(200).json(response);
   } catch (error: any) {
     console.error(error.message);
-    res.status(500).json({ message: 'Error getting providers' });
+    res.status(500).json({ message: 'Error getting products' });
   }
 }
 
 const addRecord = async (req: NextApiRequest, res: NextApiResponse) => {
-  const newRecord = req.body as ProviderModel
-  const repo = new ProviderRepository();
+  const newQuote = req.body as ProductModel
+  const quoteRepo = new ProductRepository();
   try {
-    const result = providerValidationSchema.safeParse(newRecord);
+    const result = productValidationSchema.safeParse(newQuote);
 
     if (!result.success) {
       console.log(result.error)
@@ -30,12 +30,12 @@ const addRecord = async (req: NextApiRequest, res: NextApiResponse) => {
       return
     }
 
-    const response = await repo.create(newRecord);
+    const response = await quoteRepo.create(newQuote);
     res.status(201).json(response);
 
   } catch (error: any) {
     console.error(error);
-    res.status(500).json({ message: 'Error when saving providers'  });
+    res.status(500).json({ message: 'Error when saving products'  });
   }
 }
 
@@ -51,6 +51,6 @@ router
 
 
 export default router.handler({
-  onError: onApiError('providers / index'),
+  onError: onApiError('product / index'),
   onNoMatch: onApiNoMatch
 });

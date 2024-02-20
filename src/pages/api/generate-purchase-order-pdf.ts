@@ -14,12 +14,6 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     const signatureBuffer = fs.readFileSync(path.resolve(process.cwd(), 'public', 'signature-jose-zena.png'));
     const base64Signature = signatureBuffer.toString('base64')
 
-    // Genera el PDF con pdf-lib
-    // const pdfBuffer = await createQuotePdf(data);
-
-    // Genera el PDF desde de un html
-    // const pdfBuffer = await createHtmlToPdf(htmlSample);
-
     const pdfBuffer = await generatePurchaseOrderPDF(data, base64Signature)
   
 

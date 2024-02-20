@@ -9,12 +9,6 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
   try {
     const { data } = req.body;
 
-    // Genera el PDF con pdf-lib
-    // const pdfBuffer = await createQuotePdf(data);
-
-    // Genera el PDF desde de un html
-    // const pdfBuffer = await createHtmlToPdf(htmlSample);
-
     const pdfBuffer = await generateQuotationPDF(data)
   
 

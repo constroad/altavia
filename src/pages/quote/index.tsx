@@ -50,8 +50,8 @@ const Quotes = (props: QuotesProps) => {
       List of quotes:
       {quotes.map((item) => {
         return (
-          <Flex key={item.client}>
-            <Text>Cliente:{item.client}</Text>
+          <Flex key={item._id}>
+            <Text>Cliente:{item.clientId}</Text>
             <Button
               isLoading={isDeleting}
               onClick={() => handleOnDelete(item._id!)}

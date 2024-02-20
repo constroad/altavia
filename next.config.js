@@ -1,4 +1,12 @@
 /** @type {import('next').NextConfig} */
-const nextConfig = {}
+const nextConfig = {
+  experimental: {
+    outputFileTracingExcludes: {
+      '*': [
+        '.next/cache/webpack',
+      ]
+    }
+  }
+}
 
 module.exports = nextConfig

@@ -26,7 +26,7 @@ const AdminPage = () => {
               fontWeight={600}
               _hover={{ bgColor: tab.bgColor, opacity: 0.8 }}
               cursor='pointer'
-              onClick={() => router.push(tab.path)}
+              onClick={() => tab.path && router.push(tab.path)}
             >
               {tab.name}
             </Flex>

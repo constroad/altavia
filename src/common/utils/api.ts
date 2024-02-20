@@ -8,6 +8,12 @@ export const ApiTimeTracker = async (req: NextApiRequest, res: NextApiResponse, 
   console.log(`Request took ${end - start}ms`);
 }
 
+export const convertDateMiddleware = (field: string)=>(req: NextApiRequest, res: NextApiResponse, next: NextHandler) => {
+  if (req.body[field]) {
+    req.body[field] = new Date(req.body[field]);
+  }
+  next();
+}
 
 export const onApiError = (apiName: string) => async (err: any, req: NextApiRequest, res: NextApiResponse) => {
   const requestMethod = req.method;

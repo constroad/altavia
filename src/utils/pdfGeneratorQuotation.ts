@@ -1,5 +1,4 @@
-import { PDFDocument, StandardFonts, rgb } from 'pdf-lib'
-import htmlToPdf from 'html-pdf';
+import { PDFDocument, StandardFonts } from 'pdf-lib'
 import fs from 'fs';
 import path from 'path';
 import { addZerosAhead, formatPriceNumber, getDate } from 'src/common/utils';
@@ -79,40 +78,3 @@ export const generateQuotationPDF = async (data: any) => {
 
   return pdfBytes
 }
-
-export async function createQuotePdf(data: any): Promise<Uint8Array> {
-  // Create a new PDFDocument
-  const pdfDoc = await PDFDocument.create()
-
-  // Embed the Times Roman font
-  const timesRomanFont = await pdfDoc.embedFont(StandardFonts.TimesRoman)
-
-  // Add a blank page to the document
-  const page = pdfDoc.addPage()
-
-  // Get the width and height of the page
-  const { width, height } = page.getSize()
-
-  // Serialize the PDFDocument to bytes (a Uint8Array)
-  const pdfBytes = await pdfDoc.save()
-  return pdfBytes;
-}
-
-export async function createHtmlToPdf(html: string): Promise<Buffer> {
-  const phantomjsPath = path.join(process.cwd(), 'public/templates/phantomjs', 'bin/phantomjs')
-  console.log('phantomjsPath:', phantomjsPath)
-  const option ={
-    "phantomPath": phantomjsPath, 
-    }
-  // Convierte el HTML en PDF usando html-pdf
-  return new Promise((resolve, reject) => {
-    htmlToPdf.create(html, option).toBuffer((err, buffer) => {
-      if (err) {
-        reject(err);
-      } else {
-        resolve(buffer);
-      }
-    });
-  });
-}
-

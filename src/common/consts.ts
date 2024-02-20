@@ -19,7 +19,14 @@ export const APP_ROUTES = {
 
 export const ADMIN_ROUTES = {
   generateQuotation: '/admin/cotizar',
-  purchaseOrder: '/admin/orden-de-compra'
+  purchaseOrder: '/admin/orden-de-compra',
+  dispatch: '/admin/despacho',
+  controlHighway: '/admin/control-highway',
+  clients: '/admin/clients',
+  providers: '/admin/proveedores',
+  products: '/admin/products',
+  production: '/admin/produccion',
+  employees: '/admin/empleados',
 }
 
 export const API_ROUTES = {

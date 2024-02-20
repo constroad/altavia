@@ -1,0 +1,14 @@
+{
+  "version": 2,
+  "builds": [
+    {
+      "src": "next.config.js",
+      "use": "@now/next"
+    }
+  ],
+  "functions": {
+    "preBuild": {
+      "command": "next clean"
+    }
+  }
+}

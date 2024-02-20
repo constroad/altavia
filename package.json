@@ -5,7 +5,7 @@
   "scripts": {
     "debug": "NODE_OPTIONS='--inspect' next dev",
     "dev": "next dev",
-    "build": "next clean && next build",
+    "build": "next build",
     "start": "next start",
     "lint": "next lint"
   },

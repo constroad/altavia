@@ -1,3 +1,4 @@
+
 export const onApiNoMatch = (req: any, res: any) => {
   res.status(405).end(`Method ${req.method} Not Allowed`);
 }
@@ -66,3 +67,6 @@ export function b64toBlob(base64Data: any, contentType = '', sliceSize = 512) {
   const blob = new Blob(byteArrays, { type: contentType });
   return blob;
 }
+
+export * from './api'
+export * from './numberToWords'

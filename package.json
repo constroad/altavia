@@ -38,6 +38,7 @@
   "devDependencies": {
     "@types/canvas-confetti": "^1.6.2",
     "@types/mongoose": "^5.11.97",
+    "@types/html-pdf": "^3.0.3",
     "@types/node": "^20",
     "@types/nodemailer": "^6.4.14",
     "@types/pdfmake": "^0.2.9",

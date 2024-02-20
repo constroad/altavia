@@ -1,5 +1,5 @@
 import * as React from 'react'
-
+import { z } from 'zod';
 export type AsyncStatus = 'idle' | 'resolved' | 'rejected' | 'pending'
 const cache = new Map();
 const ONE_MINUTE = 60000 //MILLISECONDS
@@ -68,7 +68,7 @@ const defaultInitialState: AsyncBody = {
   finsished: 'no-finished',
 }
 
-export function useAsync(initialState?: InputActions) {
+export function useAsync<T>(initialState?: InputActions) {
 
   const initialStateRef = React.useRef({
     ...defaultInitialState,
@@ -140,7 +140,7 @@ export function useAsync(initialState?: InputActions) {
         setError(errorMsg)
         initialState?.onError?.(error)
         config?.onError?.(error)
-        return Promise.reject(error)
+        // return Promise.reject(error)
       } finally {
         safeSetState({ finsished: 'finished' })
         initialState?.onFinish?.()
@@ -163,7 +163,7 @@ export function useAsync(initialState?: InputActions) {
     setError,
     error,
     status,
-    data,
+    data: data as T,
     cache,
     run,
     reset,

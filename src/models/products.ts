@@ -3,7 +3,7 @@ import mongoose, { Document, Schema, Model } from 'mongoose';
 
 // Schema validation
 export const productValidationSchema = z.object({
-  _id: z.string(),
+  _id: z.string().optional(),
   name: z.string().min(1),
   description: z.string().optional(),
   alias: z.string().optional(),

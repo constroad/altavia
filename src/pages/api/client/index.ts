@@ -21,6 +21,7 @@ const getAll = async (req: NextApiRequest, res: NextApiResponse) => {
 const addRecord = async (req: NextApiRequest, res: NextApiResponse) => {
   const newRecord = req.body as ClientModel
   const repo = new ClientRepository();
+  console.log('newRecord::', newRecord)
   try {
     const result = clientValidationSchema.safeParse(newRecord);
 

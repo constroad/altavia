@@ -11,6 +11,9 @@ export const APP_ROUTES = {
   colocacionAsfaltica: '/colocacion-de-mezcla-asfaltica',
   transporte: '/transporte-de-carga',
   login: '/login',
+  cotizar: '/cotizar',
+  quote: '/quote',
+  quoteNew: '/quote/new',
   admin: '/admin',
 }
 
@@ -21,6 +24,8 @@ export const ADMIN_ROUTES = {
 
 export const API_ROUTES = {
   sendEmail: '/api/sendEmail',
+  generatePDF: '/api/generate-pdf',
+  quote: '/api/quotes',
   generateQuotationPDF: '/api/generate-quotation-pdf',
   generateOrderPDF: '/api/generate-purchase-order-pdf'
 }

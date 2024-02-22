@@ -1,10 +1,9 @@
-import { Box, Button, Flex, Text } from '@chakra-ui/react'
-import React from 'react'
-import { IntranetLayout, TableColumn } from 'src/components'
-import TableComponent from 'src/components/Table/Table'
-import DispatchForm from 'src/components/form/DispatchForm'
+import React, { useState } from 'react'
+import { Flex, Text } from '@chakra-ui/react'
+import { Dispatch } from 'src/common/types'
+import { DispatchForm, IntranetLayout, TableColumn, TableComponent, initialDispatch } from 'src/components'
 
-const mockDispatch = [
+const mockDispatch: Dispatch[] = [
   {
     date: '16/02/24',
     material: 'MEZCLA ASFÁLTICA',
@@ -53,6 +52,8 @@ const mockDispatch = [
 ]
 
 const DispatchPage = () => {
+  const [data, setData] = useState(mockDispatch)
+  const [dispatch, setDispatch] = useState<Dispatch>(initialDispatch)
 
   const columns: TableColumn[] = [
     { key: 'date', label: 'Fecha', width: '5%' },
@@ -68,7 +69,18 @@ const DispatchPage = () => {
     { key: 'igv', label: 'IGV', width: '10%' },
     { key: 'total', label: 'Total a Pagar', width: '10%' },
     { key: 'paymentDone', label: 'Pagos', width: '5%' },
-];
+  ];
+
+  const handleSubmit = (event: { preventDefault: () => void; }) => {
+    event.preventDefault()
+    setData([...data, dispatch])
+    setDispatch(initialDispatch)
+  }
+
+  const handleDeleteDispatch = (index: number) => {
+    const updatedData = data.filter((item, idx) => index !== idx)
+    setData(updatedData)
+  }
 
   return (
     <IntranetLayout>
@@ -82,9 +94,9 @@ const DispatchPage = () => {
           CONTROL DE DESPACHOS
         </Text>
         
-        <DispatchForm/>
+        <DispatchForm handleSubmit={handleSubmit} dispatch={dispatch} setter={setDispatch} />
 
-        <TableComponent data={mockDispatch} columns={columns} />
+        <TableComponent data={data} columns={columns} onDelete={handleDeleteDispatch} />
       </Flex>
 
     </IntranetLayout>

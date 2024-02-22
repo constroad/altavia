@@ -1,4 +1,4 @@
-import { Product, PurchaseOrder, Quotation } from "src/common/types";
+import { Dispatch, Product, PurchaseOrder, Quotation } from "src/common/types";
 
 // COTIZACION
 export const initialClient: Quotation = {
@@ -37,4 +37,19 @@ export const initialOrder: PurchaseOrder = {
   attachSignature: false
 }
 
-
+// DESPACHO
+export const initialDispatch: Dispatch = {
+  date: '',
+  material: 'MEZCLA ASFALTICA',
+  plate: '',
+  invoice: '',
+  guide: '',
+  m3: '1',
+  client: '',
+  project: '',
+  carrier: '',
+  price: '480',
+  igv: '86.40',
+  total: '566.40',
+  paymentDone: ''
+}

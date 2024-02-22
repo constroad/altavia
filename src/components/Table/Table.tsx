@@ -1,14 +1,16 @@
 import { Box, Table, Thead, Tbody, Tr, Th, Td, Button } from '@chakra-ui/react';
+import { FaRegTrashAlt } from 'react-icons/fa';
 import { TableColumn, TableData } from './TableTypes';
 import { CONSTROAD_COLORS } from 'src/styles/shared';
-import { FaRegTrashAlt } from 'react-icons/fa';
 
 interface Props {
     data: TableData[];
     columns: TableColumn[];
+    onDelete: (index: number) => void;
 }
 
-const TableComponent: React.FC<Props> = ({ data, columns }) => {
+export const TableComponent = (props: Props) => {
+  const { data, columns, onDelete } = props;
   return (
     <Box overflowX="auto" rounded='4px' border={`0.5px solid ${CONSTROAD_COLORS.darkGray}`}>
       <Table border="collapse">
@@ -25,6 +27,13 @@ const TableComponent: React.FC<Props> = ({ data, columns }) => {
           </Tr>
         </Thead>
         <Tbody fontSize={10}>
+          {data.length === 0 && (
+            <Tr position='relative' height='50px'>
+              <Td width='100%' textAlign='center' position='absolute' fontSize={12}>
+                No data found.
+              </Td>
+            </Tr>
+          )}
           {data.map((item, index) => (
             <Tr key={index}>
               {columns.map(column => (
@@ -37,7 +46,7 @@ const TableComponent: React.FC<Props> = ({ data, columns }) => {
                   height={{ base: '20px', md: '' }}
                   fontSize={{base: 12, md: 14}}
                   paddingX='5px'
-                  // onClick={() => handleDeleteProduct(index)}
+                  onClick={() => onDelete(index)}
                 >
                   <FaRegTrashAlt fontSize={12} /> 
                 </Button>

@@ -51,9 +51,15 @@ export const adminTabs = [
   },
   {
     name: 'Despacho',
-    // path: ADMIN_ROUTES.dispatch,
-    path: null,
+    path: ADMIN_ROUTES.dispatch,
     bgColor: CONSTROAD_COLORS.lightGray,
+    textColor: 'black'
+  },
+  {
+    name: 'Control Highway',
+    // path: ADMIN_ROUTES.controlHighway,
+    path: null,
+    bgColor: CONSTROAD_COLORS.yellow,
     textColor: 'black'
   },
 ]

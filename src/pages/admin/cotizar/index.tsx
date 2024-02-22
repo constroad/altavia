@@ -1,18 +1,14 @@
-import { Button, Flex, Text } from '@chakra-ui/react'
-import { useSession } from 'next-auth/react'
-import { useRouter } from 'next/router'
+import { Flex, Text } from '@chakra-ui/react'
 import React, { useState } from 'react'
-import { API_ROUTES, APP_ROUTES } from 'src/common/consts'
+import { API_ROUTES } from 'src/common/consts'
 import { useAsync } from 'src/common/hooks'
 import { Quotation } from 'src/common/types'
 import { CotizacionForm, IntranetLayout, initialClient, toast } from 'src/components'
 import axios from 'axios'
-import { b64toBlob, getDate } from 'src/common/utils'
+import { getDate } from 'src/common/utils'
 
 const postPDF = (path: string, data: Quotation) => axios.post(path, data);
 const CotizacionPage = () => {
-  const router = useRouter()
-  const { data: session } = useSession()
   const { shortDate } = getDate()
   const [client, setClient] = useState<Quotation>(initialClient)
   const [isLoading, setIsLoading] = useState(false)

@@ -31,3 +31,19 @@ export type PurchaseOrder = {
   observations: string,
   attachSignature: boolean,
 }
+
+export type Dispatch = {
+  date: string;
+  material: string;
+  plate: string;
+  invoice: string;
+  guide: string;
+  m3: string;
+  client: string;
+  project: string;
+  carrier: string;
+  price: string;
+  igv: string;
+  total: string;
+  paymentDone: string;
+}

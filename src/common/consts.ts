@@ -22,7 +22,7 @@ export const ADMIN_ROUTES = {
   purchaseOrder: '/admin/orden-de-compra',
   dispatch: '/admin/despacho',
   controlHighway: '/admin/control-highway',
-  clients: '/admin/clients',
+  clients: '/admin/clientes',
   providers: '/admin/proveedores',
   products: '/admin/products',
   production: '/admin/produccion',

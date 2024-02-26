@@ -4,8 +4,7 @@ import { CONSTROAD_COLORS } from "src/styles/shared";
 export const adminTabs = [
   {
     name: 'Clientes',
-    // path: ADMIN_ROUTES.clients,
-    path: null,
+    path: ADMIN_ROUTES.clients,
     bgColor: CONSTROAD_COLORS.yellow,
     textColor: 'black'
   },

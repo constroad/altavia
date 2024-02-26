@@ -1,5 +1,4 @@
 import { useEffect, useState } from 'react';
-import { FaRegTrashAlt } from "react-icons/fa";
 import { Table, Thead, Tbody, Tr, Th, Td, Button, Box, Input, Text, Flex } from '@chakra-ui/react';
 
 import { Product, PurchaseOrder } from 'src/common/types';
@@ -8,6 +7,7 @@ import { initialProduct } from './utils';
 
 import { CONSTROAD_COLORS } from 'src/styles/shared';
 import { formatPriceNumber } from 'src/common/utils';
+import { TrashIcon } from 'src/common/icons';
 
 interface ProductTableProps {
   order: PurchaseOrder;
@@ -159,7 +159,7 @@ const ProductTable = (props: ProductTableProps) => {
                           paddingX='5px'
                           onClick={() => handleDeleteProduct(index)}
                         >
-                          <FaRegTrashAlt fontSize={12} /> 
+                          <TrashIcon fontSize={12} /> 
                         </Button>
                       </Flex>
                     </Td>
@@ -231,7 +231,7 @@ const ProductTable = (props: ProductTableProps) => {
                             paddingX='5px'
                             onClick={() => handleDeleteProduct(index)}
                           >
-                            <FaRegTrashAlt fontSize={12} /> 
+                            <TrashIcon fontSize={12} /> 
                           </Button>
                         </Flex>
                       </Flex>

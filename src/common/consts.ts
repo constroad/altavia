@@ -22,7 +22,7 @@ export const ADMIN_ROUTES = {
   purchaseOrder: '/admin/orden-de-compra',
   dispatch: '/admin/despacho',
   controlHighway: '/admin/control-highway',
-  clients: '/admin/clients',
+  clients: '/admin/clientes',
   providers: '/admin/proveedores',
   products: '/admin/products',
   production: '/admin/produccion',
@@ -32,6 +32,7 @@ export const ADMIN_ROUTES = {
 export const API_ROUTES = {
   sendEmail: '/api/sendEmail',
   generatePDF: '/api/generate-pdf',
+  client: '/api/client',
   quote: '/api/quotes',
   generateQuotationPDF: '/api/generate-quotation-pdf',
   generateOrderPDF: '/api/generate-purchase-order-pdf'

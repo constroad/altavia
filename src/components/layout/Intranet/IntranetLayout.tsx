@@ -1,13 +1,11 @@
 import { useRouter } from 'next/router';
 import { Box, Button, Flex, Text } from '@chakra-ui/react';
 
-import { useScreenSize } from 'src/common/hooks';
 import { CustomHead } from '../Portal/CustomHead';
 import { IntranetNavbar } from './IntranetNavbar';
 import { useSession } from 'next-auth/react';
 import { APP_ROUTES } from 'src/common/consts';
-import { IoArrowBackOutline } from "react-icons/io5";
-
+import { ArrowBackIcon } from 'src/common/icons';
 
 interface IIntranetLayout {
   children: React.ReactNode
@@ -16,8 +14,7 @@ interface IIntranetLayout {
 
 export const IntranetLayout = (props: IIntranetLayout) => {
   const { children } = props
-  const { isMobile } = useScreenSize()
-  const { data: session, status } = useSession()
+  const { data: session } = useSession()
   const router = useRouter()
 
   return (
@@ -54,7 +51,7 @@ export const IntranetLayout = (props: IIntranetLayout) => {
                 justifyContent='center'
                 paddingX='5px'
               >
-                <IoArrowBackOutline color='black' fontSize={18}/>
+                <ArrowBackIcon color='black' fontSize={18}/>
                 <Text>Volver</Text>
               </Button>
             </Box>

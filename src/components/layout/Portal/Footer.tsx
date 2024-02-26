@@ -1,11 +1,7 @@
 import { Flex, Text } from "@chakra-ui/react";
-
-import { IoMdMail, IoLogoWhatsapp } from "react-icons/io";
-import { MdLocationOn } from "react-icons/md";
-import { FaRoad, FaTruck } from "react-icons/fa";
-import { FooterLink } from './FooterLink';
-
 import { APP_ROUTES } from "src/common/consts";
+import { LocationIcon, MailIcon, RoadIcon, TruckIcon, WhatsAppIcon } from "src/common/icons";
+import { FooterLink } from './FooterLink';
 
 const Footer = () => {
   const currentDate = new Date()
@@ -36,17 +32,17 @@ const Footer = () => {
           <FooterLink
             href={APP_ROUTES.servicios + APP_ROUTES.mezclaAsfaltica}
             label="Mezcla asfáltica en caliente"
-            icon={<FaRoad />}
+            icon={<RoadIcon />}
           />
           <FooterLink
             href={APP_ROUTES.servicios + APP_ROUTES.colocacionAsfaltica}
             label="Colocación de mezcla asfáltica"
-            icon={<FaRoad />}
+            icon={<RoadIcon />}
           />
           <FooterLink
             href={APP_ROUTES.servicios + APP_ROUTES.transporte}
             label="Transporte de carga"
-            icon={<FaTruck />}
+            icon={<TruckIcon />}
           />
         </Flex>
 
@@ -61,14 +57,14 @@ const Footer = () => {
           </Text>
           
           <Flex marginTop='10px' gap='8px' alignItems='center'>
-            <MdLocationOn className='!w-[16px] !h-[16px]' />
+            <LocationIcon className='!w-[16px] !h-[16px]' />
             <Text width='100%' textAlign='justify' fontSize={14} fontWeight={300}>
               Planta Carapongo - Ate, Lima
             </Text>
           </Flex>
 
           <Flex marginTop='5px' gap={2} alignItems='center'>
-            <IoMdMail />
+            <MailIcon />
             <Text className='w-[100%] text-justify text-[14px] font-[300]'>
               administracion@constroad.com
             </Text>
@@ -77,7 +73,7 @@ const Footer = () => {
           <FooterLink
             href='https://api.whatsapp.com/send?phone=51949376824'
             label="949 376 824"
-            icon={<IoLogoWhatsapp />}
+            icon={<WhatsAppIcon />}
             target="_blank"
           />
 

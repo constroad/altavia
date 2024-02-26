@@ -196,6 +196,7 @@ export const ClientsPage = () => {
           actions
         />
 
+        {/* client form modal */}
         <Modal
           isOpen={isOpen}
           onClose={handleCloseFormModal}
@@ -210,6 +211,7 @@ export const ClientsPage = () => {
           />
         </Modal>
 
+        {/* delete client modal */}
         <Modal
           isOpen={isOpenDeleteModal}
           onClose={onCloseDeleteModal}
@@ -217,6 +219,7 @@ export const ClientsPage = () => {
           footer={deleteFooter}
         />
 
+        {/* bank account modal */}
         <Modal
           isOpen={isOpenBankModal}
           onClose={handleCloseBankModal}

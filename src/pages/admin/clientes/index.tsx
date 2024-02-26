@@ -20,6 +20,8 @@ import axios from 'axios'
 
 const fetcher = (path: string) => axios.get(path);
 const postClient = (path: string, data: any) => axios.post(path, {data})
+const deleteClient = (path: string) => axios.delete(path);
+
 export const ClientsPage = () => {
   const [client, setClient] = useState<ClientType>(InitialClient)
   const [clientsList, setClientsList] = useState<ClientType[]>([])
@@ -31,13 +33,11 @@ export const ClientsPage = () => {
   const { onClose: onCloseBankModal, isOpen: isOpenBankModal, onOpen: onOpenBankModal } = useDisclosure()
 
   const { run: runGetClients, isLoading, refetch } = useAsync({
-    onSuccess(data) {
-      setClientsList(data.data)
-    },
+    onSuccess: (data) => setClientsList(data.data)
   }) 
-  const { run: runAddClient, isLoading: addingClient } = useAsync({ onSuccess: () => refetch() })
-  const { run: runDeleteClient, isLoading: deletingClient } = useAsync({ onSuccess: () => refetch() })
-  const { run: runEditClient, isLoading: editingClient } = useAsync({ onSuccess: () => refetch() })
+  const { run: runAddClient, isLoading: addingClient } = useAsync()
+  const { run: runDeleteClient, isLoading: deletingClient } = useAsync()
+  const { run: runEditClient, isLoading: editingClient } = useAsync()
 
   useEffect(() => {
     runGetClients(fetcher(API_ROUTES.client), {
@@ -69,14 +69,16 @@ export const ClientsPage = () => {
   }
 
   const handleSubmit = (e: any) => {
-    console.log('clicking...')
     e.preventDefault()
     const listIncludesClient = clientsList.some(x => x.ruc === client.ruc);
 
     if (!listIncludesClient) {
-      runAddClient(postClient(API_ROUTES.client, client))
-      toast.success('Cliente añadido con éxito!')
-
+      runAddClient(postClient(API_ROUTES.client, client), {
+        onSuccess: () => {
+          toast.success('Cliente añadido con éxito!')
+          refetch()
+        }
+      })
     } else {
       toast.warning('El cliente ya existe en la base de datos')
     }
@@ -94,8 +96,12 @@ export const ClientsPage = () => {
   const handleEditClient = (e: any) => {
     e.preventDefault()
     try {
-      runEditClient(axios.put(`${API_ROUTES.client}/${clientSelected?._id}`, clientSelected))
-      toast.success('Editaste correctamente la información del cliente')
+      runEditClient(axios.put(`${API_ROUTES.client}/${clientSelected?._id}`, clientSelected), {
+        onSuccess: () => {
+          toast.success('Editaste correctamente la información del cliente')
+          refetch()
+        }
+      })
 
     } catch (error) {
       console.log(error)
@@ -112,8 +118,12 @@ export const ClientsPage = () => {
   }
 
   const handleDeleteClient = () => {
-    runDeleteClient(axios.delete(`${API_ROUTES.client}/${clientSelected?._id}`))
-    toast.success(`Eliminaste al cliente ${clientSelected?.name}`)
+    runDeleteClient(deleteClient(`${API_ROUTES.client}/${clientSelected?._id}`), {
+      onSuccess: () => {
+        toast.success(`Eliminaste al cliente ${clientSelected?.name}`)
+        refetch()
+      }
+    })
 
     onCloseDeleteModal()
     setClientSelected(undefined)

@@ -8,7 +8,7 @@ const AdminPage = () => {
   return (
     <IntranetLayout>
       <Flex width='100%'>
-        <Grid templateColumns="repeat(2, 1fr)" gap="4px" mb="10px" width={{base: '100%', md: '40%'}} mx={{base:'', md: 'auto'}}  >
+        <Grid templateColumns={{base: "repeat(2, 1fr)", md: 'repeat(3, 1fr)'}} gap="4px" mb="10px" width={{base: '100%', md: '40%'}} mx={{base:'', md: 'auto'}}  >
           {adminTabs.map((tab) => (
             <Flex
               key={tab.name}
@@ -22,7 +22,7 @@ const AdminPage = () => {
               color={tab.textColor}
               height={{ base: '100px', md: '150px' }}
               fontSize={{base: 13, md: 20}}
-              lineHeight={{ base: '14px', md: '' }}
+              lineHeight={{ base: '20px', md: '' }}
               fontWeight={600}
               _hover={{ bgColor: tab.bgColor, opacity: 0.8 }}
               cursor='pointer'

@@ -28,28 +28,32 @@ export const BankAccountCard = (props: BankAccountCardProps) => {
 
       <Flex width='100%'>
         <Text fontWeight={600} width='110px'>Nro cuenta:</Text> {bankAccount?.accountNumber}
-        <Button
-          ml='10px'
-          maxWidth='30px'
-          height='20px'
-          fontSize={10}
-          onClick={() => copyToClipboard(bankAccount?.accountNumber, 'Nro de cuenta copiado')}
-        >
-          <CopyIcon fontSize={18}/>
-        </Button>
+        {bankAccount?.accountNumber !== '' && (
+          <Button
+            ml='10px'
+            maxWidth='30px'
+            height='20px'
+            fontSize={10}
+            onClick={() => copyToClipboard(bankAccount?.accountNumber, 'Nro de cuenta copiado')}
+          >
+            <CopyIcon fontSize={18}/>
+          </Button>
+        )}
       </Flex>
 
       <Flex>
         <Text fontWeight={600} width='110px'>CCI:</Text> {bankAccount?.cci}
-        <Button
-          ml='10px'
-          maxWidth='30px'
-          height='20px'
-          fontSize={10}
-          onClick={() => copyToClipboard(bankAccount?.cci, 'CCI copiado')}
-        >
-          <CopyIcon fontSize={18}/>
-        </Button>
+        {bankAccount?.cci !== '' && (
+          <Button
+            ml='10px'
+            maxWidth='30px'
+            height='20px'
+            fontSize={10}
+            onClick={() => copyToClipboard(bankAccount?.cci, 'CCI copiado')}
+          >
+            <CopyIcon fontSize={18}/>
+          </Button>
+        )}
       </Flex>
       
       <Flex>

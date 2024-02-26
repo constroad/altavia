@@ -10,7 +10,7 @@ interface Props {
   onSelectRow?: (item: any) => void;
   onEdit?: (item: any) => void;
   actions?: boolean;
-  isLoading: boolean
+  isLoading?: boolean
 }
 
 export const TableComponent = (props: Props) => {

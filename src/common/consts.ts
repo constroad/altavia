@@ -32,6 +32,7 @@ export const ADMIN_ROUTES = {
 export const API_ROUTES = {
   sendEmail: '/api/sendEmail',
   generatePDF: '/api/generate-pdf',
+  client: '/api/client',
   quote: '/api/quotes',
   generateQuotationPDF: '/api/generate-quotation-pdf',
   generateOrderPDF: '/api/generate-purchase-order-pdf'

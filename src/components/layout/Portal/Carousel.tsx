@@ -1,13 +1,13 @@
-import Slider from "react-slick";
-import { carouselImages } from './config';
 import { Box, Link, Text } from "@chakra-ui/react";
-import { MdNavigateBefore, MdNavigateNext } from "react-icons/md";
-import { BsCalculatorFill } from "react-icons/bs";
+import Slider from "react-slick";
 
-import "slick-carousel/slick/slick.css";
-import "slick-carousel/slick/slick-theme.css";
 import { APP_ROUTES } from "src/common/consts";
 import { useScreenSize } from "src/common/hooks";
+import { CalculatorIcon, NextIcon, PrevIcon } from "src/common/icons";
+
+import { carouselImages } from './config';
+import "slick-carousel/slick/slick.css";
+import "slick-carousel/slick/slick-theme.css";
 
 function SampleNextArrow(props: any) {
   const { onClick, isMobile } = props;
@@ -31,7 +31,7 @@ function SampleNextArrow(props: any) {
       }}
       onClick={onClick}
     >
-      <MdNavigateNext className='transition-opacity duration-500 ease-in-out hover:opacity-[1]' color='white' opacity={0.70} fontSize={60} />
+      <NextIcon className='transition-opacity duration-500 ease-in-out hover:opacity-[1]' color='white' opacity={0.70} fontSize={60} />
     </Box>
   );
 }
@@ -58,7 +58,7 @@ function SamplePrevArrow(props: any) {
       }}
       onClick={onClick}
     >
-      <MdNavigateBefore className='transition-opacity duration-500 ease-in-out hover:opacity-[1]' color='white' opacity={0.70} fontSize={60} />
+      <PrevIcon className='transition-opacity duration-500 ease-in-out hover:opacity-[1]' color='white' opacity={0.70} fontSize={60} />
     </Box>
   );
 }
@@ -117,7 +117,7 @@ export const CarouselComponent = () => {
         }}
         gap={2}
       >
-        <BsCalculatorFill />
+        <CalculatorIcon />
         <Text height='17px' alignSelf='center'>SOLICITA UNA COTIZACIÓN</Text>
       </Link>
       <Box className="triangle" position='absolute' bottom={{ base: '-20px', md: '-28px' }} right={{ base: '240px', md: '445px'}} />

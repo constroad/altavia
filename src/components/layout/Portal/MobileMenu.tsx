@@ -1,13 +1,12 @@
+import { MouseEvent } from 'react'
 import { useRouter } from 'next/router'
-
-import { Box, Flex, Text } from '@chakra-ui/react'
-import { FaCaretDown, FaCaretUp } from 'react-icons/fa'
-
-import { GenerateNavOptions, nosotrosOptions, serviciosOptions } from './config'
 import { signOut, useSession } from 'next-auth/react'
+import { Flex, Text } from '@chakra-ui/react'
+
 import { toast } from 'src/components/Toast'
 import { APP_ROUTES } from 'src/common/consts'
-import { MouseEvent } from 'react'
+import { DisplayOptionIcon, HideOptionIcon } from 'src/common/icons'
+import { GenerateNavOptions, nosotrosOptions, serviciosOptions } from './config'
 
 interface IMobileMenu {
   toggleNosotrosMenu: (option: string) => void
@@ -83,8 +82,8 @@ export const MobileMenu = (props: IMobileMenu) => {
               <Flex width='full' justifyContent='space-between'>
                 {opt.label}
                 {props.nosotrosMenu ?
-                  <FaCaretUp color='#004d89' fontSize={19} /> :
-                  <FaCaretDown color='#004d89' fontSize={19} />
+                  <HideOptionIcon color='#004d89' fontSize={19} /> :
+                  <DisplayOptionIcon color='#004d89' fontSize={19} />
                 }
               </Flex>
             )}
@@ -92,8 +91,8 @@ export const MobileMenu = (props: IMobileMenu) => {
               <Flex width='full' justifyContent='space-between'>
                 {opt.label}
                 {props.serviciosMenu ?
-                  <FaCaretUp color='#004d89' fontSize={19} /> :
-                  <FaCaretDown color='#004d89' fontSize={19} />
+                  <HideOptionIcon color='#004d89' fontSize={19} /> :
+                  <DisplayOptionIcon color='#004d89' fontSize={19} />
                 }
               </Flex>
             )}

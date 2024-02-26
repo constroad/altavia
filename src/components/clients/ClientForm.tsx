@@ -257,7 +257,7 @@ export const ClientForm = (props: ClientFormProps) => {
       </Flex>
 
       {addEditbankAccount && (
-        <Box>
+        <Box border='1px solid' borderColor='lightgray' px='10px' py='10px' rounded='8px' mt='4px'>
           <Grid
             templateColumns={{ base: "repeat(2, 1fr)", md: "repeat(2, 1fr)" }}
             gap={2}

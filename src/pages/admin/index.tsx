@@ -8,7 +8,7 @@ const AdminPage = () => {
   return (
     <IntranetLayout>
       <Flex width='100%'>
-        <Grid templateColumns={{base: "repeat(2, 1fr)", md: 'repeat(3, 1fr)'}} gap="4px" mb="10px" width={{base: '100%', md: '40%'}} mx={{base:'', md: 'auto'}}  >
+        <Grid templateColumns={{base: "repeat(2, 1fr)", md: 'repeat(3, 1fr)'}} gap="4px" mb="10px" width={{base: '100%', md: '60%'}} mx={{base:'', md: 'auto'}}  >
           {adminTabs.map((tab) => (
             <Flex
               key={tab.name}

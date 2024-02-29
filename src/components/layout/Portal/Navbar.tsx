@@ -224,7 +224,7 @@ export const Navbar = (props: INavbar) => {
               onClick={() => router.push(APP_ROUTES.login)}
             >
               <Text>
-                Login
+                Iniciar sesión
               </Text>
             </Box>
           )}
@@ -250,7 +250,7 @@ export const Navbar = (props: INavbar) => {
               onClick={handleSignOut}
             >
               <Text>
-                Logout
+                Cerrar sesión
               </Text>
             </Box>
           )}

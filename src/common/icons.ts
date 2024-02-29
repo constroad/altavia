@@ -4,7 +4,7 @@ import { MdContentCopy, MdNavigateBefore, MdNavigateNext, MdLocationOn } from "r
 import { IoLogoWhatsapp, IoMdMail } from "react-icons/io";
 import { ImMenu3, ImMenu4 } from "react-icons/im";
 import { RiSubtractLine } from "react-icons/ri";
-import { IoArrowBackOutline } from "react-icons/io5";
+import { IoArrowBackOutline, IoSearch } from "react-icons/io5";
 import { BsCalculatorFill } from "react-icons/bs";
 
 export const CopyIcon = MdContentCopy
@@ -25,3 +25,4 @@ export const RoadIcon = FaRoad
 export const TruckIcon = FaTruck
 export const DisplayOptionIcon = FaCaretDown
 export const HideOptionIcon = FaCaretUp
+export const SearchIcon = IoSearch

@@ -56,11 +56,16 @@ const Footer = () => {
             CONTÁCTANOS
           </Text>
           
-          <Flex marginTop='10px' gap='8px' alignItems='center'>
-            <LocationIcon className='!w-[16px] !h-[16px]' />
-            <Text width='100%' textAlign='justify' fontSize={14} fontWeight={300}>
-              Planta Carapongo - Ate, Lima
-            </Text>
+          <Flex marginTop='10px' gap='8px' alignItems='top'>
+            <LocationIcon className='!w-[18px] !h-[18px] mt-[5px]'/>
+            <Flex flexDir='column'>
+              <Text width='100%' fontSize={14} fontWeight={300}>
+                Carapongo S/N Urbanización El Portillo
+              </Text>
+              <Text width='100%' fontSize={14} fontWeight={300}>
+                Lurigancho - Chosica - Lima
+              </Text>
+            </Flex>
           </Flex>
 
           <Flex marginTop='5px' gap={2} alignItems='center'>

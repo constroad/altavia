@@ -6,7 +6,7 @@ export const quoteValidationSchema = z.object({
   _id: z.string().optional(),
   clientId: z.string().min(1),
   nro: z.number(),
-  date: z.string(),
+  date: z.date(),
   items: z.array(z.object({
     description: z.string().min(1),
     quantity: z.number(),

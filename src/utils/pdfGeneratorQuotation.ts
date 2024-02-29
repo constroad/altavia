@@ -3,18 +3,19 @@ import fs from 'fs';
 import path from 'path';
 import { addZerosAhead, formatPriceNumber, getDate } from 'src/common/utils';
 import { PDF_TEMPLATE } from 'src/common/consts';
+import { QuotePDFType } from 'src/components';
 
-export const generateQuotationPDF = async (data: any) => {
-  const { currentDayName, currentDayMonth, currentYear } = getDate()
+export const generateQuotationPDF = async (data: QuotePDFType) => {
+  const { currentDayName, currentDayMonth, currentYear } = getDate( data.date ?? null )
 
-  const nroCotizacion = addZerosAhead(+data.nroCotizacion)
-  const razonSocial = data.razonSocial.toUpperCase()
+  const nroCotizacion = addZerosAhead(+data.nroQuote)
+  const companyName = data.companyName.toUpperCase()
   const rucCliente = data.ruc === '' ? '- - -' : data.ruc
   const fecha = `${currentDayName}, ${currentDayMonth} de ${currentYear}`
 
   const unidad = 'M3'
   const totalCubos = data.nroCubos === '' ? '1' : data.nroCubos
-  const precioUnitario = data.precioUnitario === '' ? '480' : data.precioUnitario
+  const precioUnitario = data.unitPrice === '' ? '480' : data.unitPrice
   const totalWithoutIgv = +totalCubos * +precioUnitario
   const igv = totalWithoutIgv * 0.18
   const totalPresupuesto = totalWithoutIgv + igv
@@ -36,10 +37,16 @@ export const generateQuotationPDF = async (data: any) => {
 
 
   // Textos originales
+  const currentDayMonthStr = `Lima ${currentDayMonth}`
+  const yearStr = currentYear
+
   const totalCubosStr = totalCubos.replace(/\B(?=(\d{3})+(?!\d))/g, ",")
   const totalWithoutIgvStr = formatPriceNumber(totalWithoutIgv).toString();
   const igvStr = formatPriceNumber(igv).toString();
   const totalPresupuestoStr = formatPriceNumber(totalPresupuesto).toString();
+
+  const dayMonthWidth = helveticaBoldFont.widthOfTextAtSize(currentDayMonthStr, 14)
+  const yearWidth = helveticaBoldFont.widthOfTextAtSize(yearStr, 14)
 
   const textWidth = helveticaFont.widthOfTextAtSize(totalCubosStr, 7)
   const textWidth1 = helveticaFont.widthOfTextAtSize(totalWithoutIgvStr, 7);
@@ -53,14 +60,17 @@ export const generateQuotationPDF = async (data: any) => {
   const x2 = width - textWidth2 - rightMargin1;
   const x3 = width - textWidth3 - rightMargin1;
 
-  // texts
-  firstPage.drawText(razonSocial, { x: 90, y: 686.8, size: 12, font:  helveticaBoldFont})
+  const xDayMonth = width - dayMonthWidth - 50
+  const xYear = width - yearWidth - 50
 
-  firstPage.drawText(`Lima ${currentDayMonth}`, { x: 420, y: 760, size: 14, font: helveticaBoldFont  })
-  firstPage.drawText(currentYear, { x: 512, y: 746, size: 14, font: helveticaBoldFont  })
+  // texts
+  firstPage.drawText(companyName, { x: 90, y: 686.8, size: 12, font: helveticaBoldFont})
+
+  firstPage.drawText(currentDayMonthStr, { x: xDayMonth, y: 760, size: 14, font: helveticaBoldFont  })
+  firstPage.drawText(currentYear, { x: xYear, y: 746, size: 14, font: helveticaBoldFont  })
 
   firstPage.drawText(`${nroCotizacion} - ${currentYear}`, { x: 305, y: 592, size: 10, font: helveticaBoldFont })
-  firstPage.drawText(razonSocial, { x: 128, y: 569.6, size: 9, font: helveticaBoldFont })
+  firstPage.drawText(companyName, { x: 128, y: 569.6, size: 9, font: helveticaBoldFont })
   firstPage.drawText(rucCliente, { x: 128, y: 555.6, size: 9, font: helveticaBoldFont })
   firstPage.drawText(fecha, { x: 128, y: 533.6, size: 9 })
 

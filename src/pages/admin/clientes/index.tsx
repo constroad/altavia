@@ -7,7 +7,7 @@ import {
   TableComponent,
   toast,
   BankAccountType,
-  generateTableColumns,
+  generateClientColumns,
   ClientType,
   InitialClient,
   BankAccountCard
@@ -45,7 +45,7 @@ export const ClientsPage = () => {
     });
   }, []);
 
-  // ---- BANK ACCOUNT ---- //
+  // Bank account
   const handleSelectBankAccount = (acc: BankAccountType, row: ClientType) => {
     setBankAccountSelected(acc)
     setClientSelected(row)
@@ -58,10 +58,7 @@ export const ClientsPage = () => {
     onCloseBankModal()
   }
 
-  // ---- TABLE COLUMNS ---- //
-  const columns = generateTableColumns(handleSelectBankAccount)
-
-  // ---- ADD CLIENT ---- //
+  // Add client
   const handleCloseFormModal = () => {
     setClientSelected(undefined)
     setClient(InitialClient)
@@ -87,7 +84,7 @@ export const ClientsPage = () => {
     setClient(InitialClient)
   }
 
-  // ---- EDIT CLIENT ---- //
+  // Edit client
   const handleEditClientClick = (client: ClientType) => {
     setClientSelected(client)
     onOpen()
@@ -111,7 +108,7 @@ export const ClientsPage = () => {
     handleCloseFormModal()
   }
 
-  // ---- DELETE CLIENT ---- //
+  // Delete client
   const handleConfirmDelete = (client: ClientType) => {
     setClientSelected(client)
     onOpenDeleteModal()
@@ -129,7 +126,9 @@ export const ClientsPage = () => {
     setClientSelected(undefined)
   }
 
-  // ---- RENDERS ---- //
+  const columns = generateClientColumns(handleSelectBankAccount)
+
+  // Renders
   const footer = (
     <Button
       isLoading={clientSelected ? editingClient : addingClient}

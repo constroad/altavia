@@ -2,7 +2,7 @@ import { Button, Flex } from "@chakra-ui/react"
 import { TableColumn } from "../Table"
 import { BankAccountType, ClientType } from "./utils"
 
-export const generateTableColumns = ( handleSelectBankAccount: (acc: BankAccountType, row: ClientType) => void ) => {
+export const generateClientColumns = ( handleSelectBankAccount: (acc: BankAccountType, row: ClientType) => void ) => {
   const columns: TableColumn[] = [
     { key: 'name', label: 'Nombre', width: '18%' },
     { key: 'alias', label: 'Alias', width: '10%' },

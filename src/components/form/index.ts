@@ -1,4 +1,4 @@
-export * from './CotizacionForm'
+export * from '../quotes/QuoteForm'
 export * from './PurchaseOrderForm'
 export * from './utils'
 export * from './ProductTable'

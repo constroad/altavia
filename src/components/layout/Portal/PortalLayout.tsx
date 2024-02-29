@@ -88,7 +88,7 @@ export const PortalLayout = (props: IPortalLayout) => {
       <Box
         as='main'
         width='100%'
-        minHeight='calc(100vh - 305px)'
+        minHeight='calc(100vh - 306.5px)'
         paddingTop={{
           base: props.noPaddingTop ? '0px' : '40px',
           md: props.noPaddingTop ? '0px' : '50px'

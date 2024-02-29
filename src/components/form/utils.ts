@@ -1,18 +1,4 @@
-import { Dispatch, Product, PurchaseOrder, Quotation } from "src/common/types";
-
-// COTIZACION
-export const initialClient: Quotation = {
-  email: '',
-  name: '',
-  razonSocial: '',
-  ruc: '',
-  message: '',
-  phone: '',
-  nroCubos: '1',
-  precioUnitario: '480',
-  nroCotizacion: '',
-}
-
+import { Dispatch, Product, PurchaseOrder } from "src/common/types";
 
 // ORDEN DE COMPRA
 export const initialProduct: Product = {

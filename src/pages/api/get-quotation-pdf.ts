@@ -5,7 +5,7 @@ import fs from 'fs';
 import path from 'path';
 import puppeteer from 'puppeteer';
 
-import { initialClient, htmlCotizacion } from 'src/components';
+import { htmlCotizacion } from 'src/components';
 
 export default async (req: NextApiRequest, res: NextApiResponse) => {
   try {
@@ -16,7 +16,7 @@ export default async (req: NextApiRequest, res: NextApiResponse) => {
     const logoBuffer = fs.readFileSync(path.resolve(process.cwd(), 'public', 'constroad.jpeg'));
     const base64Logo = logoBuffer.toString('base64');
     
-    const htmlTemplate = htmlCotizacion(initialClient, base64bg, base64Logo)
+    const htmlTemplate = htmlCotizacion(base64bg, base64Logo)
     
     // Lanza un navegador headless
     const browser = await puppeteer.launch();

@@ -1,28 +1,32 @@
 import React, { useEffect, useState } from 'react'
-import { Box, Button, Flex, Grid, GridItem, Text } from '@chakra-ui/react'
+import { Box, Button, Flex, FormControl, FormLabel, Grid, GridItem, Input, InputGroup, InputRightElement, Text } from '@chakra-ui/react'
+import { BankAccountType, FormBankAccCard, initialBankAcc } from '../clients';
+import { FormInput, FormTextarea } from '../form';
+import { ProviderType } from './utils';
+import { Tag } from '../tag';
 import { PlusIcon, SubstracIcon } from 'src/common/icons';
-import { BankAccountType, ClientType, initialBankAcc } from './utils';
-import { FormInput } from '../form';
-import { FormBankAccCard } from './FormBankAccCard';
+import { CONSTROAD_COLORS } from 'src/styles/shared';
 
-interface ClientFormProps {
+interface ProviderFormProps {
   handleSubmit: (event: { preventDefault: () => void }) => void;
-  client: ClientType
-  setter: React.Dispatch<React.SetStateAction<ClientType>> | React.Dispatch<React.SetStateAction<ClientType | undefined>>;
-  clientSelected: ClientType | undefined;
+  provider: ProviderType
+  setter: React.Dispatch<React.SetStateAction<ProviderType>> | React.Dispatch<React.SetStateAction<ProviderType | undefined>>;
+  providerSelected: ProviderType | undefined;
 }
 
-export const ClientForm = (props: ClientFormProps) => {
-  const { handleSubmit, client, setter } = props
+export const ProviderForm = (props: ProviderFormProps) => {
+  const { handleSubmit, provider, setter } = props
+  const [tagValue, setTagValue] = useState('')
   const [addEditbankAccount, setAddEditbankAccount] = useState(false)
   const [bankAccount, setBankAccount] = useState(initialBankAcc)
-  const [bankAccountsList, setBankAccountsList] = useState<BankAccountType[]>(client.bankAccounts)
+  const [bankAccountsList, setBankAccountsList] = useState<BankAccountType[]>(provider.bankAccounts)
   const [editingBankAcc, setEditingBankAcc] = useState(false)
   const [bankAccountIndex, setBankAccountIndex] = useState<number>(0)
 
+  // effects
   useEffect(() => {
     if ( setter ) {
-      setter({...client, bankAccounts: bankAccountsList})
+      setter({...provider, bankAccounts: bankAccountsList})
     }
   }, [bankAccountsList])
 
@@ -33,8 +37,9 @@ export const ClientForm = (props: ClientFormProps) => {
     }
   }, [addEditbankAccount])
 
+  // handlers
   const handleChangeValue = (value: string, key: string) => {
-    if ( setter ) setter({ ...client, [key]: value })
+    if ( setter ) setter({ ...provider, [key]: value })
   }
 
   const handleChangeBankAccountValue = (value: string, key: string) => {
@@ -46,12 +51,14 @@ export const ClientForm = (props: ClientFormProps) => {
   }
 
   const handleAddBankAccount = () => {
-    const listIncludesBankAcc = client.bankAccounts.some( acc => acc.accountNumber === bankAccount.accountNumber );
+    const listIncludesBankAcc = provider.bankAccounts.some(
+      acc => acc.accountNumber === bankAccount.accountNumber
+    );
 
     if (!listIncludesBankAcc) {
       const newList = [...bankAccountsList, bankAccount]
       setBankAccountsList(newList)
-      setter({...client, bankAccounts: newList})
+      setter({...provider, bankAccounts: newList})
     } else {
       alert('Esta cuenta bancaria ya existe')
     }
@@ -88,11 +95,26 @@ export const ClientForm = (props: ClientFormProps) => {
     setEditingBankAcc(true)
   }
 
+  const handleAddString = () => {
+    if (provider.tags && tagValue !== '') {
+      const newTagsArr = [...provider.tags, tagValue]
+      setter({...provider, tags: newTagsArr})
+      setTagValue('')
+    }
+  };
+
+  const handleDeleteTag = (tagStr: string) => {
+    if (provider.tags) {
+      const newTagsArr = provider.tags.filter(tag => tag !== tagStr)
+      setter({...provider, tags: newTagsArr})
+    }
+  }
+
   return (
     <Box
       as='form'
       onSubmit={(e: { preventDefault: () => void }) => handleSubmitForm(e)}
-      id='add-or-edit-client-form'
+      id='add-or-edit-provider-form'
     >
       <Grid
         templateColumns={{ base: "repeat(2, 1fr)", md: "repeat(2, 1fr)" }}
@@ -100,10 +122,10 @@ export const ClientForm = (props: ClientFormProps) => {
       >
         <GridItem colSpan={2}>
           <FormInput
-            id='client-name'
+            id='provider-name'
             label='Nombre'
-            value={client.name ?? ''}
-            placeholder='Nombre del cliente'
+            value={provider.name ?? ''}
+            placeholder='Nombre del proveedor'
             onChange={(e) => handleChangeValue(e.target.value.toUpperCase(), 'name')}
             required
           />
@@ -111,19 +133,19 @@ export const ClientForm = (props: ClientFormProps) => {
 
         <GridItem colSpan={1}>
           <FormInput
-            id='client-alias'
+            id='provider-alias'
             label='Alias'
-            value={client.alias ?? ''}
-            placeholder='Alias del cliente'
+            value={provider.alias ?? ''}
+            placeholder='Alias del proveedor'
             onChange={(e) => handleChangeValue(e.target.value.toUpperCase(), 'alias')}
           />
         </GridItem>
 
         <GridItem colSpan={1}>
           <FormInput
-            id='client-ruc'
+            id='provider-ruc'
             label='RUC'
-            value={client.ruc ?? ''}
+            value={provider.ruc ?? ''}
             placeholder='20987654321'
             onChange={(e) => handleChangeValue(e.target.value.toUpperCase(), 'ruc')}
             required
@@ -132,47 +154,99 @@ export const ClientForm = (props: ClientFormProps) => {
 
         <GridItem colSpan={2}>
           <FormInput
-            id='client-address'
+            id='provider-address'
             label='Dirección'
-            value={client.address ?? ''}
+            value={provider.address ?? ''}
             placeholder='Av. Placeholder Mz. A Lt. 1'
-            onChange={(e) => handleChangeValue(e.target.value.toUpperCase(), 'address')}
+            onChange={(e) => handleChangeValue(e.target.value, 'address')}
           />
         </GridItem>
 
         <GridItem colSpan={1}>
           <FormInput
-            id='client-phone'
+            id='provider-phone'
             label='Teléfono'
-            value={client.phone ?? ''}
+            value={provider.phone ?? ''}
             placeholder='987654321'
-            onChange={(e) => handleChangeValue(e.target.value.toUpperCase(), 'phone')}
+            onChange={(e) => handleChangeValue(e.target.value, 'phone')}
           />
         </GridItem>
 
         <GridItem colSpan={1}>
           <FormInput
-            id='client-email'
+            id='provider-email'
             label='Correo'
-            value={client.phone ?? ''}
+            value={provider.email ?? ''}
             placeholder='example@gmail.com'
-            onChange={(e) => handleChangeValue(e.target.value.toUpperCase(), 'phone')}
+            onChange={(e) => handleChangeValue(e.target.value, 'email')}
           />
         </GridItem>
 
-        <GridItem colSpan={1}>
+        <GridItem colSpan={2}>
           <FormInput
-            id='client-web'
+            id='provider-web'
             label='Web'
-            value={client.web ?? ''}
+            value={provider.web ?? ''}
             placeholder='www.someweb.com'
-            onChange={(e) => handleChangeValue(e.target.value.toUpperCase(), 'web')}
+            onChange={(e) => handleChangeValue(e.target.value, 'web')}
           />
+        </GridItem>
+
+        <GridItem colSpan={2}>
+          <FormTextarea
+            id='provider-notes'
+            label='Notas'
+            value={provider.notes ?? ''}
+            placeholder='Notas'
+            onChange={(e) => handleChangeValue(e.target.value, 'notes')}
+          />
+        </GridItem>
+
+        <GridItem colSpan={2}>
+          <FormTextarea
+            id='provider-description'
+            label='Descripción'
+            value={provider.description ?? ''}
+            placeholder='Descripción'
+            onChange={(e) => handleChangeValue(e.target.value, 'description')}
+          />
+        </GridItem>
+
+        {/* Tags */}
+        <GridItem colSpan={2}>
+          <FormControl id="provider-note">
+            <FormLabel mb='6px' fontSize={{ base: 10, md: 12 }}>
+              Etiquetas <Text color='gray' fontSize={8} display='inline-block'>(optional)</Text>
+            </FormLabel>
+            <InputGroup>
+              <Input
+                _placeholder={{ fontSize: 12 }}
+                px={{ base: '5px', md: '3px' }}
+                fontSize={{ base: 10, md: 12 }}
+                lineHeight='14px'
+                height='28px'
+                type="text"
+                value={tagValue}
+                onChange={(e) => setTagValue(e.target.value)}
+                placeholder="Etiquetas"
+              />
+              <InputRightElement width="4.5rem" height='28px'>
+                <Button h="24px" my='auto' size="sm" onClick={handleAddString} fontSize={10} bg={CONSTROAD_COLORS.black} color='white' _hover={{ bg: CONSTROAD_COLORS.darkGray }}>
+                  Agregar
+                </Button>
+              </InputRightElement>
+            </InputGroup>
+            <Flex mt='4px' gap={1} flexWrap="wrap" width='100%'>
+              {provider.tags?.map(tag => (               
+                <Tag key={tag} tag={tag} onDelete={() => handleDeleteTag(tag)} />
+              ))}
+            </Flex>
+          </FormControl>
         </GridItem>
       </Grid>
 
-      <Flex fontWeight={600} mt='20px' fontSize={{base: 12, md: 14 }} width='100%' justifyContent='space-between'>
-        <Text>Cuentas bancarias: {client.bankAccounts.length > 0 && `(${client.bankAccounts.length})`}</Text>
+      <Flex fontWeight={600} mt='15px' fontSize={{base: 11, md: 12 }} width='100%' justifyContent='space-between' alignItems='center'>
+        <Text>Cuentas bancarias: {provider.bankAccounts.length > 0 && `(${provider.bankAccounts.length})`}</Text>
         <Button
           minWidth='20px'
           maxWidth='20px'
@@ -187,16 +261,17 @@ export const ClientForm = (props: ClientFormProps) => {
         </Button>
       </Flex>
 
+      {/* Bank account form */}
       {addEditbankAccount && (
-        <Box border='1px solid' borderColor='lightgray' px='10px' py='10px' rounded='8px' mt='4px'>
+        <Box border='1px solid' borderColor='lightgray' px='10px' py='10px' rounded='8px' mt='5px'>
           <Grid
             templateColumns={{ base: "repeat(2, 1fr)", md: "repeat(2, 1fr)" }}
             gap={2}
-            mt='10px'
+            mt='5px'
           >
             <GridItem>
               <FormInput
-                id='client-bankAccount-name'
+                id='provider-bankAccount-name'
                 label='Banco'
                 value={bankAccount.name ?? ''}
                 placeholder='BCP'
@@ -204,9 +279,10 @@ export const ClientForm = (props: ClientFormProps) => {
                 required
               />
             </GridItem>
+
             <GridItem>
               <FormInput
-                id='client-bankAccount-number'
+                id='provider-bankAccount-number'
                 label='Número de cuenta'
                 value={bankAccount.accountNumber ?? ''}
                 placeholder='000-0000000-00'
@@ -214,19 +290,21 @@ export const ClientForm = (props: ClientFormProps) => {
                 required
               />
             </GridItem>
+
             <GridItem>
               <FormInput
-                id='client-bankAccount-cci'
-                label='Número de cuenta'
+                id='provider-bankAccount-cci'
+                label='CCI'
                 value={bankAccount.cci ?? ''}
-                placeholder='000-0000000000-0000-00'
+                placeholder='000-0000000-0000-00'
                 onChange={(e) => handleChangeBankAccountValue(e.target.value.toUpperCase(), 'cci')}
                 required
               />
             </GridItem>
+
             <GridItem>
               <FormInput
-                id='client-bankAccount-type'
+                id='provider-bankAccount-type'
                 label='Tipo de cuenta'
                 value={bankAccount.type ?? ''}
                 placeholder='CORRIENTE'
@@ -240,7 +318,7 @@ export const ClientForm = (props: ClientFormProps) => {
                 <Button
                   size='sm'
                   maxWidth='60px'
-                  fontSize={12}
+                  fontSize={{ base: 10, md: 12 }}
                   height='29px'
                   colorScheme='red'
                   onClick={handleCancelBankAcc}
@@ -250,7 +328,7 @@ export const ClientForm = (props: ClientFormProps) => {
                 <Button
                   size='sm'
                   maxWidth={editingBankAcc ? '110px' : '60px'}
-                  fontSize={12}
+                  fontSize={{ base: 10, md: 12 }}
                   height='29px'
                   colorScheme='blue'
                   onClick={!editingBankAcc ? handleAddBankAccount : handleEditBankAccount}
@@ -263,8 +341,9 @@ export const ClientForm = (props: ClientFormProps) => {
         </Box>
       )}
 
+      {/* Add Edit Bank accounts card */}
       {!addEditbankAccount && (
-        <Flex flexDir='column' gap={1} mt='10px'>
+        <Flex flexDir='column' gap={1} mt='5px'>
           {bankAccountsList.length === 0 && (
             <Flex fontSize={12} fontWeight={600} width='100%' justifyContent='center'>
               No hay cuentas bancarias registradas
@@ -275,8 +354,8 @@ export const ClientForm = (props: ClientFormProps) => {
               key={acc.accountNumber}
               account={acc}
               index={idx}
-              onEditClick={() => handleEditBankAccClick(acc, idx)}
-              onDeleteClick={() => handleDeleteBankAccount(acc)}
+              onEditClick={handleEditBankAccClick}
+              onDeleteClick={handleDeleteBankAccount}
             />
           ))}
         </Flex>
@@ -285,4 +364,4 @@ export const ClientForm = (props: ClientFormProps) => {
   )
 }
 
-export default ClientForm
+export default ProviderForm;

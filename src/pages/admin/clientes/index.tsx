@@ -10,9 +10,11 @@ import {
   generateClientColumns,
   ClientType,
   InitialClient,
-  BankAccountCard
+  BankAccountCard,
+  generateMobileClientColumns,
+  ClientModal
 } from 'src/components'
-import { useAsync } from 'src/common/hooks';
+import { useAsync, useScreenSize } from 'src/common/hooks';
 import { API_ROUTES } from 'src/common/consts';
 import { PlusIcon } from 'src/common/icons';
 
@@ -31,6 +33,7 @@ export const ClientsPage = () => {
   const { onClose, isOpen, onOpen } = useDisclosure()
   const { onClose: onCloseDeleteModal, isOpen: isOpenDeleteModal, onOpen: onOpenDeleteModal } = useDisclosure()
   const { onClose: onCloseBankModal, isOpen: isOpenBankModal, onOpen: onOpenBankModal } = useDisclosure()
+  const { onClose: onCloseClientModal, isOpen: isOpenClientModal, onOpen: onOpenClientModal } = useDisclosure()
 
   const { run: runGetClients, isLoading, refetch } = useAsync({
     onSuccess: (data) => setClientsList(data.data)
@@ -38,6 +41,7 @@ export const ClientsPage = () => {
   const { run: runAddClient, isLoading: addingClient } = useAsync()
   const { run: runDeleteClient, isLoading: deletingClient } = useAsync()
   const { run: runEditClient, isLoading: editingClient } = useAsync()
+  const { isMobile, isDesktop } = useScreenSize()
 
   useEffect(() => {
     runGetClients(fetcher(API_ROUTES.client), {
@@ -126,7 +130,18 @@ export const ClientsPage = () => {
     setClientSelected(undefined)
   }
 
+  // client preview
+  const handleSelectClient = (client: ClientType) => {
+    setClientSelected(client)
+    onOpenClientModal()
+  }
+  const handleCloseClientModal = () => {
+    onCloseClientModal()
+    setClientSelected(undefined)
+  }
+
   const columns = generateClientColumns(handleSelectBankAccount)
+  const mobileColumns = generateMobileClientColumns(handleSelectClient)
 
   // Renders
   const footer = (
@@ -186,14 +201,26 @@ export const ClientsPage = () => {
           </Button>
         </Box>
 
-        <TableComponent
-          data={clientsList}
-          columns={columns}
-          onDelete={handleConfirmDelete}
-          onEdit={handleEditClientClick}
-          isLoading={isLoading}
-          actions
-        />
+        {isDesktop && (
+          <TableComponent
+            data={clientsList}
+            columns={columns}
+            onDelete={handleConfirmDelete}
+            onEdit={handleEditClientClick}
+            isLoading={isLoading}
+            actions
+          />
+        )}
+        {isMobile && (
+          <TableComponent
+            data={clientsList}
+            columns={mobileColumns}
+            onDelete={handleConfirmDelete}
+            onEdit={handleEditClientClick}
+            isLoading={isLoading}
+            actions
+          />
+        )}
 
         {/* client form modal */}
         <Modal
@@ -226,6 +253,17 @@ export const ClientsPage = () => {
         >
           <BankAccountCard bankAccount={bankAccountSelected} />
         </Modal>
+
+        {/* client preview modal */}
+        {clientSelected && (
+          <Modal
+            isOpen={isOpenClientModal}
+            onClose={handleCloseClientModal}
+            heading={clientSelected?.name}
+          >
+            <ClientModal client={clientSelected} />
+          </Modal>
+        )}
 
       </Flex>
     </IntranetLayout>

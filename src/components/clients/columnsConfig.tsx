@@ -48,3 +48,20 @@ export const generateClientColumns = ( handleSelectBankAccount: (acc: BankAccoun
 
   return columns
 }
+
+export const generateMobileClientColumns = ( handleSelectClient: (row: ClientType) => void ) => {
+  const columns: TableColumn[] = [
+    { key: 'name', label: 'Nombre', width: '65%' },
+    {
+      key: 'alias',
+      label: 'Ver',
+      width: '15%',
+      render: (item, row) => (
+        <Button onClick={() => handleSelectClient(row)} size='md' maxWidth='40px' maxHeight='25px' fontSize={12} colorScheme="blue">
+          Ver
+        </Button>
+      )
+    }
+  ]
+  return columns
+}

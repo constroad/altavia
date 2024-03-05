@@ -6,20 +6,21 @@ import { BankAccountType } from './utils'
 
 interface BankAccountCardProps {
   bankAccount: BankAccountType | undefined;
+  isMobile?: boolean
 }
 
 export const BankAccountCard = (props: BankAccountCardProps) => {
-  const { bankAccount } = props;
+  const { bankAccount, isMobile } = props;
   return (
     <Flex
       flexDir='column'
-      fontSize={14}
+      fontSize={ isMobile ? 10 : 14 }
       rounded='4px'
       px='10px'
-      py='5px'
+      py={ isMobile ? '3px' : '5px' }
       border='1px solid'
       borderColor='lightgray'
-      gap={2}
+      gap={isMobile ? 1 : 2}
       width='100%'
     >
       <Flex width='100%'>
@@ -31,8 +32,8 @@ export const BankAccountCard = (props: BankAccountCardProps) => {
         {bankAccount?.accountNumber !== '' && (
           <Button
             ml='10px'
-            maxWidth='30px'
-            height='20px'
+            maxWidth={ isMobile ? '25px' : '30px' }
+            height={ isMobile ? '15px' : '20px' }
             fontSize={10}
             onClick={() => copyToClipboard(bankAccount?.accountNumber, 'Nro de cuenta copiado')}
           >
@@ -46,8 +47,8 @@ export const BankAccountCard = (props: BankAccountCardProps) => {
         {bankAccount?.cci !== '' && (
           <Button
             ml='10px'
-            maxWidth='30px'
-            height='20px'
+            maxWidth={ isMobile ? '25px' : '30px' }
+            height={ isMobile ? '15px' : '20px' }
             fontSize={10}
             onClick={() => copyToClipboard(bankAccount?.cci, 'CCI copiado')}
           >

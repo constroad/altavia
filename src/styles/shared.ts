@@ -5,4 +5,5 @@ export const CONSTROAD_COLORS = {
   darkGray: '#606060',
   lightGray: '#C0C0C0',
   bgPDF: '#525659',
+  orange: '#ffaf52'
 }

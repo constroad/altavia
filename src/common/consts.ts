@@ -34,6 +34,7 @@ export const API_ROUTES = {
   generatePDF: '/api/generate-pdf',
   client: '/api/client',
   quote: '/api/quotes',
+  provider: '/api/provider',
   generateQuotationPDF: '/api/generate-quotation-pdf',
   generateOrderPDF: '/api/generate-purchase-order-pdf'
 }

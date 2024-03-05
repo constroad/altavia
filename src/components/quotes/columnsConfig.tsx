@@ -1,7 +1,8 @@
-import { Flex, Text } from "@chakra-ui/react"
+import { Button, Flex, Text } from "@chakra-ui/react"
 import { TableColumn } from "../Table"
 import { ClientType } from "../clients"
 import { formatPriceNumber, getDate } from "src/common/utils"
+import { QuoteType } from "./utils"
 
 export const generateQuoteColumns = ( clientList: ClientType[] ) => {
   const columns: TableColumn[] = [
@@ -98,5 +99,33 @@ export const generateQuoteColumns = ( clientList: ClientType[] ) => {
     },
   ]
 
+  return columns
+}
+
+
+export const generateMobileQuoteColumns = ( clientList: ClientType[], handleSelectQuote: (row: QuoteType) => void ) => {
+  const columns: TableColumn[] = [
+    {
+      key: 'clientId',
+      label: 'Cliente',
+      width: '65%',
+      render: (item, row) => {
+        const clientName = clientList.filter(client => client._id === item)
+        return (
+          <Text minWidth='180px'>{clientName?.[0]?.name}</Text>
+        )
+      }
+    },
+    {
+      key: 'nro',
+      label: 'Ver',
+      width: '15%',
+      render: (item, row) => (
+        <Button onClick={() => handleSelectQuote(row)} size='md' maxWidth='40px' maxHeight='25px' fontSize={12} colorScheme="blue">
+          Ver
+        </Button>
+      )
+    }
+  ]
   return columns
 }

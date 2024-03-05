@@ -7,17 +7,19 @@ import {
   IntranetLayout,
   Modal,
   QuoteForm,
+  QuoteModal,
   QuotePDFType,
   QuoteType,
   SearchComponent,
   TableComponent,
+  generateMobileQuoteColumns,
   generateQuoteColumns,
   getQuotePrices,
   initialQuote,
   toast
 } from 'src/components'
 import { PlusIcon } from 'src/common/icons'
-import { useAsync } from 'src/common/hooks'
+import { useAsync, useScreenSize } from 'src/common/hooks'
 import { API_ROUTES } from 'src/common/consts'
 import { getDate } from 'src/common/utils'
 
@@ -37,6 +39,8 @@ const QuotesPage = () => {
 
   const { isOpen: isOpenDelete, onOpen: onOpenDelete, onClose: onCloseDelete } = useDisclosure()
   const { isOpen: isOpenForm, onOpen: onOpenForm, onClose: onCloseForm } = useDisclosure()
+  const { isOpen: isOpenQuoteModal, onOpen: onOpenQuoteModal, onClose: onCloseQuoteModal } = useDisclosure()
+  const { isMobile, isDesktop } = useScreenSize()
   const { shortDate: pdfShortDate } = getDate(quoteSelected?.date)
   const { shortDate } = getDate()
   const router = useRouter()
@@ -217,7 +221,19 @@ const QuotesPage = () => {
     onCloseDelete()
   }
 
+  // quote mobile preview
+  const handleSelectQuote = (quote: QuoteType) => {
+    setQuoteSelected(quote)
+    onOpenQuoteModal()
+  }
+  const handleCloseQuoteModal = () => {
+    onCloseQuoteModal()
+    setQuoteSelected(undefined)
+  }
+
   const columns = generateQuoteColumns(clientsDB)
+  const mobileColumns = generateMobileQuoteColumns(clientsDB, handleSelectQuote)
+  const quoteClient = clientsDB.find(cli => cli._id === quoteSelected?.clientId)
 
   // Renders
   const deleteFooter = (
@@ -263,7 +279,7 @@ const QuotesPage = () => {
           </Button>
         </Box>
 
-        <Box>
+        {isDesktop && (
           <TableComponent
             data={quotesDBList.sort((a,b) => b.nro - a.nro)}
             columns={columns}
@@ -271,9 +287,20 @@ const QuotesPage = () => {
             onDelete={handleDeleteClick}
             actions
           />
-        </Box>
+        )}
+
+        {isMobile && (
+          <TableComponent
+            data={quotesDBList.sort((a,b) => b.nro - a.nro)}
+            columns={mobileColumns}
+            onEdit={handleEditQuote}
+            onDelete={handleDeleteClick}
+            actions
+          />
+        )}
       </Flex>
 
+      {/* quote form modal */}
       <Modal
         isOpen={isOpenForm}
         onClose={handleCloseFormModal}
@@ -288,7 +315,7 @@ const QuotesPage = () => {
               <SearchComponent
                 placeholder='Buscar cliente por nombre o RUC'
                 options={clientsDB}
-                propertiesToSearch={['name', 'ruc']}
+                propertiesToSearch={['name', 'ruc', 'alias']}
                 onSelect={handleSelectClient}
               />
             </Box>
@@ -321,6 +348,16 @@ const QuotesPage = () => {
         heading={`¿Estás seguro de eliminar la cotización ${quoteSelected?.nro}?`}
         footer={deleteFooter}
       />
+
+      {quoteSelected && isMobile && (
+        <Modal
+          isOpen={isOpenQuoteModal}
+          heading={quoteClient?.name}
+          onClose={handleCloseQuoteModal}
+        >
+          <QuoteModal quote={quoteSelected} clients={clientsDB} />
+        </Modal>
+      )}
 
     </IntranetLayout>
   )

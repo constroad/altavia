@@ -56,6 +56,7 @@ try {
     ruc: String,
     alias: { type: String, optional: true },
     address: { type: String, optional: true },
+    phone: { type: String, optional: true },
     email: { type: String, optional: true },
     web: { type: String, optional: true },
     bankAccounts: [

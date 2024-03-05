@@ -17,6 +17,8 @@ export type ClientType = {
   bankAccounts: BankAccountType[];
 }
 
+export const initialBankAcc: BankAccountType = {name: '', type: '', accountNumber: '', cci: ''}
+
 export const InitialClient: ClientType = {
   name: '',
   ruc: '',

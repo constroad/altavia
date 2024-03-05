@@ -1,11 +1,13 @@
 import React, { useEffect, useState } from 'react'
-import { Box, Input, InputGroup, InputLeftElement, ListItem, Text, UnorderedList } from '@chakra-ui/react';
+import { Box, Flex, Input, InputGroup, InputLeftElement, ListItem, Text, UnorderedList } from '@chakra-ui/react';
 import { SearchIcon } from 'src/common/icons';
+import { CONSTROAD_COLORS } from 'src/styles/shared';
 
 interface Option {
   name?: string
   label?: string
   ruc?: string
+  alias?: string
 }
 
 interface SearchComponentProps<T> {
@@ -57,7 +59,7 @@ export const SearchComponent = <T extends Option>(props: SearchComponentProps<T>
           roundedBottom={openOptionBox ? '0px' : '6px'}
           value={searchTerm}
           onChange={e => setSearchTerm(e.target.value)}
-          fontSize={{ base: 12, md: 14 }}
+          fontSize={{ base: 10, md: 12 }}
           borderColor='#e2e8f0'
           ring='none'
           outline='none'
@@ -85,7 +87,7 @@ export const SearchComponent = <T extends Option>(props: SearchComponentProps<T>
         >
           {filteredOptions.map((option, idx) => (
             <ListItem
-              key={option?.name || option.label || idx}
+              key={idx}
               display='flex'
               alignItems='center'
               cursor="pointer"
@@ -93,10 +95,13 @@ export const SearchComponent = <T extends Option>(props: SearchComponentProps<T>
               borderColor='#e2e8f0'
               _hover={{ background: '#e2e8f0' }}
               px='10px'
-              h='40px'
+              minH='40px'
               onClick={() => handleSelectOption(option)}
             >
-              <Text fontSize={10}>{option.name || option.label} - {option.ruc && option.ruc}</Text>
+              <Flex flexDir='column' py='2px'>
+                <Text fontSize={10}>{option.name || option.label} - {option.ruc}</Text>
+                <Text fontSize={8} color={CONSTROAD_COLORS.darkGray}>{option.alias?.toUpperCase()}</Text>
+              </Flex>
             </ListItem>
           ))}
         </UnorderedList>

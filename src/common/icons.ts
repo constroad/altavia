@@ -1,11 +1,12 @@
 import { BiSolidPencil } from "react-icons/bi";
 import { FaPlus, FaRegTrashAlt, FaRoad, FaTruck, FaCaretDown, FaCaretUp } from "react-icons/fa";
 import { MdContentCopy, MdNavigateBefore, MdNavigateNext, MdLocationOn } from "react-icons/md";
-import { IoLogoWhatsapp, IoMdMail } from "react-icons/io";
+import { IoLogoWhatsapp, IoMdMail, IoMdClose } from "react-icons/io";
 import { ImMenu3, ImMenu4 } from "react-icons/im";
 import { RiSubtractLine } from "react-icons/ri";
 import { IoArrowBackOutline, IoSearch } from "react-icons/io5";
 import { BsCalculatorFill } from "react-icons/bs";
+
 
 export const CopyIcon = MdContentCopy
 export const PlusIcon = FaPlus
@@ -26,3 +27,4 @@ export const TruckIcon = FaTruck
 export const DisplayOptionIcon = FaCaretDown
 export const HideOptionIcon = FaCaretUp
 export const SearchIcon = IoSearch
+export const CloseIcon = IoMdClose

@@ -10,8 +10,7 @@ export const adminTabs = [
   },
   {
     name: 'Proveedores',
-    // path: ADMIN_ROUTES.providers,
-    path: null,
+    path: ADMIN_ROUTES.providers,
     bgColor: CONSTROAD_COLORS.black,
     textColor: 'white'
   },

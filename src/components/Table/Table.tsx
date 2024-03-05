@@ -51,14 +51,14 @@ export const TableComponent = (props: Props) => {
               </Td>
             </Tr>
           )}
-          {data.length === 0 && !isLoading && (
+          { data.length === 0 && !isLoading && (
             <Tr position='relative' height='50px'>
               <Td width='100%' textAlign='center' position='absolute' fontSize={12}>
                 No data found.
               </Td>
             </Tr>
           )}
-          {data.length > 0 && !isLoading && (
+          { data.length > 0 && !isLoading && (
             data.map((row, index) => (
               <Tr key={index} onClick={() => handleSelectRow(row)}>
                 {columns.map(column => (
@@ -94,9 +94,7 @@ export const TableComponent = (props: Props) => {
                           <TrashIcon fontSize={12} /> 
                         </Button>
                       )}
-                      
                     </Flex>
-                  
                   </Td>
                 )}
               </Tr>

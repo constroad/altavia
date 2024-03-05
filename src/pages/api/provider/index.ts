@@ -19,7 +19,7 @@ const getAll = async (req: NextApiRequest, res: NextApiResponse) => {
 }
 
 const addRecord = async (req: NextApiRequest, res: NextApiResponse) => {
-  const newRecord = req.body as ProviderModel
+  const newRecord = req.body.data as ProviderModel
   const repo = new ProviderRepository();
   try {
     const result = providerValidationSchema.safeParse(newRecord);

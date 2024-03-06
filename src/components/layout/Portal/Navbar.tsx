@@ -1,12 +1,12 @@
 import { useRouter } from 'next/router'
-import { ImMenu3, ImMenu4 } from "react-icons/im";
+import { signOut, useSession } from 'next-auth/react';
 
 import { Box, Button, Flex, Image, Link, Text } from '@chakra-ui/react'
-import { APP_ROUTES } from 'src/common/consts';
-import { GenerateNavOptions, nosotrosOptions, serviciosOptions } from './config'
-import { signOut, useSession } from 'next-auth/react';
 import { toast } from 'src/components/Toast';
-import { useEffect } from 'react';
+import { APP_ROUTES } from 'src/common/consts';
+import { HideMenuMobileIcon, ShowMenuMobileIcon } from 'src/common/icons';
+
+import { GenerateNavOptions, nosotrosOptions, serviciosOptions } from './config'
 
 interface INavbar {
   isHoverButton: boolean
@@ -224,7 +224,7 @@ export const Navbar = (props: INavbar) => {
               onClick={() => router.push(APP_ROUTES.login)}
             >
               <Text>
-                Login
+                Iniciar sesión
               </Text>
             </Box>
           )}
@@ -250,7 +250,7 @@ export const Navbar = (props: INavbar) => {
               onClick={handleSignOut}
             >
               <Text>
-                Logout
+                Cerrar sesión
               </Text>
             </Box>
           )}
@@ -259,7 +259,7 @@ export const Navbar = (props: INavbar) => {
 
         <Flex display={{ base: 'block', md: 'none' }} textColor='black'>
           <Button paddingX='4px' paddingY='2px' onClick={(e) => props.handleMobileMenuClick(e)} backgroundColor='white'>
-            {props.showMobileOptions ? <ImMenu4 fontSize={26}/> : <ImMenu3 fontSize={26}/>}
+            {props.showMobileOptions ? <HideMenuMobileIcon fontSize={26}/> : <ShowMenuMobileIcon fontSize={26}/>}
           </Button>
         </Flex>
       </Flex>

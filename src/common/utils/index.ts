@@ -1,3 +1,4 @@
+
 export const onApiNoMatch = (req: any, res: any) => {
   res.status(405).end(`Method ${req.method} Not Allowed`);
 }
@@ -12,14 +13,15 @@ export const capitalizeText = (text: string) => {
   return capitalizedText
 }
 
-export const getDate = () => {
-  const date = new Date()
+export const getDate = (dateIsoString?: string) => {
+  let date = new Date()
+  if (dateIsoString) { date = new Date(dateIsoString) }
+
   const dayIndex = date.getDay();
   const weekDays = ['domingo', 'lunes', 'martes', 'miércoles', 'jueves', 'viernes', 'sábado'];
   const currentDayName = weekDays[dayIndex];
   const currentDayMonth = date.toLocaleDateString('es-ES', {day: '2-digit', month: 'long'})
   const currentYear = date.toLocaleDateString('es-ES', {year: 'numeric'})
-
 
   const year = date.getFullYear().toString().slice(-2);
   const month = (date.getMonth() + 1).toString().padStart(2, '0');
@@ -66,3 +68,6 @@ export function b64toBlob(base64Data: any, contentType = '', sliceSize = 512) {
   const blob = new Blob(byteArrays, { type: contentType });
   return blob;
 }
+
+export * from './api'
+export * from './numberToWords'

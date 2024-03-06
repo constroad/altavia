@@ -1,18 +1,4 @@
-import { Product, PurchaseOrder, Quotation } from "src/common/types";
-
-// COTIZACION
-export const initialClient: Quotation = {
-  email: '',
-  name: '',
-  razonSocial: '',
-  ruc: '',
-  message: '',
-  phone: '',
-  nroCubos: '1',
-  precioUnitario: '480',
-  nroCotizacion: '',
-}
-
+import { Dispatch, Product, PurchaseOrder } from "src/common/types";
 
 // ORDEN DE COMPRA
 export const initialProduct: Product = {
@@ -37,4 +23,19 @@ export const initialOrder: PurchaseOrder = {
   attachSignature: false
 }
 
-
+// DESPACHO
+export const initialDispatch: Dispatch = {
+  date: '',
+  material: 'MEZCLA ASFALTICA',
+  plate: '',
+  invoice: '',
+  guide: '',
+  m3: '1',
+  client: '',
+  project: '',
+  carrier: '',
+  price: '480',
+  igv: '86.40',
+  total: '566.40',
+  paymentDone: ''
+}

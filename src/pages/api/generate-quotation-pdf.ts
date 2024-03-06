@@ -7,16 +7,9 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     return res.status(405).json({ error: 'Method Not Allowed' });
   }
   try {
-    const { data } = req.body;
+    const { pdfData }  = req.body;
 
-    // Genera el PDF con pdf-lib
-    // const pdfBuffer = await createQuotePdf(data);
-
-    // Genera el PDF desde de un html
-    // const pdfBuffer = await createHtmlToPdf(htmlSample);
-
-    const pdfBuffer = await generateQuotationPDF(data)
-  
+    const pdfBuffer = await generateQuotationPDF(pdfData)
 
     const pdfStream = new Readable();
     pdfStream.push(pdfBuffer);

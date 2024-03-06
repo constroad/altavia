@@ -11,16 +11,30 @@ export const APP_ROUTES = {
   colocacionAsfaltica: '/colocacion-de-mezcla-asfaltica',
   transporte: '/transporte-de-carga',
   login: '/login',
+  cotizar: '/cotizar',
+  quote: '/quote',
+  quoteNew: '/quote/new',
   admin: '/admin',
 }
 
 export const ADMIN_ROUTES = {
   generateQuotation: '/admin/cotizar',
-  purchaseOrder: '/admin/orden-de-compra'
+  purchaseOrder: '/admin/orden-de-compra',
+  dispatch: '/admin/despacho',
+  controlHighway: '/admin/control-highway',
+  clients: '/admin/clientes',
+  providers: '/admin/proveedores',
+  products: '/admin/products',
+  production: '/admin/produccion',
+  employees: '/admin/empleados',
 }
 
 export const API_ROUTES = {
   sendEmail: '/api/sendEmail',
+  generatePDF: '/api/generate-pdf',
+  client: '/api/client',
+  quote: '/api/quotes',
+  provider: '/api/provider',
   generateQuotationPDF: '/api/generate-quotation-pdf',
   generateOrderPDF: '/api/generate-purchase-order-pdf'
 }

@@ -6,9 +6,9 @@ import Footer from './Footer';
 import { Navbar } from './Navbar';
 import { MobileMenu } from './MobileMenu';
 import { CustomHead } from './CustomHead';
-import { IoLogoWhatsapp } from "react-icons/io";
 import { useScreenSize } from 'src/common/hooks';
 import { useSession } from 'next-auth/react';
+import { WhatsAppIcon } from 'src/common/icons';
 
 interface IPortalLayout {
   children: React.ReactNode
@@ -88,7 +88,7 @@ export const PortalLayout = (props: IPortalLayout) => {
       <Box
         as='main'
         width='100%'
-        minHeight='calc(100vh - 305px)'
+        minHeight='calc(100vh - 306.5px)'
         paddingTop={{
           base: props.noPaddingTop ? '0px' : '40px',
           md: props.noPaddingTop ? '0px' : '50px'
@@ -113,7 +113,7 @@ export const PortalLayout = (props: IPortalLayout) => {
           borderColor='lightgrey'
         >
           <Flex justifyContent='center' alignItems='center' padding='10px' gap='6px'>
-            <IoLogoWhatsapp fontSize={24} color='green' />
+            <WhatsAppIcon fontSize={24} color='green' />
             <Text color='GrayText' fontSize={isMobile ? '14px' : '16px'}>
               Contáctanos
             </Text>

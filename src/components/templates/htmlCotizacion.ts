@@ -1,8 +1,7 @@
 import { CONSTROAD } from "src/common/consts";
-import { Quotation } from "src/common/types";
 import { getDate } from "src/common/utils";
 
-export const htmlCotizacion = (clientData: Quotation, bgImg: any, logoImg: any): string => {
+export const htmlCotizacion = ( bgImg: any, logoImg: any): string => {
   const { currentYear } = getDate()
 
   return `

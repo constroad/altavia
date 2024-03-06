@@ -5,7 +5,7 @@ import nodemailer from 'nodemailer';
 
 export default async function handler(req: NextApiRequest, res: NextApiResponse) {
   if (req.method === 'POST') {
-    const { email, name, message, phone, nroCubos, razonSocial, ruc } = req.body;
+    const { email, name, message, phone, nroCubos, companyName, ruc } = req.body;
 
     const phoneNumber = phone === '' ? '- - -' : phone
     const cubos = nroCubos === '' ? '1' : nroCubos
@@ -16,7 +16,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
   <body>
     <strong style="font-size: 20px;">Estamos procesando tu cotización!</strong><br><br>
     <strong>Nombre:</strong> ${name}<br>
-    <strong>Razón social:</strong> ${razonSocial}<br>
+    <strong>Razón social:</strong> ${companyName}<br>
     <strong>RUC:</strong> ${Ruc}<br><br>
     <strong>Nro. cubos:</strong> ${cubos}<br>
     <strong>Mensaje:</strong> ${message}<br><br>
@@ -39,7 +39,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
         from: process.env.EMAIL,
         cc: process.env.EMAIL,
         to: email,
-        subject: `Solicitud de cotizacion para ${razonSocial}`,
+        subject: `Solicitud de cotizacion para ${companyName}`,
         html: msg,
       };
 

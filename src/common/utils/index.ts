@@ -17,15 +17,15 @@ export const getDate = (dateIsoString?: string) => {
   let date = new Date()
   if (dateIsoString) { date = new Date(dateIsoString) }
 
-  const dayIndex = date.getDay();
+  const dayIndex = date.getUTCDay();
   const weekDays = ['domingo', 'lunes', 'martes', 'miércoles', 'jueves', 'viernes', 'sábado'];
   const currentDayName = weekDays[dayIndex];
-  const currentDayMonth = date.toLocaleDateString('es-ES', {day: '2-digit', month: 'long'})
+  const currentDayMonth = date.toLocaleDateString('es-ES', {day: '2-digit', month: 'long', timeZone: 'UTC'})
   const currentYear = date.toLocaleDateString('es-ES', {year: 'numeric'})
 
-  const year = date.getFullYear().toString().slice(-2);
-  const month = (date.getMonth() + 1).toString().padStart(2, '0');
-  const day = date.getDate().toString().padStart(2, '0');
+  const year = date.getUTCFullYear().toString().slice(-2);
+  const month = (date.getUTCMonth() + 1).toString().padStart(2, '0');
+  const day = date.getUTCDate().toString().padStart(2, '0');
 
   const shortDate = `${day}-${month}-${year}`;
   const slashDate = `${day}/${month}/${year}`;

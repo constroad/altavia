@@ -24,7 +24,7 @@ export const ADMIN_ROUTES = {
   controlHighway: '/admin/control-highway',
   clients: '/admin/clientes',
   providers: '/admin/proveedores',
-  products: '/admin/products',
+  products: '/admin/productos',
   production: '/admin/produccion',
   employees: '/admin/empleados',
 }
@@ -35,6 +35,7 @@ export const API_ROUTES = {
   client: '/api/client',
   quote: '/api/quotes',
   provider: '/api/provider',
+  products: '/api/product',
   generateQuotationPDF: '/api/generate-quotation-pdf',
   generateOrderPDF: '/api/generate-purchase-order-pdf'
 }

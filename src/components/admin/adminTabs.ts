@@ -16,8 +16,7 @@ export const adminTabs = [
   },
   {
     name: 'Productos',
-    // path: ADMIN_ROUTES.production,
-    path: null,
+    path: ADMIN_ROUTES.products,
     bgColor: CONSTROAD_COLORS.darkGray,
     textColor: 'white'
   },

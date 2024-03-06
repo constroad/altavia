@@ -8,6 +8,7 @@ interface FormInputProps {
   placeholder?: string;
   required?: boolean;
   disabled?: boolean;
+  type?: string;
   onChange: React.ChangeEventHandler<HTMLInputElement> | undefined
 }
 
@@ -23,7 +24,7 @@ export const FormInput = (props: FormInputProps) => {
         fontSize={{ base: 10, md: 12 }}
         lineHeight='14px'
         height='28px'
-        type='text'
+        type={props.type ?? 'text'}
         value={props.value}
         onChange={props.onChange}
         placeholder={props.placeholder}

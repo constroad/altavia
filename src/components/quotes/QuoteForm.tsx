@@ -11,12 +11,14 @@ type QuoteFormProps = {
   client?: ClientType | undefined
   isLoading: boolean;
   quoteNotes: string;
+  onChangeDate: (e: ChangeEvent<HTMLInputElement>) => void;
+  dateValue: string;
   handleChangeNotes: (e: ChangeEvent<HTMLInputElement>) => void;
   handleSubmit: (e: any) => void
 }
 
 export const QuoteForm = (props: QuoteFormProps) => {
-  const { quote, setter, handleSubmit, isLoading, client, quoteSelected } = props
+  const { quote, setter, handleSubmit, isLoading, client, quoteSelected, dateValue } = props
 
   const { formattedSubtotal, formattedIGV, formattedTotal } = getQuotePrices(
     quote?.items[0].quantity,
@@ -49,6 +51,19 @@ export const QuoteForm = (props: QuoteFormProps) => {
 
   return (
     <VStack as="form" onSubmit={handleSubmit} spacing={2.5} mt='5px'>
+      <Flex width='100%' justifyContent='start'>
+        <Box width='49%'>
+          <FormInput
+            id='quote-date'
+            label='Fecha'
+            value={dateValue}
+            placeholder='YYYY/MM/DD'
+            onChange={(e) => props.onChangeDate(e)}
+            type='date'
+          />
+        </Box>
+      </Flex>
+
       <Flex
         flexDir={{base: 'column', md: 'row'}}
         width='100%'

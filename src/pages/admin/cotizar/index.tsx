@@ -36,13 +36,12 @@ const QuotesPage = () => {
   const [quoteSelected, setQuoteSelected] = useState<QuoteType | undefined>()
   const [quoteNotes, setQuoteNotes] = useState<string>('')
   const [quotesDBList, setQuotesDBList] = useState<QuoteType[]>([])
+  const [customDate, setCustomDate] = useState('')
 
   const { isOpen: isOpenDelete, onOpen: onOpenDelete, onClose: onCloseDelete } = useDisclosure()
   const { isOpen: isOpenForm, onOpen: onOpenForm, onClose: onCloseForm } = useDisclosure()
   const { isOpen: isOpenQuoteModal, onOpen: onOpenQuoteModal, onClose: onCloseQuoteModal } = useDisclosure()
   const { isMobile, isDesktop } = useScreenSize()
-  const { shortDate: pdfShortDate } = getDate(quoteSelected?.date)
-  const { shortDate } = getDate()
   const router = useRouter()
   const date = new Date()
 
@@ -83,6 +82,10 @@ const QuotesPage = () => {
   const quoteNumber = quoteSelected?.nro ?? 100 + quotesDBList.length + 1
   
   // Handlers
+  const handleChangeCustomDate = (e: ChangeEvent<HTMLInputElement>) => {
+    const value = e.target.value
+    setCustomDate(value)
+  }
   const handleCloseFormModal = () => {
     onCloseForm()
     setClientSelected(undefined)
@@ -92,6 +95,10 @@ const QuotesPage = () => {
 
   const handleSubmit = async (event: any) => {
     event.preventDefault();
+    const inputDate = new Date(customDate)
+    const addQuoteDate = customDate.length > 0 ? inputDate : date
+    const editQuoteDate = customDate.length > 0 ? inputDate.toUTCString() : quoteSelected?.date
+    const { shortDate: quoteShortDate } = getDate(addQuoteDate.toUTCString())
 
     if (!quoteSelected) {
       const {
@@ -103,7 +110,7 @@ const QuotesPage = () => {
       const addQuote: QuoteType = {
         clientId: clientSelected?._id as string,
         nro: quoteNumber,
-        date: date.toISOString(),
+        date: addQuoteDate.toUTCString(),
         items: [{
           description: quote.items[0].description,
           quantity: Number(quote.items[0].quantity.toFixed(2)),
@@ -137,7 +144,7 @@ const QuotesPage = () => {
       const editQuote: QuoteType = {
         clientId: clientSelected?._id as string,
         nro: quoteNumber,
-        date: quoteSelected.date,
+        date: editQuoteDate as string,
         items: [{
           description: quoteSelected.items[0].description,
           quantity: Number(quoteSelected.items[0].quantity.toFixed(2)),
@@ -166,7 +173,7 @@ const QuotesPage = () => {
       companyName: clientSelected?.name ?? '',
       ruc: clientSelected?.ruc ?? '',
       notes: quoteNotes,
-      date: quoteSelected?.date ?? date.toISOString(),
+      date: quoteSelected?.date ? editQuoteDate as string : addQuoteDate.toUTCString(),
       nroCubos: quoteSelected?.items[0].quantity.toString() ?? quote.items[0].quantity.toString(),
       unitPrice: quoteSelected?.items[0].price.toString() ?? quote.items[0].price.toString(),
       nroQuote: quoteNumber.toString(),
@@ -174,7 +181,8 @@ const QuotesPage = () => {
 
     const response = await axios.post( API_ROUTES.generateQuotationPDF, { pdfData }, {responseType: 'arraybuffer'} )
     const blob = new Blob([response.data], { type: 'application/pdf' });
-    const pdfdate = quoteSelected ? pdfShortDate : shortDate
+    const { shortDate: pdfEditDate } = getDate(editQuoteDate)
+    const pdfdate = quoteSelected ? pdfEditDate : quoteShortDate
     const pdfName = `Cotización_${quoteNumber}_${clientSelected?.name}_${pdfdate}.pdf`
 
     const pdfUrl = URL.createObjectURL(blob);
@@ -186,6 +194,7 @@ const QuotesPage = () => {
     document.body.removeChild(link);
 
     handleCloseFormModal()
+    setCustomDate('')
   };
 
   const handleSelectClient = (client: ClientType) => {
@@ -335,6 +344,8 @@ const QuotesPage = () => {
             handleChangeNotes={handleChangeNotes}
             setter={quoteSelected ? setQuoteSelected : setQuote}
             client={clientSelected}
+            onChangeDate={handleChangeCustomDate}
+            dateValue={customDate}
             isLoading={quoteSelected ? loadingEditQuote : loadingAddQuote}
             handleSubmit={handleSubmit}
           />

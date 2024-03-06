@@ -154,9 +154,9 @@ export const ClientForm = (props: ClientFormProps) => {
           <FormInput
             id='client-email'
             label='Correo'
-            value={client.phone ?? ''}
+            value={client.email ?? ''}
             placeholder='example@gmail.com'
-            onChange={(e) => handleChangeValue(e.target.value.toUpperCase(), 'phone')}
+            onChange={(e) => handleChangeValue(e.target.value.toUpperCase(), 'email')}
           />
         </GridItem>
 

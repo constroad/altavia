@@ -62,7 +62,7 @@ export const TableComponent = (props: Props) => {
             data.map((row, index) => (
               <Tr key={index} onClick={() => handleSelectRow(row)}>
                 {columns.map(column => (
-                  <Td key={column.key} width={column.width} padding={2} textAlign={column.textAlign ?? 'start'}>
+                  <Td key={column.key} width={column.width} maxWidth={column.width} padding={2} textAlign={column.textAlign ?? 'start'} >
                     {column.render ? column.render(row[column.key], row) : row[column.key]}
                   </Td>
                 ))}

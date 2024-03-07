@@ -2,7 +2,7 @@ import React, { ChangeEvent } from 'react'
 import { Box, Button, Flex, Text, VStack } from '@chakra-ui/react'
 import { QuoteType, getQuotePrices } from '.';
 import { ClientType } from '../clients';
-import { FormInput, FormTextarea } from '../form';
+import { FormInput } from '../form';
 
 type QuoteFormProps = {
   quote: QuoteType;
@@ -10,10 +10,10 @@ type QuoteFormProps = {
   setter: React.Dispatch<React.SetStateAction<QuoteType>> | React.Dispatch<React.SetStateAction<QuoteType | undefined>>;
   client?: ClientType | undefined
   isLoading: boolean;
-  quoteNotes: string;
+  quoteNotes?: string | undefined;
   onChangeDate: (e: ChangeEvent<HTMLInputElement>) => void;
   dateValue: string;
-  handleChangeNotes: (e: ChangeEvent<HTMLInputElement>) => void;
+  handleChangeNotes?: (e: ChangeEvent<HTMLInputElement>) => void | undefined;
   handleSubmit: (e: any) => void
 }
 
@@ -67,27 +67,23 @@ export const QuoteForm = (props: QuoteFormProps) => {
       <Flex
         flexDir={{base: 'column', md: 'row'}}
         width='100%'
-        gap={{base: '16px', md: '8px'}}
+        gap={{base: '10px', md: '8px'}}
         justifyContent={{base: '', md: 'space-between'}}
       >
         <FormInput
           id='quote-company-name'
           label='Razón social'
           value={client?.name ?? ''}
-          placeholder='Empresa'
-          onChange={(e) => handleChangeValue(e, 'companyName')}
+          placeholder='Elige un cliente para llenar este campo'
           required
-          disabled
         />
 
         <FormInput
           id='quote-company-ruc'
           label='RUC'
           value={client?.ruc ?? ''}
-          placeholder='20987654321'
-          onChange={(e) => handleChangeValue(e, 'ruc')}
+          placeholder='Elige un cliente para llenar este campo'
           required
-          disabled
         />
       </Flex>
 
@@ -98,14 +94,6 @@ export const QuoteForm = (props: QuoteFormProps) => {
         placeholder='Nombre del producto'
         onChange={(e) => handleChangeValue(e, 'description')}
         required
-      />
-
-      <FormTextarea
-        id='quote-notes'
-        label='Notas'
-        value={props.quoteNotes}
-        placeholder='Escribe detalles sobre tu pedido: fecha, lugar, etc'
-        onChange={(e: any) => props.handleChangeNotes(e)}
       />
 
       <FormInput

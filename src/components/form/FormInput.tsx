@@ -19,7 +19,7 @@ export const FormInput = (props: FormInputProps) => {
         {props.label} {!props.required ? <Text color='gray' fontSize={8} display='inline-block'>(optional)</Text> : <Text color='red' fontSize={10} display='inline-block'>*</Text>}
       </FormLabel>
       <Input
-        _placeholder={{ fontSize: 10 }}
+        _placeholder={{ fontSize: {base: 10, md:12 } }}
         px={{ base: '5px', md: '3px' }}
         fontSize={{ base: 10, md: 12 }}
         lineHeight='14px'

@@ -242,6 +242,7 @@ const QuotesPage = () => {
     onOpenQuoteModal()
   }
   const handleCloseQuoteModal = () => {
+    setClientSelected(undefined)
     onCloseQuoteModal()
     setQuoteSelected(undefined)
   }

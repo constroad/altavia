@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react'
 import axios from 'axios';
 import { Box, Button, Flex, Text, useDisclosure } from '@chakra-ui/react';
 import {
+  AdministrationLayout,
   BankAccountCard,
   BankAccountType,
   IntranetLayout,
@@ -192,11 +193,11 @@ export const ProvidersPage = () => {
   )
 
   return (
-    <IntranetLayout>
+    <AdministrationLayout>
       <Flex
         flexDir='column'
         alignItems={{base: '', md: ''}}
-        marginX='auto'
+        width='100%'
         gap='5px'
       >
         <Text
@@ -205,6 +206,7 @@ export const ProvidersPage = () => {
           color='black'
           lineHeight={{ base: '28px', md: '39px' }}
           marginX='auto'
+          mt={ isMobile ? '10px' : '0px' }
         >
           Proveedores
         </Text>
@@ -222,7 +224,7 @@ export const ProvidersPage = () => {
           </Button>
         </Box>
 
-        <Box>
+        <Box width='100%'>
           {isMobile && (
             <TableComponent
               data={providersList}
@@ -304,7 +306,7 @@ export const ProvidersPage = () => {
           <ProviderModal provider={providerSelected} />
         </Modal>
       )}
-    </IntranetLayout>
+    </AdministrationLayout>
   )
 }
 

@@ -20,7 +20,7 @@ import {
 } from 'src/components'
 import { PlusIcon } from 'src/common/icons'
 import { useAsync, useScreenSize } from 'src/common/hooks'
-import { API_ROUTES } from 'src/common/consts'
+import { ADMIN_ROUTES, API_ROUTES } from 'src/common/consts'
 import { getDate } from 'src/common/utils'
 
 const fetcher = (path: string) => axios.get(path)
@@ -337,7 +337,19 @@ const QuotesPage = () => {
             </Box>
 
             <Box width='18%'>
-              <Button fontSize={10} whiteSpace='normal' gap='2px' px='10px' h='32px' onClick={() => router.push('/admin/clientes')}>
+              <Button
+                fontSize={10}
+                whiteSpace='normal'
+                gap='2px'
+                px='10px'
+                h='32px'
+                onClick={() => {
+                  router.push({
+                    pathname: ADMIN_ROUTES.clients,
+                    query: { prevRoute: ADMIN_ROUTES.generateQuotation }
+                  }
+                )}}
+              >
                 <Text>Añadir cliente </Text>
                 <PlusIcon/>
               </Button>

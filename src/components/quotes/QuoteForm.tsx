@@ -75,6 +75,7 @@ export const QuoteForm = (props: QuoteFormProps) => {
           label='Razón social'
           value={client?.name ?? ''}
           placeholder='Elige un cliente para llenar este campo'
+          onChange={() => null}
           required
         />
 
@@ -83,6 +84,7 @@ export const QuoteForm = (props: QuoteFormProps) => {
           label='RUC'
           value={client?.ruc ?? ''}
           placeholder='Elige un cliente para llenar este campo'
+          onChange={() => null}
           required
         />
       </Flex>

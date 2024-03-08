@@ -20,7 +20,7 @@ import {
 } from 'src/components'
 import { PlusIcon } from 'src/common/icons'
 import { useAsync, useScreenSize } from 'src/common/hooks'
-import { API_ROUTES } from 'src/common/consts'
+import { ADMIN_ROUTES, API_ROUTES } from 'src/common/consts'
 import { getDate } from 'src/common/utils'
 
 const fetcher = (path: string) => axios.get(path)
@@ -93,6 +93,34 @@ const QuotesPage = () => {
     setQuoteSelected(undefined)
   }
 
+  // generate and download pdf
+  const generateAndDownloadPDF = async (editQuoteDate:string | undefined, addQuoteDate: Date, quoteNumber: number, clientSelected: any, quoteShortDate: string) => {     
+     const pdfData: QuotePDFType = {
+      companyName: clientSelected?.name ?? '',
+      ruc: clientSelected?.ruc ?? '',
+      notes: quoteNotes,
+      date: quoteSelected?.date ? editQuoteDate as string : addQuoteDate.toUTCString(),
+      nroCubos: quoteSelected?.items[0].quantity.toString() ?? quote.items[0].quantity.toString(),
+      unitPrice: quoteSelected?.items[0].price.toString() ?? quote.items[0].price.toString(),
+      nroQuote: quoteNumber.toString(),
+    }
+
+    const response = await axios.post( API_ROUTES.generateQuotationPDF, { pdfData }, {responseType: 'arraybuffer'} )
+    const blob = new Blob([response.data], { type: 'application/pdf' });
+    const { shortDate: pdfEditDate } = getDate(editQuoteDate)
+    const pdfdate = quoteSelected ? pdfEditDate : quoteShortDate
+    const pdfName = `Cotización_${quoteNumber}_${clientSelected?.name}_${pdfdate}.pdf`
+
+    const pdfUrl = URL.createObjectURL(blob);
+    const link = document.createElement('a');
+    link.href = pdfUrl;
+    link.setAttribute('download', pdfName);
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+  }
+
+  // add or edit quotes
   const handleSubmit = async (event: any) => {
     event.preventDefault();
     const inputDate = new Date(customDate)
@@ -100,7 +128,7 @@ const QuotesPage = () => {
     const editQuoteDate = customDate.length > 0 ? inputDate.toUTCString() : quoteSelected?.date
     const { shortDate: quoteShortDate } = getDate(addQuoteDate.toUTCString())
 
-    if (!quoteSelected) {
+    if (!quoteSelected && clientSelected) {
       const {
         formattedSubtotal,
         formattedIGV,
@@ -108,7 +136,7 @@ const QuotesPage = () => {
       } = getQuotePrices( quote.items[0].quantity, quote.items[0].price )
 
       const addQuote: QuoteType = {
-        clientId: clientSelected?._id as string,
+        clientId: clientSelected?._id as string ?? '',
         nro: quoteNumber,
         date: addQuoteDate.toUTCString(),
         items: [{
@@ -126,6 +154,7 @@ const QuotesPage = () => {
         onSuccess: () => {
           refetchQuotes()
           toast.success('Cotización generada con éxito.')
+          generateAndDownloadPDF(editQuoteDate, addQuoteDate, quoteNumber, clientSelected, quoteShortDate)
         },
         onError: (err) => {
           console.log('Crate quote error:', err)
@@ -133,7 +162,7 @@ const QuotesPage = () => {
         }
       })
 
-    } else {
+    } else if (quoteSelected){
 
       const {
         formattedSubtotal,
@@ -160,6 +189,7 @@ const QuotesPage = () => {
         onSuccess: () => {
           refetchQuotes()
           toast.success('Cotización editada con éxito.')
+          generateAndDownloadPDF(editQuoteDate, addQuoteDate, quoteNumber, clientSelected, quoteShortDate)
         },
         onError: (err) => {
           console.log('Edit quote error:', err) 
@@ -167,31 +197,6 @@ const QuotesPage = () => {
         }
       })
     }
-
-    // Generate PDF
-    const pdfData: QuotePDFType = {
-      companyName: clientSelected?.name ?? '',
-      ruc: clientSelected?.ruc ?? '',
-      notes: quoteNotes,
-      date: quoteSelected?.date ? editQuoteDate as string : addQuoteDate.toUTCString(),
-      nroCubos: quoteSelected?.items[0].quantity.toString() ?? quote.items[0].quantity.toString(),
-      unitPrice: quoteSelected?.items[0].price.toString() ?? quote.items[0].price.toString(),
-      nroQuote: quoteNumber.toString(),
-    }
-
-    const response = await axios.post( API_ROUTES.generateQuotationPDF, { pdfData }, {responseType: 'arraybuffer'} )
-    const blob = new Blob([response.data], { type: 'application/pdf' });
-    const { shortDate: pdfEditDate } = getDate(editQuoteDate)
-    const pdfdate = quoteSelected ? pdfEditDate : quoteShortDate
-    const pdfName = `Cotización_${quoteNumber}_${clientSelected?.name}_${pdfdate}.pdf`
-
-    const pdfUrl = URL.createObjectURL(blob);
-    const link = document.createElement('a');
-    link.href = pdfUrl;
-    link.setAttribute('download', pdfName);
-    document.body.appendChild(link);
-    link.click();
-    document.body.removeChild(link);
 
     handleCloseFormModal()
     setCustomDate('')
@@ -236,6 +241,7 @@ const QuotesPage = () => {
     onOpenQuoteModal()
   }
   const handleCloseQuoteModal = () => {
+    setClientSelected(undefined)
     onCloseQuoteModal()
     setQuoteSelected(undefined)
   }
@@ -322,7 +328,7 @@ const QuotesPage = () => {
           <Flex width='100%' justifyContent='space-between' alignItems='center'>
             <Box width='80%'>
               <SearchComponent
-                placeholder='Buscar cliente por nombre o RUC'
+                placeholder='Buscar cliente por nombre, alias o RUC'
                 options={clientsDB}
                 propertiesToSearch={['name', 'ruc', 'alias']}
                 onSelect={handleSelectClient}
@@ -330,7 +336,19 @@ const QuotesPage = () => {
             </Box>
 
             <Box width='18%'>
-              <Button fontSize={10} whiteSpace='normal' gap='2px' px='10px' h='32px' onClick={() => router.push('/admin/clientes')}>
+              <Button
+                fontSize={10}
+                whiteSpace='normal'
+                gap='2px'
+                px='10px'
+                h='32px'
+                onClick={() => {
+                  router.push({
+                    pathname: ADMIN_ROUTES.clients,
+                    query: { prevRoute: ADMIN_ROUTES.generateQuotation }
+                  }
+                )}}
+              >
                 <Text>Añadir cliente </Text>
                 <PlusIcon/>
               </Button>

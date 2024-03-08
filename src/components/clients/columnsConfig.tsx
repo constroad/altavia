@@ -7,9 +7,9 @@ export const generateClientColumns = ( handleSelectBankAccount: (acc: BankAccoun
     { key: 'name', label: 'Nombre', width: '18%' },
     { key: 'alias', label: 'Alias', width: '10%' },
     { key: 'ruc', label: 'RUC', width: '5%' },
-    { key: 'address', label: 'Direccion', width: '15%' },
+    { key: 'address', label: 'Dirección', width: '15%' },
     { key: 'phone', label: 'Teléfono', width: '10%' },
-    { key: 'email', label: 'Email', width: '10%' },
+    { key: 'email', label: 'Correo', width: '10%' },
     { key: 'web', label: 'Web', width: '10%' },
     {
       key: 'bankAccounts',

@@ -49,7 +49,7 @@ export const IntranetNavbar = () => {
             <Text fontWeight={600} fontSize={{base: 11, md: 14}}>Bienvenido: Admin</Text>
             <Button
               fontWeight={500}
-              width={{ base: '70px', md: '78px' }}
+              width={{ base: '75px', md: '100px' }}
               height={{base: '25px', md: '40px'}}
               color='white'
               onClick={handleSignOut}
@@ -57,7 +57,7 @@ export const IntranetNavbar = () => {
               fontSize={{base: 10, md: 14}}
               _hover={{opacity: 0.7}}
             >
-              Logout
+              Cerrar sesión
             </Button>
           </Flex>
         )}

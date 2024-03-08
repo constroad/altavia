@@ -4,6 +4,7 @@ import { SnackbarProvider } from 'notistack'
 import { ChakraProvider } from '@chakra-ui/react'
 import { SessionProvider } from 'next-auth/react'
 import '@/styles/globals.css'
+import { SidebarProvider } from 'src/context';
 
 export default function App({ Component, pageProps: { session, ...pageProps } }: AppProps) {
   const [domLoaded, setDomLoaded] = useState(false);
@@ -15,19 +16,21 @@ export default function App({ Component, pageProps: { session, ...pageProps } }:
   return (
     <>
       <SessionProvider session={session}>
-        {domLoaded && (
-          <ChakraProvider>
-            <SnackbarProvider
-              maxSnack={3}
-              anchorOrigin={{
-                vertical: 'top',
-                horizontal: 'right',
-              }}
-            >
-              <Component {...pageProps} /> 
-            </SnackbarProvider>
-          </ChakraProvider>
-        )}
+        <SidebarProvider>
+          {domLoaded && (
+            <ChakraProvider>
+              <SnackbarProvider
+                maxSnack={3}
+                anchorOrigin={{
+                  vertical: 'top',
+                  horizontal: 'right',
+                }}
+              >
+                <Component {...pageProps} /> 
+              </SnackbarProvider>
+            </ChakraProvider>
+          )}
+        </SidebarProvider>
       </SessionProvider>
     </>
   )

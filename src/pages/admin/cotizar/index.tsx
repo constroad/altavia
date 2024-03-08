@@ -149,7 +149,6 @@ const QuotesPage = () => {
         igv: +formattedIGV,
         total: +formattedTotal
       }
-      console.log('addQuote:', addQuote)
 
       runAddQuote(postQuote(API_ROUTES.quote, addQuote), {
         onSuccess: () => {

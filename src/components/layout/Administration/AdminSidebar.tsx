@@ -18,7 +18,6 @@ interface AdminSidebarProps {
 export const AdminSidebar = (props: AdminSidebarProps) => {
   const { isMobile, menuOptions, children } = props;
   const { isExpanded, toggleSidebar } = useSidebar();
-  console.log('isExpanded:', isExpanded)
   const router = useRouter()
 
   const handleToggleSidebar = () => {

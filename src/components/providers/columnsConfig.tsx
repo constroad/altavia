@@ -12,9 +12,9 @@ export const generateProviderColumns = (
     { key: 'name', label: 'Nombre', width: '18%' },
     { key: 'alias', label: 'Alias', width: '10%' },
     { key: 'ruc', label: 'RUC', width: '5%' },
-    { key: 'address', label: 'Direccion', width: '17%' },
+    { key: 'address', label: 'Dirección', width: '17%' },
     { key: 'phone', label: 'Teléfono', width: '5%' },
-    { key: 'email', label: 'Email', width: '5%' },
+    { key: 'email', label: 'Correo', width: '5%' },
     { key: 'web', label: 'Web', width: '5%' },
     {
       key: 'bankAccounts',

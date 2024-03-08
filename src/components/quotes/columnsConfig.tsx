@@ -108,18 +108,30 @@ export const generateMobileQuoteColumns = ( clientList: ClientType[], handleSele
     {
       key: 'clientId',
       label: 'Cliente',
-      width: '65%',
+      width: '100px',
       render: (item, row) => {
         const clientName = clientList.filter(client => client._id === item)
         return (
-          <Text minWidth='180px'>{clientName?.[0]?.name}</Text>
+          <Text minWidth={{ base: '', md: '180px' }} >{clientName?.[0]?.name}</Text>
+        )
+      }
+    },
+    { key: 'nro', label: 'Nro', width: '5%' },
+    {
+      key: 'date',
+      label: 'Fecha',
+      width: '5%',
+      render: (item, row) => {
+        const { slashDate } = getDate(item)
+        return (
+          <Text>{slashDate}</Text>
         )
       }
     },
     {
-      key: 'nro',
+      key: 'subTotal',
       label: 'Ver',
-      width: '15%',
+      width: '10%',
       render: (item, row) => (
         <Button onClick={() => handleSelectQuote(row)} size='md' maxWidth='40px' maxHeight='25px' fontSize={12} colorScheme="blue">
           Ver

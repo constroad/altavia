@@ -20,7 +20,7 @@ import {
 } from 'src/components'
 import { PlusIcon } from 'src/common/icons'
 import { useAsync, useScreenSize } from 'src/common/hooks'
-import { API_ROUTES } from 'src/common/consts'
+import { ADMIN_ROUTES, API_ROUTES } from 'src/common/consts'
 import { getDate } from 'src/common/utils'
 
 const fetcher = (path: string) => axios.get(path)
@@ -36,13 +36,12 @@ const QuotesPage = () => {
   const [quoteSelected, setQuoteSelected] = useState<QuoteType | undefined>()
   const [quoteNotes, setQuoteNotes] = useState<string>('')
   const [quotesDBList, setQuotesDBList] = useState<QuoteType[]>([])
+  const [customDate, setCustomDate] = useState('')
 
   const { isOpen: isOpenDelete, onOpen: onOpenDelete, onClose: onCloseDelete } = useDisclosure()
   const { isOpen: isOpenForm, onOpen: onOpenForm, onClose: onCloseForm } = useDisclosure()
   const { isOpen: isOpenQuoteModal, onOpen: onOpenQuoteModal, onClose: onCloseQuoteModal } = useDisclosure()
   const { isMobile, isDesktop } = useScreenSize()
-  const { shortDate: pdfShortDate } = getDate(quoteSelected?.date)
-  const { shortDate } = getDate()
   const router = useRouter()
   const date = new Date()
 
@@ -83,6 +82,10 @@ const QuotesPage = () => {
   const quoteNumber = quoteSelected?.nro ?? 100 + quotesDBList.length + 1
   
   // Handlers
+  const handleChangeCustomDate = (e: ChangeEvent<HTMLInputElement>) => {
+    const value = e.target.value
+    setCustomDate(value)
+  }
   const handleCloseFormModal = () => {
     onCloseForm()
     setClientSelected(undefined)
@@ -90,10 +93,42 @@ const QuotesPage = () => {
     setQuoteSelected(undefined)
   }
 
+  // generate and download pdf
+  const generateAndDownloadPDF = async (editQuoteDate:string | undefined, addQuoteDate: Date, quoteNumber: number, clientSelected: any, quoteShortDate: string) => {     
+     const pdfData: QuotePDFType = {
+      companyName: clientSelected?.name ?? '',
+      ruc: clientSelected?.ruc ?? '',
+      notes: quoteNotes,
+      date: quoteSelected?.date ? editQuoteDate as string : addQuoteDate.toUTCString(),
+      nroCubos: quoteSelected?.items[0].quantity.toString() ?? quote.items[0].quantity.toString(),
+      unitPrice: quoteSelected?.items[0].price.toString() ?? quote.items[0].price.toString(),
+      nroQuote: quoteNumber.toString(),
+    }
+
+    const response = await axios.post( API_ROUTES.generateQuotationPDF, { pdfData }, {responseType: 'arraybuffer'} )
+    const blob = new Blob([response.data], { type: 'application/pdf' });
+    const { shortDate: pdfEditDate } = getDate(editQuoteDate)
+    const pdfdate = quoteSelected ? pdfEditDate : quoteShortDate
+    const pdfName = `Cotización_${quoteNumber}_${clientSelected?.name}_${pdfdate}.pdf`
+
+    const pdfUrl = URL.createObjectURL(blob);
+    const link = document.createElement('a');
+    link.href = pdfUrl;
+    link.setAttribute('download', pdfName);
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+  }
+
+  // add or edit quotes
   const handleSubmit = async (event: any) => {
     event.preventDefault();
+    const inputDate = new Date(customDate)
+    const addQuoteDate = customDate.length > 0 ? inputDate : date
+    const editQuoteDate = customDate.length > 0 ? inputDate.toUTCString() : quoteSelected?.date
+    const { shortDate: quoteShortDate } = getDate(addQuoteDate.toUTCString())
 
-    if (!quoteSelected) {
+    if (!quoteSelected && clientSelected) {
       const {
         formattedSubtotal,
         formattedIGV,
@@ -101,9 +136,9 @@ const QuotesPage = () => {
       } = getQuotePrices( quote.items[0].quantity, quote.items[0].price )
 
       const addQuote: QuoteType = {
-        clientId: clientSelected?._id as string,
+        clientId: clientSelected?._id as string ?? '',
         nro: quoteNumber,
-        date: date.toISOString(),
+        date: addQuoteDate.toUTCString(),
         items: [{
           description: quote.items[0].description,
           quantity: Number(quote.items[0].quantity.toFixed(2)),
@@ -119,6 +154,7 @@ const QuotesPage = () => {
         onSuccess: () => {
           refetchQuotes()
           toast.success('Cotización generada con éxito.')
+          generateAndDownloadPDF(editQuoteDate, addQuoteDate, quoteNumber, clientSelected, quoteShortDate)
         },
         onError: (err) => {
           console.log('Crate quote error:', err)
@@ -126,7 +162,7 @@ const QuotesPage = () => {
         }
       })
 
-    } else {
+    } else if (quoteSelected){
 
       const {
         formattedSubtotal,
@@ -137,7 +173,7 @@ const QuotesPage = () => {
       const editQuote: QuoteType = {
         clientId: clientSelected?._id as string,
         nro: quoteNumber,
-        date: quoteSelected.date,
+        date: editQuoteDate as string,
         items: [{
           description: quoteSelected.items[0].description,
           quantity: Number(quoteSelected.items[0].quantity.toFixed(2)),
@@ -153,6 +189,7 @@ const QuotesPage = () => {
         onSuccess: () => {
           refetchQuotes()
           toast.success('Cotización editada con éxito.')
+          generateAndDownloadPDF(editQuoteDate, addQuoteDate, quoteNumber, clientSelected, quoteShortDate)
         },
         onError: (err) => {
           console.log('Edit quote error:', err) 
@@ -161,31 +198,8 @@ const QuotesPage = () => {
       })
     }
 
-    // Generate PDF
-    const pdfData: QuotePDFType = {
-      companyName: clientSelected?.name ?? '',
-      ruc: clientSelected?.ruc ?? '',
-      notes: quoteNotes,
-      date: quoteSelected?.date ?? date.toISOString(),
-      nroCubos: quoteSelected?.items[0].quantity.toString() ?? quote.items[0].quantity.toString(),
-      unitPrice: quoteSelected?.items[0].price.toString() ?? quote.items[0].price.toString(),
-      nroQuote: quoteNumber.toString(),
-    }
-
-    const response = await axios.post( API_ROUTES.generateQuotationPDF, { pdfData }, {responseType: 'arraybuffer'} )
-    const blob = new Blob([response.data], { type: 'application/pdf' });
-    const pdfdate = quoteSelected ? pdfShortDate : shortDate
-    const pdfName = `Cotización_${quoteNumber}_${clientSelected?.name}_${pdfdate}.pdf`
-
-    const pdfUrl = URL.createObjectURL(blob);
-    const link = document.createElement('a');
-    link.href = pdfUrl;
-    link.setAttribute('download', pdfName);
-    document.body.appendChild(link);
-    link.click();
-    document.body.removeChild(link);
-
     handleCloseFormModal()
+    setCustomDate('')
   };
 
   const handleSelectClient = (client: ClientType) => {
@@ -227,6 +241,7 @@ const QuotesPage = () => {
     onOpenQuoteModal()
   }
   const handleCloseQuoteModal = () => {
+    setClientSelected(undefined)
     onCloseQuoteModal()
     setQuoteSelected(undefined)
   }
@@ -313,7 +328,7 @@ const QuotesPage = () => {
           <Flex width='100%' justifyContent='space-between' alignItems='center'>
             <Box width='80%'>
               <SearchComponent
-                placeholder='Buscar cliente por nombre o RUC'
+                placeholder='Buscar cliente por nombre, alias o RUC'
                 options={clientsDB}
                 propertiesToSearch={['name', 'ruc', 'alias']}
                 onSelect={handleSelectClient}
@@ -321,7 +336,19 @@ const QuotesPage = () => {
             </Box>
 
             <Box width='18%'>
-              <Button fontSize={10} whiteSpace='normal' gap='2px' px='10px' h='32px' onClick={() => router.push('/admin/clientes')}>
+              <Button
+                fontSize={10}
+                whiteSpace='normal'
+                gap='2px'
+                px='10px'
+                h='32px'
+                onClick={() => {
+                  router.push({
+                    pathname: ADMIN_ROUTES.clients,
+                    query: { prevRoute: ADMIN_ROUTES.generateQuotation }
+                  }
+                )}}
+              >
                 <Text>Añadir cliente </Text>
                 <PlusIcon/>
               </Button>
@@ -335,6 +362,8 @@ const QuotesPage = () => {
             handleChangeNotes={handleChangeNotes}
             setter={quoteSelected ? setQuoteSelected : setQuote}
             client={clientSelected}
+            onChangeDate={handleChangeCustomDate}
+            dateValue={customDate}
             isLoading={quoteSelected ? loadingEditQuote : loadingAddQuote}
             handleSubmit={handleSubmit}
           />

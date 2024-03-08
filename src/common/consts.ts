@@ -18,15 +18,15 @@ export const APP_ROUTES = {
 }
 
 export const ADMIN_ROUTES = {
+  clients: '/admin/clientes',
+  employees: '/admin/empleados',
+  providers: '/admin/proveedores',
+  products: '/admin/products',
   generateQuotation: '/admin/cotizar',
   purchaseOrder: '/admin/orden-de-compra',
   dispatch: '/admin/despacho',
   controlHighway: '/admin/control-highway',
-  clients: '/admin/clientes',
-  providers: '/admin/proveedores',
-  products: '/admin/productos',
   production: '/admin/produccion',
-  employees: '/admin/empleados',
 }
 
 export const API_ROUTES = {

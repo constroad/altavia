@@ -22,7 +22,7 @@ const updateRecord = async (req: NextApiRequest, res: NextApiResponse) => {
   const repo = new ProductRepository();
   const { id } = req.query as Record<string, string>;
   try {
-    const response = await repo.update(id, req.body);
+    const response = await repo.update(id, req.body.data);
     res.status(200).json(response);
   } catch (error: any) {
     console.error(error.message);

@@ -21,7 +21,7 @@ export const ADMIN_ROUTES = {
   clients: '/admin/clientes',
   employees: '/admin/empleados',
   providers: '/admin/proveedores',
-  products: '/admin/products',
+  products: '/admin/productos',
   generateQuotation: '/admin/cotizar',
   purchaseOrder: '/admin/orden-de-compra',
   dispatch: '/admin/despacho',

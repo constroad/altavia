@@ -1,5 +1,5 @@
 import React, { ChangeEvent } from 'react'
-import { Box, Button, Flex, Text, VStack } from '@chakra-ui/react'
+import { Box, Button, Flex, Switch, Text, VStack } from '@chakra-ui/react'
 import { QuoteType, getQuotePrices } from '.';
 import { ClientType } from '../clients';
 import { FormInput } from '../form';
@@ -14,7 +14,9 @@ type QuoteFormProps = {
   onChangeDate: (e: ChangeEvent<HTMLInputElement>) => void;
   dateValue: string;
   handleChangeNotes?: (e: ChangeEvent<HTMLInputElement>) => void | undefined;
-  handleSubmit: (e: any) => void
+  addIGV: boolean;
+  onChangeAddIGV: () => void;
+  handleSubmit: (e: any) => void;
 }
 
 export const QuoteForm = (props: QuoteFormProps) => {
@@ -112,18 +114,43 @@ export const QuoteForm = (props: QuoteFormProps) => {
         onChange={(e) => handleChangeValue(e, 'price')}
       />
 
-      <Flex width='100%' justifyContent='space-between' fontSize={{ base: 10, md: 12 }}>
+      <Box width='100%' textAlign='start' marginTop='10px'>
+        <Text fontSize={{ base: 10, md: 12 }} fontWeight={600} >¿Aplicar IGV?</Text>
+        <Flex gap='10px' alignItems='center' marginTop='3px'>
+          <Switch size="md" onChange={props.onChangeAddIGV} isChecked={props.addIGV} />
+          <Text fontSize={{ base: 10, md: 12 }} fontWeight={600}>{props.addIGV ? 'Sí' : 'No'}</Text>
+        </Flex>
+      </Box>
+
+      <Flex width='100%' justifyContent='space-between' fontSize={{ base: 10, md: 12 }} mt='10px'>
         <Flex flexDir='column'>
           <Text fontWeight={600}>Subtotal</Text>
           <Box paddingY='2px' paddingX='4px' rounded='4px' border='0.5px solid' borderColor='lightgray'>{formattedSubtotal}</Box>
         </Flex>
         <Flex flexDir='column'>
           <Text fontWeight={600}>IGV</Text>
-          <Box paddingY='2px' paddingX='4px' rounded='4px' border='0.5px solid' borderColor='lightgray'>{formattedIGV}</Box>
+          <Box
+            paddingY='2px'
+            paddingX='4px'
+            rounded='4px'
+            border='0.5px solid'
+            borderColor='lightgray'
+          >
+            { props.addIGV ? formattedIGV : 0 }
+          </Box>
         </Flex>
         <Flex flexDir='column'>
           <Text fontWeight={600}>Total</Text>
-          <Box paddingY='2px' paddingX='4px' rounded='4px' border='0.5px solid' borderColor='lightgray' bg='#ffaf52'>{formattedTotal}</Box>
+          <Box
+            paddingY='2px'
+            paddingX='4px'
+            rounded='4px'
+            border='0.5px solid'
+            borderColor='lightgray'
+            bg='#ffaf52'
+          >
+            { props.addIGV ? formattedTotal : formattedSubtotal }
+          </Box>
         </Flex>
       </Flex>
 

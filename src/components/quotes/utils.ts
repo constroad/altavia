@@ -26,6 +26,7 @@ export type QuotePDFType = {
   notes: string;
   nroCubos: string;
   unitPrice: string;
+  addIGV: boolean;
 }
 
 export const initialQuote: QuoteType = {

@@ -19,7 +19,7 @@ const getAll = async (req: NextApiRequest, res: NextApiResponse) => {
 }
 
 const addRecord = async (req: NextApiRequest, res: NextApiResponse) => {
-  const newQuote = req.body as ProductModel
+  const newQuote = req.body.data as ProductModel
   const quoteRepo = new ProductRepository();
   try {
     const result = productValidationSchema.safeParse(newQuote);

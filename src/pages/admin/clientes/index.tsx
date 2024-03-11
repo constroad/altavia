@@ -36,9 +36,7 @@ export const ClientsPage = () => {
   const { onClose: onCloseBankModal, isOpen: isOpenBankModal, onOpen: onOpenBankModal } = useDisclosure()
   const { onClose: onCloseClientModal, isOpen: isOpenClientModal, onOpen: onOpenClientModal } = useDisclosure()
 
-  const { run: runGetClients, isLoading, refetch } = useAsync({
-    onSuccess: (data) => setClientsList(data.data)
-  }) 
+  const { run: runGetClients, isLoading, refetch } = useAsync({ onSuccess(data) { setClientsList(data.data) } }) 
   const { run: runAddClient, isLoading: addingClient } = useAsync()
   const { run: runDeleteClient, isLoading: deletingClient } = useAsync()
   const { run: runEditClient, isLoading: editingClient } = useAsync()
@@ -178,7 +176,6 @@ export const ClientsPage = () => {
         alignItems={{base: '', md: ''}}
         width='100%'
         gap='5px'
-        py='10px'
       >
         <Text
           fontSize={{ base: 25, md: 36 }}
@@ -240,7 +237,6 @@ export const ClientsPage = () => {
             />
           )}
         </Box>
-
 
         {/* client form modal */}
         <Modal

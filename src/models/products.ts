@@ -9,6 +9,7 @@ export const productValidationSchema = z.object({
   alias: z.string().optional(),
   price: z.number(),
   quantity: z.number(),
+  unit: z.string(),
   createdAt: z.string().optional(),
   updatedAt: z.string().optional()
 });
@@ -22,6 +23,7 @@ export interface ProductModel extends Document {
   alias: string;
   price: number;
   quantity: number;
+  unit: string;
 }
 
 let Product: Model<ProductModel>;
@@ -35,6 +37,7 @@ try {
     alias: { type: String, optional: true },
     price: { type: Number, required: true },
     quantity: { type: Number, required: true },
+    unit: { type: String, required: true },
   }, {
     timestamps: true, // this will add both createdAt y updatedAt automatically
   });

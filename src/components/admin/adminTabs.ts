@@ -75,14 +75,13 @@ export const administrationTabs = [
     textColor: 'white',
     icon: ProvidersIcon
   },
-  // {
-  //   name: 'Productos',
-  //   // path: ADMIN_ROUTES.administration.products,
-  //   path: null,
-  //   bgColor: CONSTROAD_COLORS.darkGray,
-  //   textColor: 'white',
-  //   icon: ProductsIcon
-  // },
+  {
+    name: 'Productos',
+    path: ADMIN_ROUTES.products,
+    bgColor: CONSTROAD_COLORS.darkGray,
+    textColor: 'white',
+    icon: ProductsIcon
+  },
   // {
   //   name: 'Empleados',
   //   // path: ADMIN_ROUTES.administration.employees,

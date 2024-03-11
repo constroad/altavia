@@ -1,7 +1,7 @@
 import React, { ChangeEvent } from 'react'
 import { Box, Button, Flex, FormControl, FormLabel, Input, Switch, Text, Textarea, VStack } from '@chakra-ui/react'
 import { PurchaseOrder } from 'src/common/types';
-import ProductTable from './ProductTable';
+import ProductTable from '../pruchaseOrder/ProductTable';
 
 type PurchaseOrderFormProps = {
   handleSubmit: (event: { preventDefault: () => void }) => Promise<void>;

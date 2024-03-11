@@ -20,7 +20,7 @@ import {
 } from 'src/components'
 import { PlusIcon } from 'src/common/icons'
 import { useAsync, useScreenSize } from 'src/common/hooks'
-import { API_ROUTES } from 'src/common/consts'
+import { ADMIN_ROUTES, API_ROUTES } from 'src/common/consts'
 import { getDate } from 'src/common/utils'
 
 const fetcher = (path: string) => axios.get(path)
@@ -37,6 +37,7 @@ const QuotesPage = () => {
   const [quoteNotes, setQuoteNotes] = useState<string>('')
   const [quotesDBList, setQuotesDBList] = useState<QuoteType[]>([])
   const [customDate, setCustomDate] = useState('')
+  const [addIGV, setAddIGV] = useState(true)
 
   const { isOpen: isOpenDelete, onOpen: onOpenDelete, onClose: onCloseDelete } = useDisclosure()
   const { isOpen: isOpenForm, onOpen: onOpenForm, onClose: onCloseForm } = useDisclosure()
@@ -45,16 +46,8 @@ const QuotesPage = () => {
   const router = useRouter()
   const date = new Date()
 
-  const { run: runGetClients } = useAsync({
-    onSuccess(data) {
-      setClientsDB(data.data)
-    },
-  })
-  const { run: runGetQuotes, refetch: refetchQuotes } = useAsync({
-    onSuccess(data) {
-      setQuotesDBList(data.data)
-    }
-  })
+  const { run: runGetClients } = useAsync({ onSuccess(data) { setClientsDB(data.data) } })
+  const { run: runGetQuotes, refetch: refetchQuotes } = useAsync({ onSuccess(data) { setQuotesDBList(data.data) } })
   const { run: runAddQuote, isLoading: loadingAddQuote  } = useAsync()
   const { run: runAEditQuote, isLoading: loadingEditQuote  } = useAsync()
   const { run: runDeleteQuote, isLoading: loadingDeleteQuote  } = useAsync()
@@ -94,7 +87,7 @@ const QuotesPage = () => {
   }
 
   // generate and download pdf
-  const generateAndDownloadPDF = async (editQuoteDate:string | undefined, addQuoteDate: Date, quoteNumber: number, clientSelected: any, quoteShortDate: string) => {     
+  const generateAndDownloadPDF = async(editQuoteDate:string | undefined, addQuoteDate: Date, quoteNumber: number, clientSelected: any, quoteShortDate: string) => {     
      const pdfData: QuotePDFType = {
       companyName: clientSelected?.name ?? '',
       ruc: clientSelected?.ruc ?? '',
@@ -103,6 +96,7 @@ const QuotesPage = () => {
       nroCubos: quoteSelected?.items[0].quantity.toString() ?? quote.items[0].quantity.toString(),
       unitPrice: quoteSelected?.items[0].price.toString() ?? quote.items[0].price.toString(),
       nroQuote: quoteNumber.toString(),
+      addIGV: addIGV,
     }
 
     const response = await axios.post( API_ROUTES.generateQuotationPDF, { pdfData }, {responseType: 'arraybuffer'} )
@@ -146,10 +140,9 @@ const QuotesPage = () => {
           total: +formattedSubtotal
         }],
         subTotal: +formattedSubtotal,
-        igv: +formattedIGV,
-        total: +formattedTotal
+        igv: addIGV ? +formattedIGV : 0,
+        total: addIGV ? +formattedTotal : +formattedSubtotal
       }
-      console.log('addQuote:', addQuote)
 
       runAddQuote(postQuote(API_ROUTES.quote, addQuote), {
         onSuccess: () => {
@@ -158,7 +151,7 @@ const QuotesPage = () => {
           generateAndDownloadPDF(editQuoteDate, addQuoteDate, quoteNumber, clientSelected, quoteShortDate)
         },
         onError: (err) => {
-          console.log('Crate quote error:', err)
+          console.log(err)
           toast.error("Algo salio mal al generar la cotización, contacte al administrador")
         }
       })
@@ -182,8 +175,8 @@ const QuotesPage = () => {
           total: +formattedSubtotal
         }],
         subTotal: +formattedSubtotal,
-        igv: +formattedIGV,
-        total: +formattedTotal
+        igv: addIGV ? +formattedIGV : 0,
+        total: addIGV ? +formattedTotal : +formattedSubtotal
       }
 
       runAEditQuote(updateQuote(`${API_ROUTES.quote}/${quoteSelected._id}`, editQuote), {
@@ -193,7 +186,7 @@ const QuotesPage = () => {
           generateAndDownloadPDF(editQuoteDate, addQuoteDate, quoteNumber, clientSelected, quoteShortDate)
         },
         onError: (err) => {
-          console.log('Edit quote error:', err) 
+          console.log(err) 
           toast.error("Algo salio mal al editar la cotización, contacte al administrador")
         }
       })
@@ -228,7 +221,7 @@ const QuotesPage = () => {
         toast.success('Cotizacion eliminada correctamente')
       },
       onError: (err) => {
-        console.log('Delete quote error:', err)
+        console.log(err)
         toast.error('Algo salio mal al eliminar la cotización, contacte al administrador')
       }
     })
@@ -245,6 +238,10 @@ const QuotesPage = () => {
     setClientSelected(undefined)
     onCloseQuoteModal()
     setQuoteSelected(undefined)
+  }
+
+  const handleChangeAddIGV = () => {
+    setAddIGV(!addIGV)
   }
 
   const columns = generateQuoteColumns(clientsDB)
@@ -337,7 +334,19 @@ const QuotesPage = () => {
             </Box>
 
             <Box width='18%'>
-              <Button fontSize={10} whiteSpace='normal' gap='2px' px='10px' h='32px' onClick={() => router.push('/admin/clientes')}>
+              <Button
+                fontSize={10}
+                whiteSpace='normal'
+                gap='2px'
+                px='10px'
+                h='32px'
+                onClick={() => {
+                  router.push({
+                    pathname: ADMIN_ROUTES.clients,
+                    query: { prevRoute: ADMIN_ROUTES.generateQuotation }
+                  }
+                )}}
+              >
                 <Text>Añadir cliente </Text>
                 <PlusIcon/>
               </Button>
@@ -354,6 +363,8 @@ const QuotesPage = () => {
             onChangeDate={handleChangeCustomDate}
             dateValue={customDate}
             isLoading={quoteSelected ? loadingEditQuote : loadingAddQuote}
+            addIGV={addIGV}
+            onChangeAddIGV={handleChangeAddIGV}
             handleSubmit={handleSubmit}
           />
         </Flex>

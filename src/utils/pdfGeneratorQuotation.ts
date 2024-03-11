@@ -17,7 +17,7 @@ export const generateQuotationPDF = async (data: QuotePDFType) => {
   const totalCubos = data.nroCubos === '' ? '1' : data.nroCubos
   const precioUnitario = data.unitPrice === '' ? '480' : data.unitPrice
   const totalWithoutIgv = +totalCubos * +precioUnitario
-  const igv = totalWithoutIgv * 0.18
+  const igv = data.addIGV ? totalWithoutIgv * 0.18 : 0
   const totalPresupuesto = totalWithoutIgv + igv
 
   // read pdf from public

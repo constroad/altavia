@@ -2,7 +2,6 @@ import React, { useEffect, useState } from 'react'
 import { Box, Button, Flex, Text, useDisclosure } from '@chakra-ui/react'
 import {
   ClientForm,
-  IntranetLayout,
   Modal,
   TableComponent,
   toast,
@@ -12,13 +11,15 @@ import {
   InitialClient,
   BankAccountCard,
   generateMobileClientColumns,
-  ClientModal
+  ClientModal,
+  AdministrationLayout
 } from 'src/components'
 import { useAsync, useScreenSize } from 'src/common/hooks';
-import { API_ROUTES } from 'src/common/consts';
+import { ADMIN_ROUTES, API_ROUTES } from 'src/common/consts';
 import { PlusIcon } from 'src/common/icons';
 
 import axios from 'axios'
+import { useRouter } from 'next/router';
 
 const fetcher = (path: string) => axios.get(path);
 const postClient = (path: string, data: any) => axios.post(path, {data})
@@ -35,13 +36,13 @@ export const ClientsPage = () => {
   const { onClose: onCloseBankModal, isOpen: isOpenBankModal, onOpen: onOpenBankModal } = useDisclosure()
   const { onClose: onCloseClientModal, isOpen: isOpenClientModal, onOpen: onOpenClientModal } = useDisclosure()
 
-  const { run: runGetClients, isLoading, refetch } = useAsync({
-    onSuccess: (data) => setClientsList(data.data)
-  }) 
+  const { run: runGetClients, isLoading, refetch } = useAsync({ onSuccess(data) { setClientsList(data.data) } }) 
   const { run: runAddClient, isLoading: addingClient } = useAsync()
   const { run: runDeleteClient, isLoading: deletingClient } = useAsync()
   const { run: runEditClient, isLoading: editingClient } = useAsync()
   const { isMobile, isDesktop } = useScreenSize()
+  const router = useRouter()
+  const prevRoute = router.query.prevRoute;
 
   useEffect(() => {
     runGetClients(fetcher(API_ROUTES.client), {
@@ -169,12 +170,12 @@ export const ClientsPage = () => {
   )
 
   return (
-    <IntranetLayout>
+    <AdministrationLayout>
       <Flex
         flexDir='column'
         alignItems={{base: '', md: ''}}
-        marginX='auto'
-        gap='15px'
+        width='100%'
+        gap='5px'
       >
         <Text
           fontSize={{ base: 25, md: 36 }}
@@ -182,12 +183,25 @@ export const ClientsPage = () => {
           color='black'
           lineHeight={{ base: '28px', md: '39px' }}
           marginX='auto'
-          marginTop='10px'
         >
           Clientes
         </Text>
 
         <Box width='100%' textAlign='end' gap={2}>
+          {prevRoute === ADMIN_ROUTES.generateQuotation && (
+            <Button
+              size='sm'
+              width={{base: '100px', md: '200px'}}
+              fontSize={{ base: 10, md: 16 }}
+              padding={{ base: '5px', md: '12px' }}
+              onClick={() => router.push(ADMIN_ROUTES.generateQuotation)}
+              colorScheme='blue'
+              gap={2}
+              mr='5px'
+            >
+              Volver a cotizar
+            </Button>
+          )}
           <Button
             size='sm'
             width={{base: '100px', md: '200px'}}
@@ -201,26 +215,28 @@ export const ClientsPage = () => {
           </Button>
         </Box>
 
-        {isDesktop && (
-          <TableComponent
-            data={clientsList}
-            columns={columns}
-            onDelete={handleConfirmDelete}
-            onEdit={handleEditClientClick}
-            isLoading={isLoading}
-            actions
-          />
-        )}
-        {isMobile && (
-          <TableComponent
-            data={clientsList}
-            columns={mobileColumns}
-            onDelete={handleConfirmDelete}
-            onEdit={handleEditClientClick}
-            isLoading={isLoading}
-            actions
-          />
-        )}
+        <Box w='100%'>
+          {isDesktop && (
+            <TableComponent
+              data={clientsList}
+              columns={columns}
+              onDelete={handleConfirmDelete}
+              onEdit={handleEditClientClick}
+              isLoading={isLoading}
+              actions
+            />
+          )}
+          {isMobile && (
+            <TableComponent
+              data={clientsList}
+              columns={mobileColumns}
+              onDelete={handleConfirmDelete}
+              onEdit={handleEditClientClick}
+              isLoading={isLoading}
+              actions
+            />
+          )}
+        </Box>
 
         {/* client form modal */}
         <Modal
@@ -266,7 +282,7 @@ export const ClientsPage = () => {
         )}
 
       </Flex>
-    </IntranetLayout>
+    </AdministrationLayout>
   )
 }
 

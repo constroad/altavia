@@ -3,7 +3,7 @@ import { Table, Thead, Tbody, Tr, Th, Td, Button, Box, Input, Text, Flex } from 
 
 import { Product, PurchaseOrder } from 'src/common/types';
 import { useScreenSize } from 'src/common/hooks';
-import { initialProduct } from './utils';
+import { initialProduct } from '../form/utils';
 
 import { CONSTROAD_COLORS } from 'src/styles/shared';
 import { formatPriceNumber } from 'src/common/utils';

@@ -2,15 +2,14 @@ import React, { useEffect, useState } from 'react'
 import axios from 'axios';
 import { Box, Button, Flex, Text, useDisclosure } from '@chakra-ui/react';
 import {
+  AdministrationLayout,
   BankAccountCard,
   BankAccountType,
-  IntranetLayout,
   Modal,
   ProviderForm,
   ProviderModal,
   ProviderType,
   TableComponent,
-  Tag,
   generateMobileProvColumns,
   generateProviderColumns,
   initialProvider,
@@ -39,11 +38,7 @@ export const ProvidersPage = () => {
   const { isOpen: isOpenProvModal, onOpen: onOpenProvModal, onClose: onCloseProvModal } = useDisclosure() 
   const { isMobile, isDesktop } = useScreenSize()
 
-  const { run: runGetProviders, refetch } = useAsync({
-    onSuccess(data) {
-      setProvidersList(data.data)
-    },
-  })
+  const { run: runGetProviders, refetch } = useAsync({ onSuccess(data) { setProvidersList(data.data) } })
   const { run: runAddProvider, isLoading: addingProvider } = useAsync()
   const { run: runEditProvider, isLoading: editingProvider } = useAsync()
   const { run: runDeleteProvider, isLoading: deletingProvider } = useAsync()
@@ -110,7 +105,7 @@ export const ProvidersPage = () => {
           refetch()
         }, 
         onError(error) {
-          console.log('provider error:', error)
+          console.log(error)
         },
       })
     } else {
@@ -118,7 +113,6 @@ export const ProvidersPage = () => {
     }
 
     handleCloseFormModal()
-    setProvider(initialProvider)
   }
 
   // Edit client
@@ -149,7 +143,10 @@ export const ProvidersPage = () => {
     setProviderSelected(prov)
     onOpenDeleteModal()
   }
-
+  const handleCloseDeleteModal = () =>  {
+    onCloseDeleteModal()
+    setProviderSelected(undefined)
+  }
   const handleDeleteProvider = () => {
     runDeleteProvider(deleteProv(`${API_ROUTES.provider}/${providerSelected?._id}`), {
       onSuccess: () => {
@@ -162,8 +159,7 @@ export const ProvidersPage = () => {
       },
     })
 
-    onCloseDeleteModal()
-    setProviderSelected(undefined)
+    handleCloseDeleteModal()
   }
 
   // Renders
@@ -176,7 +172,7 @@ export const ProvidersPage = () => {
       colorScheme='blue'
       size='sm'
     >
-      { providerSelected ? 'Guardar cambios' : 'Añadir Cliente'}
+      { providerSelected ? 'Guardar cambios' : 'Añadir Proveedor'}
     </Button>
   )
   const deleteFooter = (
@@ -192,11 +188,11 @@ export const ProvidersPage = () => {
   )
 
   return (
-    <IntranetLayout>
+    <AdministrationLayout>
       <Flex
         flexDir='column'
         alignItems={{base: '', md: ''}}
-        marginX='auto'
+        width='100%'
         gap='5px'
       >
         <Text
@@ -205,6 +201,7 @@ export const ProvidersPage = () => {
           color='black'
           lineHeight={{ base: '28px', md: '39px' }}
           marginX='auto'
+          mt={ isMobile ? '10px' : '0px' }
         >
           Proveedores
         </Text>
@@ -222,7 +219,7 @@ export const ProvidersPage = () => {
           </Button>
         </Box>
 
-        <Box>
+        <Box width='100%'>
           {isMobile && (
             <TableComponent
               data={providersList}
@@ -289,7 +286,7 @@ export const ProvidersPage = () => {
       {/* Delete modal */}
       <Modal
         isOpen={isOpenDeleteModal}
-        onClose={onCloseDeleteModal}
+        onClose={handleCloseDeleteModal}
         heading={`¿Estás seguro de eliminar al proveedor ${providerSelected?.name}?`}
         footer={deleteFooter}
       />
@@ -304,7 +301,7 @@ export const ProvidersPage = () => {
           <ProviderModal provider={providerSelected} />
         </Modal>
       )}
-    </IntranetLayout>
+    </AdministrationLayout>
   )
 }
 

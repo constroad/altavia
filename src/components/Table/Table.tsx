@@ -23,7 +23,7 @@ export const TableComponent = (props: Props) => {
   }
 
   return (
-    <Box overflowX="auto" rounded='4px' border={`0.5px solid ${CONSTROAD_COLORS.darkGray}`}>
+    <Box overflowX="auto" rounded='4px' border={`0.5px solid ${CONSTROAD_COLORS.darkGray}`} w='100%' minW='100%'>
       <Table border="collapse">
         <Thead>
           <Tr fontSize={10}>
@@ -33,7 +33,7 @@ export const TableComponent = (props: Props) => {
               </Th>
             ))}
             <Th background={CONSTROAD_COLORS.bgPDF} color='white' textAlign='center' padding={2} width='5%'>
-              Actions
+              Acciones
             </Th>
           </Tr>
         </Thead>

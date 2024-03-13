@@ -52,8 +52,7 @@ export const adminTabs = [
   },
   {
     name: 'Control Highway',
-    // path: ADMIN_ROUTES.controlHighway,
-    path: null,
+    path: ADMIN_ROUTES.controlHighway,
     bgColor: CONSTROAD_COLORS.black,
     textColor: 'white',
     icon: HighwayIcon

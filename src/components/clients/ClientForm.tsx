@@ -101,9 +101,9 @@ export const ClientForm = (props: ClientFormProps) => {
         <GridItem colSpan={2}>
           <FormInput
             id='client-name'
-            label='Nombre'
+            label='Razón social'
             value={client.name ?? ''}
-            placeholder='Nombre del cliente'
+            placeholder='Razón social del cliente'
             onChange={(e) => handleChangeValue(e.target.value.toUpperCase(), 'name')}
             required
           />

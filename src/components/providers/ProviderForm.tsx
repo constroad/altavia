@@ -123,9 +123,9 @@ export const ProviderForm = (props: ProviderFormProps) => {
         <GridItem colSpan={2}>
           <FormInput
             id='provider-name'
-            label='Nombre'
+            label='Razón social'
             value={provider.name ?? ''}
-            placeholder='Nombre del proveedor'
+            placeholder='Razón social del proveedor'
             onChange={(e) => handleChangeValue(e.target.value.toUpperCase(), 'name')}
             required
           />

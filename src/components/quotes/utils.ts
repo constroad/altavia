@@ -56,8 +56,6 @@ export const getQuotePrices = (
   formatted?: boolean
 ) => {
 
-  console.log('applyIGV:', applyIGV)
-
   const subtotal = items.reduce((accumulator, currentItem) => {
     return accumulator + currentItem?.total;
   }, 0);

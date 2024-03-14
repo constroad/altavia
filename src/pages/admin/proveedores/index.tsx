@@ -45,7 +45,8 @@ export const ProvidersPage = () => {
 
   useEffect(() => {
     runGetProviders(fetcher(API_ROUTES.provider), {
-      refetch: () => runGetProviders(fetcher(API_ROUTES.provider))
+      refetch: () => runGetProviders(fetcher(API_ROUTES.provider)),
+      cacheKey: API_ROUTES.provider
     })
   }, []) 
   

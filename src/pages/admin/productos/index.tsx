@@ -42,7 +42,8 @@ export const ProductsPage = () => {
 
   useEffect(() => {
     runGetProducts(fetcher(API_ROUTES.products), {
-      refetch: () => runGetProducts(fetcher(API_ROUTES.products))
+      refetch: () => runGetProducts(fetcher(API_ROUTES.products)),
+      cacheKey: API_ROUTES.products
     })
   }, []) 
 

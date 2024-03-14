@@ -61,7 +61,8 @@ const QuotesPage = () => {
 
   useEffect(() => {
     runGetQuotes(fetcher(API_ROUTES.quote), {
-      refetch: () => runGetQuotes(fetcher(API_ROUTES.quote))
+      refetch: () => runGetQuotes(fetcher(API_ROUTES.quote)),
+      cacheKey: API_ROUTES.quote
     })
   }, [])
 

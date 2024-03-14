@@ -1,8 +1,9 @@
 import React from 'react'
 import { Flex, Text } from '@chakra-ui/react'
 import { ClientType } from '../clients'
-import { QuoteType } from './utils'
+import { QuoteType, getQuotePrices } from './utils'
 import { CONSTROAD_COLORS } from 'src/styles/shared'
+import { formatPriceNumber, getDate } from '../../common/utils/index';
 
 interface QuoteModalProps {
   quote: QuoteType
@@ -12,6 +13,8 @@ interface QuoteModalProps {
 export const QuoteModal = (props: QuoteModalProps) => {
   const { quote, clients } = props;
   const quoteClient = clients.find(cli => cli._id === quote.clientId)
+  const { slashDate } = getDate(quote.date)
+
   return (
     <Flex flexDir='column' gap='10px' fontSize={12}>
       <Flex gap='2px'>
@@ -26,7 +29,7 @@ export const QuoteModal = (props: QuoteModalProps) => {
 
       <Flex gap='2px'>
         <Text fontWeight={600} width='80px'>Fecha:</Text>
-        <Text>{quote.date}</Text>
+        <Text>{slashDate}</Text>
       </Flex>
 
       <Flex gap='2px' flexDir='column'>
@@ -47,35 +50,41 @@ export const QuoteModal = (props: QuoteModalProps) => {
                 <Text>S/. {prod?.description}</Text>
               </Flex>
               <Flex gap='2px'>
+                <Text fontWeight={600} width='74px'>Unidad:</Text>
+                <Text>{prod?.unit}</Text>
+              </Flex>
+              <Flex gap='2px'>
                 <Text fontWeight={600} width='74px'>Cantidad:</Text>
-                <Text>S/. {prod?.quantity}</Text>
+                <Text>{prod?.quantity}</Text>
               </Flex>
               <Flex gap='2px'>
                 <Text fontWeight={600} width='74px'>Precio U.:</Text>
-                <Text>S/. {prod?.price}</Text>
+                <Text>S/. {formatPriceNumber(prod?.unitPrice)}</Text>
               </Flex>
               <Flex gap='2px'>
                 <Text fontWeight={600} width='74px'>Total:</Text>
-                <Text>S/. {prod?.price * prod?.quantity}</Text>
+                <Text>S/. {formatPriceNumber(prod?.unitPrice * prod?.quantity)}</Text>
               </Flex>
             </Flex>
           ))}
         </Flex>
       </Flex>
 
-      <Flex gap='2px'>
-        <Text fontWeight={600} width='80px'>Subtotal:</Text>
-        <Text>S/. {quote.subTotal}</Text>
-      </Flex>
+      <Flex gap='4px' flexDir='column' mt='10px'>
+        <Flex gap='2px'>
+          <Text fontWeight={600} width='80px'>Subtotal:</Text>
+          <Text>S/. {formatPriceNumber(quote.subTotal)}</Text>
+        </Flex>
 
-      <Flex gap='2px'>
-        <Text fontWeight={600} width='80px'>IGV:</Text>
-        <Text>S/. {quote.igv}</Text>
-      </Flex>
+        <Flex gap='2px'>
+          <Text fontWeight={600} width='80px'>IGV:</Text>
+          <Text>S/. {formatPriceNumber(quote.igv)}</Text>
+        </Flex>
 
-      <Flex gap='2px'>
-        <Text fontWeight={600} width='80px'>Total:</Text>
-        <Text bg={CONSTROAD_COLORS.orange} rounded='3px' px='2px'>S/. {quote.total}</Text>
+        <Flex gap='2px'>
+          <Text fontWeight={600} width='80px'>Total:</Text>
+          <Text bg={CONSTROAD_COLORS.orange} rounded='3px' px='2px'>S/. {formatPriceNumber(quote.total)}</Text>
+        </Flex>
       </Flex>
     </Flex>
   )

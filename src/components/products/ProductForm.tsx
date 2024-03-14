@@ -1,6 +1,6 @@
-import React, { useState } from 'react'
+import React, { useEffect } from 'react'
 import { Box, Grid, GridItem } from '@chakra-ui/react'
-import { FormInput, FormTextarea } from '../form';
+import { FormInput } from '../form';
 import { ProductType } from './utils';
 
 interface ProductFormProps {
@@ -13,9 +13,19 @@ interface ProductFormProps {
 export const ProductForm = (props: ProductFormProps) => {
   const { handleSubmit, product, setter } = props
 
+  useEffect(() => {
+    setter({ ...product, total: product.quantity * product.unitPrice })
+  }, [product.quantity, product.unitPrice])
+
   // handlers
   const handleChangeValue = (value: string, key: string) => {
-    if ( setter ) setter({ ...product, [key]: value })
+    if ( setter ) {
+      if ( key === 'quantity' || key === 'unitPrice' ) {
+        setter({ ...product, [key]: +value })
+      } else {
+        setter({ ...product, [key]: value })
+      }
+    }
   }
 
   const handleSubmitForm = (e: { preventDefault: () => void }) => {
@@ -36,20 +46,10 @@ export const ProductForm = (props: ProductFormProps) => {
           <FormInput
             id='product-name'
             label='Nombre'
-            value={product.name ?? ''}
-            placeholder='Nombre del producto'
-            onChange={(e) => handleChangeValue(e.target.value.toUpperCase(), 'name')}
-            required
-          />
-        </GridItem>
-
-        <GridItem colSpan={2}>
-          <FormTextarea
-            id='product-description'
-            label='Descripción'
             value={product.description ?? ''}
-            placeholder='Descripción'
-            onChange={(e) => handleChangeValue(e.target.value, 'description')}
+            placeholder='Nombre del producto'
+            onChange={(e) => handleChangeValue(e.target.value.toUpperCase(), 'description')}
+            required
           />
         </GridItem>
 
@@ -77,10 +77,10 @@ export const ProductForm = (props: ProductFormProps) => {
         <GridItem colSpan={1}>
           <FormInput
             id='product-price'
-            label='Precio'
-            value={product.price ?? ''}
+            label='Precio U.'
+            value={product.unitPrice === 0 ? '' : product.unitPrice}
             placeholder='0'
-            onChange={(e) => handleChangeValue(e.target.value.toUpperCase(), 'price')}
+            onChange={(e) => handleChangeValue(e.target.value.toUpperCase(), 'unitPrice')}
             type='number'
             required
           />
@@ -90,7 +90,7 @@ export const ProductForm = (props: ProductFormProps) => {
           <FormInput
             id='product-quantity'
             label='Cantidad'
-            value={product.quantity ?? ''}
+            value={product.quantity === 0 ? '' : product.quantity}
             placeholder='0'
             onChange={(e) => handleChangeValue(e.target.value.toUpperCase(), 'quantity')}
             type='number'

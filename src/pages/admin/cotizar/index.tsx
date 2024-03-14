@@ -60,20 +60,26 @@ const QuotesPage = () => {
   }, [quoteSelected, clientsDB])
 
   useEffect(() => {
-    runGetQuotes(fetcher(API_ROUTES.quote), {
-      refetch: () => runGetQuotes(fetcher(API_ROUTES.quote)),
-      cacheKey: API_ROUTES.quote
-    })
-  }, [])
+    const fetchQuoteProductClientData = async () => {
+      
+      const quotePromise = runGetQuotes(fetcher(API_ROUTES.quote), {
+        refetch: () => runGetQuotes(fetcher(API_ROUTES.quote)),
+        cacheKey: API_ROUTES.quote
+      });
 
-  useEffect(() => {
-    runGetProducts(fetcher(API_ROUTES.products))
-  }, [])
+      const productsPromise = runGetProducts(fetcher(API_ROUTES.products), {
+        cacheKey: `${API_ROUTES.products}-quote`
+      });
+
+      const clientsPromise = runGetClients(fetcher(API_ROUTES.client), {
+        cacheKey: `${API_ROUTES.client}-quote`
+      });
   
-  useEffect(() => {
-    runGetClients(fetcher(API_ROUTES.client))
-  }, [])
+      await Promise.all([quotePromise, productsPromise, clientsPromise]);
+    };
   
+    fetchQuoteProductClientData();
+  }, []);
 
   const quoteNumber = quoteSelected?.nro ?? 100 + quotesDBList.length + 1
   

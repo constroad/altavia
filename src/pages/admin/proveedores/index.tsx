@@ -91,7 +91,7 @@ export const ProvidersPage = () => {
     setProviderSelected(undefined)
   }
 
-  const columns = generateProviderColumns(handleSelectBankAccount, handleOpenDescOrNote)
+  const columns = generateProviderColumns(handleSelectBankAccount, handleSelectProvider)
   const mobileColumns = generateMobileProvColumns(handleSelectProvider)
 
   // Add client
@@ -294,7 +294,7 @@ export const ProvidersPage = () => {
         footer={deleteFooter}
       />
 
-      {isMobile && providerSelected && (
+      { providerSelected && (
         <Modal
           isOpen={isOpenProvModal}
           heading={providerSelected.name}

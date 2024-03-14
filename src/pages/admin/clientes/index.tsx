@@ -142,7 +142,7 @@ export const ClientsPage = () => {
     setClientSelected(undefined)
   }
 
-  const columns = generateClientColumns(handleSelectBankAccount)
+  const columns = generateClientColumns(handleSelectBankAccount, handleSelectClient)
   const mobileColumns = generateMobileClientColumns(handleSelectClient)
 
   // Renders

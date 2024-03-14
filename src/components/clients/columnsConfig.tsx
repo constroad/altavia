@@ -2,15 +2,15 @@ import { Button, Flex } from "@chakra-ui/react"
 import { TableColumn } from "../Table"
 import { BankAccountType, ClientType } from "./utils"
 
-export const generateClientColumns = ( handleSelectBankAccount: (acc: BankAccountType, row: ClientType) => void ) => {
+export const generateClientColumns = (
+  handleSelectBankAccount: (acc: BankAccountType, row: ClientType) => void,
+  handleSelectClient: (row: ClientType) => void
+) => {
   const columns: TableColumn[] = [
-    { key: 'name', label: 'Nombre', width: '18%' },
+    { key: 'name', label: 'Razón social', width: '30%' },
     { key: 'alias', label: 'Alias', width: '10%' },
     { key: 'ruc', label: 'RUC', width: '5%' },
-    { key: 'address', label: 'Dirección', width: '15%' },
-    { key: 'phone', label: 'Teléfono', width: '10%' },
-    { key: 'email', label: 'Correo', width: '10%' },
-    { key: 'web', label: 'Web', width: '10%' },
+    { key: 'phone', label: 'Teléfono', width: '5%' },
     {
       key: 'bankAccounts',
       label: 'Cuentas bancarias',
@@ -42,6 +42,16 @@ export const generateClientColumns = ( handleSelectBankAccount: (acc: BankAccoun
             </Button>
           ))}
         </Flex>
+      )
+    },
+    {
+      key: 'web',
+      label: 'VER',
+      width: '3%',
+      render: (item, row) => (
+        <Button onClick={() => handleSelectClient(row)} size='md' maxWidth='40px' maxHeight='25px' fontSize={12} colorScheme="blue">
+          Ver
+        </Button>
       )
     },
   ]

@@ -47,6 +47,7 @@ export const ClientsPage = () => {
   useEffect(() => {
     runGetClients(fetcher(API_ROUTES.client), {
       refetch: () => runGetClients(fetcher(API_ROUTES.client)),
+      cacheKey: API_ROUTES.client
     });
   }, []);
 

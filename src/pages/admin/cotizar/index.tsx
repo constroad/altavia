@@ -47,7 +47,7 @@ const QuotesPage = () => {
 
   const { run: runGetClients } = useAsync({ onSuccess(data) { setClientsDB(data.data) } })
   const { run: runGetProducts } = useAsync({ onSuccess(data) { setProductsDB(data.data) } })
-  const { run: runGetQuotes, refetch: refetchQuotes } = useAsync({ onSuccess(data) { setQuotesDBList(data.data) } })
+  const { run: runGetQuotes, isLoading, refetch: refetchQuotes } = useAsync({ onSuccess(data) { setQuotesDBList(data.data) } })
   const { run: runAddQuote, isLoading: loadingAddQuote  } = useAsync()
   const { run: runAEditQuote, isLoading: loadingEditQuote  } = useAsync()
   const { run: runDeleteQuote, isLoading: loadingDeleteQuote  } = useAsync()
@@ -306,6 +306,7 @@ const QuotesPage = () => {
             columns={columns}
             onEdit={handleEditQuote}
             onDelete={handleDeleteClick}
+            isLoading={isLoading}
             actions
           />
         )}
@@ -316,6 +317,7 @@ const QuotesPage = () => {
             columns={mobileColumns}
             onEdit={handleEditQuote}
             onDelete={handleDeleteClick}
+            isLoading={isLoading}
             actions
           />
         )}

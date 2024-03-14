@@ -32,7 +32,7 @@ export const ProductsPage = () => {
   const { isOpen: isOpenDelete, onOpen: onOpenDelete, onClose: onCloseDelete } = useDisclosure()
   const { isOpen: isOpenProductModal, onOpen: onOpenProductModal, onClose: onCloseProductModal } = useDisclosure() 
 
-  const { run: runGetProducts, refetch } = useAsync({ onSuccess(data) { setProductsList(data.data) } })
+  const { run: runGetProducts, isLoading, refetch } = useAsync({ onSuccess(data) { setProductsList(data.data) } })
   const { run: runAddProduct, isLoading: addingProduct } = useAsync()
   const { run: runEditProduct, isLoading: editingProduct } = useAsync()
   const { run: runDeleteProduct, isLoading: deletingProduct } = useAsync()
@@ -209,6 +209,7 @@ export const ProductsPage = () => {
               columns={mobileColumns}
               onEdit={handleEditClick}
               onDelete={handleDeleteClick}
+              isLoading={isLoading}
               actions
             />
           )}
@@ -218,6 +219,7 @@ export const ProductsPage = () => {
               columns={columns}
               onEdit={handleEditClick}
               onDelete={handleDeleteClick}
+              isLoading={isLoading}
               actions
             />
           )}

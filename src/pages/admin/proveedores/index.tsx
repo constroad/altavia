@@ -38,7 +38,7 @@ export const ProvidersPage = () => {
   const { isOpen: isOpenProvModal, onOpen: onOpenProvModal, onClose: onCloseProvModal } = useDisclosure() 
   const { isMobile, isDesktop } = useScreenSize()
 
-  const { run: runGetProviders, refetch } = useAsync({ onSuccess(data) { setProvidersList(data.data) } })
+  const { run: runGetProviders, isLoading, refetch } = useAsync({ onSuccess(data) { setProvidersList(data.data) } })
   const { run: runAddProvider, isLoading: addingProvider } = useAsync()
   const { run: runEditProvider, isLoading: editingProvider } = useAsync()
   const { run: runDeleteProvider, isLoading: deletingProvider } = useAsync()
@@ -226,6 +226,7 @@ export const ProvidersPage = () => {
               columns={mobileColumns}
               onEdit={handleEditClick}
               onDelete={handleDeleteClick}
+              isLoading={isLoading}
               actions
             />
           )}
@@ -235,6 +236,7 @@ export const ProvidersPage = () => {
               columns={columns}
               onEdit={handleEditClick}
               onDelete={handleDeleteClick}
+              isLoading={isLoading}
               actions
             />
           )}

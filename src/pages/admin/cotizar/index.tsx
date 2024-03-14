@@ -91,7 +91,7 @@ const QuotesPage = () => {
     setAddIGV(true)
   }
   const handleOpenFormModal = () => {
-    const mac = productsDB.filter(prod => prod.alias === 'ASFALTO')
+    const mac = productsDB.filter(prod => prod.alias === 'ASFALTO MAC2')
     setQuote({...quote, items: mac })
     onOpenForm()
   }

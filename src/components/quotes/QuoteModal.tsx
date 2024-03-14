@@ -73,17 +73,17 @@ export const QuoteModal = (props: QuoteModalProps) => {
       <Flex gap='4px' flexDir='column' mt='10px'>
         <Flex gap='2px'>
           <Text fontWeight={600} width='80px'>Subtotal:</Text>
-          <Text>S/. {quote.subTotal ? formatPriceNumber(quote.subTotal) : 'N/A'}</Text>
+          <Text>S/. {formatPriceNumber(quote.subTotal)}</Text>
         </Flex>
 
         <Flex gap='2px'>
           <Text fontWeight={600} width='80px'>IGV:</Text>
-          <Text>S/. {quote.igv ? formatPriceNumber(quote.igv): 'N/A'}</Text>
+          <Text>S/. {formatPriceNumber(quote.igv)}</Text>
         </Flex>
 
         <Flex gap='2px'>
           <Text fontWeight={600} width='80px'>Total:</Text>
-          <Text bg={CONSTROAD_COLORS.orange} rounded='3px' px='2px'>S/. {quote.total ? formatPriceNumber(quote.total) : 'N/A'}</Text>
+          <Text bg={CONSTROAD_COLORS.orange} rounded='3px' px='2px'>S/. {formatPriceNumber(quote.total)}</Text>
         </Flex>
       </Flex>
     </Flex>

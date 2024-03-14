@@ -210,7 +210,7 @@ export const QuoteProductTable = (props: QuoteProductTableProps) => {
                           height='25px'
                           type="text"
                           value={product.description}
-                          onChange={(e) => handleChangeProduct(index, 'description', e.target.value)}
+                          onChange={(e) => handleChangeProduct(index, 'description', e.target.value.toUpperCase())}
                         />
                         <Text fontWeight={600} fontSize={10} mt='8px'>Unidad</Text>
                         <Input
@@ -222,7 +222,7 @@ export const QuoteProductTable = (props: QuoteProductTableProps) => {
                           placeholder='M3'
                           type="text"
                           value={product.unit}
-                          onChange={(e) => handleChangeProduct(index, 'unit', e.target.value)}
+                          onChange={(e) => handleChangeProduct(index, 'unit', e.target.value.toUpperCase())}
                         />
                       </Flex>
                     </Td>

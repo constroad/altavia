@@ -11,7 +11,7 @@ interface Option {
 }
 
 interface SearchComponentProps<T> {
-  options: T[];
+  options: any[];
   propertiesToSearch: (keyof T)[];
   onSelect: (selectedOption: T) => void;
   placeholder?: string;
@@ -99,7 +99,7 @@ export const SearchComponent = <T extends Option>(props: SearchComponentProps<T>
               onClick={() => handleSelectOption(option)}
             >
               <Flex flexDir='column' py='2px'>
-                <Text fontSize={10}>{option.name || option.label} - {option.ruc}</Text>
+                <Text fontSize={10}>{option.name || option.label || option.description} { option.ruc ? `- ${option.ruc}` : ''}</Text>
                 <Text fontSize={8} color={CONSTROAD_COLORS.darkGray}>{option.alias?.toUpperCase()}</Text>
               </Flex>
             </ListItem>

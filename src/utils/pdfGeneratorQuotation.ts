@@ -3,22 +3,19 @@ import fs from 'fs';
 import path from 'path';
 import { addZerosAhead, formatPriceNumber, getDate } from 'src/common/utils';
 import { PDF_TEMPLATE } from 'src/common/consts';
-import { QuotePDFType } from 'src/components';
+import { QuotePDFType, getQuotePrices } from 'src/components';
 
 export const generateQuotationPDF = async (data: QuotePDFType) => {
   const { currentDayName, currentDayMonth, currentYear } = getDate( data.date ?? null )
+
+  const products = data.products
 
   const nroCotizacion = addZerosAhead(+data.nroQuote)
   const companyName = data.companyName.toUpperCase()
   const rucCliente = data.ruc === '' ? '- - -' : data.ruc
   const fecha = `${currentDayName}, ${currentDayMonth} de ${currentYear}`
 
-  const unidad = 'M3'
-  const totalCubos = data.nroCubos === '' ? '1' : data.nroCubos
-  const precioUnitario = data.unitPrice === '' ? '480' : data.unitPrice
-  const totalWithoutIgv = +totalCubos * +precioUnitario
-  const igv = data.addIGV ? totalWithoutIgv * 0.18 : 0
-  const totalPresupuesto = totalWithoutIgv + igv
+  const { formattedSubtotal, formattedIGV, formattedTotal } = getQuotePrices(products, data.addIGV, true)
 
   // read pdf from public
   const pdfPath = path.join(process.cwd(), PDF_TEMPLATE.cotizacion.path, PDF_TEMPLATE.cotizacion.filename);
@@ -29,60 +26,76 @@ export const generateQuotationPDF = async (data: QuotePDFType) => {
 
   const helveticaFont = await pdfDoc.embedFont(StandardFonts.Helvetica)
   const helveticaBoldFont = await pdfDoc.embedFont(StandardFonts.HelveticaBold)
-  // const ArialFont = await pdfDoc.embedFont(StandardFonts.Courier)
 
   const pages = pdfDoc.getPages()
   const firstPage = pages[ 0 ]
   const { width, height } = firstPage.getSize()
 
-
   // Textos originales
   const currentDayMonthStr = `Lima ${currentDayMonth}`
   const yearStr = currentYear
 
-  const totalCubosStr = totalCubos.replace(/\B(?=(\d{3})+(?!\d))/g, ",")
-  const totalWithoutIgvStr = formatPriceNumber(totalWithoutIgv).toString();
-  const igvStr = formatPriceNumber(igv).toString();
-  const totalPresupuestoStr = formatPriceNumber(totalPresupuesto).toString();
+  const subtotalStr = formattedSubtotal;
+  const igvStr = formattedIGV;
+  const totalStr = formattedTotal;
 
+  // Anchos
   const dayMonthWidth = helveticaBoldFont.widthOfTextAtSize(currentDayMonthStr, 14)
   const yearWidth = helveticaBoldFont.widthOfTextAtSize(yearStr, 14)
 
-  const textWidth = helveticaFont.widthOfTextAtSize(totalCubosStr, 7)
-  const textWidth1 = helveticaFont.widthOfTextAtSize(totalWithoutIgvStr, 7);
-  const textWidth2 = helveticaFont.widthOfTextAtSize(igvStr, 7);
-  const textWidth3 = helveticaFont.widthOfTextAtSize(totalPresupuestoStr, 7);
+  const subtotalWidth = helveticaFont.widthOfTextAtSize(subtotalStr, 7.5)
+  const igvWidth = helveticaFont.widthOfTextAtSize(igvStr, 7.5);
+  const totalWidth = helveticaFont.widthOfTextAtSize(totalStr, 7.5);
 
-  // const pageWidth = page.getWidth();
-  const rightMargin1 = 51.5;
-  const x = width - textWidth - 146;
-  const x1 = width - textWidth1 - rightMargin1;
-  const x2 = width - textWidth2 - rightMargin1;
-  const x3 = width - textWidth3 - rightMargin1;
+  const rightMargin = 51.5;
+  const subtotalX = width - subtotalWidth - rightMargin;
+  const igvX = width - igvWidth - rightMargin;
+  const totalX = width - totalWidth - rightMargin;
 
   const xDayMonth = width - dayMonthWidth - 50
   const xYear = width - yearWidth - 50
 
   // texts
-  firstPage.drawText(companyName, { x: 90, y: 686.8, size: 12, font: helveticaBoldFont})
+  firstPage.drawText(companyName, { x: 90, y: 716.8, size: 12, font: helveticaBoldFont})
 
-  firstPage.drawText(currentDayMonthStr, { x: xDayMonth, y: 760, size: 14, font: helveticaBoldFont  })
-  firstPage.drawText(currentYear, { x: xYear, y: 746, size: 14, font: helveticaBoldFont  })
+  firstPage.drawText(currentDayMonthStr, { x: xDayMonth, y: 773, size: 14, font: helveticaBoldFont  })
+  firstPage.drawText(currentYear, { x: xYear, y: 758, size: 14, font: helveticaBoldFont  })
 
-  firstPage.drawText(`${nroCotizacion} - ${currentYear}`, { x: 305, y: 592, size: 10, font: helveticaBoldFont })
-  firstPage.drawText(companyName, { x: 128, y: 569.6, size: 9, font: helveticaBoldFont })
-  firstPage.drawText(rucCliente, { x: 128, y: 555.6, size: 9, font: helveticaBoldFont })
-  firstPage.drawText(fecha, { x: 128, y: 533.6, size: 9 })
+  firstPage.drawText(`${nroCotizacion} - ${currentYear}`, { x: 305, y: 637, size: 10, font: helveticaBoldFont })
+  firstPage.drawText(companyName, { x: 132, y: 614.6, size: 9, font: helveticaBoldFont })
+  firstPage.drawText(rucCliente, { x: 132, y: 600.6, size: 9, font: helveticaBoldFont })
+  firstPage.drawText(fecha, { x: 132, y: 578.6, size: 9 })
 
-  firstPage.drawText(unidad, { x: 388, y: 470.8, size: 7 })
-  firstPage.drawText(totalCubosStr, { x: x, y: 470.8, size: 7 })
-  firstPage.drawText(Number(precioUnitario).toFixed(2).toString(), { x: 469.5, y: 470.8, size: 7 })
+  products.map((product, i) => {
+    const yOffset = 12; // Espacio vertical entre cada conjunto de drawText
 
-  firstPage.drawText(totalWithoutIgvStr, { x: x1, y: 470.8, size: 7 })
-  firstPage.drawText(totalWithoutIgvStr, { x: x1, y: 384, size: 7 })
-  firstPage.drawText(totalWithoutIgvStr, { x: x1, y: 368.5, size: 7 })
-  firstPage.drawText(igvStr, { x: x2, y: 358.5, size: 7 })
-  firstPage.drawText(totalPresupuestoStr, { x: x3, y: 348, size: 7 })
+    const startX = 62; // Ajustar la posición horizontal para cada conjunto de drawText
+    const startY = 530 - i * yOffset; 
+
+    const quantityStr = product.quantity.toString()
+    const unitPriceStr = formatPriceNumber(product.unitPrice)
+    const totalStr = formatPriceNumber(product.total)
+
+    const quantityWidth = helveticaFont.widthOfTextAtSize(quantityStr, 7.5)
+    const unitPriceWidth = helveticaFont.widthOfTextAtSize(unitPriceStr, 7.5)
+    const totalWidth = helveticaFont.widthOfTextAtSize(totalStr, 7.5)
+
+    const quantityX = width - quantityWidth - 146
+    const unitPriceX = width - unitPriceWidth - 106;
+    const totalX = width - totalWidth - 51.5;
+
+    firstPage.drawText(`${i + 1}`, { x: startX, y: startY, size: 7.5, font: helveticaBoldFont });
+    firstPage.drawText(product.description, { x: startX + 20, y: startY, size: 7.5, font: helveticaBoldFont });
+    firstPage.drawText(product.unit, { x: startX + 328, y: startY, size: 7.5, font: helveticaFont });
+    firstPage.drawText(quantityStr, { x: quantityX, y: startY, size: 7.5, font: helveticaFont });
+    firstPage.drawText(unitPriceStr, { x: unitPriceX, y: startY, size: 7.5, font: helveticaFont });
+    firstPage.drawText(totalStr, { x: totalX , y: startY, size: 7.5, font: helveticaFont });
+  })
+
+  firstPage.drawText(formattedSubtotal, { x: subtotalX, y: 355, size: 7.5 })
+  firstPage.drawText(formattedSubtotal, { x: subtotalX, y: 339, size: 7.5 })
+  firstPage.drawText(formattedIGV, { x: igvX, y: 330, size: 7.5 })
+  firstPage.drawText(formattedTotal, { x: totalX, y: 318, size: 7.5 })
 
   const pdfBytes = await pdfDoc.save()
 

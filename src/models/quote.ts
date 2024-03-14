@@ -9,8 +9,10 @@ export const quoteValidationSchema = z.object({
   date: z.date(),
   items: z.array(z.object({
     description: z.string().min(1),
+    alias: z.string().optional(),
+    unit: z.string().optional(),
     quantity: z.number(),
-    price: z.number(),
+    unitPrice: z.number(),
     total: z.number(),
   })),
   subTotal: z.number(),
@@ -29,8 +31,10 @@ export interface QuoteModel extends Document {
   nro: number;
   items: {
     description: string;
+    alias: string;
+    unit: string;
     quantity: number;
-    price: number;
+    unitPrice: number;
     total: number;
   }[],
   subTotal: number
@@ -49,8 +53,10 @@ try {
     date: { type: Date, required: true },
     items: [{
       description: { type: String, required: true },
+      alias: { type: String, optional: true },
+      unit: { type: String, optional: true },
       quantity: { type: Number, required: true },
-      price: { type: Number, required: true },
+      unitPrice: { type: Number, required: true },
       total: { type: Number, required: true },
     }],
     subTotal: { type: Number, required: true },

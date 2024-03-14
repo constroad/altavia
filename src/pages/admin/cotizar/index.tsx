@@ -1,16 +1,15 @@
 import React, { ChangeEvent, useEffect, useState } from 'react'
-import { useRouter } from 'next/router'
-import axios from 'axios'
 import { Box, Button, Flex, Text, useDisclosure } from '@chakra-ui/react'
+import axios from 'axios'
 import {
   ClientType,
   IntranetLayout,
   Modal,
+  ProductType,
   QuoteForm,
   QuoteModal,
   QuotePDFType,
   QuoteType,
-  SearchComponent,
   TableComponent,
   generateMobileQuoteColumns,
   generateQuoteColumns,
@@ -20,7 +19,7 @@ import {
 } from 'src/components'
 import { PlusIcon } from 'src/common/icons'
 import { useAsync, useScreenSize } from 'src/common/hooks'
-import { ADMIN_ROUTES, API_ROUTES } from 'src/common/consts'
+import { API_ROUTES } from 'src/common/consts'
 import { getDate } from 'src/common/utils'
 
 const fetcher = (path: string) => axios.get(path)
@@ -30,7 +29,8 @@ const deleteQuote = (path: string) => axios.delete(path)
 
 const QuotesPage = () => {
   const [clientsDB, setClientsDB] = useState<ClientType[]>([])
-  const [clientSelected, setClientSelected] = useState<ClientType | undefined>()
+  const [clientSelected, setClientSelected] = useState<ClientType | undefined>(undefined)
+  const [productsDB, setProductsDB] = useState<ProductType[]>([])
 
   const [quote, setQuote] = useState<QuoteType>(initialQuote)
   const [quoteSelected, setQuoteSelected] = useState<QuoteType | undefined>()
@@ -43,23 +43,22 @@ const QuotesPage = () => {
   const { isOpen: isOpenForm, onOpen: onOpenForm, onClose: onCloseForm } = useDisclosure()
   const { isOpen: isOpenQuoteModal, onOpen: onOpenQuoteModal, onClose: onCloseQuoteModal } = useDisclosure()
   const { isMobile, isDesktop } = useScreenSize()
-  const router = useRouter()
   const date = new Date()
 
   const { run: runGetClients } = useAsync({ onSuccess(data) { setClientsDB(data.data) } })
+  const { run: runGetProducts } = useAsync({ onSuccess(data) { setProductsDB(data.data) } })
   const { run: runGetQuotes, refetch: refetchQuotes } = useAsync({ onSuccess(data) { setQuotesDBList(data.data) } })
   const { run: runAddQuote, isLoading: loadingAddQuote  } = useAsync()
   const { run: runAEditQuote, isLoading: loadingEditQuote  } = useAsync()
   const { run: runDeleteQuote, isLoading: loadingDeleteQuote  } = useAsync()
 
-  // Effects
   useEffect(() => {
     if (quoteSelected) {
       const client = clientsDB.filter(cli => cli._id === quoteSelected.clientId)
       setClientSelected(client[0])
     }
   }, [quoteSelected, clientsDB])
-  
+
   useEffect(() => {
     runGetQuotes(fetcher(API_ROUTES.quote), {
       refetch: () => runGetQuotes(fetcher(API_ROUTES.quote))
@@ -67,10 +66,13 @@ const QuotesPage = () => {
   }, [])
 
   useEffect(() => {
-    runGetClients(fetcher(API_ROUTES.client), {
-      refetch: () => runGetClients(fetcher(API_ROUTES.client))
-    })
+    runGetProducts(fetcher(API_ROUTES.products))
   }, [])
+  
+  useEffect(() => {
+    runGetClients(fetcher(API_ROUTES.client))
+  }, [])
+  
 
   const quoteNumber = quoteSelected?.nro ?? 100 + quotesDBList.length + 1
   
@@ -79,11 +81,19 @@ const QuotesPage = () => {
     const value = e.target.value
     setCustomDate(value)
   }
+
+  // form manage
   const handleCloseFormModal = () => {
     onCloseForm()
     setClientSelected(undefined)
     setQuote(initialQuote)
     setQuoteSelected(undefined)
+    setAddIGV(true)
+  }
+  const handleOpenFormModal = () => {
+    const mac = productsDB.filter(prod => prod.alias === 'ASFALTO')
+    setQuote({...quote, items: mac })
+    onOpenForm()
   }
 
   // generate and download pdf
@@ -91,11 +101,10 @@ const QuotesPage = () => {
      const pdfData: QuotePDFType = {
       companyName: clientSelected?.name ?? '',
       ruc: clientSelected?.ruc ?? '',
+      nroQuote: quoteNumber.toString(),
       notes: quoteNotes,
       date: quoteSelected?.date ? editQuoteDate as string : addQuoteDate.toUTCString(),
-      nroCubos: quoteSelected?.items[0].quantity.toString() ?? quote.items[0].quantity.toString(),
-      unitPrice: quoteSelected?.items[0].price.toString() ?? quote.items[0].price.toString(),
-      nroQuote: quoteNumber.toString(),
+      products: quoteSelected?.items ?? quote.items,
       addIGV: addIGV,
     }
 
@@ -127,18 +136,13 @@ const QuotesPage = () => {
         formattedSubtotal,
         formattedIGV,
         formattedTotal
-      } = getQuotePrices( quote.items[0].quantity, quote.items[0].price )
+      } = getQuotePrices( quote.items, addIGV )
 
       const addQuote: QuoteType = {
         clientId: clientSelected?._id as string ?? '',
         nro: quoteNumber,
         date: addQuoteDate.toUTCString(),
-        items: [{
-          description: quote.items[0].description,
-          quantity: Number(quote.items[0].quantity.toFixed(2)),
-          price: Number(quote.items[0].price.toFixed(2)),
-          total: +formattedSubtotal
-        }],
+        items: quote.items,
         subTotal: +formattedSubtotal,
         igv: addIGV ? +formattedIGV : 0,
         total: addIGV ? +formattedTotal : +formattedSubtotal
@@ -162,18 +166,13 @@ const QuotesPage = () => {
         formattedSubtotal,
         formattedIGV,
         formattedTotal
-      } = getQuotePrices( quoteSelected.items[0].quantity, quoteSelected.items[0].price )
+      } = getQuotePrices( quoteSelected.items, addIGV )
 
       const editQuote: QuoteType = {
         clientId: clientSelected?._id as string,
         nro: quoteNumber,
         date: editQuoteDate as string,
-        items: [{
-          description: quoteSelected.items[0].description,
-          quantity: Number(quoteSelected.items[0].quantity.toFixed(2)),
-          price: Number(quoteSelected.items[0].price.toFixed(2)),
-          total: +formattedSubtotal
-        }],
+        items: quoteSelected?.items,
         subTotal: +formattedSubtotal,
         igv: addIGV ? +formattedIGV : 0,
         total: addIGV ? +formattedTotal : +formattedSubtotal
@@ -199,14 +198,23 @@ const QuotesPage = () => {
   const handleSelectClient = (client: ClientType) => {
     setClientSelected(client)
   }
+  const handleSelectProduct = (prod: ProductType) => {
+    if (quoteSelected) {
+      setQuoteSelected({ ...quoteSelected, items: [...quoteSelected.items, prod] })
+    } else {
+      setQuote({ ...quote, items: [...quote.items, prod] })
+    }
+  }
 
   const handleChangeNotes = (e: ChangeEvent<HTMLInputElement>) => {
     setQuoteNotes(e.target.value)
   }
 
-  const handleEditQuote = (quoteSelected: QuoteType) => {
+  const handleEditQuote = (quote: QuoteType) => {
     onOpenForm()
-    setQuoteSelected(quoteSelected)
+    setQuoteSelected(quote)
+    if (quote.subTotal < quote.total) setAddIGV(true)
+    else setAddIGV(false)
   }
 
   const handleDeleteClick = (quoteSelected: QuoteType) => {
@@ -244,7 +252,7 @@ const QuotesPage = () => {
     setAddIGV(!addIGV)
   }
 
-  const columns = generateQuoteColumns(clientsDB)
+  const columns = generateQuoteColumns(clientsDB, handleSelectQuote)
   const mobileColumns = generateMobileQuoteColumns(clientsDB, handleSelectQuote)
   const quoteClient = clientsDB.find(cli => cli._id === quoteSelected?.clientId)
 
@@ -284,7 +292,7 @@ const QuotesPage = () => {
             width={{base: '120px', md: '200px'}}
             fontSize={{ base: 10, md: 16 }}
             padding={{ base: '5px', md: '12px' }}
-            onClick={onOpenForm}
+            onClick={handleOpenFormModal}
             colorScheme='blue'
             gap={2}
           >
@@ -321,38 +329,9 @@ const QuotesPage = () => {
           !quoteSelected ? `Generar cotización Nro ${quoteNumber}` : `Editar cotización Nro ${quoteNumber}`
         }
         hideCancelButton
+        width={isMobile ? '' : '800px'}
       >
         <Flex flexDir='column' gap={2}>
-          <Flex width='100%' justifyContent='space-between' alignItems='center'>
-            <Box width='80%'>
-              <SearchComponent
-                placeholder='Buscar cliente por nombre, alias o RUC'
-                options={clientsDB}
-                propertiesToSearch={['name', 'ruc', 'alias']}
-                onSelect={handleSelectClient}
-              />
-            </Box>
-
-            <Box width='18%'>
-              <Button
-                fontSize={10}
-                whiteSpace='normal'
-                gap='2px'
-                px='10px'
-                h='32px'
-                onClick={() => {
-                  router.push({
-                    pathname: ADMIN_ROUTES.clients,
-                    query: { prevRoute: ADMIN_ROUTES.generateQuotation }
-                  }
-                )}}
-              >
-                <Text>Añadir cliente </Text>
-                <PlusIcon/>
-              </Button>
-            </Box>
-          </Flex>
-
           <QuoteForm
             quote={quoteSelected ?? quote}
             quoteNotes={quoteNotes}
@@ -366,6 +345,10 @@ const QuotesPage = () => {
             addIGV={addIGV}
             onChangeAddIGV={handleChangeAddIGV}
             handleSubmit={handleSubmit}
+            clientsDB={clientsDB}
+            handleSelectClient={handleSelectClient}
+            productsDB={productsDB}
+            handleSelectProduct={handleSelectProduct}
           />
         </Flex>
       </Modal>
@@ -378,7 +361,7 @@ const QuotesPage = () => {
         footer={deleteFooter}
       />
 
-      {quoteSelected && isMobile && (
+      {quoteSelected && (
         <Modal
           isOpen={isOpenQuoteModal}
           heading={quoteClient?.name}

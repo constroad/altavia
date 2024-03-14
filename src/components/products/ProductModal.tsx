@@ -1,6 +1,7 @@
 import React from 'react'
 import { ProductType } from './utils'
 import { Flex, Text } from '@chakra-ui/react';
+import { formatPriceNumber } from 'src/common/utils';
 
 interface ProductModalProps {
   product: ProductType
@@ -15,10 +16,6 @@ export const ProductModal = (props: ProductModalProps) => {
         <Text>{product.alias}</Text>
       </Flex>
       <Flex gap='2px'>
-        <Text fontWeight={600} width='80px' minWidth='100px'>Descripción:</Text>
-        <Text>{product.description}</Text>
-      </Flex>
-      <Flex gap='2px'>
         <Text fontWeight={600} width='100px'>Unidad:</Text>
         <Text>{product.unit}</Text>
       </Flex>
@@ -28,7 +25,7 @@ export const ProductModal = (props: ProductModalProps) => {
       </Flex>
       <Flex gap='2px'>
         <Text fontWeight={600} width='100px'>Precio:</Text>
-        <Text>{product.price}</Text>
+        <Text>{formatPriceNumber(product.unitPrice)}</Text>
       </Flex>
     </Flex>
   )

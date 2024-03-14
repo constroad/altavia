@@ -1,18 +1,18 @@
 export type ProductType = {
   _id?: string;
-	name: string,
-  description?: string,
+  description: string,
   alias?: string,
-  price: number,
-  quantity: number,
   unit: string,
+  unitPrice: number,
+  quantity: number,
+  total: number
 }
 
 export const initialProducStore: ProductType = {
-	name: '',
 	description: '',
 	alias: '',
-  price: 0,
-  quantity: 0,
-  unit: ''
+  unit: '',
+  unitPrice: 1,
+  quantity: 1,
+  total: 1
 }

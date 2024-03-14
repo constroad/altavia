@@ -72,26 +72,3 @@ export const Modal = (props: ModalProps) => {
     </ModalChakra>
   )
 }
-
-// type ModalWrapperProps = PropsWithChildren & {
-//   opener: React.ReactNode
-// } & Pick<ModalProps, 'heading' | 'footer' | 'hideCancelButton'>
-
-// export const ModalWrapper = (props: ModalWrapperProps) => {
-//   const { opener, children, ...rest } = props
-//   const { onOpen, isOpen, onClose } = useDisclosure()
-
-//   return (
-//     <>
-//       {React.cloneElement(opener as React.ReactElement, {
-//         onClick: () => {
-//           onOpen()
-//         },
-//       })}
-
-//       <Modal isOpen={isOpen} onClose={onClose} {...rest}>
-//         {children}
-//       </Modal>
-//     </>
-//   )
-// }

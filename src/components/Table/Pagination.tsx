@@ -86,7 +86,7 @@ export const Pagination = (props: PaginationProps) => {
         <NextIcon />
       </Flex>
 
-      <Text fontSize={{ base: 10, md: 12 }} ml='10px'>Página {currentPage} de {totalPages}</Text>
+      <Text fontSize={{ base: 10, md: 12 }} ml={{ base: '5px', md: '10px' }}>Página {currentPage} de {totalPages}</Text>
     </Flex>
   )
 }

@@ -74,9 +74,9 @@ export const generateMobileQuoteColumns = ( clientList: ClientType[], handleSele
             overflow="hidden"
             whiteSpace="nowrap"
             textOverflow="ellipsis"
-            maxW='125px'
-            w='125px'
-            minW='125px'
+            maxW='115px'
+            w='115px'
+            minW='115px'
           >
             {clientName?.[0]?.name}
           </Text>

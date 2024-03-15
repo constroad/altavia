@@ -4,7 +4,6 @@ import { ProductType } from "./utils"
 
 export const generateProductColumns = () => {
   const columns: TableColumn[] = [
-    // { key: 'name', label: 'Nombre', width: '15%' },
     { key: 'description', label: 'Descripción', width: '50%' },
     { key: 'alias', label: 'Alias', width: '5%' },
     { key: 'unit', label: 'Unidad', width: '5%' },

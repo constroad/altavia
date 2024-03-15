@@ -11,27 +11,31 @@ export const ClientModal = (props: ClientModalProps) => {
   return (
     <Flex flexDir='column' gap='10px' fontSize={12}>
       <Flex gap='2px'>
-        <Text fontWeight={600} width='80px'>Alias:</Text>
+        <Text fontWeight={600} minW='80px'>Alias:</Text>
         <Text>{client.alias}</Text>
       </Flex>
       <Flex gap='2px'>
-        <Text fontWeight={600} width='80px'>RUC:</Text>
+        <Text fontWeight={600} minW='80px'>RUC:</Text>
         <Text>{client.ruc}</Text>
       </Flex>
       <Flex gap='2px'>
-        <Text fontWeight={600} width='80px'>Dirección:</Text>
-        <Text>{client.address}</Text>
+        <Text fontWeight={600} minW='80px'>Contacto:</Text>
+        <Text>{client.contactPerson}</Text>
       </Flex>
       <Flex gap='2px'>
-        <Text fontWeight={600} width='80px'>Teléfono:</Text>
+        <Text fontWeight={600} minW='80px'>Teléfono:</Text>
         <Text>{client.phone}</Text>
       </Flex>
       <Flex gap='2px'>
-        <Text fontWeight={600} width='80px'>Correo:</Text>
+        <Text fontWeight={600} minW='80px'>Dirección:</Text>
+        <Text>{client.address}</Text>
+      </Flex>
+      <Flex gap='2px'>
+        <Text fontWeight={600} minW='80px'>Correo:</Text>
         <Text>{client.email}</Text>
       </Flex>
       <Flex gap='2px'>
-        <Text fontWeight={600} width='80px'>Web:</Text>
+        <Text fontWeight={600} minW='80px'>Web:</Text>
         <Text>{client.web}</Text>
       </Flex>
       <Flex gap='2px' flexDir='column'>

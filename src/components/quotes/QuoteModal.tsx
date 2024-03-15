@@ -16,20 +16,25 @@ export const QuoteModal = (props: QuoteModalProps) => {
   const { slashDate } = getDate(quote.date)
 
   return (
-    <Flex flexDir='column' gap='10px' fontSize={12}>
+    <Flex flexDir='column' gap='10px' fontSize={{ base: 11, md: 12 }}>
       <Flex gap='2px'>
-        <Text fontWeight={600} width='80px'>Cliente:</Text>
+        <Text fontWeight={600} minW='88px'>Cliente:</Text>
         <Text>{quoteClient?.name}</Text>
       </Flex>
 
       <Flex gap='2px'>
-        <Text fontWeight={600} width='80px'>Nro.:</Text>
+        <Text fontWeight={600} minW='88px'>Nro.:</Text>
         <Text>{quote.nro}</Text>
       </Flex>
 
       <Flex gap='2px'>
-        <Text fontWeight={600} width='80px'>Fecha:</Text>
+        <Text fontWeight={600} minW='88px'>Fecha:</Text>
         <Text>{slashDate}</Text>
+      </Flex>
+
+      <Flex gap='2px'>
+        <Text fontWeight={600} minW='88px' lineHeight='14px'>Forma de pago:</Text>
+        <Text>{quote.notes}</Text>
       </Flex>
 
       <Flex gap='2px' flexDir='column'>
@@ -46,23 +51,23 @@ export const QuoteModal = (props: QuoteModalProps) => {
               width='100%'
             >
               <Flex gap='2px'>
-                <Text fontWeight={600} width='74px'>Producto:</Text>
-                <Text>S/. {prod?.description}</Text>
+                <Text fontWeight={600} minW='74px'>Producto:</Text>
+                <Text>{prod?.description}</Text>
               </Flex>
               <Flex gap='2px'>
-                <Text fontWeight={600} width='74px'>Unidad:</Text>
+                <Text fontWeight={600} minW='74px'>Unidad:</Text>
                 <Text>{prod?.unit}</Text>
               </Flex>
               <Flex gap='2px'>
-                <Text fontWeight={600} width='74px'>Cantidad:</Text>
+                <Text fontWeight={600} minW='74px'>Cantidad:</Text>
                 <Text>{prod?.quantity}</Text>
               </Flex>
               <Flex gap='2px'>
-                <Text fontWeight={600} width='74px'>Precio U.:</Text>
+                <Text fontWeight={600} minW='74px'>Precio U.:</Text>
                 <Text>S/. {formatPriceNumber(prod?.unitPrice)}</Text>
               </Flex>
               <Flex gap='2px'>
-                <Text fontWeight={600} width='74px'>Total:</Text>
+                <Text fontWeight={600} minW='74px'>Total:</Text>
                 <Text>S/. {formatPriceNumber(prod?.unitPrice * prod?.quantity)}</Text>
               </Flex>
             </Flex>
@@ -70,24 +75,19 @@ export const QuoteModal = (props: QuoteModalProps) => {
         </Flex>
       </Flex>
 
-      <Flex gap='2px'>
-        <Text fontWeight={600} width='80px' lineHeight='14px'>Forma de pago:</Text>
-        <Text>{quote.notes}</Text>
-      </Flex>
-
       <Flex gap='4px' flexDir='column' mt='10px'>
         <Flex gap='2px'>
-          <Text fontWeight={600} width='80px'>Subtotal:</Text>
+          <Text fontWeight={600} minW='88px'>Subtotal:</Text>
           <Text>S/. {formatPriceNumber(quote.subTotal)}</Text>
         </Flex>
 
         <Flex gap='2px'>
-          <Text fontWeight={600} width='80px'>IGV:</Text>
+          <Text fontWeight={600} minW='88px'>IGV:</Text>
           <Text>S/. {formatPriceNumber(quote.igv)}</Text>
         </Flex>
 
         <Flex gap='2px'>
-          <Text fontWeight={600} width='80px'>Total:</Text>
+          <Text fontWeight={600} minW='88px'>Total:</Text>
           <Text bg={CONSTROAD_COLORS.orange} rounded='3px' px='2px'>S/. {formatPriceNumber(quote.total)}</Text>
         </Flex>
       </Flex>

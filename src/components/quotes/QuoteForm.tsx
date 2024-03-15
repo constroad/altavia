@@ -9,6 +9,7 @@ import { SearchComponent } from '../Search';
 import { ADMIN_ROUTES } from 'src/common/consts';
 import { ProductType } from '../products';
 import { CustomDivider } from '../CustomDivider';
+import { CONSTROAD_COLORS } from 'src/styles/shared';
 
 type QuoteFormProps = {
   quote: QuoteType;
@@ -48,8 +49,6 @@ export const QuoteForm = (props: QuoteFormProps) => {
   const handleChangeNotes = (value: string) => {
     setter({ ...quote, notes: value })
   }
-
-  console.log('quote form:', quote)
   
   return (
     <VStack as="form" onSubmit={handleSubmit} spacing={2.5} mt='5px'>
@@ -120,7 +119,6 @@ export const QuoteForm = (props: QuoteFormProps) => {
           value={client?.ruc ?? ''}
           placeholder='Elige un cliente para llenar este campo'
           onChange={() => null}
-          required
         />
       </Flex>
 
@@ -178,23 +176,31 @@ export const QuoteForm = (props: QuoteFormProps) => {
         </Flex>
       </Box>
 
-      <Flex width='100%' justifyContent='space-between' fontSize={{ base: 10, md: 12 }} >
+      <Flex width='100%' justifyContent='space-between' fontSize={{ base: 10, md: 12 }} alignItems='end'>
         <Flex flexDir='column'>
-          <Text fontWeight={600}>Subtotal</Text>
-          <Box paddingY='2px' paddingX='4px' rounded='4px' border='0.5px solid' borderColor='lightgray' minW='120px' textAlign='end'>
-            {formattedSubtotal}
-          </Box>
-        </Flex>
-
-        <Flex flexDir='column'>
-          <Text fontWeight={600}>IGV</Text>
+          <Text fontWeight={600} fontSize={12}>Subtotal</Text>
           <Box
             paddingY='2px'
             paddingX='4px'
             rounded='4px'
             border='0.5px solid'
             borderColor='lightgray'
-            minW='120px'
+            minW={{ base: '100px', md: '120px' }}
+            textAlign='end'
+          >
+            {formattedSubtotal}
+          </Box>
+        </Flex>
+
+        <Flex flexDir='column'>
+          <Text fontWeight={600} fontSize={12}>IGV</Text>
+          <Box
+            paddingY='2px'
+            paddingX='4px'
+            rounded='4px'
+            border='0.5px solid'
+            borderColor='lightgray'
+            minW={{ base: '100px', md: '120px' }}
             textAlign='end'
           >
             { props.addIGV ? formattedIGV : '0.00' }
@@ -202,15 +208,15 @@ export const QuoteForm = (props: QuoteFormProps) => {
         </Flex>
 
         <Flex flexDir='column'>
-          <Text fontWeight={600} fontSize={14}>Total</Text>
+          <Text fontWeight={600} fontSize={{ base: 12, md: 14 }}>Total</Text>
           <Box
             paddingY='2px'
             paddingX='4px'
             rounded='4px'
             border='0.5px solid'
             borderColor='gray.800'
-            bg='#ffaf52'
-            minW='120px'
+            bg={CONSTROAD_COLORS.orange}
+            minW={{ base: '100px', md: '120px' }}
             textAlign='end'
           >
             { props.addIGV ? formattedTotal : formattedSubtotal }

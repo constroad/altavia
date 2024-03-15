@@ -48,10 +48,11 @@ export const AdminSidebar = (props: AdminSidebarProps) => {
             justifyContent={ !isMobile ? 'space-between' : 'center'}
             px={ !isMobile ? isExpanded ? '16px' : '8px' : '4px'}
             h={{ base: '41px', md: '72px' }}
+            onClick={() => router.push(APP_ROUTES.admin)}
             shadow='md'
           >
-            <Flex gap='6px' alignItems='center'>
-              <Image src='/constroad.ico' alt='constroad-logo' w='25px' h='25px' bg={CONSTROAD_COLORS.yellow}/>
+            <Flex gap='6px' alignItems='center' h='72px' cursor='pointer'>
+              <Image src='/constroad.ico' alt='constroad-logo' w='25px' h='25px'/>
               {isExpanded && !isMobile && (
                 <Text fontWeight={600} fontSize={18} >ConstRoad</Text>
               )}

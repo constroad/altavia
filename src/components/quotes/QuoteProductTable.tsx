@@ -290,10 +290,10 @@ export const QuoteProductTable = (props: QuoteProductTableProps) => {
           </Tbody>
         </Table>
 
-        <Flex width='100%' justifyContent='end' height={{ base: '22px', md: '30px' }} alignItems='center'>
+        <Flex width='100%' justifyContent='end' height={{ base: '22px', md: '22px' }} alignItems='center'>
           <Flex textAlign='center' gap='8px' height='100%'>
             <Flex fontSize={{ base: 10, md: 12 }} fontWeight={600} alignItems='center' height='100%'>
-              TOTAL:
+              Total sin IGV:
             </Flex>
             <Flex px='6px' py='2px' minWidth={{base: '90px', md: '158px'}} rounded='2px' bg='orange' height='100%' alignItems='center'>
               { formatPriceNumber(quote.total) }
@@ -302,7 +302,7 @@ export const QuoteProductTable = (props: QuoteProductTableProps) => {
         </Flex>
       </Box>
 
-      <Box width='100%' textAlign='start' paddingY='6px' marginTop='6px'>
+      <Box width='100%' textAlign='start' paddingY='6px'>
         <Button
           fontSize={{base: 10, md: 12}}
           size='sm'

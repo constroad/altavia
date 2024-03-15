@@ -70,6 +70,11 @@ export const QuoteModal = (props: QuoteModalProps) => {
         </Flex>
       </Flex>
 
+      <Flex gap='2px'>
+        <Text fontWeight={600} width='80px' lineHeight='14px'>Forma de pago:</Text>
+        <Text>{quote.notes}</Text>
+      </Flex>
+
       <Flex gap='4px' flexDir='column' mt='10px'>
         <Flex gap='2px'>
           <Text fontWeight={600} width='80px'>Subtotal:</Text>

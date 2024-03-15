@@ -171,7 +171,6 @@ export const ProductsPage = () => {
           color='black'
           lineHeight={{ base: '28px', md: '39px' }}
           marginX='auto'
-          mt={ isMobile ? '10px' : '0px' }
         >
           Productos
         </Text>
@@ -186,6 +185,7 @@ export const ProductsPage = () => {
               colorScheme='blue'
               gap={2}
               mr='5px'
+              height='25px'
             >
               Volver a cotizar
             </Button>
@@ -197,6 +197,7 @@ export const ProductsPage = () => {
             padding={{ base: '5px', md: '12px' }}
             onClick={onOpenForm}
             colorScheme='blue'
+            height='25px'
             gap={2}
           >
             <Text>Añadir producto</Text><PlusIcon />
@@ -211,6 +212,7 @@ export const ProductsPage = () => {
               onEdit={handleEditClick}
               onDelete={handleDeleteClick}
               isLoading={isLoading}
+              pagination
               actions
             />
           )}
@@ -221,6 +223,7 @@ export const ProductsPage = () => {
               onEdit={handleEditClick}
               onDelete={handleDeleteClick}
               isLoading={isLoading}
+              pagination
               actions
             />
           )}

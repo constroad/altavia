@@ -1,5 +1,6 @@
 import React from 'react'
 import { FormControl, FormLabel, Text, Textarea } from '@chakra-ui/react'
+import { useScreenSize } from 'src/common/hooks';
 
 interface FormTextareaProps {
   id: string;
@@ -11,13 +12,14 @@ interface FormTextareaProps {
 }
 
 export const FormTextarea = (props: FormTextareaProps) => {
+  const { isMobile, isDesktop } = useScreenSize()
   return (
     <FormControl id={props.id}>
       <FormLabel mb={{ base: '2px', md: '6px' }} fontSize={{ base: 10, md: 12 }}>
         {props.label} {!props.required ? <Text color='gray' fontSize={8} display='inline-block'>(optional)</Text> : <Text color='red' fontSize={10} display='inline-block'>*</Text>}
       </FormLabel>
       <Textarea
-        _placeholder={{ fontSize: 10 }}
+        _placeholder={{ fontSize: isMobile ? 10 : 12 }}
         placeholder={props.placeholder}
         fontSize={{ base: 10, md: 12 }}
         lineHeight='13px'

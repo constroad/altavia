@@ -2,7 +2,7 @@ import React, { ChangeEvent } from 'react'
 import { Box, Button, Flex, Switch, Text, VStack } from '@chakra-ui/react'
 import { QuoteProductTable, QuoteType, getQuotePrices } from '.';
 import { ClientType } from '../clients';
-import { FormInput } from '../form';
+import { FormInput, FormTextarea } from '../form';
 import { PlusIcon } from 'src/common/icons';
 import { useRouter } from 'next/router';
 import { SearchComponent } from '../Search';
@@ -16,10 +16,8 @@ type QuoteFormProps = {
   setter: React.Dispatch<React.SetStateAction<QuoteType>> | React.Dispatch<React.SetStateAction<QuoteType | undefined>>;
   client?: ClientType | undefined
   isLoading: boolean;
-  quoteNotes?: string | undefined;
   onChangeDate: (e: ChangeEvent<HTMLInputElement>) => void;
   dateValue: string;
-  handleChangeNotes?: (e: ChangeEvent<HTMLInputElement>) => void | undefined;
   addIGV: boolean;
   onChangeAddIGV: () => void;
   handleSubmit: (e: any) => void;
@@ -46,6 +44,12 @@ export const QuoteForm = (props: QuoteFormProps) => {
   const router = useRouter()
 
   const { formattedSubtotal, formattedIGV, formattedTotal } = getQuotePrices(quote.items, true, true)
+
+  const handleChangeNotes = (value: string) => {
+    setter({ ...quote, notes: value })
+  }
+
+  console.log('quote form:', quote)
   
   return (
     <VStack as="form" onSubmit={handleSubmit} spacing={2.5} mt='5px'>
@@ -158,7 +162,15 @@ export const QuoteForm = (props: QuoteFormProps) => {
         <QuoteProductTable quote={quote} setter={setter} />
       </Box>
 
-      <Box width='100%' textAlign='start' marginTop='10px'>
+      <FormInput
+        id='quote-forma-de-pago'
+        label='Forma de pago'
+        placeholder='Adelanto 80% y el 20% el día de la producción'
+        value={quote.notes ?? ''}
+        onChange={(e) => handleChangeNotes(e.target.value)}
+      />
+
+      <Box width='100%' textAlign='start'>
         <Text fontSize={{ base: 10, md: 12 }} fontWeight={600} >¿Aplicar IGV?</Text>
         <Flex gap='10px' alignItems='center' marginTop='3px'>
           <Switch size="md" onChange={props.onChangeAddIGV} isChecked={props.addIGV} />
@@ -166,11 +178,14 @@ export const QuoteForm = (props: QuoteFormProps) => {
         </Flex>
       </Box>
 
-      <Flex width='100%' justifyContent='space-between' fontSize={{ base: 10, md: 12 }} mt='10px'>
+      <Flex width='100%' justifyContent='space-between' fontSize={{ base: 10, md: 12 }} >
         <Flex flexDir='column'>
           <Text fontWeight={600}>Subtotal</Text>
-          <Box paddingY='2px' paddingX='4px' rounded='4px' border='0.5px solid' borderColor='lightgray'>{formattedSubtotal}</Box>
+          <Box paddingY='2px' paddingX='4px' rounded='4px' border='0.5px solid' borderColor='lightgray' minW='120px' textAlign='end'>
+            {formattedSubtotal}
+          </Box>
         </Flex>
+
         <Flex flexDir='column'>
           <Text fontWeight={600}>IGV</Text>
           <Box
@@ -179,19 +194,24 @@ export const QuoteForm = (props: QuoteFormProps) => {
             rounded='4px'
             border='0.5px solid'
             borderColor='lightgray'
+            minW='120px'
+            textAlign='end'
           >
             { props.addIGV ? formattedIGV : '0.00' }
           </Box>
         </Flex>
+
         <Flex flexDir='column'>
-          <Text fontWeight={600}>Total</Text>
+          <Text fontWeight={600} fontSize={14}>Total</Text>
           <Box
             paddingY='2px'
             paddingX='4px'
             rounded='4px'
             border='0.5px solid'
-            borderColor='lightgray'
+            borderColor='gray.800'
             bg='#ffaf52'
+            minW='120px'
+            textAlign='end'
           >
             { props.addIGV ? formattedTotal : formattedSubtotal }
           </Box>

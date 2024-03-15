@@ -1,4 +1,4 @@
-import { Button, Flex } from "@chakra-ui/react"
+import { Button, Flex, Text } from "@chakra-ui/react"
 import { TableColumn } from "../Table"
 import { ProviderType } from "./utils"
 import { BankAccountType } from "../clients"
@@ -59,13 +59,32 @@ export const generateProviderColumns = (
 
 export const generateMobileProvColumns = ( handleSelectProvider: (row: ProviderType) => void ) => {
   const columns: TableColumn[] = [
-    { key: 'name', label: 'Nombre', width: '65%' },
+    {
+      key: 'name',
+      label: 'Nombre',
+      width: '65%',
+      render: (item, row) => {
+        return (
+          <Text
+            fontSize={10}
+            overflow="hidden"
+            whiteSpace="nowrap"
+            textOverflow="ellipsis"
+            maxW='185px'
+            w='185px'
+            minW='185px'
+          >
+            {item}
+          </Text>
+        )
+      }
+    },
     {
       key: 'alias',
       label: 'Ver',
       width: '15%',
       render: (item, row) => (
-        <Button onClick={() => handleSelectProvider(row)} size='md' maxWidth='40px' maxHeight='25px' fontSize={12} colorScheme="blue">
+        <Button onClick={() => handleSelectProvider(row)} size='md' px='5px' minW='30px' w='30px' maxWidth='30px' maxHeight='20px' fontSize={12} colorScheme="blue">
           Ver
         </Button>
       )

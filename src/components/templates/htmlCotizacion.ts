@@ -202,7 +202,7 @@ export const htmlCotizacion = ( bgImg: any, logoImg: any): string => {
                 Atención con 24h de anticipación
               </span>
               <span style="font-weight: bold;">
-                FORMA DE PAGO: Adelanto 80% y el 20% el día de la producción
+                FORMA DE PAGO:
               </span>
             </div>
             <div class="table-cell-body" style="align-items: center; width: 5.8%">

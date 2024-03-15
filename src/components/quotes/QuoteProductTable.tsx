@@ -290,12 +290,12 @@ export const QuoteProductTable = (props: QuoteProductTableProps) => {
           </Tbody>
         </Table>
 
-        <Flex width='100%' justifyContent='end' height={{ base: '22px', md: '22px' }} alignItems='center'>
+        <Flex width='100%' justifyContent='end' height={{ base: '18px', md: '22px' }} alignItems='center'>
           <Flex textAlign='center' gap='8px' height='100%'>
             <Flex fontSize={{ base: 10, md: 12 }} fontWeight={600} alignItems='center' height='100%'>
               Total sin IGV:
             </Flex>
-            <Flex px='6px' py='2px' minWidth={{base: '90px', md: '158px'}} rounded='2px' bg='orange' height='100%' alignItems='center'>
+            <Flex px='6px' py='2px' minWidth={{base: '90px', md: '158px'}} rounded='2px' bg={CONSTROAD_COLORS.orange} height='100%' alignItems='center'>
               { formatPriceNumber(quote.total) }
             </Flex>
           </Flex>

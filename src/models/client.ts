@@ -5,8 +5,9 @@ import mongoose, { Document, Schema, Model } from 'mongoose';
 export const clientValidationSchema = z.object({
   _id: z.string().optional(),
   name: z.string().min(1),
-  ruc: z.string().min(1),
+  ruc: z.string().optional(),
   alias: z.string().optional(),
+  contactPerson: z.string().optional(),
   address: z.string().optional(),
   phone: z.string().optional(),
   email: z.string().optional(),
@@ -28,6 +29,7 @@ export interface ClientModel extends Document {
   name: string;
   ruc: string;
   alias: string;
+  contactPerson: string;
   address: string;
   phone: string;
   email: string;
@@ -47,8 +49,9 @@ try {
 } catch (e) {
   const clientDBSchema = new Schema({
     name: String,
-    ruc: String,
+    ruc: { type: String, optional: true },
     alias: { type: String, optional: true },
+    contactPerson: { type: String, optional: true },
     address: { type: String, optional: true },
     phone: { type: String, optional: true },
     email: { type: String, optional: true },

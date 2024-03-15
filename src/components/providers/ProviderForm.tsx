@@ -148,7 +148,26 @@ export const ProviderForm = (props: ProviderFormProps) => {
             value={provider.ruc ?? ''}
             placeholder='20987654321'
             onChange={(e) => handleChangeValue(e.target.value.toUpperCase(), 'ruc')}
-            required
+          />
+        </GridItem>
+
+        <GridItem colSpan={1}>
+          <FormInput
+            id='provider-contact-person'
+            label='Persona de contacto'
+            value={provider.contactPerson ?? ''}
+            placeholder='Jhon Doe'
+            onChange={(e) => handleChangeValue(e.target.value.toUpperCase(), 'contactPerson')}
+          />
+        </GridItem>
+
+        <GridItem colSpan={1}>
+          <FormInput
+            id='provider-phone'
+            label='Teléfono'
+            value={provider.phone ?? ''}
+            placeholder='987654321'
+            onChange={(e) => handleChangeValue(e.target.value, 'phone')}
           />
         </GridItem>
 
@@ -164,16 +183,6 @@ export const ProviderForm = (props: ProviderFormProps) => {
 
         <GridItem colSpan={1}>
           <FormInput
-            id='provider-phone'
-            label='Teléfono'
-            value={provider.phone ?? ''}
-            placeholder='987654321'
-            onChange={(e) => handleChangeValue(e.target.value, 'phone')}
-          />
-        </GridItem>
-
-        <GridItem colSpan={1}>
-          <FormInput
             id='provider-email'
             label='Correo'
             value={provider.email ?? ''}
@@ -182,7 +191,7 @@ export const ProviderForm = (props: ProviderFormProps) => {
           />
         </GridItem>
 
-        <GridItem colSpan={2}>
+        <GridItem colSpan={1}>
           <FormInput
             id='provider-web'
             label='Web'

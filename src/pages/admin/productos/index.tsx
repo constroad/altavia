@@ -200,7 +200,7 @@ export const ProductsPage = () => {
             height='25px'
             gap={2}
           >
-            <Text>Añadir producto</Text><PlusIcon />
+            <Text>Añadir producto</Text><PlusIcon fontSize={ isMobile ? 10 : 14 }/>
           </Button>
         </Box>
 

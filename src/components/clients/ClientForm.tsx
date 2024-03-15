@@ -126,17 +126,16 @@ export const ClientForm = (props: ClientFormProps) => {
             value={client.ruc ?? ''}
             placeholder='20987654321'
             onChange={(e) => handleChangeValue(e.target.value.toUpperCase(), 'ruc')}
-            required
           />
         </GridItem>
 
-        <GridItem colSpan={2}>
+        <GridItem colSpan={1}>
           <FormInput
-            id='client-address'
-            label='Dirección'
-            value={client.address ?? ''}
-            placeholder='Av. Placeholder Mz. A Lt. 1'
-            onChange={(e) => handleChangeValue(e.target.value.toUpperCase(), 'address')}
+            id='client-contact-person'
+            label='Persona de contacto'
+            value={client.contactPerson ?? ''}
+            placeholder='Jhon Doe'
+            onChange={(e) => handleChangeValue(e.target.value.toUpperCase(), 'contactPerson')}
           />
         </GridItem>
 
@@ -147,6 +146,16 @@ export const ClientForm = (props: ClientFormProps) => {
             value={client.phone ?? ''}
             placeholder='987654321'
             onChange={(e) => handleChangeValue(e.target.value.toUpperCase(), 'phone')}
+          />
+        </GridItem>
+
+        <GridItem colSpan={2}>
+          <FormInput
+            id='client-address'
+            label='Dirección'
+            value={client.address ?? ''}
+            placeholder='Av. Placeholder Mz. A Lt. 1'
+            onChange={(e) => handleChangeValue(e.target.value.toUpperCase(), 'address')}
           />
         </GridItem>
 

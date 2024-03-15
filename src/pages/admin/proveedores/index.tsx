@@ -3,8 +3,6 @@ import axios from 'axios';
 import { Box, Button, Flex, Text, useDisclosure } from '@chakra-ui/react';
 import {
   AdministrationLayout,
-  BankAccountCard,
-  BankAccountType,
   Modal,
   ProviderForm,
   ProviderModal,
@@ -28,11 +26,9 @@ export const ProvidersPage = () => {
   const [provider, setProvider] = useState<ProviderType>(initialProvider)
   const [providersList, setProvidersList] = useState<ProviderType[]>([])
   const [providerSelected, setProviderSelected] = useState<ProviderType | undefined>()
-  const [bankAccountSelected, setBankAccountSelected] = useState<BankAccountType>()
   const [descriptionNote, setDescriptionNote] = useState('')
 
   const { isOpen: isOpenForm, onOpen: onOpenForm, onClose: onCloseForm } = useDisclosure()
-  const { isOpen: isOpenBankModal, onOpen: onOpenBankModal, onClose: onCloseBankModal,  } = useDisclosure()
   const { isOpen: isOpenDeleteModal, onOpen: onOpenDeleteModal, onClose: onCloseDeleteModal } = useDisclosure()
   const { isOpen: isOpenDescNote, onOpen: onOpenDescNote, onClose: onCloseDescNote } = useDisclosure()
   const { isOpen: isOpenProvModal, onOpen: onOpenProvModal, onClose: onCloseProvModal } = useDisclosure() 
@@ -54,19 +50,6 @@ export const ProvidersPage = () => {
     onCloseForm()
     setProvider(initialProvider)
     setProviderSelected(undefined)
-  }
-  
-  // Bank account preview
-  const handleSelectBankAccount = (acc: BankAccountType, row: ProviderType) => {
-    setBankAccountSelected(acc)
-    setProviderSelected(row)
-    onOpenBankModal()
-  }
-  
-  const handleCloseBankModal = () => {
-    setBankAccountSelected(undefined)
-    setProviderSelected(undefined)
-    onCloseBankModal()
   }
 
   // description - notes preview
@@ -91,13 +74,13 @@ export const ProvidersPage = () => {
     setProviderSelected(undefined)
   }
 
-  const columns = generateProviderColumns(handleSelectBankAccount, handleSelectProvider)
+  const columns = generateProviderColumns(handleSelectProvider)
   const mobileColumns = generateMobileProvColumns(handleSelectProvider)
 
   // Add client
   const handleSubmit = (e: any) => {
     e.preventDefault()
-    const listIncludesProvider = providersList.some(x => x.ruc === provider.ruc);
+    const listIncludesProvider = providersList.some(x => x.name === provider.name);
 
     if (!listIncludesProvider) {
       runAddProvider(postProv(API_ROUTES.provider, provider), {
@@ -216,7 +199,7 @@ export const ProvidersPage = () => {
             height='25px'
             gap={2}
           >
-            <Text>Añadir proveedor</Text><PlusIcon />
+            <Text>Añadir proveedor</Text><PlusIcon fontSize={ isMobile ? 10 : 14 }/>
           </Button>
         </Box>
 
@@ -259,15 +242,6 @@ export const ProvidersPage = () => {
           handleSubmit={ providerSelected ? handleEditProvider : handleSubmit }
           providerSelected={providerSelected}
         />
-      </Modal>
-
-      {/* Bank account modal */}
-      <Modal
-        isOpen={isOpenBankModal}
-        onClose={handleCloseBankModal}
-        heading={providerSelected?.name}
-      >
-        <BankAccountCard bankAccount={bankAccountSelected} />
       </Modal>
 
       {/* Description or Note modal */}

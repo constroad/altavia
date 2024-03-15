@@ -21,6 +21,10 @@ export const ProviderModal = (props: ProviderModalProps) => {
         <Text>{provider.ruc}</Text>
       </Flex>
       <Flex gap='2px'>
+        <Text fontWeight={600} width='80px' minW='80px'>Contacto:</Text>
+        <Text>{provider.contactPerson}</Text>
+      </Flex>
+      <Flex gap='2px'>
         <Text fontWeight={600} width='80px' minW='80px'>Dirección:</Text>
         <Text>{provider.address}</Text>
       </Flex>

@@ -90,7 +90,7 @@ export const TableComponent = (props: Props) => {
                 ))}
                 {actions &&  (
                   <Td py={1} px={{ base: 1.5, md: 2 }} textAlign='center'>
-                    <Flex width='100%' justifyContent='space-evenly'>
+                    <Flex width='100%' justifyContent={{ base: 'space-between', md: 'space-evenly' }}>
                       {onEdit && (
                         <Button
                           colorScheme='blue'

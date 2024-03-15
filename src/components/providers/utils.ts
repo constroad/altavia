@@ -5,6 +5,7 @@ export type ProviderType = {
 	name: string,
 	ruc: string,
 	alias?: string,
+	contactPerson?: string;
 	address?: string,
 	phone?: string,
 	email?: string,
@@ -19,6 +20,7 @@ export const initialProvider: ProviderType = {
 	name: '',
 	ruc: '',
 	alias: '',
+	contactPerson: '',
 	address: '',
 	phone: '',
 	email: '',

@@ -301,7 +301,7 @@ const QuotesPage = () => {
             height='25px'
             gap={2}
           >
-            <Text>Nueva cotización</Text><PlusIcon />
+            <Text>Nueva cotización</Text><PlusIcon fontSize={ isMobile ? 10 : 14 }/>
           </Button>
         </Box>
 

@@ -38,7 +38,7 @@ export const Modal = (props: ModalProps) => {
       />
 
       <ModalContent minW={{ base: '100%', md: props.width ?? 'xl' }} py={2} className="modal-content">
-        {heading && <ModalHeader as="h4" px='20px' py='12px' width='95%'>{heading}</ModalHeader>}
+        {heading && <ModalHeader as="h4" px='20px' py='12px' width='95%' fontSize={{ base: 16 }} >{heading}</ModalHeader>}
 
         {onClose && (
           <ModalCloseButton

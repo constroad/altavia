@@ -7,6 +7,7 @@ export type QuoteType = {
   nro: number;
   date: string;
   items: ProductType[];
+  notes?: string;
   subTotal: number;
   igv: number;
   total: number;
@@ -17,7 +18,7 @@ export type QuotePDFType = {
   nroQuote: string;
   ruc: string;
   date: string;
-  notes: string;
+  notes?: string;
   products: ProductType[];
   addIGV: boolean;
 }
@@ -45,6 +46,7 @@ export const initialQuote: QuoteType = {
   nro: 0,
   date: '',
   items: [],
+  notes: '',
   subTotal: 480,
   igv: 86.4,
   total: 566.4,

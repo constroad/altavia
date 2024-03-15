@@ -15,6 +15,7 @@ export const quoteValidationSchema = z.object({
     unitPrice: z.number(),
     total: z.number(),
   })),
+  notes: z.string(),
   subTotal: z.number(),
   igv: z.number(),
   total: z.number(),
@@ -37,6 +38,7 @@ export interface QuoteModel extends Document {
     unitPrice: number;
     total: number;
   }[],
+  notes: string;
   subTotal: number
   igv: number
   total: number
@@ -59,6 +61,7 @@ try {
       unitPrice: { type: Number, required: true },
       total: { type: Number, required: true },
     }],
+    notes: { type: String, optional: true },
     subTotal: { type: Number, required: true },
     igv: { type: Number, required: true },
     total: { type: Number, required: true },

@@ -10,6 +10,9 @@ export const generateQuotationPDF = async (data: QuotePDFType) => {
 
   const products = data.products
 
+  const defaultNote = 'Adelanto 80% y el 20% el día de la producción'
+  const customNotes = data.notes ?? ''
+
   const nroCotizacion = addZerosAhead(+data.nroQuote)
   const companyName = data.companyName.toUpperCase()
   const rucCliente = data.ruc === '' ? '- - -' : data.ruc
@@ -91,6 +94,14 @@ export const generateQuotationPDF = async (data: QuotePDFType) => {
     firstPage.drawText(unitPriceStr, { x: unitPriceX, y: startY, size: 7.5, font: helveticaFont });
     firstPage.drawText(totalStr, { x: totalX , y: startY, size: 7.5, font: helveticaFont });
   })
+
+  { customNotes && (
+    firstPage.drawText(customNotes, { x: 157, y: 377.5, size: 7.5, font: helveticaBoldFont})
+  )}
+
+  { !customNotes && (
+    firstPage.drawText(defaultNote, { x: 157, y: 377.5, size: 7.5, font: helveticaBoldFont})
+  )}
 
   firstPage.drawText(formattedSubtotal, { x: subtotalX, y: 355, size: 7.5 })
   firstPage.drawText(formattedSubtotal, { x: subtotalX, y: 339, size: 7.5 })

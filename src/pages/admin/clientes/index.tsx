@@ -197,6 +197,7 @@ export const ClientsPage = () => {
               padding={{ base: '5px', md: '12px' }}
               onClick={() => router.push(ADMIN_ROUTES.generateQuotation)}
               colorScheme='blue'
+              height='25px'
               gap={2}
               mr='5px'
             >
@@ -210,6 +211,7 @@ export const ClientsPage = () => {
             padding={{ base: '5px', md: '12px' }}
             onClick={onOpen}
             colorScheme='blue'
+            height='25px'
             gap={2}
           >
             <Text>Nuevo cliente</Text><PlusIcon />
@@ -224,6 +226,7 @@ export const ClientsPage = () => {
               onDelete={handleConfirmDelete}
               onEdit={handleEditClientClick}
               isLoading={isLoading}
+              pagination
               actions
             />
           )}
@@ -234,6 +237,7 @@ export const ClientsPage = () => {
               onDelete={handleConfirmDelete}
               onEdit={handleEditClientClick}
               isLoading={isLoading}
+              pagination
               actions
             />
           )}

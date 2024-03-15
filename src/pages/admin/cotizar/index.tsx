@@ -34,7 +34,6 @@ const QuotesPage = () => {
 
   const [quote, setQuote] = useState<QuoteType>(initialQuote)
   const [quoteSelected, setQuoteSelected] = useState<QuoteType | undefined>()
-  const [quoteNotes, setQuoteNotes] = useState<string>('')
   const [quotesDBList, setQuotesDBList] = useState<QuoteType[]>([])
   const [customDate, setCustomDate] = useState('')
   const [addIGV, setAddIGV] = useState(true)
@@ -109,7 +108,7 @@ const QuotesPage = () => {
       companyName: clientSelected?.name ?? '',
       ruc: clientSelected?.ruc ?? '',
       nroQuote: quoteNumber.toString(),
-      notes: quoteNotes,
+      notes: quoteSelected?.notes ?? quote.notes,
       date: quoteSelected?.date ? editQuoteDate as string : addQuoteDate.toUTCString(),
       products: quoteSelected?.items ?? quote.items,
       addIGV: addIGV,
@@ -150,6 +149,7 @@ const QuotesPage = () => {
         nro: quoteNumber,
         date: addQuoteDate.toUTCString(),
         items: quote.items,
+        notes: quote.notes,
         subTotal: +formattedSubtotal,
         igv: addIGV ? +formattedIGV : 0,
         total: addIGV ? +formattedTotal : +formattedSubtotal
@@ -180,6 +180,7 @@ const QuotesPage = () => {
         nro: quoteNumber,
         date: editQuoteDate as string,
         items: quoteSelected?.items,
+        notes: quoteSelected.notes,
         subTotal: +formattedSubtotal,
         igv: addIGV ? +formattedIGV : 0,
         total: addIGV ? +formattedTotal : +formattedSubtotal
@@ -211,10 +212,6 @@ const QuotesPage = () => {
     } else {
       setQuote({ ...quote, items: [...quote.items, prod] })
     }
-  }
-
-  const handleChangeNotes = (e: ChangeEvent<HTMLInputElement>) => {
-    setQuoteNotes(e.target.value)
   }
 
   const handleEditQuote = (quote: QuoteType) => {
@@ -301,6 +298,7 @@ const QuotesPage = () => {
             padding={{ base: '5px', md: '12px' }}
             onClick={handleOpenFormModal}
             colorScheme='blue'
+            height='25px'
             gap={2}
           >
             <Text>Nueva cotización</Text><PlusIcon />
@@ -314,6 +312,7 @@ const QuotesPage = () => {
             onEdit={handleEditQuote}
             onDelete={handleDeleteClick}
             isLoading={isLoading}
+            pagination
             actions
           />
         )}
@@ -325,6 +324,7 @@ const QuotesPage = () => {
             onEdit={handleEditQuote}
             onDelete={handleDeleteClick}
             isLoading={isLoading}
+            pagination
             actions
           />
         )}
@@ -343,9 +343,7 @@ const QuotesPage = () => {
         <Flex flexDir='column' gap={2}>
           <QuoteForm
             quote={quoteSelected ?? quote}
-            quoteNotes={quoteNotes}
             quoteSelected={quoteSelected}
-            handleChangeNotes={handleChangeNotes}
             setter={quoteSelected ? setQuoteSelected : setQuote}
             client={clientSelected}
             onChangeDate={handleChangeCustomDate}

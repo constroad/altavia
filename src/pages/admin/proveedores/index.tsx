@@ -202,7 +202,6 @@ export const ProvidersPage = () => {
           color='black'
           lineHeight={{ base: '28px', md: '39px' }}
           marginX='auto'
-          mt={ isMobile ? '10px' : '0px' }
         >
           Proveedores
         </Text>
@@ -214,6 +213,7 @@ export const ProvidersPage = () => {
             padding={{ base: '5px', md: '12px' }}
             onClick={onOpenForm}
             colorScheme='blue'
+            height='25px'
             gap={2}
           >
             <Text>Añadir proveedor</Text><PlusIcon />
@@ -228,6 +228,7 @@ export const ProvidersPage = () => {
               onEdit={handleEditClick}
               onDelete={handleDeleteClick}
               isLoading={isLoading}
+              pagination
               actions
             />
           )}
@@ -238,6 +239,7 @@ export const ProvidersPage = () => {
               onEdit={handleEditClick}
               onDelete={handleDeleteClick}
               isLoading={isLoading}
+              pagination
               actions
             />
           )}

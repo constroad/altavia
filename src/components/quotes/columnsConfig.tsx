@@ -69,7 +69,17 @@ export const generateMobileQuoteColumns = ( clientList: ClientType[], handleSele
       render: (item, row) => {
         const clientName = clientList.filter(client => client._id === item)
         return (
-          <Text minWidth={{ base: '', md: '180px' }} >{clientName?.[0]?.name}</Text>
+          <Text
+            fontSize={10}
+            overflow="hidden"
+            whiteSpace="nowrap"
+            textOverflow="ellipsis"
+            maxW='125px'
+            w='125px'
+            minW='125px'
+          >
+            {clientName?.[0]?.name}
+          </Text>
         )
       }
     },
@@ -90,7 +100,7 @@ export const generateMobileQuoteColumns = ( clientList: ClientType[], handleSele
       label: 'Ver',
       width: '10%',
       render: (item, row) => (
-        <Button onClick={() => handleSelectQuote(row)} size='md' maxWidth='40px' maxHeight='25px' fontSize={12} colorScheme="blue">
+        <Button onClick={() => handleSelectQuote(row)} size='md' px='5px' minW='30px' w='30px' maxWidth='30px' maxHeight='20px' fontSize={12} colorScheme="blue">
           Ver
         </Button>
       )

@@ -15,6 +15,7 @@
     "@emotion/styled": "^11.11.0",
     "axios": "^1.6.7",
     "canvas-confetti": "^1.9.0",
+    "date-fns": "^3.5.0",
     "framer-motion": "^10.16.7",
     "lodash": "^4.17.21",
     "mongoose": "^8.1.2",
@@ -36,8 +37,8 @@
   },
   "devDependencies": {
     "@types/canvas-confetti": "^1.6.2",
-    "@types/mongoose": "^5.11.97",
     "@types/html-pdf": "^3.0.3",
+    "@types/mongoose": "^5.11.97",
     "@types/node": "^20",
     "@types/nodemailer": "^6.4.14",
     "@types/pdfmake": "^0.2.9",

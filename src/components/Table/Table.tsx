@@ -42,7 +42,7 @@ export const TableComponent = (props: Props) => {
       border={`0.5px solid ${CONSTROAD_COLORS.darkGray}`}
       w='100%'
       minW='100%'
-      h='454px'
+      h='455px'
       flexDir='column'
       justifyContent='space-between'
     >

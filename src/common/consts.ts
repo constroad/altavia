@@ -27,6 +27,7 @@ export const ADMIN_ROUTES = {
   dispatch: '/admin/despacho',
   controlHighway: '/admin/control-highway',
   production: '/admin/produccion',
+  tasks: '/admin/tareas',
 }
 
 export const API_ROUTES = {

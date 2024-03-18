@@ -46,15 +46,20 @@ export const AdminSidebar = (props: AdminSidebarProps) => {
           <Flex
             alignItems='center'
             justifyContent={ !isMobile ? 'space-between' : 'center'}
-            px={ !isMobile ? isExpanded ? '16px' : '8px' : '4px'}
-            h={{ base: '41px', md: '72px' }}
-            onClick={() => router.push(APP_ROUTES.admin)}
+            pl={ !isMobile && isExpanded ? '16px' : !isMobile && !isExpanded ? '8px' : ''}
+            pr={ !isMobile && isExpanded ? '16px' : '0px' }
+            height={{ base: '65px', md: '95px' }}
             shadow='md'
           >
-            <Flex gap='6px' alignItems='center' h='72px' cursor='pointer'>
-              <Image src='/constroad.ico' alt='constroad-logo' w='25px' h='25px'/>
+            <Flex gap='6px' alignItems='center' h={ isMobile ? '65px' : '72px' } cursor='pointer' onClick={() => router.push(APP_ROUTES.admin)}>
+              <Image
+                src='/constroad.ico'
+                alt='constroad-logo'
+                w={{ base: '25px', md: !isExpanded ? '25px' : '35px' }}
+                h={{ base: '25px', md: !isExpanded ? '25px' : '35px' }}
+              />
               {isExpanded && !isMobile && (
-                <Text fontWeight={600} fontSize={18} >ConstRoad</Text>
+                <Text fontWeight={600} fontSize={25} >ConstRoad</Text>
               )}
             </Flex>
 
@@ -75,7 +80,7 @@ export const AdminSidebar = (props: AdminSidebarProps) => {
             )}
           </Flex>
 
-          <Stack spacing={1} mt='10px'>
+          <Stack spacing={1}>
             {menuOptions?.map((opt, idx) => {
               return (
                 <Box key={idx}>
@@ -138,7 +143,15 @@ export const AdminSidebar = (props: AdminSidebarProps) => {
       <Flex className='w-screen' flexDir='column'>
         <AdminNavbar />
         
-        <Flex marginY={{ base: 4, md: 6 }} px={{ base: 4, md: 6 }} height={{ base: 'calc(100vh - 41px)', md: 'calc(100vh - 72px)'}} overflowY='scroll'>
+        <Flex
+          marginY={{ base: 4, md: 4 }}
+          px={{ base: 4, md: 6 }}
+          height={{
+            base: 'calc(100vh - 41px)',
+            md: 'calc(100vh - 72px)'
+          }}
+          overflowY='scroll'
+        >
           {children}
         </Flex>
       </Flex>

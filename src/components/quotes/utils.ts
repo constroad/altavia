@@ -1,18 +1,13 @@
 import { formatPriceNumber } from "src/common/utils";
-
-export type ItemType = {
-  description: string;
-  quantity: number;
-  price: number;
-  total: number;
-}
+import { ProductType } from "../products";
 
 export type QuoteType = {
   _id?: string;
   clientId: string;
   nro: number;
   date: string;
-  items: ItemType[];
+  items: ProductType[];
+  notes?: string;
   subTotal: number;
   igv: number;
   total: number;
@@ -23,31 +18,53 @@ export type QuotePDFType = {
   nroQuote: string;
   ruc: string;
   date: string;
-  notes: string;
-  nroCubos: string;
-  unitPrice: string;
+  notes?: string;
+  products: ProductType[];
   addIGV: boolean;
+}
+
+export const initialQuoteProduct: ProductType = {
+  description: 'MEZCLA ASFÁLTICA EN CALIENTE',
+  alias: 'ASFALTO',
+  unit: 'M3',
+  quantity: 1,
+  unitPrice: 480,
+  total: 480
+}
+
+export const newQuoteProduct: ProductType = {
+  description: '',
+  alias: '',
+  unit: '',
+  quantity: 1,
+  unitPrice: 1,
+  total: 1
 }
 
 export const initialQuote: QuoteType = {
   clientId: '',
   nro: 0,
   date: '',
-  items: [{
-    description: 'Mezcla asfáltica en caliente',
-    quantity: 1,
-    price: 480,
-    total: 480
-  }],
+  items: [],
+  notes: '',
   subTotal: 480,
   igv: 86.4,
   total: 566.4,
 }
 
-export const getQuotePrices = (quantity: number, price: number, formatted?: boolean) => {
-  const subtotal = quantity * price
-  const igv = subtotal * 0.18
-  const total = subtotal + igv
+export const getQuotePrices = (
+  items: ProductType[],
+  applyIGV: boolean,
+  formatted?: boolean
+) => {
+
+  const subtotal = items.reduce((accumulator, currentItem) => {
+    return accumulator + currentItem?.total;
+  }, 0);
+
+  const igv = applyIGV === true ? subtotal * 0.18 : 0
+
+  const total = applyIGV === true ? subtotal + igv : subtotal
 
   let formattedSubtotal
   let formattedIGV

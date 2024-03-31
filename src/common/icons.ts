@@ -20,10 +20,12 @@ import { IoLogoWhatsapp, IoMdMail, IoMdClose } from "react-icons/io";
 import { BsCalculatorFill, BsInboxesFill } from "react-icons/bs";
 import { IoArrowBackOutline, IoSearch } from "react-icons/io5";
 import { ImMenu3, ImMenu4, ImRoad } from "react-icons/im";
+import { HiClipboardDocumentList } from "react-icons/hi2";
 import { RiSubtractLine } from "react-icons/ri";
 import { BiSolidPencil } from "react-icons/bi";
 import { GrUserWorker } from "react-icons/gr";
 import { LuContainer } from "react-icons/lu";
+
 
 export const ArrowBackIcon = IoArrowBackOutline
 export const CalculatorIcon = BsCalculatorFill
@@ -56,4 +58,4 @@ export const DispatchIcon = FaTruckFast
 export const HighwayIcon = LuContainer
 export const AdminIcon = FaUserShield
 export const ClientsIcon = FaUserTie
-export const QuoteIcon = ImRoad
+export const QuoteIcon = HiClipboardDocumentList

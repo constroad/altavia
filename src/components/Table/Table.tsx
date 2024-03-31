@@ -1,7 +1,9 @@
-import { Box, Table, Thead, Tbody, Tr, Th, Td, Button, Flex, CircularProgress } from '@chakra-ui/react';
+import { Box, Table, Thead, Tbody, Tr, Th, Td, Button, Flex, CircularProgress, IconButton } from '@chakra-ui/react';
 import { TableColumn, TableData } from './TableTypes';
 import { CONSTROAD_COLORS } from 'src/styles/shared';
 import { EditIcon, TrashIcon } from 'src/common/icons';
+import { useState } from 'react';
+import { Pagination } from './Pagination';
 
 interface Props {
   data: TableData[];
@@ -10,11 +12,14 @@ interface Props {
   onSelectRow?: (item: any) => void;
   onEdit?: (item: any) => void;
   actions?: boolean;
-  isLoading?: boolean
+  isLoading?: boolean;
+  pagination?: boolean;
+  itemsPerPage?: number;
 }
 
 export const TableComponent = (props: Props) => {
-  const { data, columns, onDelete, onSelectRow, onEdit, actions, isLoading } = props;
+  const { data, columns, onDelete, onSelectRow, onEdit, actions, isLoading, itemsPerPage = 10 } = props;
+  const [currentPage, setCurrentPage] = useState(1);
 
   const handleSelectRow = (item: any) => {
     if (onSelectRow) {
@@ -22,24 +27,41 @@ export const TableComponent = (props: Props) => {
     }
   }
 
+  const indexOfLastItem = currentPage * itemsPerPage;
+  const indexOfFirstItem = indexOfLastItem - itemsPerPage;
+  const currentItems = data.slice(indexOfFirstItem, indexOfLastItem);
+
+  const paginate = (pageNumber: number) => setCurrentPage(pageNumber);
+
+  const totalPages = Math.ceil(data.length / itemsPerPage);
+
   return (
-    <Box overflowX="auto" rounded='4px' border={`0.5px solid ${CONSTROAD_COLORS.darkGray}`} w='100%' minW='100%'>
+    <Flex
+      overflowX="auto"
+      rounded='4px'
+      border={`0.5px solid ${CONSTROAD_COLORS.darkGray}`}
+      w='100%'
+      minW='100%'
+      h='454px'
+      flexDir='column'
+      justifyContent='space-between'
+    >
       <Table border="collapse">
-        <Thead>
+        <Thead h={{ base: '32px', md: 'auto' }}>
           <Tr fontSize={10}>
             {columns.map(column => (
-              <Th key={column.key} background={CONSTROAD_COLORS.bgPDF} color='white' textAlign='start' padding={2}>
+              <Th key={column.key} background={CONSTROAD_COLORS.bgPDF} color='white' textAlign='start' padding={{ base: 1, md: 2}} fontSize={{ base: 10, md: 12 }}>
                 {column.label}
               </Th>
             ))}
-            <Th background={CONSTROAD_COLORS.bgPDF} color='white' textAlign='center' padding={2} width='5%'>
+            <Th background={CONSTROAD_COLORS.bgPDF} color='white' textAlign='center' padding={{ base: 1, md: 2}} width='5%' fontSize={{ base: 10, md: 12 }}>
               Acciones
             </Th>
           </Tr>
         </Thead>
         <Tbody fontSize={10}>
           { isLoading && (
-            <Tr position='relative' height='50px'>
+            <Tr position='relative' height='38px'>
               <Td width='100%' textAlign='center' position='absolute' fontSize={12}>
                 <CircularProgress
                   isIndeterminate
@@ -52,23 +74,23 @@ export const TableComponent = (props: Props) => {
             </Tr>
           )}
           { data.length === 0 && !isLoading && (
-            <Tr position='relative' height='50px'>
-              <Td width='100%' textAlign='center' position='absolute' fontSize={12}>
+            <Tr position='relative' height='38px'>
+              <Td width='100%' textAlign='center' position='absolute' fontSize={{ base: 10, md: 12 }}>
                 No data found.
               </Td>
             </Tr>
           )}
           { data.length > 0 && !isLoading && (
-            data.map((row, index) => (
-              <Tr key={index} onClick={() => handleSelectRow(row)}>
+            currentItems.map((row, index) => (
+              <Tr key={index} onClick={() => handleSelectRow(row)} h='38px' maxH='38px' minH='38px'>
                 {columns.map(column => (
-                  <Td key={column.key} width={column.width} maxWidth={column.width} padding={2} textAlign={column.textAlign ?? 'start'} >
+                  <Td key={column.key} width={column.width} maxWidth={column.width} py={1} px={{ base: 1.5, md: 2 }} textAlign={column.textAlign ?? 'start'} >
                     {column.render ? column.render(row[column.key], row) : row[column.key]}
                   </Td>
                 ))}
                 {actions &&  (
-                  <Td padding={2} textAlign='center'>
-                    <Flex width='100%' justifyContent='space-evenly'>
+                  <Td py={1} px={{ base: 1.5, md: 2 }} textAlign='center'>
+                    <Flex width='100%' justifyContent={{ base: 'space-between', md: 'space-evenly' }}>
                       {onEdit && (
                         <Button
                           colorScheme='blue'
@@ -102,7 +124,17 @@ export const TableComponent = (props: Props) => {
           )}
         </Tbody>
       </Table>
-    </Box>
+
+      {props.pagination && (
+        <Pagination
+          currentPage={currentPage}
+          paginate={paginate}
+          itemsPerPage={itemsPerPage}
+          totalPages={totalPages}
+          data={data}
+        />
+      )}
+    </Flex>
   );
 };
 

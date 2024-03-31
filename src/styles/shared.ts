@@ -1,9 +1,11 @@
 
 export const CONSTROAD_COLORS = {
   yellow: '#FFC718',
-  black: '#1D1E23',
-  darkGray: '#606060',
+  darkYellow: '#E1AB00',
   lightGray: '#C0C0C0',
+  darkGray: '#606060',
+  orange: '#ffaf52',
+  darkOrange: '#DC8723',
   bgPDF: '#525659',
-  orange: '#ffaf52'
+  black: '#1D1E23',
 }

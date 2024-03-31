@@ -42,7 +42,7 @@ export const htmlCotizacion = ( bgImg: any, logoImg: any): string => {
 
         .header {
           width: 100%;
-          margin-top: 85.5px;
+          margin-top: 65.5px;
           display: flex;
           align-items: center;
           gap: 8px
@@ -64,7 +64,7 @@ export const htmlCotizacion = ( bgImg: any, logoImg: any): string => {
 
         .cliente {
           width: 100%;
-          margin-top: 60px;
+          margin-top: 40px;
           display: flex;
           flex-direction: column;
           font-size: 16px;
@@ -72,7 +72,7 @@ export const htmlCotizacion = ( bgImg: any, logoImg: any): string => {
 
         .data {
           width: 100%;
-          margin-top: 60px;
+          margin-top: 40px;
           display: flex;
           flex-direction: column;
           font-size: 12px;
@@ -175,37 +175,37 @@ export const htmlCotizacion = ( bgImg: any, logoImg: any): string => {
 
         <div class="table">
           <div class="table-row table-header" style="height: 28px;">
-            <div class="table-cell-header" style="width: 10%">ITEM</div>
-            <div class="table-cell-header" style="width: 57.4%">DESCRIPCION</div>
-            <div class="table-cell-header" style="width: 5.8%">UNIDAD</div>
-            <div class="table-cell-header" style="width: 8.3%">CANTIDAD</div>
-            <div class="table-cell-header" style="width: 7.8%">
+            <div class="table-cell-header" style="width: 5%">ITEM</div>
+            <div class="table-cell-header" style="width: 63%">DESCRIPCION</div>
+            <div class="table-cell-header" style="width: 5.5%">UNIDAD</div>
+            <div class="table-cell-header" style="width: 7.9%">CANTIDAD</div>
+            <div class="table-cell-header" style="width: 7.5%">
               <span>PRECIO</span>
               <span>UNITARIO</span>
             </div>
             <div class="table-cell-header" style="width: 10.5%">TOTAL</div>
           </div>
 
-          <div class="table-row" style="height: 135px;">
-            <div class="table-cell-body" style="width: 10%;"></div>
-            <div class="table-cell-body" style="width: 57.2%;">
+          <div class="table-row" style="height: 235px;">
+            <div class="table-cell-body" style="width: 5%;"></div>
+            <div class="table-cell-body" style="width: 62.7%;">
               <span style="text-transform: uppercase; font-weight: bold; font-size: 10px; margin-top: 28px;">
-                Suministro de mezcla asfaltica en caliente tipo "mac 2"
+
               </span>
-              <span style="text-transform: uppercase; font-weight: bold; margin-top: 27px;">
+              <span style="text-transform: uppercase; font-weight: bold; margin-top: 135px;">
                 Nota:
               </span>
               <span style="font-weight: normal;">
                 Certificado de calidad del PEN, tipo de MAC y ensayo de marshall
               </span>
-              <span style="margin-top: 18px; font-weight: normal;">
+              <span style="margin-top: 12px; font-weight: normal;">
                 Atención con 24h de anticipación
               </span>
               <span style="font-weight: bold;">
-                FORMA DE PAGO: Adelanto 80% y el 20% el día de la producción
+                FORMA DE PAGO:
               </span>
             </div>
-            <div class="table-cell-body" style="align-items: center; width: 6.2%">
+            <div class="table-cell-body" style="align-items: center; width: 5.8%">
               <span style="margin-top: 28px; font-weight: normal"></span>
             </div>
             <div class="table-cell-body" style="align-items: center; width: 8.3%;">
@@ -214,15 +214,15 @@ export const htmlCotizacion = ( bgImg: any, logoImg: any): string => {
             <div class="table-cell-body" style="align-items: center; width: 7.8%; flex-direction: column;">
               <span style="margin-top: 28px; font-weight: normal"></span>
             </div>
-            <div class="table-cell-body" style="align-items: end; width: 10.5%;">
+            <div class="table-cell-body" style="align-items: end; width: 10.4%;">
               <span style="margin-top: 28px; font-weight: normal"></span>
             </div>
           </div>
 
           <div style="display: flex; height: 28px; font-size: 10px; width: 100%;">
             <div class="table-cell-body" style="justify-content: space-between; text-transform: uppercase; width: 90%;">
-              <span style="font-size: 9.5px">costo directo</span>
-              <span style="font-size: 9.5px">gastos generales y utilidades</span>
+              <span style="font-size: 9.5px; font-weight: 600;">costo directo</span>
+              <span style="font-size: 9.5px; font-weight: 600;">gastos generales y utilidades</span>
             </div>
             <div class="table-cell-body" style="justify-content: center; align-items: end; width: 10%;">
               <span style="font-weight: normal"></span>
@@ -231,8 +231,8 @@ export const htmlCotizacion = ( bgImg: any, logoImg: any): string => {
 
           <div style="display: flex; height: 28px; font-size: 10px; width: 100%;">
             <div class="table-cell-body" style="justify-content: space-between; text-transform: uppercase; width: 90%;">
-              <span style="font-size: 9.5px">sub total</span>
-              <span style="font-size: 9.5px">impuesto general a las ventas</span>
+              <span style="font-size: 9.5px; font-weight: 600;">sub total</span>
+              <span style="font-size: 9.5px; font-weight: 600;">impuesto general a las ventas</span>
             </div>
             <div class="table-cell-body" style=" justify-content: space-between; align-items: end; width: 10%;">
               <span style="font-weight: normal"></span>
@@ -250,7 +250,7 @@ export const htmlCotizacion = ( bgImg: any, logoImg: any): string => {
           </div>
         </div>
 
-        <div class="data" style="width: 90%; margin: 110px auto 0;">
+        <div class="data" style="width: 90%; margin: 90px auto 0;">
           <div style="border: 1px solid #000; background-color: #ffff00; width: 100%; text-align: center; font-size: 14px;">
             Información de pago
           </div>

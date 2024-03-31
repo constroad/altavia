@@ -14,7 +14,7 @@ interface ProductTableProps {
   setter: React.Dispatch<React.SetStateAction<PurchaseOrder>>;
 }
 
-const ProductTable = (props: ProductTableProps) => {
+export const ProductTable = (props: ProductTableProps) => {
   const { order, setter } = props;
   const { isMobile } = useScreenSize()
   const [products, setProducts] = useState<Product[]>([]);

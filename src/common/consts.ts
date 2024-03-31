@@ -33,6 +33,7 @@ export const API_ROUTES = {
   sendEmail: '/api/sendEmail',
   generatePDF: '/api/generate-pdf',
   client: '/api/client',
+  fluid: '/api/fluid',
   quote: '/api/quotes',
   provider: '/api/provider',
   products: '/api/product',

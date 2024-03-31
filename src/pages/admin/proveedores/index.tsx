@@ -3,8 +3,6 @@ import axios from 'axios';
 import { Box, Button, Flex, Text, useDisclosure } from '@chakra-ui/react';
 import {
   AdministrationLayout,
-  BankAccountCard,
-  BankAccountType,
   Modal,
   ProviderForm,
   ProviderModal,
@@ -28,24 +26,23 @@ export const ProvidersPage = () => {
   const [provider, setProvider] = useState<ProviderType>(initialProvider)
   const [providersList, setProvidersList] = useState<ProviderType[]>([])
   const [providerSelected, setProviderSelected] = useState<ProviderType | undefined>()
-  const [bankAccountSelected, setBankAccountSelected] = useState<BankAccountType>()
   const [descriptionNote, setDescriptionNote] = useState('')
 
   const { isOpen: isOpenForm, onOpen: onOpenForm, onClose: onCloseForm } = useDisclosure()
-  const { isOpen: isOpenBankModal, onOpen: onOpenBankModal, onClose: onCloseBankModal,  } = useDisclosure()
   const { isOpen: isOpenDeleteModal, onOpen: onOpenDeleteModal, onClose: onCloseDeleteModal } = useDisclosure()
   const { isOpen: isOpenDescNote, onOpen: onOpenDescNote, onClose: onCloseDescNote } = useDisclosure()
   const { isOpen: isOpenProvModal, onOpen: onOpenProvModal, onClose: onCloseProvModal } = useDisclosure() 
   const { isMobile, isDesktop } = useScreenSize()
 
-  const { run: runGetProviders, refetch } = useAsync({ onSuccess(data) { setProvidersList(data.data) } })
+  const { run: runGetProviders, isLoading, refetch } = useAsync({ onSuccess(data) { setProvidersList(data.data) } })
   const { run: runAddProvider, isLoading: addingProvider } = useAsync()
   const { run: runEditProvider, isLoading: editingProvider } = useAsync()
   const { run: runDeleteProvider, isLoading: deletingProvider } = useAsync()
 
   useEffect(() => {
     runGetProviders(fetcher(API_ROUTES.provider), {
-      refetch: () => runGetProviders(fetcher(API_ROUTES.provider))
+      refetch: () => runGetProviders(fetcher(API_ROUTES.provider)),
+      cacheKey: API_ROUTES.provider
     })
   }, []) 
   
@@ -53,19 +50,6 @@ export const ProvidersPage = () => {
     onCloseForm()
     setProvider(initialProvider)
     setProviderSelected(undefined)
-  }
-  
-  // Bank account preview
-  const handleSelectBankAccount = (acc: BankAccountType, row: ProviderType) => {
-    setBankAccountSelected(acc)
-    setProviderSelected(row)
-    onOpenBankModal()
-  }
-  
-  const handleCloseBankModal = () => {
-    setBankAccountSelected(undefined)
-    setProviderSelected(undefined)
-    onCloseBankModal()
   }
 
   // description - notes preview
@@ -90,13 +74,13 @@ export const ProvidersPage = () => {
     setProviderSelected(undefined)
   }
 
-  const columns = generateProviderColumns(handleSelectBankAccount, handleOpenDescOrNote)
+  const columns = generateProviderColumns(handleSelectProvider)
   const mobileColumns = generateMobileProvColumns(handleSelectProvider)
 
   // Add client
   const handleSubmit = (e: any) => {
     e.preventDefault()
-    const listIncludesProvider = providersList.some(x => x.ruc === provider.ruc);
+    const listIncludesProvider = providersList.some(x => x.name === provider.name);
 
     if (!listIncludesProvider) {
       runAddProvider(postProv(API_ROUTES.provider, provider), {
@@ -201,7 +185,6 @@ export const ProvidersPage = () => {
           color='black'
           lineHeight={{ base: '28px', md: '39px' }}
           marginX='auto'
-          mt={ isMobile ? '10px' : '0px' }
         >
           Proveedores
         </Text>
@@ -213,9 +196,10 @@ export const ProvidersPage = () => {
             padding={{ base: '5px', md: '12px' }}
             onClick={onOpenForm}
             colorScheme='blue'
+            height='25px'
             gap={2}
           >
-            <Text>Añadir proveedor</Text><PlusIcon />
+            <Text>Añadir proveedor</Text><PlusIcon fontSize={ isMobile ? 10 : 14 }/>
           </Button>
         </Box>
 
@@ -226,6 +210,8 @@ export const ProvidersPage = () => {
               columns={mobileColumns}
               onEdit={handleEditClick}
               onDelete={handleDeleteClick}
+              isLoading={isLoading}
+              pagination
               actions
             />
           )}
@@ -235,6 +221,8 @@ export const ProvidersPage = () => {
               columns={columns}
               onEdit={handleEditClick}
               onDelete={handleDeleteClick}
+              isLoading={isLoading}
+              pagination
               actions
             />
           )}
@@ -254,15 +242,6 @@ export const ProvidersPage = () => {
           handleSubmit={ providerSelected ? handleEditProvider : handleSubmit }
           providerSelected={providerSelected}
         />
-      </Modal>
-
-      {/* Bank account modal */}
-      <Modal
-        isOpen={isOpenBankModal}
-        onClose={handleCloseBankModal}
-        heading={providerSelected?.name}
-      >
-        <BankAccountCard bankAccount={bankAccountSelected} />
       </Modal>
 
       {/* Description or Note modal */}
@@ -291,7 +270,7 @@ export const ProvidersPage = () => {
         footer={deleteFooter}
       />
 
-      {isMobile && providerSelected && (
+      { providerSelected && (
         <Modal
           isOpen={isOpenProvModal}
           heading={providerSelected.name}

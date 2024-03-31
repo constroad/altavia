@@ -1,6 +1,7 @@
 import React from 'react'
 import { ProductType } from './utils'
 import { Flex, Text } from '@chakra-ui/react';
+import { formatPriceNumber } from 'src/common/utils';
 
 interface ProductModalProps {
   product: ProductType
@@ -11,24 +12,20 @@ export const ProductModal = (props: ProductModalProps) => {
   return (
     <Flex flexDir='column' gap='10px' fontSize={12}>
       <Flex gap='2px'>
-        <Text fontWeight={600} width='100px'>Alias:</Text>
+        <Text fontWeight={600} minW='80px'>Alias:</Text>
         <Text>{product.alias}</Text>
       </Flex>
       <Flex gap='2px'>
-        <Text fontWeight={600} width='80px' minWidth='100px'>Descripción:</Text>
-        <Text>{product.description}</Text>
-      </Flex>
-      <Flex gap='2px'>
-        <Text fontWeight={600} width='100px'>Unidad:</Text>
+        <Text fontWeight={600} minW='80px'>Unidad:</Text>
         <Text>{product.unit}</Text>
       </Flex>
       <Flex gap='2px'>
-        <Text fontWeight={600} width='100px'>Cantidad:</Text>
+        <Text fontWeight={600} minW='80px'>Cantidad:</Text>
         <Text>{product.quantity}</Text>
       </Flex>
       <Flex gap='2px'>
-        <Text fontWeight={600} width='100px'>Precio:</Text>
-        <Text>{product.price}</Text>
+        <Text fontWeight={600} minW='80px'>Precio:</Text>
+        <Text>{formatPriceNumber(product.unitPrice)}</Text>
       </Flex>
     </Flex>
   )

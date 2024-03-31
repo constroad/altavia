@@ -5,11 +5,9 @@ import {
   Modal,
   TableComponent,
   toast,
-  BankAccountType,
   generateClientColumns,
   ClientType,
   InitialClient,
-  BankAccountCard,
   generateMobileClientColumns,
   ClientModal,
   AdministrationLayout
@@ -29,11 +27,9 @@ export const ClientsPage = () => {
   const [client, setClient] = useState<ClientType>(InitialClient)
   const [clientsList, setClientsList] = useState<ClientType[]>([])
   const [clientSelected, setClientSelected] = useState<ClientType | undefined>(undefined)
-  const [bankAccountSelected, setBankAccountSelected] = useState<BankAccountType | undefined>(undefined)
 
   const { onClose, isOpen, onOpen } = useDisclosure()
   const { onClose: onCloseDeleteModal, isOpen: isOpenDeleteModal, onOpen: onOpenDeleteModal } = useDisclosure()
-  const { onClose: onCloseBankModal, isOpen: isOpenBankModal, onOpen: onOpenBankModal } = useDisclosure()
   const { onClose: onCloseClientModal, isOpen: isOpenClientModal, onOpen: onOpenClientModal } = useDisclosure()
 
   const { run: runGetClients, isLoading, refetch } = useAsync({ onSuccess(data) { setClientsList(data.data) } }) 
@@ -47,21 +43,9 @@ export const ClientsPage = () => {
   useEffect(() => {
     runGetClients(fetcher(API_ROUTES.client), {
       refetch: () => runGetClients(fetcher(API_ROUTES.client)),
+      cacheKey: API_ROUTES.client
     });
   }, []);
-
-  // Bank account
-  const handleSelectBankAccount = (acc: BankAccountType, row: ClientType) => {
-    setBankAccountSelected(acc)
-    setClientSelected(row)
-    onOpenBankModal()
-  }
-
-  const handleCloseBankModal = () => {
-    setBankAccountSelected(undefined)
-    setClientSelected(undefined)
-    onCloseBankModal()
-  }
 
   // Add client
   const handleCloseFormModal = () => {
@@ -72,7 +56,7 @@ export const ClientsPage = () => {
 
   const handleSubmit = (e: any) => {
     e.preventDefault()
-    const listIncludesClient = clientsList.some(x => x.ruc === client.ruc);
+    const listIncludesClient = clientsList.some(x => x.name === client.name);
 
     if (!listIncludesClient) {
       runAddClient(postClient(API_ROUTES.client, client), {
@@ -141,7 +125,7 @@ export const ClientsPage = () => {
     setClientSelected(undefined)
   }
 
-  const columns = generateClientColumns(handleSelectBankAccount)
+  const columns = generateClientColumns(handleSelectClient)
   const mobileColumns = generateMobileClientColumns(handleSelectClient)
 
   // Renders
@@ -196,6 +180,7 @@ export const ClientsPage = () => {
               padding={{ base: '5px', md: '12px' }}
               onClick={() => router.push(ADMIN_ROUTES.generateQuotation)}
               colorScheme='blue'
+              height='25px'
               gap={2}
               mr='5px'
             >
@@ -204,14 +189,15 @@ export const ClientsPage = () => {
           )}
           <Button
             size='sm'
-            width={{base: '100px', md: '200px'}}
+            width={{base: '120px', md: '200px'}}
             fontSize={{ base: 10, md: 16 }}
             padding={{ base: '5px', md: '12px' }}
             onClick={onOpen}
             colorScheme='blue'
+            height='25px'
             gap={2}
           >
-            <Text>Nuevo cliente</Text><PlusIcon />
+            <Text>Añadir cliente</Text><PlusIcon fontSize={ isMobile ? 10 : 14 }/>
           </Button>
         </Box>
 
@@ -223,6 +209,7 @@ export const ClientsPage = () => {
               onDelete={handleConfirmDelete}
               onEdit={handleEditClientClick}
               isLoading={isLoading}
+              pagination
               actions
             />
           )}
@@ -233,6 +220,7 @@ export const ClientsPage = () => {
               onDelete={handleConfirmDelete}
               onEdit={handleEditClientClick}
               isLoading={isLoading}
+              pagination
               actions
             />
           )}
@@ -260,15 +248,6 @@ export const ClientsPage = () => {
           heading={`¿Estás seguro de eliminar al cliente ${clientSelected?.name}?`}
           footer={deleteFooter}
         />
-
-        {/* bank account modal */}
-        <Modal
-          isOpen={isOpenBankModal}
-          onClose={handleCloseBankModal}
-          heading={clientSelected?.name}
-        >
-          <BankAccountCard bankAccount={bankAccountSelected} />
-        </Modal>
 
         {/* client preview modal */}
         {clientSelected && (

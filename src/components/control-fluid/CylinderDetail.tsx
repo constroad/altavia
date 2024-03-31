@@ -25,7 +25,7 @@ const CylinderDetail = (props: CylinderDetailProps) => {
         </Box>
         <Box as={Flex}>
           <Text>Stock:</Text>
-          <Text>{used} galones</Text>
+          <Text>{used.toFixed(2)} galones</Text>
         </Box>
       </Box>
     </Flex>

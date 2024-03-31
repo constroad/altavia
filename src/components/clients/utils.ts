@@ -8,8 +8,9 @@ export type BankAccountType = {
 export type ClientType = {
   _id?: string;
   name: string;
-  ruc: string;
+  ruc?: string;
   alias: string;
+  contactPerson?: string;
   address: string;
   phone: string;
   email: string;
@@ -23,6 +24,7 @@ export const InitialClient: ClientType = {
   name: '',
   ruc: '',
   alias: '',
+  contactPerson: '',
   address: '',
   phone: '',
   email: '',

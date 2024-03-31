@@ -13,9 +13,10 @@ import {
   Modal,
   toast,
 } from 'src/components'
-import { API_ROUTES } from 'src/common/consts'
+import { ADMIN_ROUTES, API_ROUTES } from 'src/common/consts'
 import { PlusIcon } from 'src/common/icons'
 import axios from 'axios'
+import { useRouter } from 'next/router'
 
 const fetcher = (path: string) => axios.get(path)
 const postProd = (path: string, data: ProductType) => axios.post(path, { data })
@@ -31,15 +32,18 @@ export const ProductsPage = () => {
   const { isOpen: isOpenDelete, onOpen: onOpenDelete, onClose: onCloseDelete } = useDisclosure()
   const { isOpen: isOpenProductModal, onOpen: onOpenProductModal, onClose: onCloseProductModal } = useDisclosure() 
 
-  const { run: runGetProducts, refetch } = useAsync({ onSuccess(data) { setProductsList(data.data) } })
+  const { run: runGetProducts, isLoading, refetch } = useAsync({ onSuccess(data) { setProductsList(data.data) } })
   const { run: runAddProduct, isLoading: addingProduct } = useAsync()
   const { run: runEditProduct, isLoading: editingProduct } = useAsync()
   const { run: runDeleteProduct, isLoading: deletingProduct } = useAsync()
   const { isMobile, isDesktop } = useScreenSize()
+  const router = useRouter()
+  const prevRoute = router.query.prevRoute;
 
   useEffect(() => {
     runGetProducts(fetcher(API_ROUTES.products), {
-      refetch: () => runGetProducts(fetcher(API_ROUTES.products))
+      refetch: () => runGetProducts(fetcher(API_ROUTES.products)),
+      cacheKey: API_ROUTES.products
     })
   }, []) 
 
@@ -51,12 +55,12 @@ export const ProductsPage = () => {
 
   const handleSubmit = (e: any) => {
     e.preventDefault()
-    const dbIncludesProduct = productsList.some(x => x.name === product.name);
+    const dbIncludesProduct = productsList.some(x => x.description === product.description);
 
     if (dbIncludesProduct) toast.warning('Este producto ya existe en la base de datos')
 
     if (!dbIncludesProduct) {
-      runAddProduct(postProd(API_ROUTES.products, {...product, quantity: +product.quantity, price: +product.price}), {
+      runAddProduct(postProd(API_ROUTES.products, product), {
         onSuccess: () => {
           toast.success('Producto añadido con éxito!')
           refetch()
@@ -103,7 +107,7 @@ export const ProductsPage = () => {
   const handleDeleteProduct = () => {
     runDeleteProduct(deleteProd(`${API_ROUTES.products}/${productSelected?._id}`), {
       onSuccess: () => {
-        toast.success(`Eliminaste el producto ${productSelected?.name}`)
+        toast.success(`Eliminaste el producto ${productSelected?.description}`)
         refetch()
       },
       onError(error) {
@@ -167,11 +171,25 @@ export const ProductsPage = () => {
           color='black'
           lineHeight={{ base: '28px', md: '39px' }}
           marginX='auto'
-          mt={ isMobile ? '10px' : '0px' }
         >
           Productos
         </Text>
         <Box width='100%' textAlign='end' gap={2}>
+          {prevRoute === ADMIN_ROUTES.generateQuotation && (
+            <Button
+              size='sm'
+              width={{base: '100px', md: '200px'}}
+              fontSize={{ base: 10, md: 16 }}
+              padding={{ base: '5px', md: '12px' }}
+              onClick={() => router.push(ADMIN_ROUTES.generateQuotation)}
+              colorScheme='blue'
+              gap={2}
+              mr='5px'
+              height='25px'
+            >
+              Volver a cotizar
+            </Button>
+          )}
           <Button
             size='sm'
             width={{base: '120px', md: '200px'}}
@@ -179,9 +197,10 @@ export const ProductsPage = () => {
             padding={{ base: '5px', md: '12px' }}
             onClick={onOpenForm}
             colorScheme='blue'
+            height='25px'
             gap={2}
           >
-            <Text>Añadir producto</Text><PlusIcon />
+            <Text>Añadir producto</Text><PlusIcon fontSize={ isMobile ? 10 : 14 }/>
           </Button>
         </Box>
 
@@ -192,6 +211,8 @@ export const ProductsPage = () => {
               columns={mobileColumns}
               onEdit={handleEditClick}
               onDelete={handleDeleteClick}
+              isLoading={isLoading}
+              pagination
               actions
             />
           )}
@@ -201,6 +222,8 @@ export const ProductsPage = () => {
               columns={columns}
               onEdit={handleEditClick}
               onDelete={handleDeleteClick}
+              isLoading={isLoading}
+              pagination
               actions
             />
           )}
@@ -226,7 +249,7 @@ export const ProductsPage = () => {
       <Modal
         isOpen={isOpenDelete}
         onClose={handleDeleteCloseModal}
-        heading={`¿Estás seguro de eliminar el producto ${productSelected?.name}?`}
+        heading={`¿Estás seguro de eliminar el producto ${productSelected?.description}?`}
         footer={deleteFooter}
       />
 
@@ -235,7 +258,7 @@ export const ProductsPage = () => {
         <Modal
           isOpen={isOpenProductModal}
           onClose={handleCloseProductModal}
-          heading={productSelected?.name}
+          heading={productSelected?.description}
           hideCancelButton
         >
           <ProductModal product={productSelected} />

@@ -13,27 +13,31 @@ export const ProviderModal = (props: ProviderModalProps) => {
   return (
     <Flex flexDir='column' gap='10px' fontSize={12}>
       <Flex gap='2px'>
-        <Text fontWeight={600} width='80px'>Alias:</Text>
+        <Text fontWeight={600} width='80px' minW='80px'>Alias:</Text>
         <Text>{provider.alias}</Text>
       </Flex>
       <Flex gap='2px'>
-        <Text fontWeight={600} width='80px'>RUC:</Text>
+        <Text fontWeight={600} width='80px' minW='80px'>RUC:</Text>
         <Text>{provider.ruc}</Text>
       </Flex>
       <Flex gap='2px'>
-        <Text fontWeight={600} width='80px'>Dirección:</Text>
+        <Text fontWeight={600} width='80px' minW='80px'>Contacto:</Text>
+        <Text>{provider.contactPerson}</Text>
+      </Flex>
+      <Flex gap='2px'>
+        <Text fontWeight={600} width='80px' minW='80px'>Dirección:</Text>
         <Text>{provider.address}</Text>
       </Flex>
       <Flex gap='2px'>
-        <Text fontWeight={600} width='80px'>Teléfono:</Text>
+        <Text fontWeight={600} width='80px' minW='80PX'>Teléfono:</Text>
         <Text>{provider.phone}</Text>
       </Flex>
       <Flex gap='2px'>
-        <Text fontWeight={600} width='80px'>Correo:</Text>
+        <Text fontWeight={600} width='80px' minW='80px'>Correo:</Text>
         <Text>{provider.email}</Text>
       </Flex>
       <Flex gap='2px'>
-        <Text fontWeight={600} width='80px'>Web:</Text>
+        <Text fontWeight={600} width='80px' minW='80px'>Web:</Text>
         <Text>{provider.web}</Text>
       </Flex>
       <Flex gap='2px'>

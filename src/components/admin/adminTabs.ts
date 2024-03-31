@@ -51,9 +51,8 @@ export const adminTabs = [
     icon: DispatchIcon
   },
   {
-    name: 'Control Highway',
-    // path: ADMIN_ROUTES.controlHighway,
-    path: null,
+    name: 'Control Liquidos',
+    path: ADMIN_ROUTES.controlFluid,
     bgColor: CONSTROAD_COLORS.black,
     textColor: 'white',
     icon: HighwayIcon

@@ -1,17 +1,8 @@
 import {
   Box,
-  Button,
   Flex,
-  Modal,
-  ModalBody,
-  ModalCloseButton,
-  ModalContent,
-  ModalFooter,
-  ModalHeader,
-  ModalOverlay,
   Text,
   Tooltip,
-  useDisclosure,
 } from '@chakra-ui/react';
 import React from 'react';
 import CylinderDetail from './CylinderDetail';
@@ -40,14 +31,12 @@ const BG_FLUID = 'yellowgreen';
 export const Cylinder = (props: CylinderProps) => {
   const { fluid } = props;
   const { name, volume, volumeInStock, levelCentimeter, bgColor } = fluid;
-  // const { isOpen, onOpen, onClose } = useDisclosure();
 
   const cylinderHeight = getCylinderHeight(volume);
   const usedPercent = (volumeInStock * 100) / volume;
   const usedHeight = cylinderHeight * (usedPercent / 100);
 
   return (
-    <>
       <Flex
         flexDir="column"
         alignItems="center"
@@ -66,7 +55,7 @@ export const Cylinder = (props: CylinderProps) => {
         >
           <Box position="relative" width="fit-content">
             <Box
-              bgColor={bgColor ?? BG_FLUID}
+              bgColor={bgColor || BG_FLUID}
               position="absolute"
               bottom={0}
               width="60%"
@@ -92,23 +81,5 @@ export const Cylinder = (props: CylinderProps) => {
           {name.toUpperCase()}
         </Text>
       </Flex>
-
-      {/* <Modal isOpen={isOpen} onClose={onClose}>
-        <ModalOverlay />
-        <ModalContent>
-          <ModalHeader>Tanque Detalle</ModalHeader>
-          <ModalCloseButton />
-          <ModalBody>
-            <CylinderDetail title={name} volume={volume} used={volumeInStock} cm={levelCentimeter} />
-          </ModalBody>
-
-          <ModalFooter>
-            <Button colorScheme="blue" mr={3} onClick={onClose}>
-              Close
-            </Button>
-          </ModalFooter>
-        </ModalContent>
-      </Modal> */}
-    </>
   );
 };

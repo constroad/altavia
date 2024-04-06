@@ -10,6 +10,8 @@ import {
   Box,
   Button,
   Flex,
+  Grid,
+  GridItem,
   Spinner,
   Text,
   useDisclosure,
@@ -102,21 +104,17 @@ export const ControlFluid = () => {
             <PlusIcon />
           </Button>
         </Box>
-        <Flex
-          alignItems="flex-end"
-          justifyContent="center"
-          flexWrap="wrap"
-          gap={6}
-        >
+        <Grid templateColumns={{base: "repeat(2, 1fr)", md: "repeat(4, 1fr)"}} gap={6} alignItems="flex-end" as={Flex}>
           {fluidList.map((fluid) => (
-            <Cylinder
-              key={fluid._id}
-              fluid={fluid}
-              onSelect={handleSelectFluid}
-            />
+            <GridItem key={fluid._id} w="100%" h="fit-content" position="relative">
+              <Cylinder                
+                fluid={fluid}
+                onSelect={handleSelectFluid}
+              />
+            </GridItem>
           ))}
-          
-        </Flex>
+        </Grid>
+
       </Flex>
 
       {/* fluid form modal */}

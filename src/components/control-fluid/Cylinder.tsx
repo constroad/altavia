@@ -60,7 +60,7 @@ export const Cylinder = (props: CylinderProps) => {
               bottom={0}
               width="60%"
               height={`${usedHeight}px`}
-              opacity={0.6}
+              opacity={0.8}
               left="20%"
               rounded={3}
             />
@@ -74,8 +74,9 @@ export const Cylinder = (props: CylinderProps) => {
             />
           </Box>
         </Tooltip>
-        <Box position="absolute" fontSize="10px" color="white">
+        <Box position="absolute" fontSize="10px" color="white" top="10px" fontWeight={600}>
           <Text>stock:{volumeInStock.toFixed(2)} gls</Text>
+          <Text>nivel:{levelCentimeter}cm</Text>
         </Box>
         <Text color="gray" fontSize="small">
           {name.toUpperCase()}

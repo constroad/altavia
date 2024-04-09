@@ -93,7 +93,6 @@ export const TableComponent = (props: Props) => {
                     <Flex width='100%' justifyContent={{ base: 'space-between', md: 'space-evenly' }}>
                       {onEdit && (
                         <Button
-                          colorScheme='blue'
                           minWidth="25px"
                           height={{ base: '20px', md: '' }}
                           fontSize={{base: 12, md: 14}}
@@ -106,7 +105,6 @@ export const TableComponent = (props: Props) => {
 
                       {onDelete && (
                         <Button
-                          colorScheme='red'
                           minWidth="25px"
                           height={{ base: '20px', md: '' }}
                           fontSize={{base: 12, md: 14}}

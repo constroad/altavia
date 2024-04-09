@@ -172,13 +172,13 @@ export const ClientsPage = () => {
         </Text>
 
         <Box width='100%' textAlign='end' gap={2}>
-          {prevRoute === ADMIN_ROUTES.generateQuotation && (
+          {prevRoute && (
             <Button
               size='sm'
               width={{base: '100px', md: '200px'}}
               fontSize={{ base: 10, md: 16 }}
               padding={{ base: '5px', md: '12px' }}
-              onClick={() => router.push(ADMIN_ROUTES.generateQuotation)}
+              onClick={() => router.push(prevRoute as string)}
               colorScheme='blue'
               height='25px'
               gap={2}

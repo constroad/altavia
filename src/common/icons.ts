@@ -25,7 +25,8 @@ import { RiSubtractLine } from "react-icons/ri";
 import { BiSolidPencil } from "react-icons/bi";
 import { GrUserWorker } from "react-icons/gr";
 import { LuContainer } from "react-icons/lu";
-
+import { FaRoadBarrier } from "react-icons/fa6";
+import { GiBoxUnpacking } from "react-icons/gi";
 
 export const ArrowBackIcon = IoArrowBackOutline
 export const CalculatorIcon = BsCalculatorFill
@@ -53,9 +54,10 @@ export const ProductionIcon = MdOutlinePrecisionManufacturing
 export const PurchaseIcon = MdOutlineLocalGroceryStore
 export const ProvidersIcon = FaTruckLoading
 export const EmployeesIcon = GrUserWorker
-export const ProductsIcon = BsInboxesFill
+export const ProductsIcon = GiBoxUnpacking
 export const DispatchIcon = FaTruckFast
 export const HighwayIcon = LuContainer
 export const AdminIcon = FaUserShield
 export const ClientsIcon = FaUserTie
 export const QuoteIcon = HiClipboardDocumentList
+export const ServiceIcon = FaRoadBarrier

@@ -146,6 +146,13 @@ export const ProvidersPage = () => {
     handleCloseDeleteModal()
   }
 
+  const sortedProvidersList = [...providersList].sort((a, b) => {
+    const dateA = new Date(a.createdAt);
+    const dateB = new Date(b.createdAt);
+    if (isNaN(dateA.getTime()) || isNaN(dateB.getTime())) return 0;
+    return dateB.getTime() - dateA.getTime();
+  });  
+
   // Renders
   const footer = (
     <Button
@@ -206,7 +213,7 @@ export const ProvidersPage = () => {
         <Box width='100%'>
           {isMobile && (
             <TableComponent
-              data={providersList}
+              data={sortedProvidersList}
               columns={mobileColumns}
               onEdit={handleEditClick}
               onDelete={handleDeleteClick}
@@ -217,7 +224,7 @@ export const ProvidersPage = () => {
           )}
           {isDesktop && (
             <TableComponent
-              data={providersList}
+              data={sortedProvidersList}
               columns={columns}
               onEdit={handleEditClick}
               onDelete={handleDeleteClick}

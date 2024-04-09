@@ -13,6 +13,8 @@ interface AccordionProfitContentProps {
   prodInfo: ProdInfoType;
   profit: number;
   profitPercentage: number;
+  priceM2: number;
+  setPriceM2: any;
   priceM3: number;
   setPriceM3: any;
   quotedCost: number;
@@ -20,23 +22,39 @@ interface AccordionProfitContentProps {
 }
 
 export const AccordionProfitContent = (props: AccordionProfitContentProps) => {
-  const { totales, totalCost, totalCost2, addIGV, handleChangeAddIGV, prodInfo, profitPercentage, priceM3, setPriceM3, quotedCost, profit, detraction } = props;
+  const { totales, totalCost, totalCost2, addIGV, handleChangeAddIGV, prodInfo, profitPercentage, priceM2, setPriceM2, priceM3, setPriceM3, quotedCost, profit, detraction } = props;
   return (
     <Flex flexDir='column' w='100%'>
       <Flex fontSize={{ base: 10, md: 12 }} fontWeight={600} w='100%' bg={CONSTROAD_COLORS.darkGray} color='white' border='0.5px solid' borderColor='black' px='4px' alignItems='center' h='19px'>COSTOS</Flex>
       {totales.map((x, idx) => (
         <Flex key={`totales-${idx}`} w='100%'>
-          <Input
-            w='52%'
-            fontWeight={600}
-            rounded='0px'
-            value={x.title}
-            h='19px'
-            fontSize={{ base: 10, md: 11 }}
-            px='4px'
-            disabled
-            _disabled={{ bg: 'white', cursor: 'normal' }}
-          />
+          <Flex w='52%'>
+            <Input
+              w={ x.title.includes('Precio venta asfalto') ? '80%' : '100%' }
+              fontWeight={600}
+              rounded='0px'
+              value={x.title}
+              h='19px'
+              fontSize={{ base: 10, md: 11 }}
+              px='4px'
+              disabled
+              _disabled={{ bg: 'white', cursor: 'normal' }}
+            />
+            { x.title.includes('Precio venta asfalto') && (
+              <Input
+                w='20%'
+                fontWeight={600}
+                rounded='0px'
+                value={priceM3}
+                h='19px'
+                fontSize={{ base: 10, md: 11 }}
+                textAlign='end'
+                color='red'
+                px='4px'
+                onChange={(e) => setPriceM3(e.target.value)}
+              />
+            )}
+          </Flex>
           <Input
             w='24%'
             rounded='0px'
@@ -178,8 +196,8 @@ export const AccordionProfitContent = (props: AccordionProfitContentProps) => {
           px='4px'
           fontWeight={600}
           color='red'
-          value={priceM3 === 0 ? '' : priceM3}
-          onChange={(e) => setPriceM3(+e.target.value)}
+          value={priceM2 === 0 ? '' : priceM2}
+          onChange={(e) => setPriceM2(+e.target.value)}
           type='number'
           textAlign='center'
           border='0.5px solid black'

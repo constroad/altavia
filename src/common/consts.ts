@@ -28,7 +28,7 @@ export const ADMIN_ROUTES = {
   newServiceQuote: '/admin/cotizar-servicios/nuevo',
   purchaseOrder: '/admin/orden-de-compra',
   dispatch: '/admin/despacho',
-  controlHighway: '/admin/control-highway',
+  controlFluid: '/admin/control-fluid',
   production: '/admin/produccion',
 }
 
@@ -36,6 +36,7 @@ export const API_ROUTES = {
   sendEmail: '/api/sendEmail',
   generatePDF: '/api/generate-pdf',
   client: '/api/client',
+  fluid: '/api/fluid',
   quote: '/api/quotes',
   serviceQuote: '/api/service-quote',
   provider: '/api/provider',

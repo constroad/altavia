@@ -132,6 +132,13 @@ export const ProductsPage = () => {
   const columns = generateProductColumns()
   const mobileColumns = generateMobileProdColumns(handleProductViewClick)
 
+  const sortedProductsList = [...productsList].sort((a, b) => {
+    const dateA = new Date(a.createdAt);
+    const dateB = new Date(b.createdAt);
+    if (isNaN(dateA.getTime()) || isNaN(dateB.getTime())) return 0;
+    return dateB.getTime() - dateA.getTime();
+  });  
+
   // Renders
   const footer = (
     <Button
@@ -207,7 +214,7 @@ export const ProductsPage = () => {
         <Box width='100%'>
           {isMobile && (
             <TableComponent
-              data={productsList}
+              data={sortedProductsList}
               columns={mobileColumns}
               onEdit={handleEditClick}
               onDelete={handleDeleteClick}
@@ -218,7 +225,7 @@ export const ProductsPage = () => {
           )}
           {isDesktop && (
             <TableComponent
-              data={productsList}
+              data={sortedProductsList}
               columns={columns}
               onEdit={handleEditClick}
               onDelete={handleDeleteClick}

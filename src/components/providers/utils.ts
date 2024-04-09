@@ -14,6 +14,7 @@ export type ProviderType = {
 	tags: string[],
 	description?: string,
 	notes?: string
+	createdAt?: any
 }
 
 export const initialProvider: ProviderType = {

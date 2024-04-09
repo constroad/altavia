@@ -128,6 +128,13 @@ export const ClientsPage = () => {
   const columns = generateClientColumns(handleSelectClient)
   const mobileColumns = generateMobileClientColumns(handleSelectClient)
 
+  const sortedClientList = [...clientsList].sort((a, b) => {
+    const dateA = new Date(a.createdAt);
+    const dateB = new Date(b.createdAt);
+    if (isNaN(dateA.getTime()) || isNaN(dateB.getTime())) return 0;
+    return dateB.getTime() - dateA.getTime();
+  });  
+
   // Renders
   const footer = (
     <Button
@@ -204,7 +211,7 @@ export const ClientsPage = () => {
         <Box w='100%'>
           {isDesktop && (
             <TableComponent
-              data={clientsList}
+              data={sortedClientList}
               columns={columns}
               onDelete={handleConfirmDelete}
               onEdit={handleEditClientClick}
@@ -215,7 +222,7 @@ export const ClientsPage = () => {
           )}
           {isMobile && (
             <TableComponent
-              data={clientsList}
+              data={sortedClientList}
               columns={mobileColumns}
               onDelete={handleConfirmDelete}
               onEdit={handleEditClientClick}

@@ -15,6 +15,7 @@ interface SearchComponentProps<T> {
   propertiesToSearch: (keyof T)[];
   onSelect: (selectedOption: T) => void;
   placeholder?: string;
+  isService?: boolean
 }
 
 export const SearchComponent = <T extends Option>(props: SearchComponentProps<T>) => {
@@ -32,7 +33,7 @@ export const SearchComponent = <T extends Option>(props: SearchComponentProps<T>
   }, [searchTerm])
   
 
-  const filteredOptions = options.filter(option => {
+  const filteredOptions = options?.filter(option => {
     return propertiesToSearch.some(property => {
       const value = option[property] as string
       const searchValue = value?.toLowerCase();
@@ -100,7 +101,12 @@ export const SearchComponent = <T extends Option>(props: SearchComponentProps<T>
             >
               <Flex flexDir='column' py='2px'>
                 <Text fontSize={10}>{option.name || option.label || option.description} { option.ruc ? `- ${option.ruc}` : ''}</Text>
-                <Text fontSize={8} color={CONSTROAD_COLORS.darkGray}>{option.alias?.toUpperCase()}</Text>
+                {props.isService && (
+                  <Text fontSize={8} color={CONSTROAD_COLORS.darkGray}>{option.phase?.toUpperCase()}</Text>
+                )}
+                {!props.isService && (
+                  <Text fontSize={8} color={CONSTROAD_COLORS.darkGray}>{option.alias?.toUpperCase()}</Text>
+                )}
               </Flex>
             </ListItem>
           ))}

@@ -25,7 +25,7 @@ import { getDate } from 'src/common/utils'
 const fetcher = (path: string) => axios.get(path)
 const postQuote = (path: string, data: QuoteType) => axios.post(path, data);
 const updateQuote = (path: string, data: QuoteType) => axios.put(path, data)
-const deleteQuote = (path: string) => axios.delete(path)
+const deleteQuote = (path: string) => axios.delete(path) 
 
 const QuotesPage = () => {
   const [clientsDB, setClientsDB] = useState<ClientType[]>([])
@@ -104,7 +104,7 @@ const QuotesPage = () => {
 
   // generate and download pdf
   const generateAndDownloadPDF = async(editQuoteDate:string | undefined, addQuoteDate: Date, quoteNumber: number, clientSelected: any, quoteShortDate: string) => {     
-     const pdfData: QuotePDFType = {
+    const pdfData: QuotePDFType = {
       companyName: clientSelected?.name ?? '',
       ruc: clientSelected?.ruc ?? '',
       nroQuote: quoteNumber.toString(),
@@ -221,11 +221,16 @@ const QuotesPage = () => {
     else setAddIGV(false)
   }
 
+  // delete quote
+  const handleCloseDeleteModal = () => {
+    setQuoteSelected(undefined)
+    setClientSelected(undefined)
+    onCloseDelete()
+  }
   const handleDeleteClick = (quoteSelected: QuoteType) => {
     onOpenDelete()
     setQuoteSelected(quoteSelected)
   }
-
   const handleDeleteQuote = () => {
     runDeleteQuote(deleteQuote(`${API_ROUTES.quote}/${quoteSelected?._id}`), {
       onSuccess: () => {
@@ -238,7 +243,7 @@ const QuotesPage = () => {
       }
     })
 
-    onCloseDelete()
+    handleCloseDeleteModal()
   }
 
   // quote mobile preview
@@ -340,7 +345,7 @@ const QuotesPage = () => {
         hideCancelButton
         width={isMobile ? '' : '800px'}
       >
-        <Flex flexDir='column' gap={2}>
+        <Flex flexDir='column' gap={2}> 
           <QuoteForm
             quote={quoteSelected ?? quote}
             quoteSelected={quoteSelected}
@@ -363,7 +368,7 @@ const QuotesPage = () => {
       {/* delete quote modal */}
       <Modal
         isOpen={isOpenDelete}
-        onClose={onCloseDelete}
+        onClose={handleCloseDeleteModal}
         heading={`¿Estás seguro de eliminar la cotización ${quoteSelected?.nro}?`}
         footer={deleteFooter}
       />

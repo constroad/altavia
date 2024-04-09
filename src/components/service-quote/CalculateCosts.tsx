@@ -20,45 +20,53 @@ export const CalculateCosts = (props: CalculateCostsProps) => {
   const [thicknessData, setThicknessData] = useState(thicknessRows)
   const [totales, setTotales] = useState<any[]>([])
   const [addIGV, setAddIGV] = useState(false)
-  const [priceM3, setPriceM3] = useState(43)
+  const [priceM2, setPriceM2] = useState(43)
   const [totalCost, setTotalCost] = useState(totales.reduce((total, row) => total + +row.value, 0))
   const [totalCost2, setTotalCost2] = useState(totales.reduce((total, row) => total + +row.value2, 0))
-
-  useEffect(() => {
-    const total = totales.reduce((total, row) => total + +row.value, 0)
-    const total2 = totales.reduce((total, row) => total + +row.value2, 0)
-    setTotalCost(total)
-    setTotalCost2(total2)
-  }, [totales])
+  const [priceM3, setPriceM3] = useState(480)
   
   useEffect(() => {
     const totalAsphalt = asphaltData.reduce((total: any, row: any) => total + (+row['Total']), 0)
     const totalService = serviceData.reduce((total: any, row: any) => total + (+row['Total']), 0)
     const newTotales = [
-      { title: 'Precio venta asfalto (m3 * 480)', value: 0, value2: 480 * +prodInfo.m3Produced },
+      { title: `Precio venta asfalto M3`, value: 0, value2: priceM3 * +prodInfo.m3Produced },
       { title: 'Costo de producción asfalto', value: totalAsphalt, value2: 0 },
       { title: 'Costo Servicio (carpeta asfáltica)', value: totalService, value2: totalService },
     ]
     setTotales(newTotales)
-  }, [asphaltData, serviceData, imprimacionData])
+
+  }, [asphaltData, serviceData, imprimacionData, priceM3])
+
+  useEffect(() => {
+    const total = totales.reduce((total, row) => total + +row.value, 0)
+    const total2 = totales.reduce((total, row) => total + +row.value2, 0)
+    if (addIGV) {
+      setTotalCost(total * 1.18)
+      setTotalCost2(total2 * 1.18)
+    } else {
+      setTotalCost(total)
+      setTotalCost2(total2)
+    }
+  }, [priceM3, addIGV, totales])
+  
 
   const handleChangeAddIGV = () => {
     const total = totales.reduce((total, row) => total + +row.value, 0)
     const total2 = totales.reduce((total, row) => total + +row.value2, 0)
-    if (addIGV === false) {
-      setAddIGV(true)
+    if (addIGV) {
       setTotalCost(total * 1.18)
       setTotalCost2(total2 * 1.18)
-    } else {
       setAddIGV(false)
+    } else {
       setTotalCost(total)
       setTotalCost2(total2)
+      setAddIGV(true)
     }
   }
 
-  const quotedCost = priceM3 * prodInfo.metrado
-  const profit = (priceM3 * prodInfo.metrado) - totalCost
-  const profitPercentage = ((priceM3 * prodInfo.metrado) - totalCost) / (priceM3 * prodInfo.metrado) * 100
+  const quotedCost = priceM2 * prodInfo.metrado
+  const profit = (priceM2 * prodInfo.metrado) - totalCost
+  const profitPercentage = ((priceM2 * prodInfo.metrado) - totalCost) / (priceM2 * prodInfo.metrado) * 100
   const detraction = quotedCost * 0.04
 
   return (
@@ -142,6 +150,8 @@ export const CalculateCosts = (props: CalculateCostsProps) => {
             prodInfo={prodInfo}
             profit={profit}
             profitPercentage={profitPercentage}
+            priceM2={priceM2}
+            setPriceM2={setPriceM2}
             priceM3={priceM3}
             setPriceM3={setPriceM3}
             quotedCost={quotedCost}

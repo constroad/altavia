@@ -16,6 +16,7 @@ export type ClientType = {
   email: string;
   web: string;
   bankAccounts: BankAccountType[];
+  createdAt?: any
 }
 
 export const initialBankAcc: BankAccountType = {name: '', type: '', accountNumber: '', cci: ''}

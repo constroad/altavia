@@ -20,13 +20,13 @@ export const initialProductionInfo: ProdInfoType = {
 
 export const asphaltRowsArr = [
   { id: 1, 'Insumo': 'Arena Lurin', 'Dosis': 0.36, 'M3/GLS': 0, 'Precio': 52, 'Total': 0 },
-  { id: 1, 'Insumo': 'Arena Telkus', 'Dosis': 0.24, 'M3/GLS': 0, 'Precio': 38, 'Total': 0 },
-  { id: 2, 'Insumo': 'Piedra', 'Dosis': 0.40, 'M3/GLS': 0, 'Precio': 45, 'Total': 0 },
-  { id: 3, 'Insumo': 'Petroleo', 'Dosis': 1, 'M3/GLS': 0, 'Precio': 15.30, 'Total': 0 },
-  { id: 4, 'Insumo': 'PEN', 'Dosis': 24, 'M3/GLS': 0, 'Precio': 12.90, 'Total': 0 },
-  { id: 5, 'Insumo': 'Gasohol', 'Dosis': 2.9, 'M3/GLS': 0, 'Precio': 5.65, 'Total': 0 },
-  { id: 6, 'Insumo': 'Gas', 'Dosis': 0.01, 'M3/GLS': 0, 'Precio': 195, 'Total': 0 },
-  { id: 7, 'Insumo': 'Alq. Planta', 'Dosis': 1, 'M3/GLS': 0, 'Precio': 30, 'Total': 0 },
+  { id: 2, 'Insumo': 'Arena Telkus', 'Dosis': 0.24, 'M3/GLS': 0, 'Precio': 38, 'Total': 0 },
+  { id: 3, 'Insumo': 'Piedra', 'Dosis': 0.40, 'M3/GLS': 0, 'Precio': 45, 'Total': 0 },
+  { id: 4, 'Insumo': 'Petroleo', 'Dosis': 1, 'M3/GLS': 0, 'Precio': 15.30, 'Total': 0 },
+  { id: 5, 'Insumo': 'PEN', 'Dosis': 24, 'M3/GLS': 0, 'Precio': 12.90, 'Total': 0 },
+  { id: 6, 'Insumo': 'Gasohol', 'Dosis': 2.9, 'M3/GLS': 0, 'Precio': 5.65, 'Total': 0 },
+  { id: 7, 'Insumo': 'Gas', 'Dosis': 0.01, 'M3/GLS': 0, 'Precio': 195, 'Total': 0 },
+  { id: 8, 'Insumo': 'Alq. Planta', 'Dosis': 1, 'M3/GLS': 0, 'Precio': 30, 'Total': 0 },
 ]
 export const serviceRowsArr = [
   { id: 1, 'Item': 'Camabaja', 'Cantidad': 1, 'Precio': 2000, 'Total': 0 },

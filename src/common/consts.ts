@@ -62,6 +62,10 @@ export const PDF_TEMPLATE = {
     path: 'public/templates/cotizacion',
     filename: 'plantilla_cotizacion.pdf',
   },
+  cotizacion_no_igv: {
+    path: 'public/templates/cotizacion',
+    filename: 'plantilla_cotizacion_no_igv.pdf',
+  },
   cotizacion_servicio: {
     page1: {
       path: 'public/templates/cotizacion-servicio',
@@ -70,6 +74,10 @@ export const PDF_TEMPLATE = {
     page2: {
       path: 'public/templates/cotizacion-servicio',
       filename: 'plantilla_pagina_2.pdf',
+    },
+    page2NoIGV: {
+      path: 'public/templates/cotizacion-servicio',
+      filename: 'plantilla_pagina_2_no_igv.pdf',
     }
   },
   ordenCompra: {

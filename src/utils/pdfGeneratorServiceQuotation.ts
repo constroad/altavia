@@ -53,8 +53,20 @@ export const generateServiceQuotationPDF = async (data: ServiceQuotePDFType) => 
   // Cargar el PDF desde el buffer
   const pdfDoc = await PDFDocument.load(existingPdfBytes);
 
-  const pdfBlankPagePath = path.join(process.cwd(), PDF_TEMPLATE.cotizacion_servicio.page2.path, PDF_TEMPLATE.cotizacion_servicio.page2.filename)
-  const existingBlankPagePdfBytes = fs.readFileSync(pdfBlankPagePath)
+  // const pdfBlankPagePath = path.join(process.cwd(), PDF_TEMPLATE.cotizacion_servicio.page2.path, PDF_TEMPLATE.cotizacion_servicio.page2.filename)
+
+  let PDFSecondPagePath
+
+  if (data.addIGV) {
+    const pdfPath = path.join(process.cwd(), PDF_TEMPLATE.cotizacion_servicio.page2.path, PDF_TEMPLATE.cotizacion_servicio.page2.filename);
+    PDFSecondPagePath = pdfPath
+     
+  } else {
+    const pdfPath = path.join(process.cwd(), PDF_TEMPLATE.cotizacion_servicio.page2NoIGV.path, PDF_TEMPLATE.cotizacion_servicio.page2NoIGV.filename);
+    PDFSecondPagePath = pdfPath
+  }
+
+  const existingBlankPagePdfBytes = fs.readFileSync(PDFSecondPagePath)
   const pdfBlankPageDoc = await PDFDocument.load(existingBlankPagePdfBytes);
 
   const copiedPage = await pdfDoc.copyPages(pdfBlankPageDoc, [0]); // Copiar la primera página del documento secundario al documento principal

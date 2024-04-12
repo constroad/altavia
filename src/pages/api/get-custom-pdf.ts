@@ -5,7 +5,8 @@ import fs from 'fs';
 import path from 'path';
 import puppeteer from 'puppeteer';
 
-import { htmlBlankPage, htmlCotizacionServicioPage1, htmlCotizacionServicioPage2 } from 'src/components';
+import { htmlBlankPage, htmlCotizacionServicioPage1, htmlCotizacionServicioPage2, htmlCotizacionServicioPage2NoIGV } from 'src/components';
+import { htmlCotizacionNoIGV } from 'src/components/templates/htmlCotizacionNoIGV';
 
 export default async (req: NextApiRequest, res: NextApiResponse) => {
   try {
@@ -17,8 +18,12 @@ export default async (req: NextApiRequest, res: NextApiResponse) => {
     const base64Logo = logoBuffer.toString('base64');
     
     // const htmlTemplate = htmlBlankPage(base64bg, base64Logo)    //generate blank page with costroad background
-    const htmlTemplate = htmlCotizacionServicioPage1(base64bg, base64Logo)    //generate service quote page 1    
+
+    // const htmlTemplate = htmlCotizacionNoIGV(base64bg, base64Logo)    //generate service quote page 1    
+    
+    // const htmlTemplate = htmlCotizacionServicioPage1(base64bg, base64Logo)    //generate service quote page 1    
     // const htmlTemplate = htmlCotizacionServicioPage2(base64bg, base64Logo)    //generate service quote page 2 
+    const htmlTemplate = htmlCotizacionServicioPage2NoIGV(base64bg, base64Logo)    //generate service quote page 2 
 
     
     // Lanza un navegador headless

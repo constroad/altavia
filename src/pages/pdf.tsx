@@ -28,6 +28,7 @@ export default function Home() {
           precioUnitario: '',
           message: '',
           phnoe: '',
+          addIGV: false,
         }
       }, {
         responseType: 'arraybuffer',

@@ -20,9 +20,19 @@ export const generateQuotationPDF = async (data: QuotePDFType) => {
 
   const { formattedSubtotal, formattedIGV, formattedTotal } = getQuotePrices(products, data.addIGV, true)
 
+  let PDFPath
+
+  if (data.addIGV) {
+    const pdfPath = path.join(process.cwd(), PDF_TEMPLATE.cotizacion.path, PDF_TEMPLATE.cotizacion.filename);
+    PDFPath = pdfPath
+     
+  } else {
+    const pdfPath = path.join(process.cwd(), PDF_TEMPLATE.cotizacion_no_igv.path, PDF_TEMPLATE.cotizacion_no_igv.filename);
+    PDFPath = pdfPath
+  }
+  
+  const existingPdfBytes = fs.readFileSync(PDFPath);
   // read pdf from public
-  const pdfPath = path.join(process.cwd(), PDF_TEMPLATE.cotizacion.path, PDF_TEMPLATE.cotizacion.filename);
-  const existingPdfBytes = fs.readFileSync(pdfPath);
 
   // Cargar el PDF desde el buffer
   const pdfDoc = await PDFDocument.load(existingPdfBytes);

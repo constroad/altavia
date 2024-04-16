@@ -30,7 +30,7 @@ export const nosotrosOptions = [
 
 export const serviciosOptions = [
   {label: 'Mezcla asfáltica en caliente', path: APP_ROUTES.mezclaAsfaltica},
-  {label: 'Colocación de mazcla asfáltica', path: APP_ROUTES.colocacionAsfaltica},
+  {label: 'Colocación de mezcla asfáltica', path: APP_ROUTES.colocacionAsfaltica},
   {label: 'Transporte de carga por carretera', path: APP_ROUTES.transporte},
 ]
 

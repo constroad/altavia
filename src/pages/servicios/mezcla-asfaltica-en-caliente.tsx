@@ -31,7 +31,7 @@ const MezclaAsfaltica = () => {
                 CONSTROAD
               </Text>
               <Text display='inline'>
-                Pone a disposición su servicio de venta de mezcla asfáltica en caliente gracias a nuestra planta asfáltica
+                Pone a disposición la venta de mezcla asfáltica en caliente gracias a nuestra planta asfáltica
                 que nos permite un volumen de producción de asfalto capaz de satisfacer las necesidades de nuestros clientes atendiéndolos de
                 manera continua y manteniendo nuestra calidad y los mas rigurosos controles de calidad
               </Text>

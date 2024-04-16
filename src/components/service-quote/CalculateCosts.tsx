@@ -29,9 +29,9 @@ export const CalculateCosts = (props: CalculateCostsProps) => {
     const totalAsphalt = asphaltData.reduce((total: any, row: any) => total + (+row['Total']), 0)
     const totalService = serviceData.reduce((total: any, row: any) => total + (+row['Total']), 0)
     const newTotales = [
-      { title: `Precio venta asfalto M3`, value: 0, value2: priceM3 * +prodInfo.m3Produced },
-      { title: 'Costo de producción asfalto', value: totalAsphalt, value2: 0 },
-      { title: 'Costo Servicio (carpeta asfáltica)', value: totalService, value2: totalService },
+      // { title: `Precio venta asfalto M3`, value: 0, value2: priceM3 * +prodInfo.m3Produced },
+      { title: 'Costo de producción asfalto', value: totalAsphalt },
+      { title: 'Costo Servicio (carpeta asfáltica)', value: totalService },
     ]
     setTotales(newTotales)
 
@@ -64,9 +64,9 @@ export const CalculateCosts = (props: CalculateCostsProps) => {
     }
   }
 
-  const quotedCost = priceM2 * prodInfo.metrado
-  const profit = (priceM2 * prodInfo.metrado) - totalCost
-  const profitPercentage = ((priceM2 * prodInfo.metrado) - totalCost) / (priceM2 * prodInfo.metrado) * 100
+  const quotedCost = priceM2 * prodInfo.metrado * 1.18
+  const profit = quotedCost - totalCost
+  const profitPercentage = profit / (quotedCost) * 100
   const detraction = quotedCost * 0.04
 
   return (

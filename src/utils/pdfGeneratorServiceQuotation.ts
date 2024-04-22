@@ -106,13 +106,34 @@ export const generateServiceQuotationPDF = async (data: ServiceQuotePDFType) => 
   const xDayMonth = width - dayMonthWidth - 50
   const xYear = width - yearWidth - 50
 
+  // const getCurrentTextLines = (index: number, arr: ServiceType[]) => {
+  //   const maxWidth = 330;
+  //   const currentProd = arr[index]
+ 
+  //   const lines = [];
+  //   let currentLine = '';
+  //   for (let word of currentProd.description.split(' ')) {
+  //     const width = helveticaFont.widthOfTextAtSize(currentLine + ' ' + word, 7);
+  //     if (width <= maxWidth) {
+  //       currentLine += (currentLine ? ' ' : '') + word;
+  //     } else {
+  //       lines.push(currentLine);
+  //       currentLine = word;
+  //     }
+  //   }
+  //   lines.push(currentLine);
+  //   return { lines }
+  // }
+
   const getCurrentTextLines = (index: number, arr: ServiceType[]) => {
     const maxWidth = 330;
     const currentProd = arr[index]
- 
+   
     const lines = [];
     let currentLine = '';
-    for (let word of currentProd.description.split(' ')) {
+    
+    // Dividir el texto en palabras utilizando cualquier secuencia de espacios en blanco
+    for (let word of currentProd.description.split(/\s+/)) {
       const width = helveticaFont.widthOfTextAtSize(currentLine + ' ' + word, 7);
       if (width <= maxWidth) {
         currentLine += (currentLine ? ' ' : '') + word;
@@ -122,7 +143,8 @@ export const generateServiceQuotationPDF = async (data: ServiceQuotePDFType) => 
       }
     }
     lines.push(currentLine);
-    return { lines }
+  
+    return { lines };
   }
 
   const getCurrentNotesLines = (index: number, arr: any[], maxWidth: number) => {

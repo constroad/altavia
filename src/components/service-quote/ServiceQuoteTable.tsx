@@ -4,7 +4,7 @@ import { useScreenSize } from 'src/common/hooks';
 import { formatPriceNumber } from 'src/common/utils';
 import { TrashIcon } from 'src/common/icons';
 import { CONSTROAD_COLORS } from 'src/styles/shared';
-import { ServiceQuoteType, newServiceQuote, initialServiceQuote, comparePhase } from './utils';
+import { ServiceQuoteType, newService, initialServiceQuote, comparePhase } from './utils';
 import { ServiceType } from '../services';
 
 interface SwrviceQuoteTableProps {
@@ -33,7 +33,7 @@ export const ServiceQuoteTable = (props: SwrviceQuoteTableProps) => {
   }, [services])
   
   const handleAddService = () => {
-    setServices([...services, newServiceQuote]);
+    setServices([...services, newService]);
   };
 
   function handleAddSDefaultServices() {

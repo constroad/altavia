@@ -1,5 +1,6 @@
 import { v4 as uuidv4 } from 'uuid';
 import { ServiceType } from "../services";
+import { asphaltRowsArr, imprimacionRowsArr, initialProductionInfo, serviceRowsArr } from './new-utils';
 
 export type textSrvc = {
   id: string,
@@ -14,6 +15,42 @@ export type ServiceQuoteNote = {
   }[];
 }
 
+export type CostsType = {
+  prodInfo: {
+    clientName: string;
+    days: number;
+    m3Daily: number;
+    m3Produced: number;
+    metrado: number;
+    thickness: number;
+    waste: number;
+  },
+  asphalt: {
+    'Dosis': number;
+    'Insumo': string;
+    'M3/GLS': number;
+    'Precio': number;
+    'Total': number;
+    'id': number;
+  }[],
+  imprimacion: {
+    'Cantidad': number;
+    'Item': string;
+    'Precio': number;
+    'Total': number;
+    'id': number;
+  }[],
+  service: {
+    'Cantidad': number;
+    'Item': string;
+    'Precio': number;
+    'Total': number;
+    'id': number;
+  }[],
+  priceM3: number;
+  priceM2: number;
+}
+
 export type ServiceQuoteType = {
   _id?: string;
   clientId: string;
@@ -25,10 +62,12 @@ export type ServiceQuoteType = {
   subTotal: number;
   igv: number;
   total: number;
+  costs: CostsType
 }
 
 export type ServiceQuotePDFType = {
   companyName: string;
+  contactPerson: string;
   nroQuote: string;
   ruc: string;
   date: string;
@@ -205,9 +244,17 @@ export const initialServiceQuote: ServiceQuoteType = {
   subTotal: 480,
   igv: 86.4,
   total: 566.4,
+  costs: {
+    prodInfo: initialProductionInfo,
+    asphalt: asphaltRowsArr,
+    imprimacion: imprimacionRowsArr,
+    service: serviceRowsArr,
+    priceM3: 48,
+    priceM2: 41
+  }
 }
 
-export const newServiceQuote: ServiceType = {
+export const newService: ServiceType = {
   description: '',
   alias: '',
   phase: '',

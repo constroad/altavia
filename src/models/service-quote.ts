@@ -29,6 +29,41 @@ export const serviceQuoteValidationSchema = z.object({
   subTotal: z.number(),
   igv: z.number(),
   total: z.number(),
+  costs: z.object({
+    prodInfo: z.object({
+      clientName: z.string(),
+      days: z.number(),
+      m3Daily: z.number(),
+      m3Produced: z.number(),
+      metrado: z.number(),
+      thickness: z.number(),
+      waste: z.number(),
+    }),
+    asphalt: z.array(z.object({
+      'Dosis': z.number(),
+      'Insumo': z.string(),
+      'M3/GLS': z.number(),
+      'Precio': z.number(),
+      'Total': z.number(),
+      'id': z.number()
+    })),
+    imprimacion: z.array(z.object({
+      'Cantidad': z.number(),
+      'Item': z.string(),
+      'Precio': z.number(),
+      'Total': z.number(),
+      'id': z.number()
+    })),
+    service: z.array(z.object({
+      'Cantidad': z.number(),
+      'Item': z.string(),
+      'Precio': z.number(),
+      'Total': z.number(),
+      'id': z.number()
+    })),
+    priceM3: z.number(),
+    priceM2: z.number()
+  }),
   createdAt: z.string().optional(),
   updatedAt: z.string().optional()
 });
@@ -50,18 +85,52 @@ export interface ServiceQuoteModel extends Document {
     quantity: number;
     unitPrice: number;
     total: number;
-  }[],
-  // items: ServiceModel[]
+  }[];
   notes: {
     title?: string;
     texts: {
       id: string;
       value: string;
+    }[];
+  }[];
+  subTotal: number;
+  igv: number;
+  total: number;
+  costs: {
+    prodInfo: {
+      clientName: string;
+      days: number;
+      m3Daily: number;
+      m3Produced: number;
+      metrado: number;
+      thickness: number;
+      waste: number;
     };
+    asphalt: {
+      'Dosis': number;
+      'Insumo': string;
+      'M3/GLS': number;
+      'Precio': number;
+      'Total': number;
+      'id': number;
+    }[];
+    imprimacion: {
+      'Cantidad': number;
+      'Item': string;
+      'Precio': number;
+      'Total': number;
+      'id': number;
+    }[];
+    service: {
+      'Cantidad': number;
+      'Item': string;
+      'Precio': number;
+      'Total': number;
+      'id': number;
+    }[];
+    priceM3: number;
+    priceM2: number;
   };
-  subTotal: number
-  igv: number
-  total: number
 }
 
 let ServiceQuote: Model<ServiceQuoteModel>;
@@ -94,6 +163,41 @@ try {
     subTotal: { type: Number, required: true },
     igv: { type: Number, required: true },
     total: { type: Number, required: true },
+    costs: {
+      prodInfo: {
+        clientName: { type: String, required: false },
+        days: { type: Number, required: false },
+        m3Daily: { type: Number, required: false },
+        m3Produced: { type: Number, required: false },
+        metrado: { type: Number, required: false },
+        thickness: { type: Number, required: false },
+        waste: { type: Number, required: false },
+      },
+      asphalt: [{
+        'Dosis': { type: Number, required: false },
+        'Insumo': { type: String, required: false },
+        'M3/GLS': { type: Number, required: false },
+        'Precio': { type: Number, required: false },
+        'Total': { type: Number, required: false },
+        'id': { type: Number, required: false }
+      }],
+      imprimacion: [{
+        'Cantidad': { type: Number, required: false },
+        'Item': { type: String, required: false },
+        'Precio': { type: Number, required: false },
+        'Total': { type: Number, required: false },
+        'id': { type: Number, required: false }
+      }],
+      service: [{
+        'Cantidad': { type: Number, required: false },
+        'Item': { type: String, required: false },
+        'Precio': { type: Number, required: false },
+        'Total': { type: Number, required: false },
+        'id': { type: Number, required: false }
+      }],
+      priceM3: { type: Number, required: false },
+      priceM2: { type: Number, required: false }
+    }
   }, {
     timestamps: true, // this will add both createdAt y updatedAt automatically
   });

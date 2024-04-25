@@ -1,11 +1,11 @@
 export type ProdInfoType = {
   clientName: string;
+  days: number;
+  m3Daily: number;
+  m3Produced: number;
   metrado: number;
   thickness: number;
   waste: number;
-  m3Produced: number;
-  m3Daily: number;
-  days: number;
 }
 
 export const initialProductionInfo: ProdInfoType = {
@@ -19,12 +19,12 @@ export const initialProductionInfo: ProdInfoType = {
 }
 
 export const asphaltRowsArr = [
-  { id: 1, 'Insumo': 'Arena Lurin', 'Dosis': 0.36, 'M3/GLS': 0, 'Precio': 38, 'Total': 0 },
+  { id: 1, 'Insumo': 'Arena Lurin', 'Dosis': 0.36, 'M3/GLS': 0, 'Precio': 52, 'Total': 0 },
   { id: 2, 'Insumo': 'Arena Telkus', 'Dosis': 0.24, 'M3/GLS': 0, 'Precio': 38, 'Total': 0 },
   { id: 3, 'Insumo': 'Piedra', 'Dosis': 0.40, 'M3/GLS': 0, 'Precio': 45, 'Total': 0 },
   { id: 4, 'Insumo': 'Petroleo', 'Dosis': 0.40, 'M3/GLS': 0, 'Precio': 15.50, 'Total': 0 },
-  { id: 5, 'Insumo': 'PEN', 'Dosis': 24, 'M3/GLS': 0, 'Precio': 14.04, 'Total': 0 },
-  { id: 6, 'Insumo': 'Gasohol', 'Dosis': 2, 'M3/GLS': 0, 'Precio': 7.5, 'Total': 0 },
+  { id: 5, 'Insumo': 'PEN', 'Dosis': 24, 'M3/GLS': 0, 'Precio': 13.75, 'Total': 0 },
+  { id: 6, 'Insumo': 'Gasohol', 'Dosis': 2, 'M3/GLS': 0, 'Precio': 8.32, 'Total': 0 },
   { id: 7, 'Insumo': 'Gas', 'Dosis': 0.01, 'M3/GLS': 0, 'Precio': 5, 'Total': 0 },
   { id: 8, 'Insumo': 'Alq. Planta', 'Dosis': 1, 'M3/GLS': 0, 'Precio': 30, 'Total': 0 },
 ]

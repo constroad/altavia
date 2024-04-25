@@ -46,7 +46,7 @@ const CostsTable: React.FC<CostsTableProps> = ({ columns, rows, setter, keyStrin
 
         return {
           ...row,
-          'Cantidad': isOnePayment ? 1 : isTransport ? prodInfo.m3Produced.toFixed(2) : +prodInfo.days,
+          'Cantidad': isOnePayment ? 1 : isTransport ? +(prodInfo.m3Produced.toFixed(2)) : +prodInfo.days,
           'Total': isOnePayment ? +((1 * +row.Precio).toFixed(2)) : isTransport ? +((+prodInfo.m3Produced * +row.Precio).toFixed(2)) : +((+prodInfo.days * +row.Precio).toFixed(2))
         }
       })
@@ -57,7 +57,7 @@ const CostsTable: React.FC<CostsTableProps> = ({ columns, rows, setter, keyStrin
         const imprimacionQuantity = row.Item === 'Imprimación' ? prodInfo.metrado : +row.Cantidad
         return {
           ...row,
-          'Cantidad': imprimacionQuantity,
+          'Cantidad': +imprimacionQuantity,
           'Total': +((+imprimacionQuantity * +row.Precio).toFixed(2))
         }
       })
@@ -72,26 +72,32 @@ const CostsTable: React.FC<CostsTableProps> = ({ columns, rows, setter, keyStrin
     if ( key === 'Dosis' ) {
       const newM3PerGln = +value * prodInfo.m3Produced
       const updatedRows = rows.map(row =>
-        row.id === id ? { ...row, [key]: value, ['M3/GLS']: +(newM3PerGln.toFixed(2)), ['Total']: newM3PerGln * +row.Precio } : row
+        row.id === id ? { ...row, [key]: +value, ['M3/GLS']: +(newM3PerGln.toFixed(2)), ['Total']: newM3PerGln * +row.Precio } : row
       );
       setter(updatedRows);
 
     } else if ( key === 'Precio' ) {
       if ( keyString === 'asphalt' ) {
         const updatedRows = rows.map(row =>
-          row.id === id ? { ...row, [key]: value, ['Total']: +(+value * +row['M3/GLS']).toFixed(2) } : row
+          row.id === id ? { ...row, [key]: +value, ['Total']: +(+value * +row['M3/GLS']).toFixed(2) } : row
         );
         setter(updatedRows);
       } else {
         const updatedRows = rows.map(row =>
-          row.id === id ? { ...row, [key]: value, ['Total']: +(+value * +row['Cantidad']).toFixed(2) } : row
+          row.id === id ? { ...row, [key]: +value, ['Total']: +(+value * +row['Cantidad']).toFixed(2) } : row
         );
         setter(updatedRows);
       }
 
-    } else {
+    } else if ( key === 'Insumo' || key === "Item" ) {
       const updatedRows = rows.map(row =>
         row.id === id ? { ...row, [key]: value } : row
+      );
+      setter(updatedRows);
+
+    } else {
+      const updatedRows = rows.map(row =>
+        row.id === id ? { ...row, [key]: +value } : row
       );
       setter(updatedRows);
     }
@@ -110,7 +116,7 @@ const CostsTable: React.FC<CostsTableProps> = ({ columns, rows, setter, keyStrin
     setter(filteredRows)
   }
 
-  const total = rows.reduce((total, row) => total + (+row['Total']), 0)
+  const total = rows?.reduce((total, row) => total + (+row['Total']), 0)
 
   return (
     <Box>
@@ -181,7 +187,7 @@ const CostsTable: React.FC<CostsTableProps> = ({ columns, rows, setter, keyStrin
             alignItems='center'
           >
             <Flex alignItems='center' h='19px' fontWeight={600} px='4px' bg={CONSTROAD_COLORS.yellow} borderRight='0.5px solid' borderY='0.5px solid' w='50%' justifyContent='start'>Costo M3:</Flex>
-            <Flex alignItems='center' h='19px' fontWeight={600} px='4px'>{+((total / prodInfo.m3Produced).toFixed(2))}</Flex>
+            <Flex alignItems='center' h='19px' fontWeight={600} px='4px'>{+((total / prodInfo?.m3Produced).toFixed(2))}</Flex>
           </Flex>
         )}
         {keyString !== 'thickness' && (

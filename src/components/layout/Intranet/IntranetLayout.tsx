@@ -6,6 +6,7 @@ import { IntranetNavbar } from './IntranetNavbar';
 import { useSession } from 'next-auth/react';
 import { APP_ROUTES } from 'src/common/consts';
 import { ArrowBackIcon } from 'src/common/icons';
+import { useQuote } from 'src/context';
 
 interface IIntranetLayout {
   children: React.ReactNode
@@ -17,8 +18,10 @@ export const IntranetLayout = (props: IIntranetLayout) => {
   const { children, onBackClick } = props
   const { data: session } = useSession()
   const router = useRouter()
+  const { setNewServiceQuoteSelected } = useQuote();
 
   const handleBackClick = () => {
+    setNewServiceQuoteSelected(undefined)
     if (onBackClick) onBackClick()
     else router.push(APP_ROUTES.admin)
   }

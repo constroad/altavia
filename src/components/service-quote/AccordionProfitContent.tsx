@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { ChangeEvent } from 'react'
 import { Flex, Input, Switch, Text } from '@chakra-ui/react'
 import { CONSTROAD_COLORS } from 'src/styles/shared'
 import { formatPriceNumber } from 'src/common/utils'
@@ -23,12 +23,22 @@ interface AccordionProfitContentProps {
 
 export const AccordionProfitContent = (props: AccordionProfitContentProps) => {
   const { totales, totalCost, totalCost2, addIGV, handleChangeAddIGV, prodInfo, profitPercentage, priceM2, setPriceM2, priceM3, setPriceM3, quotedCost, profit, detraction } = props;
+
+  const handleChangePriceM2 = (e: ChangeEvent<HTMLInputElement>) => {
+    const value = e.target.value
+    setPriceM2(+value)
+  }
+  const handleChangePriceM3 = (e: ChangeEvent<HTMLInputElement>) => {
+    const value = e.target.value
+    setPriceM3(+value)
+  }
+
   return (
     <Flex flexDir='column' w='100%'>
       <Flex fontSize={{ base: 10, md: 12 }} fontWeight={600} w='100%' bg={CONSTROAD_COLORS.darkGray} color='white' border='0.5px solid' borderColor='black' px='4px' alignItems='center' h='19px'>COSTOS</Flex>
       {totales.map((x, idx) => (
         <Flex key={`totales-${idx}`} w='100%'>
-          <Flex w='66.6%'>
+          <Flex w='52%'>
             <Input
               w={ x.title.includes('Precio venta asfalto') ? '80%' : '100%' }
               fontWeight={600}
@@ -40,11 +50,36 @@ export const AccordionProfitContent = (props: AccordionProfitContentProps) => {
               disabled
               _disabled={{ bg: 'white', cursor: 'normal' }}
             />
+            { x.title.includes('Precio venta asfalto') && (
+              <Input
+                w='20%'
+                fontWeight={600}
+                rounded='0px'
+                value={priceM3}
+                h='19px'
+                fontSize={{ base: 10, md: 11 }}
+                textAlign='end'
+                color='red'
+                px='4px'
+                onChange={(e) => handleChangePriceM3(e)}
+              />
+            )}
           </Flex>
           <Input
-            w='33.4%'
+            w='24%'
             rounded='0px'
             value={formatPriceNumber(+x.value)}
+            h='19px'
+            fontSize={{ base: 10, md: 11 }}
+            px='4px'
+            textAlign='end'
+            disabled
+            _disabled={{ bg: 'white', cursor: 'normal' }}
+          />
+          <Input
+            w='24%'
+            rounded='0px'
+            value={formatPriceNumber(+x.value2)}
             h='19px'
             fontSize={{ base: 10, md: 11 }}
             px='4px'
@@ -65,7 +100,7 @@ export const AccordionProfitContent = (props: AccordionProfitContentProps) => {
           border='0.5px solid'
           fontWeight={600}
           disabled
-          w='66.6%'
+          w='52%'
           _disabled={{ bg: CONSTROAD_COLORS.yellow, cursor: 'normal' }}
         />
         <Input
@@ -76,7 +111,19 @@ export const AccordionProfitContent = (props: AccordionProfitContentProps) => {
           fontWeight={600}
           px='4px'
           textAlign='end'
-          w='33.4%'
+          w='24%'
+          disabled
+          _disabled={{ bg: 'white', cursor: 'normal' }}
+        />
+        <Input
+          rounded='0px'
+          value={ formatPriceNumber(totalCost2) }
+          h='19px'
+          fontSize={{ base: 10, md: 11 }}
+          fontWeight={600}
+          px='4px'
+          textAlign='end'
+          w='24%'
           disabled
           _disabled={{ bg: 'white', cursor: 'normal' }}
         />
@@ -90,9 +137,9 @@ export const AccordionProfitContent = (props: AccordionProfitContentProps) => {
             <Text fontSize={{ base: 10, md: 10 }} fontWeight={600}>{addIGV ? 'Sí' : 'No'}</Text>
           </Flex>
         </Flex> */}
-        <Flex h='17px' fontSize={{ base: 10, md: 11 }} w='33.4%' flexDir='column'>
+        <Flex h='17px' fontSize={{ base: 10, md: 11 }} w='24%' flexDir='column'>
           <Flex border='0.5px solid' borderColor='black' w='100%' px='4px' h='17px' bg={CONSTROAD_COLORS.yellow} fontWeight={600} justifyContent='center'>Costo (m2)</Flex>
-          <Flex border='0.5px solid' borderColor='black' w='100%' px='4px' h='17px' justifyContent='end' fontWeight={600}>{formatPriceNumber(+totalCost / prodInfo.metrado)}</Flex>
+          <Flex border='0.5px solid' borderColor='black' w='100%' px='4px' h='17px' justifyContent='end' fontWeight={600}>{formatPriceNumber(+totalCost2 / prodInfo?.metrado)}</Flex>
         </Flex>
       </Flex>
 
@@ -145,7 +192,7 @@ export const AccordionProfitContent = (props: AccordionProfitContentProps) => {
           fontSize={{ base: 10, md: 11 }}
           px='4px'
           fontWeight={600}
-          value={prodInfo.metrado}
+          value={prodInfo?.metrado}
           textAlign='center'
           border='0.5px solid'
           h='19px'
@@ -160,7 +207,7 @@ export const AccordionProfitContent = (props: AccordionProfitContentProps) => {
           fontWeight={600}
           color='red'
           value={priceM2 === 0 ? '' : priceM2}
-          onChange={(e) => setPriceM2(+e.target.value)}
+          onChange={(e) => handleChangePriceM2(e)}
           type='number'
           textAlign='center'
           border='0.5px solid black'
@@ -313,7 +360,7 @@ export const AccordionProfitContent = (props: AccordionProfitContentProps) => {
           px='4px'
           textAlign='end'
           rounded='0px'
-          value={formatPriceNumber( (profit - detraction) / prodInfo.days )}
+          value={formatPriceNumber( (profit - detraction) / prodInfo?.days )}
           h='19px'
           disabled
           _disabled={{ bg: 'white', cursor: 'normal' }}

@@ -3,39 +3,55 @@ import { Accordion, AccordionButton, AccordionIcon, AccordionItem, AccordionPane
 import CostsTable from './CostsTable'
 import AccordionProfitContent from './AccordionProfitContent';
 import { ProdInfoType } from './new-utils';
+import { CostsType } from './utils';
 
 interface CalculateCostsProps {
+  priceM3: number
+  priceM2: number
+  priceM3Setter: any
+  priceM2Setter: any
   prodInfo: ProdInfoType;
   asphaltRows: any[];
   serviceRows: any[];
   imprimacionRows: any[];
+  asphaltSetter: any
+  serviceSetter: any
+  imprimacionSetter: any
   thicknessRows: any[];
 }
 
 export const CalculateCosts = (props: CalculateCostsProps) => {
-  const { prodInfo, asphaltRows, serviceRows, imprimacionRows, thicknessRows } = props;
-  const [asphaltData, setAsphaltData] = useState(asphaltRows)
-  const [serviceData, setServiceData] = useState(serviceRows)
-  const [imprimacionData, setImprimacionData] = useState(imprimacionRows)
+  const {
+    priceM3,
+    priceM2,
+    priceM3Setter,
+    priceM2Setter,
+    prodInfo,
+    asphaltRows,
+    serviceRows,
+    imprimacionRows,
+    asphaltSetter,
+    serviceSetter,
+    imprimacionSetter,
+    thicknessRows
+  } = props;
   const [thicknessData, setThicknessData] = useState(thicknessRows)
   const [totales, setTotales] = useState<any[]>([])
   const [addIGV, setAddIGV] = useState(false)
-  const [priceM2, setPriceM2] = useState(43)
   const [totalCost, setTotalCost] = useState(totales.reduce((total, row) => total + +row.value, 0))
   const [totalCost2, setTotalCost2] = useState(totales.reduce((total, row) => total + +row.value2, 0))
-  const [priceM3, setPriceM3] = useState(480)
   
   useEffect(() => {
-    const totalAsphalt = asphaltData.reduce((total: any, row: any) => total + (+row['Total']), 0)
-    const totalService = serviceData.reduce((total: any, row: any) => total + (+row['Total']), 0)
+    const totalAsphalt = asphaltRows.reduce((total: any, row: any) => total + (+row['Total']), 0)
+    const totalService = serviceRows.reduce((total: any, row: any) => total + (+row['Total']), 0)
     const newTotales = [
-      // { title: `Precio venta asfalto M3`, value: 0, value2: priceM3 * +prodInfo.m3Produced },
-      { title: 'Costo de producción asfalto', value: totalAsphalt },
-      { title: 'Costo Servicio (carpeta asfáltica)', value: totalService },
+      { title: `Precio venta asfalto (M3)`, value: 0, value2: priceM3 * +prodInfo?.m3Produced },
+      { title: 'Costo de producción asfalto', value: totalAsphalt, value2: 0 },
+      { title: 'Costo Servicio (carpeta asfáltica)', value: totalService, value2: totalService },
     ]
     setTotales(newTotales)
 
-  }, [asphaltData, serviceData, imprimacionData, priceM3])
+  }, [asphaltRows, serviceRows, priceM3])
 
   useEffect(() => {
     const total = totales.reduce((total, row) => total + +row.value, 0)
@@ -64,7 +80,7 @@ export const CalculateCosts = (props: CalculateCostsProps) => {
     }
   }
 
-  const quotedCost = priceM2 * prodInfo.metrado * 1.18
+  const quotedCost = priceM2 * +prodInfo?.metrado
   const profit = quotedCost - totalCost
   const profitPercentage = profit / (quotedCost) * 100
   const detraction = quotedCost * 0.04
@@ -84,8 +100,8 @@ export const CalculateCosts = (props: CalculateCostsProps) => {
           <CostsTable
             keyString='asphalt'
             columns={['Insumo', 'Dosis', 'M3/GLS', 'Precio', 'Total']}
-            rows={asphaltData}
-            setter={setAsphaltData}
+            rows={asphaltRows}
+            setter={asphaltSetter}
             prodInfo={prodInfo}
           />
         </AccordionPanel>
@@ -104,8 +120,8 @@ export const CalculateCosts = (props: CalculateCostsProps) => {
           <CostsTable
             keyString='service'
             columns={['Item', 'Cantidad', 'Precio', 'Total']}
-            rows={serviceData}
-            setter={setServiceData}
+            rows={serviceRows}
+            setter={serviceSetter}
             prodInfo={prodInfo}
           />
         </AccordionPanel>
@@ -124,8 +140,8 @@ export const CalculateCosts = (props: CalculateCostsProps) => {
           <CostsTable
             keyString='imprimacion'
             columns={['Item', 'Cantidad', 'Precio', 'Total']}
-            rows={imprimacionData}
-            setter={setImprimacionData}
+            rows={imprimacionRows}
+            setter={imprimacionSetter}
             prodInfo={prodInfo}
           />
         </AccordionPanel>
@@ -151,9 +167,9 @@ export const CalculateCosts = (props: CalculateCostsProps) => {
             profit={profit}
             profitPercentage={profitPercentage}
             priceM2={priceM2}
-            setPriceM2={setPriceM2}
             priceM3={priceM3}
-            setPriceM3={setPriceM3}
+            setPriceM2={priceM2Setter}
+            setPriceM3={priceM3Setter}
             quotedCost={quotedCost}
             detraction={detraction}
           />

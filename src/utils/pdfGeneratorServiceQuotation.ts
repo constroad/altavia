@@ -41,6 +41,7 @@ export const generateServiceQuotationPDF = async (data: ServiceQuotePDFType) => 
 
   const nroCotizacion = addZerosAhead(+data.nroQuote)
   const companyName = data.companyName.toUpperCase()
+  const contactPerson = data.contactPerson.toUpperCase()
   const rucCliente = data.ruc === '' ? '- - -' : data.ruc
   const fecha = `${currentDayName}, ${currentDayMonth} de ${currentYear}`
 
@@ -148,7 +149,13 @@ export const generateServiceQuotationPDF = async (data: ServiceQuotePDFType) => 
   }
 
   // FIRST PAGE --- HEADER + DATA
-  firstPage.drawText(companyName, { x: 85, y: 717.8, size: 9.5, font: helveticaBoldFont})
+  
+  // SEÑOR (PERSONA DE CONTACTO)
+  if (contactPerson !== '') {
+    firstPage.drawText(contactPerson, { x: 85, y: 717.8, size: 9.5, font: helveticaBoldFont})
+  } else {
+    firstPage.drawText(companyName, { x: 85, y: 717.8, size: 9.5, font: helveticaBoldFont})
+  }
   
   firstPage.drawText(currentDayMonthStr, { x: xDayMonth, y: 775, size: 14, font: helveticaBoldFont  })
   firstPage.drawText(currentYear, { x: xYear, y: 760, size: 14, font: helveticaBoldFont  })

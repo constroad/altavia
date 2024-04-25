@@ -2,7 +2,7 @@ import React, { ChangeEvent, useEffect, useState } from 'react'
 import axios from 'axios';
 import { Box, Flex, Text } from '@chakra-ui/react';
 import { useRouter } from 'next/router';
-import { ADMIN_ROUTES, API_ROUTES } from 'src/common/consts';
+import { ADMIN_ROUTES, API_ROUTES, APP_ROUTES } from 'src/common/consts';
 import {
   CalculateCosts,
   ClientType,
@@ -25,81 +25,30 @@ import {
 } from 'src/components';
 import { useAsync, useScreenSize } from 'src/common/hooks';
 import { getDate } from 'src/common/utils';
+import { useQuote } from 'src/context';
 
 const fetcher = (path: string) => axios.get(path)
 const postQuote = (path: string, data: ServiceQuoteType) => axios.post(path, data);
-
-// export type ProdInfoType = {
-//   clientName: string;
-//   metrado: number;
-//   thickness: number;
-//   waste: number;
-//   m3Produced: number;
-//   m3Daily: number;
-//   days: number;
-// }
-
-// const initialProductionInfo: ProdInfoType = {
-//   clientName: '',
-//   metrado: 1000,
-//   thickness: 0.065,
-//   waste: 0.10,
-//   m3Produced: 65,
-//   days: 1,
-//   m3Daily: 65,
-// }
-
-// const asphaltRowsArr = [
-//   { id: 1, 'Insumo': 'Arena', 'Dosis': 0.30, 'M3/GLS': 0, 'Precio': 39, 'Total': 0 },
-//   { id: 2, 'Insumo': 'Piedra', 'Dosis': 0.70, 'M3/GLS': 0, 'Precio': 52, 'Total': 0 },
-//   { id: 3, 'Insumo': 'Petroleo', 'Dosis': 1, 'M3/GLS': 0, 'Precio': 15.30, 'Total': 0 },
-//   { id: 4, 'Insumo': 'PEN', 'Dosis': 24, 'M3/GLS': 0, 'Precio': 12.90, 'Total': 0 },
-//   { id: 5, 'Insumo': 'Gasohol', 'Dosis': 2.9, 'M3/GLS': 0, 'Precio': 5.65, 'Total': 0 },
-//   { id: 6, 'Insumo': 'Gas', 'Dosis': 0.01, 'M3/GLS': 0, 'Precio': 195, 'Total': 0 },
-//   { id: 7, 'Insumo': 'Alq. Planta', 'Dosis': 1, 'M3/GLS': 0, 'Precio': 30, 'Total': 0 },
-// ]
-// const serviceRowsArr = [
-//   { id: 1, 'Item': 'Camabaja', 'Cantidad': 1, 'Precio': 2000, 'Total': 0 },
-//   { id: 2, 'Item': 'Maquinaria', 'Cantidad': 1, 'Precio': 3400, 'Total': 0 },
-//   { id: 3, 'Item': 'Petroleo Maq.', 'Cantidad': 1, 'Precio': 120, 'Total': 0 },
-//   { id: 4, 'Item': 'Operadores', 'Cantidad': 1, 'Precio': 350, 'Total': 0 },
-//   { id: 5, 'Item': 'Transporte', 'Cantidad': 34.5, 'Precio': 30, 'Total': 0 },
-//   { id: 6, 'Item': 'Personal', 'Cantidad': 1, 'Precio': 2500, 'Total': 0 },
-//   { id: 7, 'Item': 'Caja', 'Cantidad': 1, 'Precio': 150, 'Total': 0 },
-//   { id: 8, 'Item': 'EPP', 'Cantidad': 1, 'Precio': 0, 'Total': 0 },
-//   { id: 9, 'Item': 'Sindicato', 'Cantidad': 1, 'Precio': 0, 'Total': 0 },
-//   { id: 10, 'Item': 'Laboratorio', 'Cantidad': 1, 'Precio': 400, 'Total': 0 },
-//   { id: 11, 'Item': 'Samuel', 'Cantidad': 1, 'Precio': 0, 'Total': 0 },
-//   { id: 12, 'Item': 'Viaticos', 'Cantidad': 1, 'Precio': 0, 'Total': 0 },
-// ]
-// const imprimacionRowsArr = [
-//   { id: 1, 'Item': 'Imprimación', 'Cantidad': 0, 'Precio': 3, 'Total': 0 },
-//   { id: 2, 'Item': '', 'Cantidad': 0, 'Precio': 0, 'Total': 0 },
-//   { id: 3, 'Item': 'Ayudantes', 'Cantidad': 0, 'Precio': 0, 'Total': 0 },
-//   { id: 4, 'Item': 'Compresora', 'Cantidad': 0, 'Precio': 0, 'Total': 0 },
-// ]
-// const thicknessRows = [
-//   { id: 1, 'Pulgadas': 1, 'Centimetros': 0.035 },
-//   { id: 2, 'Pulgadas': 1.5, 'Centimetros': 0.048 },
-//   { id: 3, 'Pulgadas': 2, 'Centimetros': 0.065 },
-//   { id: 4, 'Pulgadas': 2.5, 'Centimetros': 0.083 },
-//   { id: 5, 'Pulgadas': 3, 'Centimetros': 0.095 },
-// ]
+const updateQuote = (path: string, data: ServiceQuoteType) => axios.put(path, data)
 
 export const NewServiceQuotePage = () => {
   const [clientsDB, setClientsDB] = useState<ClientType[]>([])
   const [clientSelected, setClientSelected] = useState<ClientType | undefined>(undefined)
   const [servicesDB, setServicesDB] = useState<ServiceType[]>([])
-  const [showCreateQuote, setShowCreateQuote] = useState(false)
-  const [prodInfo, setProdInfo] = useState<ProdInfoType>(initialProductionInfo)
-  const [asphaltRows, setAsphaltRows] = useState(asphaltRowsArr)
-  const [serviceRows, setServiceRows] = useState(serviceRowsArr)
-  const [imprimacionRows, setImprimacionRows] = useState(imprimacionRowsArr)
+  
+  const { serviceQuoteSelected, setServiceQuoteSelected } = useQuote();
+
+  const [prodInfo, setProdInfo] = useState<ProdInfoType>( serviceQuoteSelected ? serviceQuoteSelected.costs.prodInfo  : initialProductionInfo )
+  const [asphaltRows, setAsphaltRows] = useState( serviceQuoteSelected ? serviceQuoteSelected.costs.asphalt : asphaltRowsArr )
+  const [serviceRows, setServiceRows] = useState( serviceQuoteSelected ? serviceQuoteSelected.costs.service : serviceRowsArr)
+  const [imprimacionRows, setImprimacionRows] = useState( serviceQuoteSelected ? serviceQuoteSelected.costs.imprimacion : imprimacionRowsArr)
 
   const [quote, setQuote] = useState<ServiceQuoteType>(initialServiceQuote)
   const [quotesDBList, setQuotesDBList] = useState<ServiceQuoteType[]>([])
   const [customDate, setCustomDate] = useState('')
   const [addIGV, setAddIGV] = useState(true)
+  const [priceM3, setPriceM3] = useState( serviceQuoteSelected ? serviceQuoteSelected.costs.priceM3 : 480 )
+  const [priceM2, setPriceM2] = useState( serviceQuoteSelected ? serviceQuoteSelected.costs.priceM2 : 43 )
   const date = new Date()
   const router = useRouter()
   const { isMobile } = useScreenSize()
@@ -108,8 +57,9 @@ export const NewServiceQuotePage = () => {
   const { run: runGetServices } = useAsync({ onSuccess(data) { setServicesDB(data.data) } })
   const { run: runGetQuotes, isLoading, refetch: refetchQuotes } = useAsync({ onSuccess(data) { setQuotesDBList(data.data) } })
   const { run: runAddQuote, isLoading: loadingAddQuote  } = useAsync()
+  const { run: runAEditQuote, isLoading: loadingEditQuote  } = useAsync()
 
-  const quoteNumber = 100 + quotesDBList.length + 1
+  const quoteNumber = serviceQuoteSelected?.nro ?? 100 + quotesDBList.length + 1
 
   useEffect(() => {
     const fetchQuoteServicesClientData = async () => {
@@ -132,6 +82,13 @@ export const NewServiceQuotePage = () => {
     
     fetchQuoteServicesClientData();
   }, []);
+
+  useEffect(() => {
+    if (serviceQuoteSelected) {
+      const client = clientsDB.filter(cli => cli._id === serviceQuoteSelected.clientId)
+      setClientSelected(client[0])
+    }
+  }, [serviceQuoteSelected, clientsDB])
   
   // Handlers
   const handleChangeCustomDate = (e: ChangeEvent<HTMLInputElement>) => {
@@ -142,18 +99,19 @@ export const NewServiceQuotePage = () => {
   const generateAndDownloadPDF = async(editQuoteDate:string | undefined, addQuoteDate: Date, quoteNumber: number, clientSelected: any, quoteShortDate: string) => {     
     const pdfData: ServiceQuotePDFType = {
       companyName: clientSelected?.name ?? '',
+      contactPerson: clientSelected?.contactPerson ?? '',
       ruc: clientSelected?.ruc ?? '',
       nroQuote: quoteNumber.toString(),
-      notes: quote.notes,
-      date: addQuoteDate.toUTCString(),
-      services: quote.items,
+      notes: serviceQuoteSelected?.notes ?? quote.notes,
+      date: serviceQuoteSelected?.date ? editQuoteDate as string : addQuoteDate.toUTCString(),
+      services: serviceQuoteSelected?.items ?? quote.items,
       addIGV: addIGV,
     }
 
     const response = await axios.post( API_ROUTES.generateServiceQuotationPDF, { pdfData }, {responseType: 'arraybuffer'} )
     const blob = new Blob([response.data], { type: 'application/pdf' });
     const { shortDate: pdfEditDate } = getDate(editQuoteDate)
-    const pdfdate = quoteShortDate
+    const pdfdate = serviceQuoteSelected ? pdfEditDate : quoteShortDate
     const pdfName = `Cotización_${quoteNumber}_${clientSelected?.name}_${pdfdate}.pdf`
 
     const pdfUrl = URL.createObjectURL(blob);
@@ -165,20 +123,15 @@ export const NewServiceQuotePage = () => {
     document.body.removeChild(link);
   }
 
-  const handleCloseFormModal = () => {
-    setClientSelected(undefined)
-    setQuote(initialServiceQuote)
-    setAddIGV(true)
-  }
-
   // add or edit quotes
   const handleSubmit = async (event: any) => {
     event.preventDefault();
     const inputDate = new Date(customDate)
     const addQuoteDate = customDate.length > 0 ? inputDate : date
+    const editQuoteDate = customDate.length > 0 ? inputDate.toUTCString() : serviceQuoteSelected?.date
     const { shortDate: quoteShortDate } = getDate(addQuoteDate.toUTCString())
 
-    if (clientSelected) {
+    if (!serviceQuoteSelected && clientSelected) {
       const {
         formattedSubtotal,
         formattedIGV,
@@ -193,24 +146,72 @@ export const NewServiceQuotePage = () => {
         notes: quote.notes,
         subTotal: +formattedSubtotal,
         igv: addIGV ? +formattedIGV : 0,
-        total: addIGV ? +formattedTotal : +formattedSubtotal
+        total: addIGV ? +formattedTotal : +formattedSubtotal,
+        costs: {
+          prodInfo: prodInfo,
+          asphalt: asphaltRows,
+          service: serviceRows,
+          imprimacion: imprimacionRows,
+          priceM3: priceM3,
+          priceM2: priceM2
+        }
       }
 
       runAddQuote(postQuote(API_ROUTES.serviceQuote, addQuote), {
         onSuccess: () => {
           refetchQuotes()
           toast.success('Cotización generada con éxito.')
-          generateAndDownloadPDF(undefined, addQuoteDate, quoteNumber, clientSelected, quoteShortDate)
+          generateAndDownloadPDF(editQuoteDate, addQuoteDate, quoteNumber, clientSelected, quoteShortDate)
         },
         onError: (err) => {
           console.log(err)
           toast.error("Algo salio mal al generar la cotización, contacte al administrador")
         }
       })
+
+    } else if (serviceQuoteSelected) {
+      const {
+        formattedSubtotal,
+        formattedIGV,
+        formattedTotal
+      } = getQuotePrices( serviceQuoteSelected.items, addIGV )
+
+      const editQuote: ServiceQuoteType = {
+        clientId: clientSelected?._id as string,
+        nro: quoteNumber,
+        date: editQuoteDate as string,
+        items: serviceQuoteSelected?.items,
+        notes: serviceQuoteSelected?.notes,
+        subTotal: +formattedSubtotal,
+        igv: addIGV ? +formattedIGV : 0,
+        total: addIGV ? +formattedTotal : +formattedSubtotal,
+        costs: {
+          prodInfo: prodInfo,
+          asphalt: asphaltRows,
+          service: serviceRows,
+          imprimacion: imprimacionRows,
+          priceM3: priceM3,
+          priceM2: priceM2
+        }
+      }
+
+      runAEditQuote(updateQuote(`${API_ROUTES.serviceQuote}/${serviceQuoteSelected._id}`, editQuote), {
+        onSuccess: () => {
+          refetchQuotes()
+          toast.success('Cotización editada con éxito.')
+          generateAndDownloadPDF(editQuoteDate, addQuoteDate, quoteNumber, clientSelected, quoteShortDate)
+        },
+        onError: (err) => {
+          console.log(err) 
+          toast.error("Algo salio mal al editar la cotización, contacte al administrador")
+        }
+      })
+
     }
 
-    handleCloseFormModal()
     setCustomDate('')
+    setServiceQuoteSelected(undefined)
+    router.push(ADMIN_ROUTES.serviceQuote)
   };
 
   const handleSelectClient = (client: ClientType) => {
@@ -265,10 +266,17 @@ export const NewServiceQuotePage = () => {
           </Flex>
           <Flex w='100%' grow={{ base: 0, md: 1 }} rounded='6px'>
             <CalculateCosts
+              priceM3={priceM3}
+              priceM2={priceM2}
+              priceM3Setter={setPriceM3}
+              priceM2Setter={setPriceM2}
               prodInfo={prodInfo}
               asphaltRows={asphaltRows}
               serviceRows={serviceRows}
               imprimacionRows={imprimacionRows}
+              asphaltSetter={setAsphaltRows}
+              serviceSetter={setServiceRows}
+              imprimacionSetter={setImprimacionRows}
               thicknessRows={thicknessRows}
             />
           </Flex>
@@ -283,12 +291,13 @@ export const NewServiceQuotePage = () => {
           mt={{ base: '45px', md: '0px' }}
         >
           <ServiceQuoteForm
-            quote={quote}
-            setter={setQuote}
+            quote={ serviceQuoteSelected ? serviceQuoteSelected : quote}
+            quoteSelected={serviceQuoteSelected}
+            setter={ serviceQuoteSelected ? setServiceQuoteSelected : setQuote}
             client={clientSelected}
             onChangeDate={handleChangeCustomDate}
             dateValue={customDate}
-            isLoading={loadingAddQuote}
+            isLoading={serviceQuoteSelected ? loadingEditQuote : loadingAddQuote}
             addIGV={addIGV}
             onChangeAddIGV={handleChangeAddIGV}
             handleSubmit={handleSubmit}
@@ -296,7 +305,7 @@ export const NewServiceQuotePage = () => {
             handleSelectClient={handleSelectClient}
             servicesDB={servicesDB}
             handleSelectService={handleSelectService}
-            title={`Generar cotización Nro ${quoteNumber}`}
+            title={serviceQuoteSelected ? `Editar cotización Nro ${serviceQuoteSelected.nro}` :`Generar cotización Nro ${quoteNumber}`}
           />
         </Flex>
 

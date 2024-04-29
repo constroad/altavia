@@ -75,16 +75,18 @@ export const CylinderForm = (props: FormProps) => {
     }
     props.onSave(payload);
   };
+
   const handleChangeCentimeter = (e: any) => {
     const centimeters = e.target.value as string;
-    const inStock = getVolumeInStock(tableReference, centimeters);
+    const centimetersToGetVolumen = Number(centimeters).toString()
+    const inStock = getVolumeInStock(tableReference, centimetersToGetVolumen);
     setLevelCentimeter(Number(centimeters));
     setVolumeInStock(inStock);
   };
 
   const getVolumeInStock = (ref: string, cent: string) => {
     let inStock = 0;
-    console.log('getVolumeInStock', { ref, cent });
+    // console.log('getVolumeInStock', { ref, cent });
     if (ref === 'PEN_01') {
       // @ts-ignore
       inStock = PEN_01[cent] || 0;

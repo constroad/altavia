@@ -6,7 +6,7 @@ interface CustomDividerProps {
   color?: string;
   marginTop?: string;
   marginBottom?: string;
-  marginX?: string;
+  marginY?: string;
 
 }
 
@@ -17,7 +17,7 @@ export const CustomDivider = (props: CustomDividerProps) => {
       alignItems='center'
       mt={ props.marginTop ?? '0px' }
       mb={ props.marginBottom ?? '0px' }
-      mx={ props.marginX ?? '0px' }
+      my={ props.marginY ?? undefined }
     >
       <Flex bg={props.color ?? 'gray.300'} h='1px' flex='1' />
 

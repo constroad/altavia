@@ -80,7 +80,7 @@ export const ServiceQuoteTable = (props: SwrviceQuoteTableProps) => {
 
   return (
     <Box fontSize={{base: 10, md: 12}}>
-      <Box overflowX='scroll' rounded='8px' border='0.5px solid' borderColor={CONSTROAD_COLORS.bgPDF}>
+      <Box overflowX='scroll' rounded='4px' border='0.5px solid' borderColor={CONSTROAD_COLORS.bgPDF}>
         <Table variant='styled'>
           {/* head */}
           <Thead>
@@ -114,7 +114,7 @@ export const ServiceQuoteTable = (props: SwrviceQuoteTableProps) => {
                   </Th>
                   <Th background={CONSTROAD_COLORS.bgPDF} color='white' paddingX={{ base: '8px', md: '10px' }} paddingY={{ base: '5px', md: '5px' }}>
                     <Text fontSize={{base: 10, md: 12}} textTransform='capitalize'>
-                      Precio Unitario
+                      P. U.
                     </Text>
                   </Th>
                 </>
@@ -380,7 +380,7 @@ export const ServiceQuoteTable = (props: SwrviceQuoteTableProps) => {
           </Tbody>
         </Table>
 
-        <Flex width='100%' justifyContent='end' height={{ base: '18px', md: '22px' }} alignItems='center'>
+        <Flex width='100%' justifyContent='end' height={{ base: '18px', md: '22px' }} alignItems='center' bg='lightgray'>
           <Flex textAlign='center' gap='8px' height='100%'>
             <Flex fontSize={{ base: 10, md: 12 }} fontWeight={600} alignItems='center' height='100%'>
               Total sin IGV:

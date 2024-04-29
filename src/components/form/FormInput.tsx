@@ -17,7 +17,7 @@ export const FormInput = (props: FormInputProps) => {
     <FormControl id={props.id}>
       {props.label && (
         <FormLabel mb={{ base: '2px', md: '0px' }} fontSize={{ base: 10, md: 12 }}>
-          {props.label} {!props.required ? <Text color='gray' fontSize={8} display='inline-block'>(optional)</Text> : <Text color='red' fontSize={10} display='inline-block'>*</Text>}
+          {props.label} {!props.required ? <Text color='gray' fontSize={8} display='inline-block'>(opcional)</Text> : <Text color='red' fontSize={10} display='inline-block'>*</Text>}
         </FormLabel>
       )}
       <Input

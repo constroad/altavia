@@ -184,7 +184,7 @@ export const ServiceQuoteForm = (props: ServiceQuoteFormProps) => {
         />
       </Flex>
 
-      <CustomDivider label='Servicios' marginTop='15px' />
+      <CustomDivider label='Servicios' marginTop='40px' />
 
       {/* Service search */}
       <Flex width='100%' justifyContent='space-between' alignItems='center'>
@@ -219,7 +219,7 @@ export const ServiceQuoteForm = (props: ServiceQuoteFormProps) => {
       </Flex>
 
       {/* TABLE */}
-      <Box width='100%' marginTop='5px'>
+      <Box width='100%' marginTop='0px'>
         <ServiceQuoteTable quote={quote} setter={setter} servicesDB={servicesDB} /> 
       </Box>
 
@@ -231,39 +231,39 @@ export const ServiceQuoteForm = (props: ServiceQuoteFormProps) => {
         </Flex>
       </Box>
 
-      <Flex width='100%' justifyContent='space-between' fontSize={{ base: 10, md: 12 }} alignItems='end'>
-        <Flex flexDir='column'>
-          <Text fontWeight={600} fontSize={12}>Subtotal</Text>
+      <Flex width='100%' gap='4px' fontSize={{ base: 10, md: 12 }} alignItems='end' justifyContent='end' flexDir='column'>
+        <Flex gap='10px'>
+          <Text fontWeight={600}>Subtotal</Text>
           <Box
             paddingY='2px'
             paddingX='4px'
             rounded='4px'
             border='0.5px solid'
             borderColor='lightgray'
-            minW={{ base: '100px', md: '120px' }}
+            minW={{ base: '100px', md: '150px' }}
             textAlign='end'
           >
             {formattedSubtotal}
           </Box>
         </Flex>
 
-        <Flex flexDir='column'>
-          <Text fontWeight={600} fontSize={12}>IGV</Text>
+        <Flex gap='10px'>
+          <Text fontWeight={600}>IGV</Text>
           <Box
             paddingY='2px'
             paddingX='4px'
             rounded='4px'
             border='0.5px solid'
             borderColor='lightgray'
-            minW={{ base: '100px', md: '120px' }}
+            minW={{ base: '100px', md: '150px' }}
             textAlign='end'
           >
             { props.addIGV ? formattedIGV : '0.00' }
           </Box>
         </Flex>
 
-        <Flex flexDir='column'>
-          <Text fontWeight={600} fontSize={{ base: 12, md: 14 }}>Total</Text>
+        <Flex gap='10px'>
+          <Text fontWeight={600}>Total</Text>
           <Box
             paddingY='2px'
             paddingX='4px'
@@ -271,7 +271,7 @@ export const ServiceQuoteForm = (props: ServiceQuoteFormProps) => {
             border='0.5px solid'
             borderColor='gray.800'
             bg={CONSTROAD_COLORS.orange}
-            minW={{ base: '100px', md: '120px' }}
+            minW={{ base: '100px', md: '150px' }}
             textAlign='end'
           >
             { props.addIGV ? formattedTotal : formattedSubtotal }
@@ -279,7 +279,7 @@ export const ServiceQuoteForm = (props: ServiceQuoteFormProps) => {
         </Flex>
       </Flex>
 
-      <Flex flexDir='column' mt='5px' w='100%'>
+      <Flex flexDir='column' mt='0px' w='100%'>
         <Flex fontSize={{ base: 14, md: 16 }} fontWeight={600} mt='10px' w='100%'>NOTAS</Flex>
 
         {/* NOTAS */}

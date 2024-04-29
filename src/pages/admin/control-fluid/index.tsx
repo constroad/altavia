@@ -104,7 +104,7 @@ export const ControlFluid = () => {
             <PlusIcon />
           </Button>
         </Box>
-        <Grid templateColumns={{base: "repeat(2, 1fr)", md: "repeat(4, 1fr)"}} gap={6} alignItems="flex-end" as={Flex}>
+        <Grid templateColumns={{base: "repeat(1, 1fr)", md: "repeat(4, 1fr)"}} gap={6} alignItems="flex-end" as={Flex}>
           {fluidList.map((fluid) => (
             <GridItem key={fluid._id} w="100%" h="fit-content" position="relative">
               <Cylinder                

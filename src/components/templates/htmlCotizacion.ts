@@ -67,7 +67,7 @@ export const htmlCotizacion = ( bgImg: any, logoImg: any): string => {
           margin-top: 40px;
           display: flex;
           flex-direction: column;
-          font-size: 16px;
+          font-size: 14px;
         }
 
         .data {
@@ -133,9 +133,9 @@ export const htmlCotizacion = ( bgImg: any, logoImg: any): string => {
 
       <div class="pdf-container">
         <div class="header">
-          <div style="display: flex; gap: 8px">
+          <div style="display: flex; gap: 8px; align-items: center;">
             <img src="data:image/jpeg;base64, ${logoImg}" alt="constroad-logo" style="width: 40px; height: 40px; border-radius: 10px;" />
-            <div style="font-size: 32px;" >ConstRoad</div>
+            <div style="font-size: 26px; font-weight: 600" >ConstRoad</div>
           </div>
           <div class="date-container">
           </div>

@@ -20,9 +20,19 @@ export const generateQuotationPDF = async (data: QuotePDFType) => {
 
   const { formattedSubtotal, formattedIGV, formattedTotal } = getQuotePrices(products, data.addIGV, true)
 
+  let PDFPath
+
+  if (data.addIGV) {
+    const pdfPath = path.join(process.cwd(), PDF_TEMPLATE.cotizacion.path, PDF_TEMPLATE.cotizacion.filename);
+    PDFPath = pdfPath
+     
+  } else {
+    const pdfPath = path.join(process.cwd(), PDF_TEMPLATE.cotizacion_no_igv.path, PDF_TEMPLATE.cotizacion_no_igv.filename);
+    PDFPath = pdfPath
+  }
+  
+  const existingPdfBytes = fs.readFileSync(PDFPath);
   // read pdf from public
-  const pdfPath = path.join(process.cwd(), PDF_TEMPLATE.cotizacion.path, PDF_TEMPLATE.cotizacion.filename);
-  const existingPdfBytes = fs.readFileSync(pdfPath);
 
   // Cargar el PDF desde el buffer
   const pdfDoc = await PDFDocument.load(existingPdfBytes);
@@ -59,54 +69,57 @@ export const generateQuotationPDF = async (data: QuotePDFType) => {
   const xYear = width - yearWidth - 50
 
   // texts
-  firstPage.drawText(companyName, { x: 90, y: 716.8, size: 12, font: helveticaBoldFont})
+  firstPage.drawText(companyName, { x: 85, y: 717.8, size: 9.5, font: helveticaBoldFont})
 
-  firstPage.drawText(currentDayMonthStr, { x: xDayMonth, y: 773, size: 14, font: helveticaBoldFont  })
-  firstPage.drawText(currentYear, { x: xYear, y: 758, size: 14, font: helveticaBoldFont  })
+  firstPage.drawText(currentDayMonthStr, { x: xDayMonth, y: 775, size: 14, font: helveticaBoldFont  })
+  firstPage.drawText(currentYear, { x: xYear, y: 760, size: 14, font: helveticaBoldFont  })
 
-  firstPage.drawText(`${nroCotizacion} - ${currentYear}`, { x: 305, y: 637, size: 10, font: helveticaBoldFont })
-  firstPage.drawText(companyName, { x: 132, y: 614.6, size: 9, font: helveticaBoldFont })
-  firstPage.drawText(rucCliente, { x: 132, y: 600.6, size: 9, font: helveticaBoldFont })
-  firstPage.drawText(fecha, { x: 132, y: 578.6, size: 9 })
+  firstPage.drawText(`${nroCotizacion} - ${currentYear}`, { x: 305, y: 642.3, size: 10, font: helveticaBoldFont })
+  firstPage.drawText(companyName, { x: 132, y: 619.6, size: 9, font: helveticaBoldFont })
+  firstPage.drawText(rucCliente, { x: 132, y: 605.6, size: 9, font: helveticaBoldFont })
+  firstPage.drawText(fecha, { x: 132, y: 584, size: 9 })
 
   products.map((product, i) => {
     const yOffset = 12; // Espacio vertical entre cada conjunto de drawText
 
     const startX = 62; // Ajustar la posición horizontal para cada conjunto de drawText
-    const startY = 530 - i * yOffset; 
+    const startY = 535 - i * yOffset; 
 
+    const unitStr = product.unit.toString()
     const quantityStr = product.quantity.toString()
     const unitPriceStr = formatPriceNumber(product.unitPrice)
     const totalStr = formatPriceNumber(product.total)
 
+    const unitWidth = helveticaFont.widthOfTextAtSize(unitStr, 7.5)
     const quantityWidth = helveticaFont.widthOfTextAtSize(quantityStr, 7.5)
     const unitPriceWidth = helveticaFont.widthOfTextAtSize(unitPriceStr, 7.5)
     const totalWidth = helveticaFont.widthOfTextAtSize(totalStr, 7.5)
 
+    const unitX = width - unitWidth - 189
     const quantityX = width - quantityWidth - 146
     const unitPriceX = width - unitPriceWidth - 106;
     const totalX = width - totalWidth - 51.5;
 
     firstPage.drawText(`${i + 1}`, { x: startX, y: startY, size: 7.5, font: helveticaBoldFont });
     firstPage.drawText(product.description, { x: startX + 20, y: startY, size: 7.5, font: helveticaBoldFont });
-    firstPage.drawText(product.unit, { x: startX + 328, y: startY, size: 7.5, font: helveticaFont });
+    firstPage.drawText(product.unit, { x: unitX, y: startY, size: 7.5, font: helveticaFont });
     firstPage.drawText(quantityStr, { x: quantityX, y: startY, size: 7.5, font: helveticaFont });
     firstPage.drawText(unitPriceStr, { x: unitPriceX, y: startY, size: 7.5, font: helveticaFont });
     firstPage.drawText(totalStr, { x: totalX , y: startY, size: 7.5, font: helveticaFont });
   })
 
   { customNotes && (
-    firstPage.drawText(customNotes, { x: 157, y: 377.5, size: 7.5, font: helveticaBoldFont})
+    firstPage.drawText(customNotes, { x: 157, y: 382, size: 7.5, font: helveticaBoldFont})
   )}
 
   { !customNotes && (
-    firstPage.drawText(defaultNote, { x: 157, y: 377.5, size: 7.5, font: helveticaBoldFont})
+    firstPage.drawText(defaultNote, { x: 157, y: 382, size: 7.5, font: helveticaBoldFont})
   )}
 
-  firstPage.drawText(formattedSubtotal, { x: subtotalX, y: 355, size: 7.5 })
-  firstPage.drawText(formattedSubtotal, { x: subtotalX, y: 339, size: 7.5 })
-  firstPage.drawText(formattedIGV, { x: igvX, y: 330, size: 7.5 })
-  firstPage.drawText(formattedTotal, { x: totalX, y: 318, size: 7.5 })
+  firstPage.drawText(formattedSubtotal, { x: subtotalX, y: 358, size: 7.5 })
+  firstPage.drawText(formattedSubtotal, { x: subtotalX, y: 343, size: 7.5 })
+  firstPage.drawText(formattedIGV, { x: igvX, y: 334, size: 7.5 })
+  firstPage.drawText(formattedTotal, { x: totalX, y: 322, size: 7.5 })
 
   const pdfBytes = await pdfDoc.save()
 

@@ -15,9 +15,11 @@ interface FormInputProps {
 export const FormInput = (props: FormInputProps) => {
   return (
     <FormControl id={props.id}>
-      <FormLabel mb={{ base: '2px', md: '6px' }} fontSize={{ base: 10, md: 12 }}>
-        {props.label} {!props.required ? <Text color='gray' fontSize={8} display='inline-block'>(optional)</Text> : <Text color='red' fontSize={10} display='inline-block'>*</Text>}
-      </FormLabel>
+      {props.label && (
+        <FormLabel mb={{ base: '2px', md: '0px' }} fontSize={{ base: 10, md: 12 }}>
+          {props.label} {!props.required ? <Text color='gray' fontSize={8} display='inline-block'>(opcional)</Text> : <Text color='red' fontSize={10} display='inline-block'>*</Text>}
+        </FormLabel>
+      )}
       <Input
         _placeholder={{ fontSize: {base: 10, md:12 } }}
         px={{ base: '5px', md: '3px' }}

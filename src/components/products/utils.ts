@@ -6,6 +6,7 @@ export type ProductType = {
   unitPrice: number,
   quantity: number,
   total: number
+  createdAt?: any
 }
 
 export const initialProducStore: ProductType = {

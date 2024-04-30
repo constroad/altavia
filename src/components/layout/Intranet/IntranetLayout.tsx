@@ -7,16 +7,25 @@ import { useSession } from 'next-auth/react';
 import { APP_ROUTES } from 'src/common/consts';
 import { ArrowBackIcon } from 'src/common/icons';
 import { NoSessionPage } from '../NoSessionPage';
+import { useQuote } from 'src/context';
 
 interface IIntranetLayout {
   children: React.ReactNode
   noPaddingTop?: boolean
+  onBackClick?: () => void
 }
 
 export const IntranetLayout = (props: IIntranetLayout) => {
-  const { children } = props
+  const { children, onBackClick } = props
   const { data: session } = useSession()
   const router = useRouter()
+  const { setNewServiceQuoteSelected } = useQuote();
+
+  const handleBackClick = () => {
+    setNewServiceQuoteSelected(undefined)
+    if (onBackClick) onBackClick()
+    else router.push(APP_ROUTES.admin)
+  }
 
   return (
     <div className='w-full min-h-screen'>
@@ -26,28 +35,28 @@ export const IntranetLayout = (props: IIntranetLayout) => {
         <Box
           as='main'
           width='100%'
-          minHeight={{base:'calc(100vh - 65px)', md: 'calc(100vh - 95px)'}}
+          minHeight={{base:'calc(100vh - 55px)', md: 'calc(100vh - 70px)'}}
           paddingTop={{
-            base: props.noPaddingTop ? '0px' : '40px',
-            md: props.noPaddingTop ? '0px' : '50px'
+            base: props.noPaddingTop ? '0px' : '30px',
+            md: props.noPaddingTop ? '0px' : '40px'
           }}
-          paddingBottom={{ base: '40px', md: '50px'}}
-          paddingX={{ base: '30px', md: '70px' }}
+          paddingBottom={{ base: '30px', md: '40px'}}
+          paddingX={{ base: '30px', md: '50px' }}
           position='relative'
         >
           {children}
 
           {router.pathname !== '/admin' && (
-            <Box position='absolute' top={{ base: '10px', md: '10px' }} left={{ base: '30px', md: '70px' }}>
+            <Box position='fixed' top={{ base: '57px', md: '76px' }} left={{ base: '30px', md: '50px' }}>
               <Button
                 fontSize={{ base: 12, md: 15 }}
-                width={{ base: '70px', md: '184px' }}
-                height={{ base: '25px', md: '40px' }}
-                bg='transparent'
+                width={{ base: '70px', md: '161px' }}
+                height={{ base: '25px', md: '30px' }}
+                bg='gray.200'
                 color='black'
                 _hover={{bg: 'gray.100'}}
                 fontWeight={500}
-                onClick={() => router.push(APP_ROUTES.admin)}
+                onClick={handleBackClick}
                 gap='10px'
                 justifyContent='center'
                 paddingX='5px'

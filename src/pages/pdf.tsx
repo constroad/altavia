@@ -12,6 +12,7 @@ export default function Home() {
 
   const purchaseOrderAPI = '/api/get-purchase-order-pdf'
   const quotationAPI = '/api/get-quotation-pdf'
+  const customAPI = '/api/get-custom-pdf'
 
   const generatePDF = async (apiUrl: string) => {
     setLoading(true);
@@ -27,6 +28,7 @@ export default function Home() {
           precioUnitario: '',
           message: '',
           phnoe: '',
+          addIGV: false,
         }
       }, {
         responseType: 'arraybuffer',
@@ -58,6 +60,9 @@ export default function Home() {
       </button>
       <button onClick={() => generatePDF(purchaseOrderAPI)} disabled={loading}>
         {loading ? 'Generating PDF......' : 'Generate and Download Purchase Order PDF:'}
+      </button>
+      <button onClick={() => generatePDF(customAPI)} disabled={loading}>
+        {loading ? 'Generating PDF......' : 'Generate and Download Custom PDF:'}
       </button>
       {pdfError && <p>{pdfError}</p>}
     </div>

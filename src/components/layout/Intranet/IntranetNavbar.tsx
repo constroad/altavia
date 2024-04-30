@@ -16,11 +16,11 @@ export const IntranetNavbar = () => {
   }
 
   return (
-    <Flex width='100%' height={{ base: '65px', md: '95px' }}>
+    <Flex width='100%' height={{ base: '55px', md: '70px' }}>
       <Flex
         as='header'
-        height={{ base: '65px', md: '95px' }}
-        paddingX={{ base: '30px', md: '70px' }}
+        height={{ base: '55px', md: '70px' }}
+        paddingX={{ base: '30px', md: '50px' }}
         alignItems='center'
         justifyContent='space-between'
         backgroundColor='white'
@@ -40,17 +40,17 @@ export const IntranetNavbar = () => {
           justifyContent='center'
         >
           <Link href={APP_ROUTES.admin} title='Constroad | Planta de asfalto'>
-            <Image src='/img/constroad-logo.svg' width='80%' alt='constroad-logo' rounded='4px' />
+            <Image src='/img/constroad-logo.svg' width='70%' alt='constroad-logo' rounded='4px' />
           </Link>
         </Flex>
         
         {session && (
           <Flex gap='10px' alignItems='center'>
-            <Text fontWeight={600} fontSize={{base: 11, md: 14}}>Bienvenido: Admin</Text>
+            <Text fontWeight={600} fontSize={{base: 10, md: 13}}>Bienvenido: Admin</Text>
             <Button
               fontWeight={500}
               width={{ base: '75px', md: '100px' }}
-              height={{base: '25px', md: '40px'}}
+              height={{base: '25px', md: '35px'}}
               color='white'
               onClick={handleSignOut}
               bg="black"

@@ -46,18 +46,12 @@ export const AdminSidebar = (props: AdminSidebarProps) => {
           <Flex
             alignItems='center'
             justifyContent={ !isMobile ? 'space-between' : 'center'}
-            pl={ !isMobile && isExpanded ? '16px' : !isMobile && !isExpanded ? '8px' : ''}
-            pr={ !isMobile && isExpanded ? '16px' : '0px' }
-            height={{ base: '65px', md: '95px' }}
+            px={ !isMobile ? isExpanded ? '16px' : '8px' : '4px'}
+            h={{ base: '41px', md: '72px' }}
             shadow='md'
           >
-            <Flex gap='6px' alignItems='center' h={ isMobile ? '65px' : '72px' } cursor='pointer' onClick={() => router.push(APP_ROUTES.admin)}>
-              <Image
-                src='/constroad.ico'
-                alt='constroad-logo'
-                w={{ base: '25px', md: !isExpanded ? '25px' : '35px' }}
-                h={{ base: '25px', md: !isExpanded ? '25px' : '35px' }}
-              />
+            <Flex gap='6px' alignItems='center' h='72px' cursor='pointer' onClick={() => router.push(APP_ROUTES.admin)}>
+              <Image src='/constroad.ico' alt='constroad-logo' w='25px' h='25px'/>
               {isExpanded && !isMobile && (
                 <Text fontWeight={600} fontSize={25} >ConstRoad</Text>
               )}

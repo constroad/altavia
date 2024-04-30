@@ -5,7 +5,7 @@ import fs from 'fs';
 import path from 'path';
 import puppeteer from 'puppeteer';
 
-import { htmlCotizacion } from 'src/components';
+import { htmlBlankPage, htmlCotizacion } from 'src/components';
 
 export default async (req: NextApiRequest, res: NextApiResponse) => {
   try {
@@ -17,6 +17,7 @@ export default async (req: NextApiRequest, res: NextApiResponse) => {
     const base64Logo = logoBuffer.toString('base64');
     
     const htmlTemplate = htmlCotizacion(base64bg, base64Logo)
+    // const htmlTemplate = htmlBlankPage(base64bg, base64Logo)          //solo usar para generar hoja en blanco con background y logo de constroad
     
     // Lanza un navegador headless
     const browser = await puppeteer.launch();

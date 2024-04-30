@@ -132,6 +132,13 @@ export const ProductsPage = () => {
   const columns = generateProductColumns()
   const mobileColumns = generateMobileProdColumns(handleProductViewClick)
 
+  const sortedProductsList = [...productsList].sort((a, b) => {
+    const dateA = new Date(a.createdAt);
+    const dateB = new Date(b.createdAt);
+    if (isNaN(dateA.getTime()) || isNaN(dateB.getTime())) return 0;
+    return dateB.getTime() - dateA.getTime();
+  });  
+
   // Renders
   const footer = (
     <Button
@@ -175,13 +182,13 @@ export const ProductsPage = () => {
           Productos
         </Text>
         <Box width='100%' textAlign='end' gap={2}>
-          {prevRoute === ADMIN_ROUTES.generateQuotation && (
+          {prevRoute && (
             <Button
               size='sm'
               width={{base: '100px', md: '200px'}}
               fontSize={{ base: 10, md: 16 }}
               padding={{ base: '5px', md: '12px' }}
-              onClick={() => router.push(ADMIN_ROUTES.generateQuotation)}
+              onClick={() => router.push(prevRoute as string)}
               colorScheme='blue'
               gap={2}
               mr='5px'
@@ -207,7 +214,7 @@ export const ProductsPage = () => {
         <Box width='100%'>
           {isMobile && (
             <TableComponent
-              data={productsList}
+              data={sortedProductsList}
               columns={mobileColumns}
               onEdit={handleEditClick}
               onDelete={handleDeleteClick}
@@ -218,7 +225,7 @@ export const ProductsPage = () => {
           )}
           {isDesktop && (
             <TableComponent
-              data={productsList}
+              data={sortedProductsList}
               columns={columns}
               onEdit={handleEditClick}
               onDelete={handleDeleteClick}

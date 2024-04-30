@@ -128,6 +128,13 @@ export const ClientsPage = () => {
   const columns = generateClientColumns(handleSelectClient)
   const mobileColumns = generateMobileClientColumns(handleSelectClient)
 
+  const sortedClientList = [...clientsList].sort((a, b) => {
+    const dateA = new Date(a.createdAt);
+    const dateB = new Date(b.createdAt);
+    if (isNaN(dateA.getTime()) || isNaN(dateB.getTime())) return 0;
+    return dateB.getTime() - dateA.getTime();
+  });  
+
   // Renders
   const footer = (
     <Button
@@ -172,13 +179,13 @@ export const ClientsPage = () => {
         </Text>
 
         <Box width='100%' textAlign='end' gap={2}>
-          {prevRoute === ADMIN_ROUTES.generateQuotation && (
+          {prevRoute && (
             <Button
               size='sm'
               width={{base: '100px', md: '200px'}}
               fontSize={{ base: 10, md: 16 }}
               padding={{ base: '5px', md: '12px' }}
-              onClick={() => router.push(ADMIN_ROUTES.generateQuotation)}
+              onClick={() => router.push(prevRoute as string)}
               colorScheme='blue'
               height='25px'
               gap={2}
@@ -204,7 +211,7 @@ export const ClientsPage = () => {
         <Box w='100%'>
           {isDesktop && (
             <TableComponent
-              data={clientsList}
+              data={sortedClientList}
               columns={columns}
               onDelete={handleConfirmDelete}
               onEdit={handleEditClientClick}
@@ -215,7 +222,7 @@ export const ClientsPage = () => {
           )}
           {isMobile && (
             <TableComponent
-              data={clientsList}
+              data={sortedClientList}
               columns={mobileColumns}
               onDelete={handleConfirmDelete}
               onEdit={handleEditClientClick}

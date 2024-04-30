@@ -10,7 +10,8 @@ import {
   ProvidersIcon,
   PurchaseIcon,
   QuoteIcon,
-  TaskIcon
+  TaskIcon,
+  ServiceIcon
 } from "src/common/icons";
 import { CONSTROAD_COLORS } from "src/styles/shared";
 
@@ -23,8 +24,8 @@ export const adminTabs = [
     icon: AdminIcon
   },
   {
-    name: 'Generar cotización',
-    path: ADMIN_ROUTES.generateQuotation,
+    name: 'Cotizaciones',
+    path: ADMIN_ROUTES.quotes,
     bgColor: CONSTROAD_COLORS.black,
     textColor: 'white',
     icon: QuoteIcon
@@ -32,29 +33,29 @@ export const adminTabs = [
   {
     name: 'Generar orden de compra',
     path: ADMIN_ROUTES.purchaseOrder,
-    bgColor: CONSTROAD_COLORS.lightGray,
-    textColor: 'black',
+    bgColor: CONSTROAD_COLORS.darkGray,
+    textColor: 'white',
     icon: PurchaseIcon
   },
   {
     name: 'Producción',
     // path: ADMIN_ROUTES.production,
     path: null,
-    bgColor: CONSTROAD_COLORS.darkGray,
+    bgColor: CONSTROAD_COLORS.black,
     textColor: 'white',
     icon: ProductionIcon
   },
   {
     name: 'Despacho',
-    path: ADMIN_ROUTES.dispatch,
+    // path: ADMIN_ROUTES.dispatch,
+    path: null,
     bgColor: CONSTROAD_COLORS.yellow,
     textColor: 'black',
     icon: DispatchIcon
   },
   {
-    name: 'Control Highway',
-    // path: ADMIN_ROUTES.controlHighway,
-    path: null,
+    name: 'Control Liquidos',
+    path: ADMIN_ROUTES.controlFluid,
     bgColor: CONSTROAD_COLORS.black,
     textColor: 'white',
     icon: HighwayIcon
@@ -89,7 +90,14 @@ export const administrationTabs = [
     bgColor: CONSTROAD_COLORS.lightGray,
     textColor: 'black',
     icon: TaskIcon
-  }
+  },
+  {
+    name: 'Servicios',
+    path: ADMIN_ROUTES.services,
+    bgColor: CONSTROAD_COLORS.darkGray,
+    textColor: 'white',
+    icon: ServiceIcon
+  },
   // {
   //   name: 'Empleados',
   //   // path: ADMIN_ROUTES.administration.employees,

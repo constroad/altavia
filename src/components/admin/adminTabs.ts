@@ -23,19 +23,26 @@ export const adminTabs = [
     icon: AdminIcon
   },
   {
-    name: 'Cotizar asfalto',
-    path: ADMIN_ROUTES.generateQuotation,
+    name: 'Cotizaciones',
+    path: ADMIN_ROUTES.quotes,
     bgColor: CONSTROAD_COLORS.black,
     textColor: 'white',
     icon: QuoteIcon
   },
-  {
-    name: 'Cotizar servicios',
-    path: ADMIN_ROUTES.serviceQuote,
-    bgColor: CONSTROAD_COLORS.lightGray,
-    textColor: 'black',
-    icon: QuoteIcon
-  },
+  // {
+  //   name: 'Cotizar asfalto',
+  //   path: ADMIN_ROUTES.generateQuotation,
+  //   bgColor: CONSTROAD_COLORS.black,
+  //   textColor: 'white',
+  //   icon: QuoteIcon
+  // },
+  // {
+  //   name: 'Cotizar servicios',
+  //   path: ADMIN_ROUTES.serviceQuote,
+  //   bgColor: CONSTROAD_COLORS.lightGray,
+  //   textColor: 'black',
+  //   icon: QuoteIcon
+  // },
   {
     name: 'Generar orden de compra',
     path: ADMIN_ROUTES.purchaseOrder,
@@ -47,16 +54,16 @@ export const adminTabs = [
     name: 'Producción',
     // path: ADMIN_ROUTES.production,
     path: null,
-    bgColor: CONSTROAD_COLORS.yellow,
-    textColor: 'black',
+    bgColor: CONSTROAD_COLORS.black,
+    textColor: 'white',
     icon: ProductionIcon
   },
   {
     name: 'Despacho',
     // path: ADMIN_ROUTES.dispatch,
     path: null,
-    bgColor: CONSTROAD_COLORS.black,
-    textColor: 'white',
+    bgColor: CONSTROAD_COLORS.yellow,
+    textColor: 'black',
     icon: DispatchIcon
   },
   {

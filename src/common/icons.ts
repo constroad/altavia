@@ -60,4 +60,5 @@ export const HighwayIcon = LuContainer
 export const AdminIcon = FaUserShield
 export const ClientsIcon = FaUserTie
 export const QuoteIcon = HiClipboardDocumentList
+export const TaskIcon = BiTask
 export const ServiceIcon = FaRoadBarrier

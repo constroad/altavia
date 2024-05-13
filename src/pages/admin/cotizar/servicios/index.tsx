@@ -116,7 +116,7 @@ export const ServiceQuotePage = () => {
   )
 
   return (
-    <IntranetLayout>
+    <IntranetLayout onBackClick={() => router.push(ADMIN_ROUTES.quotes)}>
       <Flex
         flexDir='column'
         alignItems={{base: '', md: ''}}

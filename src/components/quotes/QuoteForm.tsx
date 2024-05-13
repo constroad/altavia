@@ -75,7 +75,7 @@ export const QuoteForm = (props: QuoteFormProps) => {
             onClick={() => {
               router.push({
                 pathname: ADMIN_ROUTES.clients,
-                query: { prevRoute: ADMIN_ROUTES.generateQuotation }
+                query: { prevRoute: ADMIN_ROUTES.asphaltQuote }
               }
             )}}
           >
@@ -145,7 +145,7 @@ export const QuoteForm = (props: QuoteFormProps) => {
             onClick={() => {
               router.push({
                 pathname: ADMIN_ROUTES.products,
-                query: { prevRoute: ADMIN_ROUTES.generateQuotation }
+                query: { prevRoute: ADMIN_ROUTES.asphaltQuote }
               }
             )}}
           >

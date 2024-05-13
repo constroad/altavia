@@ -9,6 +9,7 @@ interface FormTextareaProps {
   placeholder?: string;
   required?: boolean;
   onChange: React.ChangeEventHandler<HTMLTextAreaElement> | undefined
+  height?: string;
 }
 
 export const FormTextarea = (props: FormTextareaProps) => {
@@ -27,9 +28,9 @@ export const FormTextarea = (props: FormTextareaProps) => {
         px={{ base: '5px', md: '3px' }}
         py={{ base: '2px', md: '4px' }}
         onChange={props.onChange}
-        maxHeight='50px'
-        minHeight='50px'
-        height='50px'
+        maxHeight={props.height ? props.height : '50px'}
+        minHeight={props.height ? props.height : '50px'}
+        height={props.height ? props.height : '50px'}
         required={props.required ? true : false}
       />
     </FormControl>

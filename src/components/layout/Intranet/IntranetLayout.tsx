@@ -1,11 +1,12 @@
 import { useRouter } from 'next/router';
-import { Box, Button, Flex, Text } from '@chakra-ui/react';
+import { Box, Button, Text } from '@chakra-ui/react';
 
 import { CustomHead } from '../Portal/CustomHead';
 import { IntranetNavbar } from './IntranetNavbar';
 import { useSession } from 'next-auth/react';
 import { APP_ROUTES } from 'src/common/consts';
 import { ArrowBackIcon } from 'src/common/icons';
+import { NoSessionPage } from '../NoSessionPage';
 import { useQuote } from 'src/context';
 
 interface IIntranetLayout {
@@ -70,13 +71,7 @@ export const IntranetLayout = (props: IIntranetLayout) => {
       )}
 
       {!session && (
-        <Flex flexDir='column' gap='10px' justifyContent='center' alignItems='center' marginTop='150px'>
-          <Text>Debes iniciar sesión para ingresar a la intranet</Text>
-          <Flex gap="20px">
-            <Button onClick={() => router.push(APP_ROUTES.home)}>Ir al inicio</Button>
-            <Button onClick={() => router.push(APP_ROUTES.login)}>Iniciar sesión</Button>
-          </Flex>
-        </Flex>
+        <NoSessionPage />
       )}
     </div>
   )

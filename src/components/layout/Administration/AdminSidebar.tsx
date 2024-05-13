@@ -137,7 +137,16 @@ export const AdminSidebar = (props: AdminSidebarProps) => {
       <Flex className='w-screen' flexDir='column'>
         <AdminNavbar />
         
-        <Flex marginY={{ base: 4, md: 6 }} px={{ base: 4, md: 6 }} height={{ base: 'calc(100vh - 41px)', md: 'calc(100vh - 72px)'}} overflowY='scroll'>
+        <Flex
+          marginY={{ base: 4, md: 4 }}
+          px={{ base: 4, md: 6 }}
+          height={{
+            base: 'calc(100vh - 41px)',
+            md: 'calc(100vh - 72px)'
+          }}
+          overflowY='scroll'
+          w={isMobile ? 'calc(100vw - 50px)' : ''}
+        >
           {children}
         </Flex>
       </Flex>

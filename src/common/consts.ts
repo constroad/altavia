@@ -23,13 +23,16 @@ export const ADMIN_ROUTES = {
   providers: '/admin/proveedores',
   products: '/admin/productos',
   services: '/admin/servicios',
-  generateQuotation: '/admin/cotizar',
-  serviceQuote: '/admin/cotizar-servicios',
-  newServiceQuote: '/admin/cotizar-servicios/nuevo',
+  quotes: '/admin/cotizar',
+  asphaltQuote: '/admin/cotizar/asfalto',
+  serviceQuote: '/admin/cotizar/servicios',
+  newServiceQuote: '/admin/cotizar/servicios/nuevo',
   purchaseOrder: '/admin/orden-de-compra',
   dispatch: '/admin/despacho',
   controlFluid: '/admin/control-fluid',
   production: '/admin/produccion',
+  tasks: '/admin/tareas',
+  selectedDayTask: '/admin/tareas/dia-seleccionado',
 }
 
 export const API_ROUTES = {
@@ -44,7 +47,9 @@ export const API_ROUTES = {
   services: '/api/service',
   generateServiceQuotationPDF: '/api/generate-service-quotation-pdf',
   generateQuotationPDF: '/api/generate-quotation-pdf',
-  generateOrderPDF: '/api/generate-purchase-order-pdf'
+  generateOrderPDF: '/api/generate-purchase-order-pdf',
+  task: '/api/task',
+  note: '/api/note',
 }
 
 export const CONSTROAD = {

@@ -3,42 +3,44 @@ import { es } from 'date-fns/locale/es';
 
 export enum Status {
   PENDING = 'pending',
-  IN_PROGRESS = 'in progress',
+  IN_PROGRESS = 'in-progress',
   DONE = 'done'
 }
 
-export type NoteObject = {
-  title?: string;
-  text?: string;
-}
-
-export type TaskObject = {
-  title?: string;
-  content: string;
-  status: Status
-}
-
 export type TaskType = {
+  _id?: string;
   date: string;
   reporter?: string;
   assignee?: string;
-  notes: NoteObject[];
-  tasks: TaskObject[]
+  title: string;
+  content?: string;
+  status: Status
 }
 
-export const initialTask = {
+export type NoteType = {
+  _id?: string;
+  date: string;
+  reporter?: string;
+  title: string;
+  text?: string;
+}
+
+const currentDay = new Date()
+
+export const initialTask: TaskType = {
   date: '',
   reporter: '',
   assignee: '',
-  notes: [{
-    title: '',
-    text: '',
-  }],
-  tasks: [{
-    title: '',
-    content: '',
-    status: Status.PENDING
-  }]
+  title: '',
+  content: '',
+  status: Status.PENDING
+}
+
+export const initialNote = {
+  date: '',
+  reporter: '',
+  title: '',
+  text: '',
 }
 
 export const getCurrentMonth = (startDayWeek: Date) => {
@@ -57,6 +59,8 @@ export const getCurrentMonth = (startDayWeek: Date) => {
   return currentMonth;
 }
 
-export const getCurrentYear = () => {
-
+export function sameDay(firstDay: Date, secondDay: Date) {
+  return firstDay.getFullYear() === secondDay.getFullYear() &&
+         firstDay.getMonth() === secondDay.getMonth() &&
+         firstDay.getDate() === secondDay.getDate();
 }

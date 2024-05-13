@@ -16,7 +16,7 @@ export const AdminNavbar = () => {
   }
 
   return (
-    <Flex width='100%' justifyContent='end' p={{ base: 2, md: 4 }} shadow='md' minHeight={{ base: '65px', md: '95px' }}>
+    <Flex width='100%' justifyContent='end' p={{ base: 2, md: 4 }} shadow='md' minHeight={{ base: '41px', md: '72px' }}>
       {session && (
         <Flex gap='10px' alignItems='center'>
           <Text fontWeight={600} fontSize={{base: 11, md: 14}}>Bienvenido: Admin</Text>

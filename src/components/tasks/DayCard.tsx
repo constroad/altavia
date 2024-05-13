@@ -6,7 +6,7 @@ import { CONSTROAD_COLORS } from 'src/styles/shared';
 
 interface DayCardProps {
   startDayWeek: Date;
-  selectedDay: Date | null;
+  selectedDay: Date | undefined;
   onClickDay: (day: Date) => void; 
 }
 

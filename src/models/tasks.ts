@@ -8,15 +8,9 @@ export const taskValidationSchema = z.object({
   date: z.date(),
   reporter: z.string().optional(),
   assignee: z.string().optional(),
-  notes: z.array(z.object({
-    title: z.string().optional(),
-    text: z.string().optional()
-  })),
-  tasks: z.array(z.object({
-    title: z.string().optional(),
-    content: z.string().min(1),
-    status: z.nativeEnum(Status),
-  })),
+  title: z.string().min(1),
+  content: z.string().optional(),
+  status: z.nativeEnum(Status),
   createdAt: z.string().optional(),
   updatedAt: z.string().optional()
 });
@@ -26,17 +20,11 @@ export type ITaskValidationSchema = z.infer<typeof taskValidationSchema>
 // DB model + schema
 export interface TaskModel extends Document {
   date: Date;
-  reporter: string;
-  assignee: string;
-  notes: {
-    title: string;
-    text: string;
-  }[];
-  tasks: {
-    title: string;
-    content: string;
-    status: string
-  }[];
+  reporter?: string;
+  assignee?: string;
+  title: string;
+  content?: string;
+  status: Status
 }
 
 let Task: Model<TaskModel>;
@@ -48,15 +36,9 @@ try {
     date: { type: Date, required: true },
     reporter: { type: String, optional: true },
     assignee: { type: String, optional: true },
-    notes: [{
-      title: { type: String, optional: true },
-      text: { type: String, optional: true },
-    }],
-    tasks: [{
-      title: { type: String, optional: true },
-      content: { type: String, required: true },
-      status: { type: String, required: true, enum: Object.values(Status) }, // Uso del enum Status
-    }]
+    title: { type: String, required: true },
+    content: { type: String, optional: true },
+    status: { type: String, required: true, enum: Object.values(Status) }, // Uso del enum Status
   }, {
     timestamps: true, // this will add both createdAt y updatedAt automatically
   });

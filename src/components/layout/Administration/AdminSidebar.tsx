@@ -53,7 +53,7 @@ export const AdminSidebar = (props: AdminSidebarProps) => {
             <Flex gap='6px' alignItems='center' h='72px' cursor='pointer' onClick={() => router.push(APP_ROUTES.admin)}>
               <Image src='/constroad.ico' alt='constroad-logo' w='25px' h='25px'/>
               {isExpanded && !isMobile && (
-                <Text fontWeight={600} fontSize={25} >ConstRoad</Text>
+                <Text fontWeight={600} fontSize={18} >ConstRoad</Text>
               )}
             </Flex>
 
@@ -74,7 +74,7 @@ export const AdminSidebar = (props: AdminSidebarProps) => {
             )}
           </Flex>
 
-          <Stack spacing={1}>
+          <Stack spacing={1} mt='10px'>
             {menuOptions?.map((opt, idx) => {
               return (
                 <Box key={idx}>
@@ -145,6 +145,7 @@ export const AdminSidebar = (props: AdminSidebarProps) => {
             md: 'calc(100vh - 72px)'
           }}
           overflowY='scroll'
+          w={isMobile ? 'calc(100vw - 50px)' : ''}
         >
           {children}
         </Flex>

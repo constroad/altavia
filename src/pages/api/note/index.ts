@@ -2,29 +2,29 @@ import { NextApiRequest, NextApiResponse } from 'next';
 import { connectToMongoDB } from 'src/config/mongoose';
 import { NextHandler, createRouter } from "next-connect";
 import { ApiTimeTracker, convertDateMiddleware, onApiError, onApiNoMatch } from 'src/common/utils';
-import { TaskModel, taskValidationSchema } from 'src/models/tasks';
-import { TaskRepository } from 'src/repositories/taskRepository';
+import { NoteModel, noteValidationSchema } from 'src/models/notes';
+import { NoteRepository } from 'src/repositories/noteRepository';
 
 const router = createRouter<NextApiRequest, NextApiResponse>();
 
 const getAll = async (req: NextApiRequest, res: NextApiResponse) => {
-  const taskRepo = new TaskRepository();
+  const noteRepo = new NoteRepository();
   try {
-    const tasks = await taskRepo.getAll();
-    res.status(200).json(tasks);
+    const notes = await noteRepo.getAll();
+    res.status(200).json(notes);
   } catch (error: any) {
     console.error(error.message);
-    res.status(500).json({ message: 'Error getting tasks' });
+    res.status(500).json({ message: 'Error getting notes' });
   }
 }
 
 const addRecord = async (req: NextApiRequest, res: NextApiResponse) => {
-  const newTask = req.body.data as TaskModel
-  const newTaskUpdated = { ...newTask, date: new Date(newTask.date) }
+  const newNote = req.body.data as NoteModel
+  const newNoteUpdated = { ...newNote, date: new Date(newNote.date) }
 
-  const taskRepo = new TaskRepository();
+  const noteRepo = new NoteRepository();
   try {
-    const result = taskValidationSchema.safeParse(newTaskUpdated);
+    const result = noteValidationSchema.safeParse(newNoteUpdated);
 
     if (!result.success) {
       console.log(result.error)
@@ -32,12 +32,12 @@ const addRecord = async (req: NextApiRequest, res: NextApiResponse) => {
       return
     }
 
-    const taskResponse = await taskRepo.create(newTask);
-    res.status(201).json(taskResponse);
+    const noteResponse = await noteRepo.create(newNote);
+    res.status(201).json(noteResponse);
 
   } catch (error: any) {
     console.error(error);
-    res.status(500).json({ message: 'Error when saving task'  });
+    res.status(500).json({ message: 'Error when saving note'  });
   }
 }
 
@@ -54,6 +54,6 @@ router
 
 
 export default router.handler({
-  onError: onApiError('tasks / index'),
+  onError: onApiError('notes / index'),
   onNoMatch: onApiNoMatch
 });

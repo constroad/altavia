@@ -85,18 +85,18 @@ export const administrationTabs = [
     icon: ProductsIcon
   },
   {
-    name: 'Tareas',
-    path: ADMIN_ROUTES.tasks,
-    bgColor: CONSTROAD_COLORS.lightGray,
-    textColor: 'black',
-    icon: TaskIcon
-  },
-  {
     name: 'Servicios',
     path: ADMIN_ROUTES.services,
     bgColor: CONSTROAD_COLORS.darkGray,
     textColor: 'white',
     icon: ServiceIcon
+  },
+  {
+    name: 'Tareas',
+    path: ADMIN_ROUTES.tasks,
+    bgColor: CONSTROAD_COLORS.lightGray,
+    textColor: 'black',
+    icon: TaskIcon
   },
   // {
   //   name: 'Empleados',

@@ -1,7 +1,7 @@
+import React from 'react'
 import { Button, Flex, Text } from '@chakra-ui/react'
 import { signOut, useSession } from 'next-auth/react'
 import { useRouter } from 'next/router'
-import React from 'react'
 import { APP_ROUTES } from 'src/common/consts'
 import { toast } from 'src/components/Toast'
 
@@ -16,7 +16,7 @@ export const AdminNavbar = () => {
   }
 
   return (
-    <Flex width='100%' justifyContent='end' p={{ base: 2, md: 4 }} shadow='md'>
+    <Flex width='100%' justifyContent='end' p={{ base: 2, md: 4 }} shadow='md' minHeight={{ base: '41px', md: '72px' }}>
       {session && (
         <Flex gap='10px' alignItems='center'>
           <Text fontWeight={600} fontSize={{base: 11, md: 14}}>Bienvenido: Admin</Text>

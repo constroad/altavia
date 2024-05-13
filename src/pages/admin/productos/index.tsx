@@ -13,7 +13,7 @@ import {
   Modal,
   toast,
 } from 'src/components'
-import { ADMIN_ROUTES, API_ROUTES } from 'src/common/consts'
+import { API_ROUTES } from 'src/common/consts'
 import { PlusIcon } from 'src/common/icons'
 import axios from 'axios'
 import { useRouter } from 'next/router'
@@ -36,6 +36,7 @@ export const ProductsPage = () => {
   const { run: runAddProduct, isLoading: addingProduct } = useAsync()
   const { run: runEditProduct, isLoading: editingProduct } = useAsync()
   const { run: runDeleteProduct, isLoading: deletingProduct } = useAsync()
+  
   const { isMobile, isDesktop } = useScreenSize()
   const router = useRouter()
   const prevRoute = router.query.prevRoute;

@@ -3,6 +3,8 @@ import React, { createContext, useContext, useState, ReactNode } from 'react';
 interface SidebarContextType {
   isExpanded: boolean;
   toggleSidebar: () => void;
+  daySelectedTask: Date | undefined;
+  setDaySelectedTask: any;
 }
 
 const SidebarContext = createContext<SidebarContextType | undefined>(undefined);
@@ -19,13 +21,15 @@ interface SidebarProviderProps {
   children: ReactNode;
 }
 
+const currentDay = new Date()
 export const SidebarProvider = ({ children }: SidebarProviderProps) => {
   const [isExpanded, setIsExpanded] = useState(true);
+  const [daySelectedTask, setDaySelectedTask] = useState<Date | undefined>(currentDay)
 
   const toggleSidebar = () => setIsExpanded(!isExpanded);
 
   return (
-    <SidebarContext.Provider value={{ isExpanded, toggleSidebar }}>
+    <SidebarContext.Provider value={{ isExpanded, toggleSidebar, daySelectedTask, setDaySelectedTask }}>
       {children}
     </SidebarContext.Provider>
   );

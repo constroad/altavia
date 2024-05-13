@@ -31,6 +31,8 @@ export const ADMIN_ROUTES = {
   dispatch: '/admin/despacho',
   controlFluid: '/admin/control-fluid',
   production: '/admin/produccion',
+  tasks: '/admin/tareas',
+  selectedDayTask: '/admin/tareas/dia-seleccionado',
 }
 
 export const API_ROUTES = {
@@ -45,7 +47,9 @@ export const API_ROUTES = {
   services: '/api/service',
   generateServiceQuotationPDF: '/api/generate-service-quotation-pdf',
   generateQuotationPDF: '/api/generate-quotation-pdf',
-  generateOrderPDF: '/api/generate-purchase-order-pdf'
+  generateOrderPDF: '/api/generate-purchase-order-pdf',
+  task: '/api/task',
+  note: '/api/note',
 }
 
 export const CONSTROAD = {

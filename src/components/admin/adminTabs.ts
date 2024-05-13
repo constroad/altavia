@@ -10,6 +10,7 @@ import {
   ProvidersIcon,
   PurchaseIcon,
   QuoteIcon,
+  TaskIcon,
   ServiceIcon
 } from "src/common/icons";
 import { CONSTROAD_COLORS } from "src/styles/shared";
@@ -29,20 +30,6 @@ export const adminTabs = [
     textColor: 'white',
     icon: QuoteIcon
   },
-  // {
-  //   name: 'Cotizar asfalto',
-  //   path: ADMIN_ROUTES.generateQuotation,
-  //   bgColor: CONSTROAD_COLORS.black,
-  //   textColor: 'white',
-  //   icon: QuoteIcon
-  // },
-  // {
-  //   name: 'Cotizar servicios',
-  //   path: ADMIN_ROUTES.serviceQuote,
-  //   bgColor: CONSTROAD_COLORS.lightGray,
-  //   textColor: 'black',
-  //   icon: QuoteIcon
-  // },
   {
     name: 'Generar orden de compra',
     path: ADMIN_ROUTES.purchaseOrder,
@@ -103,6 +90,13 @@ export const administrationTabs = [
     bgColor: CONSTROAD_COLORS.darkGray,
     textColor: 'white',
     icon: ServiceIcon
+  },
+  {
+    name: 'Tareas',
+    path: ADMIN_ROUTES.tasks,
+    bgColor: CONSTROAD_COLORS.lightGray,
+    textColor: 'black',
+    icon: TaskIcon
   },
   // {
   //   name: 'Empleados',

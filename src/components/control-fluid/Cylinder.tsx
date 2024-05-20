@@ -33,7 +33,7 @@ export const Cylinder = (props: CylinderProps) => {
   const { fluid } = props;
   const { name, volume: volumeOriginal, volumeInStock: volumeInStockOriginal, levelCentimeter, bgColor } = fluid;
 
-  const volume = volumeOriginal - 106
+  const volume = volumeOriginal
 
   const volumeInStock = () => {
     if (name === 'PEN #2' || name === 'PEN #3') {

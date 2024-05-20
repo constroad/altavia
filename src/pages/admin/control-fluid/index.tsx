@@ -4,6 +4,7 @@ import {
   CylinderForm,
   IntranetLayout,
   Modal,
+  PenCalculator,
   toast,
 } from 'src/components';
 import {
@@ -16,7 +17,7 @@ import {
   Text,
   useDisclosure,
 } from '@chakra-ui/react';
-import { PlusIcon } from 'src/common/icons';
+import { CalculatorIcon, PlusIcon } from 'src/common/icons';
 import axios, { AxiosResponse } from 'axios';
 import { useAsync } from 'src/common/hooks';
 import { API_ROUTES } from 'src/common/consts';
@@ -30,6 +31,7 @@ export const ControlFluid = () => {
   const [fluidList, setFluidList] = useState<IFluidValidationSchema[]>([]);
   const [fluidSelected, setFluidSelected] = useState<IFluidValidationSchema>();
   const { isOpen, onOpen, onClose } = useDisclosure();
+  const { isOpen: isOpenCalculator, onOpen: onOpenCalculator, onClose: onCloseCalculator } = useDisclosure();
   const {
     run: runGetAllFluids,
     isLoading,
@@ -38,6 +40,13 @@ export const ControlFluid = () => {
   const { run: runAddFluid, isLoading: addingFluid } = useAsync();
   const { run: runDeleteFluid, isLoading: deletingFluid } = useAsync();
   const { run: runEditFluid, isLoading: editingFluid } = useAsync();
+
+  const penInStock = fluidList.reduce((accumulator, item) => {
+    if (item.name.includes('PEN')) {
+      return accumulator + item.volumeInStock;
+    }
+    return accumulator;
+  }, 0);
 
   useEffect(() => {
     runGetAllFluids(fetcher(API_ROUTES.fluid), {
@@ -78,6 +87,10 @@ export const ControlFluid = () => {
     });
   };
 
+  const handleOpenCalculator = () => {
+    onOpenCalculator()
+  }
+
   if (isLoading) {
     return <Spinner />;
   }
@@ -86,14 +99,27 @@ export const ControlFluid = () => {
   return (
     <IntranetLayout>
       <Flex flexDir="column" gap={5}>
-        <Box width="100%" textAlign="right">
+        <Flex width="100%" justifyContent='right' gap='4px'>
+          <Button
+            size="sm"
+            width={{ base: '80px', md: '200px' }}
+            fontSize={{ base: 10, md: 16 }}
+            padding={{ base: '5px', md: '12px' }}
+            colorScheme="blue"
+            height={{base: "25px", md: "30px"}}
+            gap={2}
+            onClick={handleOpenCalculator}
+          >
+            <Text>Calcular</Text>
+            <CalculatorIcon/>
+          </Button>
           <Button
             size="sm"
             width={{ base: '120px', md: '200px' }}
             fontSize={{ base: 10, md: 16 }}
             padding={{ base: '5px', md: '12px' }}
             colorScheme="blue"
-            height="25px"
+            height={{base: "25px", md: "30px"}}
             gap={2}
             onClick={() => {
               onOpen();
@@ -103,7 +129,7 @@ export const ControlFluid = () => {
             <Text>Agregar Tanque</Text>
             <PlusIcon />
           </Button>
-        </Box>
+        </Flex>
         <Grid templateColumns={{base: "repeat(1, 1fr)", md: "repeat(4, 1fr)"}} gap={6} alignItems="flex-end" as={Flex}>
           {fluidList.map((fluid) => (
             <GridItem key={fluid._id} w="100%" h="fit-content" position="relative">
@@ -130,6 +156,16 @@ export const ControlFluid = () => {
           onSave={handleSave}
           onClose={onClose}
         />
+      </Modal>
+
+      {/* calculator */}
+      <Modal
+        isOpen={isOpenCalculator}
+        onClose={onCloseCalculator}
+        heading='Calculadora de PEN'
+        hideCancelButton
+      >
+        <PenCalculator galonsInStock={penInStock} />
       </Modal>
     </IntranetLayout>
   );

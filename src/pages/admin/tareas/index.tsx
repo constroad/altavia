@@ -370,7 +370,15 @@ export const TasksPage = () => {
         )}
 
         <Flex flexDir={{ base: 'column', md: 'row' }} mt='1px' gap='2px'>
-          <DayCard startDayWeek={startDayWeek} selectedDay={daySelectedTask} onClickDay={handleSelectDateClick} />
+          <DayCard
+            startDayWeek={startDayWeek}
+            selectedDay={daySelectedTask}
+            onClickDay={handleSelectDateClick}
+            tasksDB={tasksDB}
+            notesDB={notesDB}
+            tasksLoading={isLoadingTasks}
+            notesLoading={isLoadingNotes}
+          />
         </Flex>
 
         {isDesktop && (

@@ -28,6 +28,7 @@ const CYLINDER_FACTOR = 53;
 const MAX_GALLONS_CYLINDER = 8042;
 const MAX_CYLINDER_HEIGHT = 150;
 const BG_FLUID = 'yellowgreen';
+
 export const Cylinder = (props: CylinderProps) => {
   const { fluid } = props;
   const { name, volume: volumeOriginal, volumeInStock: volumeInStockOriginal, levelCentimeter, bgColor } = fluid;
@@ -57,11 +58,18 @@ export const Cylinder = (props: CylinderProps) => {
     name === 'ACEITE TÉRMICO' ? '0cm' : '0cm'
 
   const unusedGalons =
-    name === 'PEN# 1' ? 363 :
+    name === 'PEN #1' ? 363 :
     name === 'PEN #2' ? 123 :
     name === 'PEN #3' ? 123 :
     name === 'GASOHOL' ? 1130 :
     name === 'ACEITE TÉRMICO' ? 0 : 0
+
+  const availableGalons = volumeInStock() - unusedGalons
+
+  const cubes =
+    name.includes('PEN') ? +(availableGalons/24).toFixed(2) :
+    name === 'GASOHOL' ? +(availableGalons/2).toFixed(2) :
+    +availableGalons.toFixed(2)
 
   return (
       <Flex
@@ -104,8 +112,11 @@ export const Cylinder = (props: CylinderProps) => {
         <Box position="absolute" fontSize="10px" color="white" top="10px" fontWeight={600}>
           <Text>stock:{volumeInStock().toFixed(2)} gls</Text>
           <Text>No sale ({unusedMaterial}): {unusedGalons} gls</Text>
-          <Text>Para producir:{(volumeInStock() - unusedGalons).toFixed(2)} gls</Text>
-          <Text>nivel:{levelCentimeter}cm</Text>
+          <Text fontWeight={900}>Para producir:{availableGalons.toFixed(2)} gls</Text>
+          {name !== 'ACEITE TÉRMICO' && (
+            <Text fontWeight={900}>Cubos:{cubes < 0 ? 0 : cubes} gls</Text>
+          )}
+          <Text fontWeight={900}>nivel:{levelCentimeter}cm</Text>
         </Box>
         <Text color="gray" fontSize="small">
           {name.toUpperCase()}

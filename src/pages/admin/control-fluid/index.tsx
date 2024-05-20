@@ -41,13 +41,6 @@ export const ControlFluid = () => {
   const { run: runDeleteFluid, isLoading: deletingFluid } = useAsync();
   const { run: runEditFluid, isLoading: editingFluid } = useAsync();
 
-  const penInStock = fluidList.reduce((accumulator, item) => {
-    if (item.name.includes('PEN')) {
-      return accumulator + item.volumeInStock;
-    }
-    return accumulator;
-  }, 0);
-
   useEffect(() => {
     runGetAllFluids(fetcher(API_ROUTES.fluid), {
       refetch: () => runGetAllFluids(fetcher(API_ROUTES.fluid)),
@@ -90,6 +83,28 @@ export const ControlFluid = () => {
   const handleOpenCalculator = () => {
     onOpenCalculator()
   }
+
+  const penToProduce = fluidList.reduce((accumulator, item) => {
+    if (item.name === 'PEN #1') {
+      accumulator += item.volumeInStock - 363
+    } else if (item.name === 'PEN #2' || item.name === 'PEN #3') {
+      if (item.volumeInStock > 683) accumulator += item.volumeInStock - (123)
+      else if (item.volumeInStock > 416) accumulator += item.volumeInStock  - (106 + 123)
+      else if (item.volumeInStock > 192) accumulator += item.volumeInStock - (60 + 123)
+      else if (item.volumeInStock > 33) accumulator += item.volumeInStock - (20 + 123)
+    }
+    return accumulator;
+  }, 0);
+  
+  const penInStock = fluidList.reduce((accumulator, item) => {
+    if (item.name === 'PEN #1') {
+      accumulator += item.volumeInStock
+    } else if (item.name === 'PEN #2' || item.name === 'PEN #3') {
+      accumulator += item.volumeInStock
+    }
+    return accumulator
+  }, 0);
+
 
   if (isLoading) {
     return <Spinner />;
@@ -165,7 +180,7 @@ export const ControlFluid = () => {
         heading='Calculadora de PEN'
         hideCancelButton
       >
-        <PenCalculator galonsInStock={penInStock} />
+        <PenCalculator penInStock={penInStock} penToProduce={penToProduce} />
       </Modal>
     </IntranetLayout>
   );

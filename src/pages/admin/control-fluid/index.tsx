@@ -86,7 +86,7 @@ export const ControlFluid = () => {
 
   const penToProduce = fluidList.reduce((accumulator, item) => {
     if (item.name === 'PEN #1') {
-      accumulator += item.volumeInStock - 363
+      accumulator += item.volumeInStock - (363 + 50)
     } else if (item.name === 'PEN #2' || item.name === 'PEN #3') {
       if (item.volumeInStock > 683) accumulator += item.volumeInStock - (123)
       else if (item.volumeInStock > 416) accumulator += item.volumeInStock  - (106 + 123)

@@ -58,7 +58,7 @@ export const Cylinder = (props: CylinderProps) => {
     name === 'ACEITE TÉRMICO' ? '0cm' : '0cm'
 
   const unusedGalons =
-    name === 'PEN #1' ? 363 :
+    name === 'PEN #1' ? (363 + 50) :
     name === 'PEN #2' ? 123 :
     name === 'PEN #3' ? 123 :
     name === 'GASOHOL' ? 1130 :

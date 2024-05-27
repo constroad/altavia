@@ -1,3 +1,4 @@
+import { AxiosResponse } from 'axios';
 import * as React from 'react'
 import { z } from 'zod';
 export type AsyncStatus = 'idle' | 'resolved' | 'rejected' | 'pending'
@@ -163,7 +164,7 @@ export function useAsync<T>(initialState?: InputActions) {
     setError,
     error,
     status,
-    data: data as T,
+    data: data as AxiosResponse<T>,
     cache,
     run,
     reset,

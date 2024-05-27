@@ -18,11 +18,12 @@ export const orderValidationSchema = z.object({
   fechaProgramacion: z.string(),
   notas: z.string().optional(),
   certificados: z.array(z.object({
+    _id: z.string(),
     url: z.string().optional(),
     fecha: z.string(),
     obra: z.string(),
     empresa: z.string(),
-  })).optional(),
+  })),
   consumos: z.object({
     galonesPEN: z.number(),
     galonesIFO: z.number(),
@@ -45,7 +46,8 @@ export type IOrderValidationSchema = z.infer<typeof orderValidationSchema>
 
 // DB model + schema
 interface ICertificado {
-  fecha: Date;
+  _id: string;
+  fecha: string;
   url?: string;
   obra: string;
   empresa: string;
@@ -77,8 +79,9 @@ export interface OrderModel extends Document {
 }
 
 const CertificadoSchema = new Schema<ICertificado>({
+  _id: { type: String, required: true },
   url: { type: String, required: false },
-  fecha: { type: Date, required: true },
+  fecha: { type: String, required: true },
   obra: { type: String, required: true },
   empresa: { type: String, required: true },
 });

@@ -144,6 +144,7 @@ export const AdminSidebar = (props: AdminSidebarProps) => {
             base: 'calc(100vh - 41px)',
             md: 'calc(100vh - 72px)'
           }}
+          py={2}
           overflowY='scroll'
           w={isMobile ? 'calc(100vw - 50px)' : ''}
         >

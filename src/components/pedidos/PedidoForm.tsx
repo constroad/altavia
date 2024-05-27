@@ -14,6 +14,7 @@ import {
   AccordionItem,
   AccordionPanel,
   Flex,
+  Select,
 } from '@chakra-ui/react';
 import { IOrderValidationSchema } from 'src/models/order';
 import { useEffect, useState } from 'react';
@@ -22,23 +23,22 @@ import { useAsync } from 'src/common/hooks';
 import { API_ROUTES } from 'src/common/consts';
 import { toast } from '../Toast';
 import { OrderStatus } from '../../models/order';
+import { IClientValidationSchema } from 'src/models/client';
+import { AutoComplete, IAutocompleteOptions } from '../autoComplete';
+import { formatISODate } from 'src/utils/general';
+import { AddClient } from './AddClient';
+import { Certificate } from './Certificates';
 
 interface PedidoFormProps {
   order?: IOrderValidationSchema;
   onSuccess?: () => void;
   onClose?: () => void;
 }
+const fetcher = (path: string) => axios.get(path);
 const postOrder = (path: string, data: any) => axios.post(path, { data });
 
-function formatISODate(isoString: string) {
-  const date = new Date(isoString);
-  const year = date.getFullYear();
-  const month = String(date.getMonth() + 1).padStart(2, '0');
-  const day = String(date.getDate()).padStart(2, '0');
-  return `${year}-${month}-${day}`;
-}
-
 export const PedidoForm = (props: PedidoFormProps) => {
+  const [searchClient, setSearchClient] = useState(props.order?.cliente ?? '');
   const [order, setOrder] = useState<IOrderValidationSchema>({
     cliente: '',
     tipoMAC: 'Mac 2',
@@ -64,38 +64,59 @@ export const PedidoForm = (props: PedidoFormProps) => {
     if (props.order) {
       setOrder({
         ...props.order,
-        fechaProgramacion: props.order.fechaProgramacion.split("T")[0],
+        fechaProgramacion: props.order.fechaProgramacion.split('T')[0],
       });
     }
   }, [props.order]);
+
+  // API
+  const {
+    run: runGetClients,
+    isLoading: loadingClients,
+    data: clientResponse,
+    refetch,
+  } = useAsync<IClientValidationSchema[]>();
   const { run: runAddOrder, isLoading: addingOrder } = useAsync();
   const { run: runUpdateOrder, isLoading: updatingOrder } = useAsync();
 
+  useEffect(() => {
+    runGetClients(fetcher(API_ROUTES.client), {
+      refetch: () => runGetClients(fetcher(API_ROUTES.client)),
+    });
+  }, []);
+
   const handleChange = (e: any) => {
     const { name, value } = e.target;
-    let dateValue = order.fechaProgramacion
-    if (name === "fechaProgramacion" && value) {
-      dateValue = value
+    let dateValue = order.fechaProgramacion;
+    if (name === 'fechaProgramacion' && value) {
+      dateValue = value;
     }
     setOrder({
       ...order,
       [name]: value,
-      "fechaProgramacion": dateValue
+      fechaProgramacion: dateValue,
     });
   };
 
   const handleNumberChange = (name: string, value: string) => {
     let totalPedido = '';
+    let montoPorCobrar = '';
     let totalPedidoValue = 0;
+    let totalMontoCobrar = 0;
 
     if (name === 'cantidadCubos' || name === 'precioCubo') {
       totalPedido = 'totalPedido';
       totalPedidoValue = order.cantidadCubos * order.precioCubo;
     }
+    if (name === 'montoAdelanto') {
+      montoPorCobrar = 'montoPorCobrar';
+      totalMontoCobrar = order.totalPedido - Number(value);
+    }
     setOrder({
       ...order,
-      [name]: parseFloat(value),
+      [name]: parseFloat(value || '0'),
       [totalPedido]: totalPedidoValue,
+      [montoPorCobrar]: totalMontoCobrar,
     });
   };
   const handleObjectChange = (name: string, value: any) => {
@@ -108,6 +129,10 @@ export const PedidoForm = (props: PedidoFormProps) => {
   const handleSubmit = (e: any) => {
     e.preventDefault();
     const { _id, ...payload } = order;
+    if (!order.cliente) {
+      toast.warning('Selecciona un cliente');
+      return;
+    }
 
     if (_id) {
       const path = `${API_ROUTES.order}/${_id}`;
@@ -135,23 +160,72 @@ export const PedidoForm = (props: PedidoFormProps) => {
       },
     });
   };
+  const handleSelectClient = (option: IAutocompleteOptions) => {
+    setSearchClient(option.label);
+    setOrder({
+      ...order,
+      clienteId: option.value,
+      cliente: option.label,
+    });
+  };
 
+  const clientList = clientResponse?.data ?? [];
+  const clientFildsToFilter = ['name', 'ruc', 'alias'];
+
+  console.log('order', order);
+
+  // Renders
   return (
     <Box as="form" onSubmit={handleSubmit}>
-      <Stack spacing={4}>
+      <Stack spacing={2}>
         <FormControl>
-          <FormLabel>Cliente</FormLabel>
-          <Input name="cliente" value={order.cliente} onChange={handleChange} />
+          <FormLabel>Cliente *</FormLabel>
+          <AutoComplete
+            isLoading={loadingClients}
+            placeholder="Buscar cliente por nombre, alias o RUC"
+            value={searchClient ?? ''}
+            onChange={(value) => setSearchClient(value)}
+            onSelect={handleSelectClient}
+            options={clientList
+              .filter((client: any) => {
+                return clientFildsToFilter.some((property) => {
+                  const value = client[property] as string;
+                  const searchValue = value?.toLowerCase();
+                  return searchValue?.includes(searchClient.toLowerCase());
+                });
+              })
+              .map((client) => ({
+                label: client.name,
+                value: client._id ?? '',
+              }))}
+            renderNoFound={() => (
+              <AddClient
+                onSuccess={() => {
+                  refetch();
+                  setSearchClient('');
+                }}
+              />
+            )}
+          />
         </FormControl>
         <Flex>
           <FormControl>
             <FormLabel>Tipo de MAC</FormLabel>
-            <Input
-              type="text"
+            <Select
               name="tipoMAC"
-              value={order.tipoMAC}
-              onChange={handleChange}
-            />
+              placeholder="Selecciona"
+              defaultValue="Mac 2"
+              onChange={(e) => {
+                setOrder({
+                  ...order,
+                  tipoMAC: e.target.value,
+                });
+              }}
+            >
+              <option value="Mac 1">Mac 1</option>
+              <option value="Mac 2">Mac 2</option>
+              <option value="Mac 3">Mac 3</option>
+            </Select>
           </FormControl>
           <FormControl>
             <FormLabel>Fecha</FormLabel>
@@ -165,7 +239,7 @@ export const PedidoForm = (props: PedidoFormProps) => {
         </Flex>
 
         <FormControl as={Flex}>
-          <FormLabel width="150px">Precio por Cubo</FormLabel>
+          <FormLabel width="100px">Precio m3</FormLabel>
           <NumberInput
             name="precioCubo"
             value={order.precioCubo}
@@ -175,7 +249,7 @@ export const PedidoForm = (props: PedidoFormProps) => {
           </NumberInput>
         </FormControl>
         <FormControl as={Flex}>
-          <FormLabel width="150px">Cantidad de Cubos</FormLabel>
+          <FormLabel width="100px">Cantidad m3</FormLabel>
           <NumberInput
             name="cantidadCubos"
             value={order.cantidadCubos}
@@ -187,7 +261,7 @@ export const PedidoForm = (props: PedidoFormProps) => {
           </NumberInput>
         </FormControl>
         <FormControl as={Flex}>
-          <FormLabel width="150px">Total del Pedido</FormLabel>
+          <FormLabel width="100px">Total S/.</FormLabel>
           <NumberInput
             name="totalPedido"
             value={order.totalPedido}
@@ -198,7 +272,7 @@ export const PedidoForm = (props: PedidoFormProps) => {
         </FormControl>
         <Flex>
           <FormControl>
-            <FormLabel>Monto Adelanto</FormLabel>
+            <FormLabel>Adelanto S/.</FormLabel>
             <NumberInput
               name="montoAdelanto"
               value={order.montoAdelanto}
@@ -210,6 +284,7 @@ export const PedidoForm = (props: PedidoFormProps) => {
           <FormControl>
             <FormLabel>Monto por Cobrar</FormLabel>
             <NumberInput
+              isDisabled
               name="montoPorCobrar"
               value={order.montoPorCobrar}
               onChange={(value) => handleNumberChange('montoPorCobrar', value)}
@@ -218,10 +293,6 @@ export const PedidoForm = (props: PedidoFormProps) => {
             </NumberInput>
           </FormControl>
         </Flex>
-        <FormControl>
-          <FormLabel>Notas</FormLabel>
-          <Textarea name="notas" value={order.notas} onChange={handleChange} />
-        </FormControl>
 
         <Accordion allowMultiple>
           <AccordionItem>
@@ -321,13 +392,29 @@ export const PedidoForm = (props: PedidoFormProps) => {
                 <AccordionIcon />
               </AccordionButton>
             </h2>
-            <AccordionPanel pb={4}></AccordionPanel>
+            <AccordionPanel pb={4}>
+              <Certificate
+                list={order.certificados}
+                onSave={(certificados) => {
+                  setOrder({ ...order, certificados });
+                }}
+              />
+            </AccordionPanel>
           </AccordionItem>
         </Accordion>
 
+        <FormControl>
+          <FormLabel>Notas</FormLabel>
+          <Textarea name="notas" value={order.notas} onChange={handleChange} />
+        </FormControl>
+
         <Flex alignItems="center" width="100%" justifyContent="end" gap={2}>
           <Button onClick={props.onClose}>Cancelar</Button>
-          <Button type="submit" colorScheme="blue" isLoading={addingOrder || updatingOrder}>
+          <Button
+            type="submit"
+            colorScheme="blue"
+            isLoading={addingOrder || updatingOrder}
+          >
             Guardar
           </Button>
         </Flex>

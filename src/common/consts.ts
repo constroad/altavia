@@ -32,6 +32,7 @@ export const ADMIN_ROUTES = {
   controlFluid: '/admin/control-fluid',
   production: '/admin/produccion',
   tasks: '/admin/tareas',
+  orders: '/admin/pedidos',
   selectedDayTask: '/admin/tareas/dia-seleccionado',
 }
 

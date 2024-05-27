@@ -92,6 +92,13 @@ export const administrationTabs = [
     icon: ServiceIcon
   },
   {
+    name: 'Pedidos',
+    path: ADMIN_ROUTES.orders,
+    bgColor: CONSTROAD_COLORS.lightGray,
+    textColor: 'black',
+    icon: TaskIcon
+  },
+  {
     name: 'Tareas',
     path: ADMIN_ROUTES.tasks,
     bgColor: CONSTROAD_COLORS.lightGray,

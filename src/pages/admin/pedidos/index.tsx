@@ -3,7 +3,7 @@ import axios from 'axios';
 import { useEffect, useMemo, useState } from 'react';
 import { API_ROUTES } from 'src/common/consts';
 import { useAsync } from 'src/common/hooks';
-import { AdministrationLayout, Modal, TableComponent, toast } from 'src/components';
+import { Modal, TableComponent, toast, IntranetLayout } from 'src/components';
 import { PedidoForm, generatePedidoColumns } from 'src/components/pedidos';
 import { IOrderValidationSchema } from 'src/models/order';
 
@@ -63,6 +63,11 @@ const Pedidos = () => {
     })
   };
 
+  const handleCloseOrderModal = () => {
+    onClose()
+    setOrderSelected(undefined)
+  }
+
   const columns = generatePedidoColumns();
 
   // Renders
@@ -79,8 +84,8 @@ const Pedidos = () => {
   );
 
   return (
-    <AdministrationLayout>
-      <Flex flexDir="column" width="100%" gap={2}>
+    <IntranetLayout>
+      <Flex flexDir="column" width="100%" gap={2} mt={5}>
         <Flex width="100%" justifyContent="space-between">
           <Text
             fontSize={{ base: 25, md: 36 }}
@@ -115,16 +120,16 @@ const Pedidos = () => {
         </Box>
       </Flex>
 
-      {/* client form modal */}
+      {/* order form modal */}
       <Modal
         hideCancelButton
         isOpen={isOpen}
-        onClose={onClose}
+        onClose={handleCloseOrderModal}
         heading={orderSelected ? 'Editar pedido' : 'Añadir pedido'}
       >
         <PedidoForm
           order={orderSelected}
-          onClose={onClose}
+          onClose={handleCloseOrderModal}
           onSuccess={refetch}
         />
       </Modal>
@@ -136,7 +141,7 @@ const Pedidos = () => {
         heading={`¿Estás seguro de eliminar este Pedido ${orderSelected?.cliente}?`}
         footer={deleteFooter}
       />
-    </AdministrationLayout>
+    </IntranetLayout>
   );
 };
 

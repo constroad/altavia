@@ -143,7 +143,7 @@ export const PedidoForm = (props: PedidoFormProps) => {
           props.onClose?.();
         },
         onError: () => {
-          toast.error('ocurrio un error agregando un pedido');
+          toast.error('ocurrio un error actualizando un pedido');
         },
       });
       return;
@@ -171,8 +171,6 @@ export const PedidoForm = (props: PedidoFormProps) => {
 
   const clientList = clientResponse?.data ?? [];
   const clientFildsToFilter = ['name', 'ruc', 'alias'];
-
-  console.log('order', order);
 
   // Renders
   return (
@@ -249,7 +247,7 @@ export const PedidoForm = (props: PedidoFormProps) => {
           </NumberInput>
         </FormControl>
         <FormControl as={Flex}>
-          <FormLabel width="100px">Cantidad m3</FormLabel>
+          <FormLabel width="100px">Cantidad</FormLabel>
           <NumberInput
             name="cantidadCubos"
             value={order.cantidadCubos}

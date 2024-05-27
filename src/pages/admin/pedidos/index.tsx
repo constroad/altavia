@@ -52,11 +52,6 @@ const Pedidos = () => {
   }, [orderList]);
 
   // handlers
-  const handleSelectOrder = (order: IOrderValidationSchema) => {
-    setOrderSelected(order);
-    onOpen();
-  };
-
   const handleDeleteOrder = () => {
     runDeleteOrder(deleteOrder(`${API_ROUTES.order}/${orderSelected?._id}`), {
       onSuccess: () => {
@@ -68,7 +63,7 @@ const Pedidos = () => {
     })
   };
 
-  const columns = generatePedidoColumns(handleSelectOrder);
+  const columns = generatePedidoColumns();
 
   // Renders
   const deleteFooter = (

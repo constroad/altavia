@@ -154,7 +154,7 @@ export const PedidoForm = (props: PedidoFormProps) => {
             />
           </FormControl>
           <FormControl>
-            <FormLabel>Fecha de Programación</FormLabel>
+            <FormLabel>Fecha</FormLabel>
             <Input
               type="date"
               name="fechaProgramacion"

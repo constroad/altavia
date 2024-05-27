@@ -30,7 +30,7 @@ export interface IAutocompleteOptions {
 export interface IDropdownOptions {
   onClose: () => void
 }
-type IInputProps = Omit<InputProps, 'onChange'>
+type IInputProps = Omit<InputProps, 'onChange'|'placeholder'>
 type AutocompleteProps = {
   isLoading?: boolean
   placeholder: string
@@ -125,7 +125,6 @@ export const AutoComplete = (props: AutocompleteProps) => {
               roundedTop: 6,
               borderColor: 'light-gray-3',
             }}
-            {...props?.inputProps}
           />
           {props.isLoading ? <Spinner /> : props.rightIcon}
         </InputGroup>

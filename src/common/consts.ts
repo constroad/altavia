@@ -43,6 +43,7 @@ export const API_ROUTES = {
   client: '/api/client',
   order: '/api/order',
   transport: '/api/transport',
+  dispatch: '/api/dispatch',
   fluid: '/api/fluid',
   quote: '/api/quotes',
   serviceQuote: '/api/service-quote',

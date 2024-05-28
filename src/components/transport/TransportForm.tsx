@@ -36,7 +36,6 @@ export const TransportForm = (props: TransportFormProps) => {
   );
 
   // API
-
   const { run: runAddTransport, isLoading: addingTransport } = useAsync();
   const { run: runUpdateTransport, isLoading: updatingTransport } = useAsync();
 
@@ -77,13 +76,15 @@ export const TransportForm = (props: TransportFormProps) => {
     });
   };
 
-  console.log('transport', transport);
   return (
-    <Box as="form" onSubmit={handleSubmit}>
+    <Box onSubmit={handleSubmit} fontSize={12}>
       <Stack spacing={2}>
         <FormControl as={Flex}>
-          <FormLabel width="100px">Empresa(*)</FormLabel>
+          <FormLabel width="100px" fontSize="inherit">
+            Empresa(*)
+          </FormLabel>
           <Input
+            size="xs"
             value={transport.company}
             onChange={(e) =>
               setTransport({ ...transport, company: e.target.value })
@@ -91,8 +92,11 @@ export const TransportForm = (props: TransportFormProps) => {
           />
         </FormControl>
         <FormControl as={Flex}>
-          <FormLabel width="100px">Placa(*)</FormLabel>
+          <FormLabel width="100px" fontSize="inherit">
+            Placa(*)
+          </FormLabel>
           <Input
+            size="xs"
             value={transport.plate}
             onChange={(e) =>
               setTransport({ ...transport, plate: e.target.value })
@@ -100,8 +104,11 @@ export const TransportForm = (props: TransportFormProps) => {
           />
         </FormControl>
         <FormControl as={Flex}>
-          <FormLabel width="100px">Conductor</FormLabel>
+          <FormLabel width="100px" fontSize="inherit">
+            Conductor
+          </FormLabel>
           <Input
+            size="xs"
             value={transport.driverName}
             onChange={(e) =>
               setTransport({ ...transport, driverName: e.target.value })
@@ -109,8 +116,11 @@ export const TransportForm = (props: TransportFormProps) => {
           />
         </FormControl>
         <FormControl as={Flex}>
-          <FormLabel width="100px">Licencia</FormLabel>
+          <FormLabel width="100px" fontSize="inherit">
+            Licencia
+          </FormLabel>
           <Input
+            size="xs"
             value={transport.driverCard}
             onChange={(e) =>
               setTransport({ ...transport, driverCard: e.target.value })
@@ -118,8 +128,11 @@ export const TransportForm = (props: TransportFormProps) => {
           />
         </FormControl>
         <FormControl as={Flex}>
-          <FormLabel width="100px">Celular</FormLabel>
+          <FormLabel width="100px" fontSize="inherit">
+            Celular
+          </FormLabel>
           <Input
+            size="xs"
             value={transport.phone}
             onChange={(e) =>
               setTransport({ ...transport, phone: e.target.value })
@@ -128,11 +141,14 @@ export const TransportForm = (props: TransportFormProps) => {
         </FormControl>
 
         <Flex alignItems="center" width="100%" justifyContent="end" gap={2}>
-          <Button onClick={props.onClose}>Cancelar</Button>
+          <Button size="xs" onClick={props.onClose}>
+            Cancelar
+          </Button>
           <Button
-            type="submit"
+            size="xs"
             colorScheme="blue"
             isLoading={addingTransport || updatingTransport}
+            onClick={handleSubmit}
           >
             Guardar
           </Button>

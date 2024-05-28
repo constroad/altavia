@@ -1,106 +1,183 @@
-import React, { useState } from 'react'
-import { Flex, Text } from '@chakra-ui/react'
-import { Dispatch } from 'src/common/types'
-import { DispatchForm, IntranetLayout, TableColumn, TableComponent, initialDispatch } from 'src/components'
+import React, { useEffect, useMemo, useState } from 'react';
+import { Button, Flex, Text, useDisclosure } from '@chakra-ui/react';
+import { IntranetLayout, Modal, TableComponent, toast } from 'src/components';
+import axios from 'axios';
+import { IDispatchValidationSchema } from 'src/models/dispatch';
+import { useAsync } from 'src/common/hooks';
+import { API_ROUTES } from 'src/common/consts';
+import { DispatchForm, generateDispatchColumns } from 'src/components/dispatch';
+import { IClientValidationSchema } from 'src/models/client';
+import { ITransportValidationSchema } from 'src/models/transport';
 
-const mockDispatch: Dispatch[] = [
-  {
-    date: '16/02/24',
-    material: 'MEZCLA ASFÁLTICA',
-    plate: 'AGF858',
-    invoice: 'EG01-3',
-    guide: 'EG07-00001',
-    m3: '20000',
-    client: 'GLOBO FAST',
-    project: 'ICA',
-    carrier: 'CHALIN',
-    price: '480',
-    igv: '3,456.00',
-    total: '22,656.00',
-    paymentDone: 'SI'
-  },
-  {
-    date: '15/02/24',
-    material: 'MEZCLA ASFÁLTICA',
-    plate: 'AGF858',
-    invoice: 'EG01-3',
-    guide: 'EG07-00001',
-    m3: '40',
-    client: 'GLOBO FAST',
-    project: 'ICA',
-    carrier: 'CHALIN',
-    price: '480',
-    igv: '3,456.00',
-    total: '22,656.00',
-    paymentDone: 'SI'
-  },
-  {
-    date: '14/02/24',
-    material: 'MEZCLA ASFÁLTICA',
-    plate: 'AGF858',
-    invoice: 'EG01-3',
-    guide: 'EG07-00001',
-    m3: '40',
-    client: 'GLOBO FAST',
-    project: 'ICA',
-    carrier: 'CHALIN',
-    price: '480',
-    igv: '3,456.00',
-    total: '22,656.00',
-    paymentDone: 'SI'
-  }
-]
+const fetcher = (path: string) => axios.get(path);
+const deleteDispatch = (path: string) => axios.delete(path);
+
+interface IDispatchList extends IDispatchValidationSchema {
+  client: string;
+  clientRuc: string;
+  company: string;
+  plate: string;
+}
 
 const DispatchPage = () => {
-  const [data, setData] = useState(mockDispatch)
-  const [dispatch, setDispatch] = useState<Dispatch>(initialDispatch)
+  const [dispatchSelected, setDispatchSelected] =
+    useState<IDispatchValidationSchema>();
+  const { onClose, isOpen, onOpen } = useDisclosure();
+  const {
+    onClose: onCloseDelete,
+    isOpen: isOpenDelete,
+    onOpen: onOpenDelete,
+  } = useDisclosure();
 
-  const columns: TableColumn[] = [
-    { key: 'date', label: 'Fecha', width: '5%' },
-    { key: 'material', label: 'Material', width: '10%' },
-    { key: 'plate', label: 'Placa', width: '5%' },
-    { key: 'invoice', label: 'Factura', width: '5%' },
-    { key: 'guide', label: 'Guía', width: '10%' },
-    { key: 'm3', label: 'M3', width: '5%' },
-    { key: 'client', label: 'Cliente', width: '10' },
-    { key: 'project', label: 'Obra', width: '5%' },
-    { key: 'carrier', label: 'Transportista', width: '5%' },
-    { key: 'price', label: 'Precio', width: '5%' },
-    { key: 'igv', label: 'IGV', width: '10%' },
-    { key: 'total', label: 'Total a Pagar', width: '10%' },
-    { key: 'paymentDone', label: 'Pagos', width: '5%' },
-  ];
+  // API
+  const {
+    run: runGetDispatchs,
+    data: dispatchResponse,
+    isLoading,
+    refetch,
+  } = useAsync<IDispatchValidationSchema[]>();
+  const {
+    run: runGetClients,
+    data: clientResponse,
+    refetch: refetchClients,
+  } = useAsync<IClientValidationSchema[]>();
+  const {
+    run: runGetTransports,
+    data: responseTransport,
+    refetch: refetchTransport,
+  } = useAsync<ITransportValidationSchema[]>();
+  const { run: runDeleteDispatch, isLoading: deletingDispatch } = useAsync();
 
-  const handleSubmit = (event: { preventDefault: () => void; }) => {
-    event.preventDefault()
-    setData([...data, dispatch])
-    setDispatch(initialDispatch)
-  }
+  useEffect(() => {
+    runGetDispatchs(fetcher(API_ROUTES.dispatch), {
+      refetch: () => runGetDispatchs(fetcher(API_ROUTES.dispatch)),
+    });
 
-  const handleDeleteDispatch = (index: number) => {
-    const updatedData = data.filter((item, idx) => index !== idx)
-    setData(updatedData)
-  }
+    runGetClients(fetcher(API_ROUTES.client), {
+      refetch: () => runGetClients(fetcher(API_ROUTES.client)),
+    });
+
+    runGetTransports(fetcher(API_ROUTES.transport), {
+      refetch: () => runGetTransports(fetcher(API_ROUTES.transport)),
+    });
+  }, []);
+
+  // handlers
+  const handleCloseDispatchModal = () => {
+    onClose();
+    setDispatchSelected(undefined);
+  };
+  const handleDeleteDispatch = () => {
+    runDeleteDispatch(
+      deleteDispatch(`${API_ROUTES.dispatch}/${dispatchSelected?._id}`),
+      {
+        onSuccess: () => {
+          toast.success(
+            `Eliminaste el pedido ${dispatchSelected?.description}`
+          );
+          refetch();
+          refetchTransport();
+          refetchClients();
+          setDispatchSelected(undefined);
+          onCloseDelete();
+        },
+      }
+    );
+  };
+
+  const columns = generateDispatchColumns();
+  const listDispatch = useMemo((): IDispatchList[] => {
+    if (!dispatchResponse) return [];
+
+    return dispatchResponse.data.map((item) => {
+      const transport = responseTransport?.data?.find(
+        (x) => x._id === item.transportId
+      );
+      const client = clientResponse?.data?.find((x) => x._id === item.clientId);
+      return {
+        ...item,
+        client: client?.name ?? '',
+        clientRuc: client?.ruc ?? '',
+        company: transport?.company ?? '',
+        plate: transport?.plate ?? '',
+      };
+    });
+  }, [dispatchResponse, clientResponse, responseTransport]);
+
+  const deleteFooter = (
+    <Button
+      isLoading={deletingDispatch}
+      variant="ghost"
+      autoFocus
+      colorScheme="red"
+      onClick={handleDeleteDispatch}
+    >
+      Confirm
+    </Button>
+  );
 
   return (
     <IntranetLayout>
       <Flex
-        flexDir='column'
-        alignItems={{base: '', md: ''}}
-        marginX='auto'
-        gap='15px'
+        flexDir="column"
+        alignItems={{ base: '', md: '' }}
+        gap="15px"
+        mt={10}
       >
-        <Text fontSize={{ base: 25, md: 30 }} fontWeight={700} color='black' lineHeight={{ base: '28px', md: '39px' }} marginX='auto' marginTop='10px' textAlign='center'>
-          CONTROL DE DESPACHOS
-        </Text>
-        
-        <DispatchForm handleSubmit={handleSubmit} dispatch={dispatch} setter={setDispatch} />
+        <Flex width="100%" justifyContent="space-between">
+          <Text
+            fontSize={{ base: 25, md: 30 }}
+            fontWeight={700}
+            color="black"
+            lineHeight={{ base: '28px', md: '39px' }}
+            marginTop="10px"
+            textAlign="center"
+          >
+            CONTROL DE DESPACHOS
+          </Text>
 
-        <TableComponent data={data} columns={columns} onDelete={handleDeleteDispatch} />
+          <Button autoFocus onClick={onOpen}>
+            Agregar Despacho
+          </Button>
+        </Flex>
+        {isOpen && (
+          <DispatchForm
+            onSuccess={() => {
+              refetch()
+              refetchClients()
+              refetchTransport()
+            }}
+            dispatch={dispatchSelected}
+            onClose={handleCloseDispatchModal}
+          />
+        )}
+
+        <TableComponent
+          isLoading={isLoading}
+          data={listDispatch}
+          columns={columns}
+          onDelete={(item) => {
+            setDispatchSelected(item);
+            onOpenDelete();
+          }}
+          onEdit={(item) => {
+            setDispatchSelected(item);
+            onOpen();
+          }}
+          pagination
+          actions
+        />
       </Flex>
 
+      {/* delete dispatch modal */}
+      <Modal
+        isOpen={isOpenDelete}
+        onClose={onCloseDelete}
+        heading={`¿Estás seguro de eliminar este Pedido ${dispatchSelected?.description}?`}
+        footer={deleteFooter}
+      />
     </IntranetLayout>
-  )
-}
+  );
+};
 
-export default DispatchPage
+export default DispatchPage;

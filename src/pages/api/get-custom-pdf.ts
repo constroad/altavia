@@ -5,7 +5,7 @@ import fs from 'fs';
 import path from 'path';
 import puppeteer from 'puppeteer';
 
-import { htmlBlankPage, htmlCotizacionServicioPage1, htmlCotizacionServicioPage2, htmlCotizacionServicioPage2NoIGV } from 'src/components';
+import { htmlBlankPage, htmlCotizacionServicioPage1, htmlCotizacionServicioPage2, htmlCotizacionServicioPage2NoIGV, htmlDispatchNote } from 'src/components';
 import { htmlCotizacionNoIGV } from 'src/components/templates/htmlCotizacionNoIGV';
 
 export default async (req: NextApiRequest, res: NextApiResponse) => {
@@ -23,7 +23,8 @@ export default async (req: NextApiRequest, res: NextApiResponse) => {
     
     // const htmlTemplate = htmlCotizacionServicioPage1(base64bg, base64Logo)    //generate service quote page 1    
     // const htmlTemplate = htmlCotizacionServicioPage2(base64bg, base64Logo)    //generate service quote page 2 
-    const htmlTemplate = htmlCotizacionServicioPage2NoIGV(base64bg, base64Logo)    //generate service quote page 2 
+    // const htmlTemplate = htmlCotizacionServicioPage2NoIGV(base64bg, base64Logo)    //generate service quote page 2
+    const htmlTemplate = htmlDispatchNote(base64Logo)
 
     
     // Lanza un navegador headless
@@ -36,7 +37,11 @@ export default async (req: NextApiRequest, res: NextApiResponse) => {
     await page.setContent(htmlTemplate);
 
     // Genera el PDF
-    const pdfBuffer = await page.pdf({ format: 'A4', printBackground: true });
+    const pdfBuffer = await page.pdf({
+      width: '210mm',
+      height: '148mm',
+      printBackground: true,
+    });
 
     // Cierra el navegador
     await browser.close();

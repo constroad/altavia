@@ -32,6 +32,8 @@ export const ADMIN_ROUTES = {
   controlFluid: '/admin/control-fluid',
   production: '/admin/produccion',
   tasks: '/admin/tareas',
+  orders: '/admin/pedidos',
+  transports: '/admin/transports',
   selectedDayTask: '/admin/tareas/dia-seleccionado',
 }
 
@@ -39,6 +41,9 @@ export const API_ROUTES = {
   sendEmail: '/api/sendEmail',
   generatePDF: '/api/generate-pdf',
   client: '/api/client',
+  order: '/api/order',
+  transport: '/api/transport',
+  dispatch: '/api/dispatch',
   fluid: '/api/fluid',
   quote: '/api/quotes',
   serviceQuote: '/api/service-quote',

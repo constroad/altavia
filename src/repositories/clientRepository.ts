@@ -4,7 +4,7 @@ export class ClientRepository {
 
   async getAll(): Promise<ClientModel[]> {
     try {
-      const clients = await Client.find({});
+      const clients = await Client.find({}).sort({ createdAt: -1 })
       return clients;
     } catch (error) {
       console.error('Error getting clients:', error);

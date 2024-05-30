@@ -38,17 +38,15 @@ export const adminTabs = [
     icon: PurchaseIcon
   },
   {
-    name: 'Producción',
-    // path: ADMIN_ROUTES.production,
-    path: null,
+    name: 'Pedidos',
+    path: ADMIN_ROUTES.orders,
     bgColor: CONSTROAD_COLORS.black,
     textColor: 'white',
     icon: ProductionIcon
   },
   {
     name: 'Despacho',
-    // path: ADMIN_ROUTES.dispatch,
-    path: null,
+    path: ADMIN_ROUTES.dispatch,
     bgColor: CONSTROAD_COLORS.yellow,
     textColor: 'black',
     icon: DispatchIcon
@@ -85,11 +83,11 @@ export const administrationTabs = [
     icon: ProductsIcon
   },
   {
-    name: 'Servicios',
-    path: ADMIN_ROUTES.services,
-    bgColor: CONSTROAD_COLORS.darkGray,
-    textColor: 'white',
-    icon: ServiceIcon
+    name: 'Pedidos',
+    path: ADMIN_ROUTES.orders,
+    bgColor: CONSTROAD_COLORS.lightGray,
+    textColor: 'black',
+    icon: ProductionIcon
   },
   {
     name: 'Tareas',
@@ -98,12 +96,11 @@ export const administrationTabs = [
     textColor: 'black',
     icon: TaskIcon
   },
-  // {
-  //   name: 'Empleados',
-  //   // path: ADMIN_ROUTES.administration.employees,
-  //   path: null,
-  //   bgColor: CONSTROAD_COLORS.lightGray,
-  //   textColor: 'black',
-  //   icon: EmployeesIcon
-  // },
+  {
+    name: 'Transportes',
+    path: ADMIN_ROUTES.transports,
+    bgColor: CONSTROAD_COLORS.lightGray,
+    textColor: 'black',
+    icon: DispatchIcon
+  },
 ]

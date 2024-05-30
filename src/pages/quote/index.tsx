@@ -1,5 +1,5 @@
 import { Box, Button, Flex, Spinner, Text } from '@chakra-ui/react';
-import axios, { AxiosResponse } from 'axios';
+import axios from 'axios';
 import { useRouter } from 'next/router';
 import { useEffect } from 'react';
 import { API_ROUTES, APP_ROUTES } from 'src/common/consts';
@@ -16,7 +16,7 @@ const Quotes = (props: QuotesProps) => {
   const router = useRouter();
 
   const { run, isLoading, data, refetch } =
-    useAsync<AxiosResponse<IQuoteValidationSchema[]>>();
+    useAsync<IQuoteValidationSchema[]>();
   const { run: runDelete, isLoading: isDeleting } = useAsync();
 
   useEffect(() => {

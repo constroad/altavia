@@ -50,11 +50,11 @@ export const TableComponent = (props: Props) => {
         <Thead h={{ base: '32px', md: 'auto' }}>
           <Tr fontSize={10}>
             {columns.map(column => (
-              <Th key={column.key} background={CONSTROAD_COLORS.bgPDF} color='white' textAlign='start' padding={{ base: 1, md: 2}} fontSize={{ base: 10, md: 12 }}>
+              <Th key={column.key} background={column.bgColor ?? CONSTROAD_COLORS.black} color='white' textAlign='start' padding={{ base: 1, md: 2}} fontSize={{ base: 10, md: 12 }}>
                 {column.label}
               </Th>
             ))}
-            <Th background={CONSTROAD_COLORS.bgPDF} color='white' textAlign='center' padding={{ base: 1, md: 2}} width='5%' fontSize={{ base: 10, md: 12 }}>
+            <Th background={CONSTROAD_COLORS.black} color='white' textAlign='center' padding={{ base: 1, md: 2}} width='5%' fontSize={{ base: 10, md: 12 }}>
               Acciones
             </Th>
           </Tr>

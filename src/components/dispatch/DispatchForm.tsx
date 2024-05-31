@@ -424,7 +424,7 @@ export const DispatchForm = (props: DispathFormProps) => {
               onSelect={handleSelectTransport}
               options={transportList
                 .filter((list: any) => {
-                  return ['company', 'plate'].some((property) => {
+                  return ['company', 'driverName', 'plate'].some((property) => {
                     const value = list[property] as string;
                     const searchValue = value?.toLowerCase();
                     return searchValue?.includes(
@@ -433,7 +433,7 @@ export const DispatchForm = (props: DispathFormProps) => {
                   });
                 })
                 .map((item) => ({
-                  label: `${item.company}-${item.plate}`,
+                  label: `${item.company}-${item.driverName}-${item.plate}`,
                   value: item._id ?? '',
                 }))}
               renderNoFound={() => (
@@ -473,7 +473,6 @@ export const DispatchForm = (props: DispathFormProps) => {
                 lineHeight="14px"
                 height="32px"
                 type="text"
-                required
                 onChange={(e) =>
                   setDispatch({
                     ...dispatch,

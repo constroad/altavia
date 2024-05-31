@@ -35,9 +35,9 @@ export const DayCard = (props: DayCardProps) => {
         alignItems="start"
         borderWidth="1px"
         borderColor='gray.400'
-        p="2"
-        h='70px'
-        minH='70px'
+        p="1.5"
+        h='50px'
+        minH='50px'
         borderRadius="md"
         cursor="pointer"
         onClick={() => onClickDay(day)}
@@ -67,7 +67,7 @@ export const DayCard = (props: DayCardProps) => {
               <CircularProgress
                 isIndeterminate
                 color="white"
-                size="15px"
+                size="10px"
                 thickness="10px"
                 trackColor="green.500"              
               /> :

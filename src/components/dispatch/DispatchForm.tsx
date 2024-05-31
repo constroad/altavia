@@ -7,9 +7,10 @@ import {
   Input,
   NumberInput,
   NumberInputField,
-  Textarea,
   Text,
+  Textarea,
   Switch,
+  useDisclosure,
 } from '@chakra-ui/react';
 import axios, { AxiosResponse } from 'axios';
 import React, { useEffect, useState } from 'react';
@@ -24,11 +25,16 @@ import { ITransportValidationSchema } from 'src/models/transport';
 import { toast } from '../Toast';
 import { AddTransport } from './AddTransport';
 import { IOrderValidationSchema } from 'src/models/order';
+import { getDate } from 'src/common/utils';
+import { DownloadIcon } from 'src/common/icons';
+import { DispatchNotePDFType } from './utils';
+import { Modal } from '../Modal';
 
 interface DispathFormProps {
   dispatch?: IDispatchValidationSchema;
   onSuccess: () => void;
   onClose: () => void;
+  dispatchList: any;
 }
 
 const defaultValue: IDispatchValidationSchema = {
@@ -40,7 +46,7 @@ const defaultValue: IDispatchValidationSchema = {
   guia: '',
   obra: '',
   quantity: 0,
-  price: 0,
+  price: 480,
   subTotal: 0,
   igv: 0,
   total: 0,
@@ -60,6 +66,7 @@ export const DispatchForm = (props: DispathFormProps) => {
   const [dispatch, setDispatch] = useState<IDispatchValidationSchema>(
     props.dispatch ?? defaultValue
   );
+  const { isOpen, onOpen, onClose } = useDisclosure();
 
   useEffect(() => {
     if (props.dispatch) {
@@ -197,7 +204,7 @@ export const DispatchForm = (props: DispathFormProps) => {
         onSuccess: () => {
           toast.success('Despacho actualizado con éxito!');
           props.onSuccess?.();
-          props.onClose?.();
+          onOpen()
         },
         onError: () => {
           toast.error('ocurrio un error actualizando un despacho');
@@ -210,12 +217,71 @@ export const DispatchForm = (props: DispathFormProps) => {
       onSuccess: () => {
         toast.success('Despacho añadido con éxito!');
         props.onSuccess?.();
-        props.onClose?.();
+        onOpen();
       },
       onError: () => {
         toast.error('ocurrio un error agregando un Despacho');
       },
     });
+  };
+
+  const handleGenerateDispatchNote = async () => {
+    if (clientSelected && dispatch && transportSelected) {
+      const { slashDate, peruvianTime, currentYear } = getDate();
+      const number = props.dispatchList.data.length + 1;
+      const dispatchNoteNumber = `${currentYear}-${number}`;
+
+      const pdfData: DispatchNotePDFType = {
+        nro: dispatchNoteNumber,
+        date: slashDate,
+        clientName: clientSelected.name,
+        proyect: dispatch.obra || '',
+        material: dispatch.description,
+        amount: dispatch.quantity,
+        plate: transportSelected.plate,
+        transportist:
+          transportSelected.driverName || transportSelected.company || '',
+        hour: peruvianTime,
+        note: dispatch.note || '',
+      };
+
+      const response = await axios.post(
+        API_ROUTES.generateDispatchNotePDF,
+        { pdfData },
+        { responseType: 'arraybuffer' }
+      );
+      const blob = new Blob([response.data], { type: 'application/pdf' });
+      const pdfName = `Despacho_${transportSelected.plate}_${slashDate}.pdf`;
+
+      const pdfUrl = URL.createObjectURL(blob);
+      const link = document.createElement('a');
+      link.href = pdfUrl;
+      link.setAttribute('download', pdfName);
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+
+      sendWhatsAppMessage(dispatch.phoneNumberToSend ?? '');
+
+      onClose()
+      props.onClose()
+      return;
+    }
+    toast.warning('faltan datos');
+  };
+
+  const sendWhatsAppMessage = (phone: string) => {
+    if (!phone) {
+      toast.warning("Ingrese el numero de celular")
+      return
+    }
+    const message = `ConstRoad te envia el vale de despacho
+     - Obra: ${dispatch.obra}
+     - Nro Cubos: ${dispatch.quantity}
+    `;
+    const url = `https://api.whatsapp.com/send?phone=51${phone}&text=${message}`;
+    const win = window.open(url, '_blank');
+    win?.focus();
   };
 
   return (
@@ -604,10 +670,11 @@ export const DispatchForm = (props: DispathFormProps) => {
           />
         </Box>
       </Flex>
-      <Box mt="10px" gap={2} as={Flex}>
+
+      <Box mt="10px" gap={2} as={Flex} justifyContent="end">
         <Button
           loadingText="Enviando"
-          size={{ base: 'sm' }}
+          size="sm"
           onClick={() => {
             setDispatch(defaultValue);
             props.onClose();
@@ -620,11 +687,60 @@ export const DispatchForm = (props: DispathFormProps) => {
           isLoading={addingDispatch || updatingDispatch}
           loadingText="Enviando"
           colorScheme="blue"
-          size={{ base: 'sm' }}
+          size="sm"
         >
           Guardar
         </Button>
+
+        {props.dispatch?._id && (
+          <Button
+            size="sm"
+            colorScheme="blue"
+            onClick={handleGenerateDispatchNote}
+          >
+            <DownloadIcon fontSize={20} />
+            <Text ml="5px">Vale</Text>
+          </Button>
+        )}
       </Box>
+
+      {/* order form modal */}
+      <Modal
+        hideCancelButton
+        isOpen={isOpen}
+        onClose={onClose}
+        heading="Imprimir vale"
+      >
+        <>
+          <FormLabel mb="6px" fontSize={{ base: 12 }}>
+            Celular
+          </FormLabel>
+          <Input
+            px={{ base: '5px', md: '3px' }}
+            fontSize={{ base: 12 }}
+            lineHeight="14px"
+            height="32px"
+            type="text"
+            required
+            onChange={(e) =>
+              setDispatch({
+                ...dispatch,
+                phoneNumberToSend: e.target.value,
+              })
+            }
+            value={dispatch?.phoneNumberToSend}
+          />
+
+          <Button
+            size="sm"
+            colorScheme="blue"
+            onClick={handleGenerateDispatchNote}
+          >
+            <DownloadIcon fontSize={20} />
+            <Text ml="5px">Descargar</Text>
+          </Button>
+        </>
+      </Modal>
     </Box>
   );
 };

@@ -53,6 +53,7 @@ export const API_ROUTES = {
   generateServiceQuotationPDF: '/api/generate-service-quotation-pdf',
   generateQuotationPDF: '/api/generate-quotation-pdf',
   generateOrderPDF: '/api/generate-purchase-order-pdf',
+  generateDispatchNotePDF: '/api/generate-dispatch-note-pdf',
   task: '/api/task',
   note: '/api/note',
 }
@@ -97,5 +98,9 @@ export const PDF_TEMPLATE = {
   blankPage: {
     path: 'public/templates/cotizacion-servicio',
     filename: 'plantilla_blank_page.pdf'
+  },
+  dispatchNote: {
+    path: 'public/templates/dispatch-note',
+    filename: 'plantilla_dispatch_note.pdf'
   }
 }

@@ -151,6 +151,7 @@ const DispatchPage = () => {
             }}
             dispatch={dispatchSelected}
             onClose={handleCloseDispatchModal}
+            dispatchList={dispatchResponse}
           />
         )}
 

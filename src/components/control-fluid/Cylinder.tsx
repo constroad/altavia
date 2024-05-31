@@ -110,8 +110,8 @@ export const Cylinder = (props: CylinderProps) => {
           </Box>
         </Tooltip>
         <Box position="absolute" fontSize="10px" color="white" top="10px" fontWeight={600}>
-          <Text>stock:{volumeInStock().toFixed(2)} gls</Text>
-          <Text>No sale ({unusedMaterial}): {unusedGalons} gls</Text>
+          {/* <Text>stock:{volumeInStock().toFixed(2)} gls</Text> */}
+          {/* <Text>No sale ({unusedMaterial}): {unusedGalons} gls</Text> */}
           <Text fontWeight={900}>Para producir:{availableGalons.toFixed(2)} gls</Text>
           {name !== 'ACEITE TÉRMICO' && (
             <Text fontWeight={900}>Cubos:{cubes < 0 ? 0 : cubes} m3</Text>

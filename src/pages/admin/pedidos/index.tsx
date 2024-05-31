@@ -24,7 +24,7 @@ const Pedidos = () => {
 
   // API
   const {
-    run: runGetClients,
+    run: runGetOrders,
     isLoading,
     refetch,
   } = useAsync({
@@ -35,9 +35,8 @@ const Pedidos = () => {
   const { run: runDeleteOrder, isLoading: deletingOrder } = useAsync();
 
   useEffect(() => {
-    runGetClients(fetcher(API_ROUTES.order), {
-      refetch: () => runGetClients(fetcher(API_ROUTES.order)),
-      cacheKey: API_ROUTES.order,
+    runGetOrders(fetcher(API_ROUTES.order), {
+      refetch: () => runGetOrders(fetcher(API_ROUTES.order)),
     });
   }, []);
 

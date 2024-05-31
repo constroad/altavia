@@ -37,16 +37,16 @@ export const Certificate = (props: CertificateProps) => {
       setCertificates(listUpdated);
       props.onSave?.(listUpdated);
       onClose();
-      setCertificateSelected(undefined)
+      setCertificateSelected(undefined);
       return;
     }
-    
+
     // new
     const newList = [...certificates];
     newList.push(item);
     setCertificates([...newList]);
     props.onSave?.([...newList]);
-    setCertificateSelected(undefined)
+    setCertificateSelected(undefined);
     onClose();
   };
 
@@ -90,12 +90,14 @@ export const Certificate = (props: CertificateProps) => {
                 </Box>
                 <Flex gap={2}>
                   <Button
+                    size="xs"
                     variant="link"
                     onClick={() => handleSelectCertificate(item)}
                   >
                     Editar
                   </Button>
                   <Button
+                    size="xs"
                     variant="link"
                     onClick={() => handleDeleteCertificate(item)}
                   >

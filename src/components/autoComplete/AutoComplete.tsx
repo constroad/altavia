@@ -120,6 +120,8 @@ export const AutoComplete = (props: AutocompleteProps) => {
             borderRadius={openResultBox ? 0 : 6}
             onKeyDown={onKeyDown}
             aria-label="search"
+            size={props.inputProps?.size ?? "sm"}
+            // {...props.inputProps}
             _focus={{
               ring: 'none',
               roundedTop: 6,

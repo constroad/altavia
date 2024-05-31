@@ -122,7 +122,7 @@ const DispatchPage = () => {
         flexDir="column"
         alignItems={{ base: '', md: '' }}
         gap="15px"
-        mt={10}
+        mt={5}
       >
         <Flex width="100%" justifyContent="space-between">
           <Text
@@ -136,37 +136,41 @@ const DispatchPage = () => {
             CONTROL DE DESPACHOS
           </Text>
 
-          <Button autoFocus onClick={onOpen}>
-            Agregar Despacho
-          </Button>
+          {!isOpen && (
+            <Button autoFocus onClick={onOpen}>
+              Agregar Despacho
+            </Button>
+          )}
         </Flex>
         {isOpen && (
           <DispatchForm
             onSuccess={() => {
-              refetch()
-              refetchClients()
-              refetchTransport()
+              refetch();
+              refetchClients();
+              refetchTransport();
             }}
             dispatch={dispatchSelected}
             onClose={handleCloseDispatchModal}
           />
         )}
 
-        <TableComponent
-          isLoading={isLoading}
-          data={listDispatch}
-          columns={columns}
-          onDelete={(item) => {
-            setDispatchSelected(item);
-            onOpenDelete();
-          }}
-          onEdit={(item) => {
-            setDispatchSelected(item);
-            onOpen();
-          }}
-          pagination
-          actions
-        />
+        {!isOpen && (
+          <TableComponent
+            isLoading={isLoading}
+            data={listDispatch}
+            columns={columns}
+            onDelete={(item) => {
+              setDispatchSelected(item);
+              onOpenDelete();
+            }}
+            onEdit={(item) => {
+              setDispatchSelected(item);
+              onOpen();
+            }}
+            pagination
+            actions
+          />
+        )}
       </Flex>
 
       {/* delete dispatch modal */}

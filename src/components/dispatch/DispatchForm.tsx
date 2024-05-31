@@ -4,12 +4,12 @@ import {
   Flex,
   FormControl,
   FormLabel,
-  Grid,
-  GridItem,
   Input,
   NumberInput,
   NumberInputField,
   Textarea,
+  Text,
+  Switch,
 } from '@chakra-ui/react';
 import axios, { AxiosResponse } from 'axios';
 import React, { useEffect, useState } from 'react';
@@ -23,6 +23,7 @@ import { API_ROUTES } from 'src/common/consts';
 import { ITransportValidationSchema } from 'src/models/transport';
 import { toast } from '../Toast';
 import { AddTransport } from './AddTransport';
+import { IOrderValidationSchema } from 'src/models/order';
 
 interface DispathFormProps {
   dispatch?: IDispatchValidationSchema;
@@ -35,7 +36,7 @@ const defaultValue: IDispatchValidationSchema = {
   transportId: '',
   clientId: '',
   invoice: '',
-  description: '',
+  description: 'Mezcla asfaltica',
   guia: '',
   obra: '',
   quantity: 0,
@@ -43,7 +44,6 @@ const defaultValue: IDispatchValidationSchema = {
   subTotal: 0,
   igv: 0,
   total: 0,
-  pagado: '',
   note: '',
 };
 const fetcher = (path: string) => axios.get(path);
@@ -51,6 +51,8 @@ const postDisptach = (path: string, data: any) => axios.post(path, { data });
 const putDisptach = (path: string, data: any) => axios.put(path, data);
 
 export const DispatchForm = (props: DispathFormProps) => {
+  const [igvCheck, setIgvCheck] = useState(false);
+  const [searchOrder, setSearchOrder] = useState('');
   const [clientSelected, setClientSelected] =
     useState<IClientValidationSchema>();
   const [transportSelected, setTransportSelected] =
@@ -59,23 +61,53 @@ export const DispatchForm = (props: DispathFormProps) => {
     props.dispatch ?? defaultValue
   );
 
+  useEffect(() => {
+    if (props.dispatch) {
+      setDispatch(props.dispatch);
+    }
+    if (props.dispatch?.igv) {
+      setIgvCheck(true);
+    }
+  }, [props.dispatch]);
+
   // API
+  const {
+    run: runGetOrders,
+    isLoading: loadingOrders,
+    data: orderResponse,
+  } = useAsync<IOrderValidationSchema[]>();
+
   const {
     run: runGetClients,
     isLoading: loadingClients,
     data: clientResponse,
     refetch,
   } = useAsync<IClientValidationSchema[]>();
+
   const {
     run: runGetTransports,
     isLoading: loadingTransport,
     data: responseTransport,
     refetch: refetchTransport,
   } = useAsync<ITransportValidationSchema[]>();
+
   const { run: runAddDispatch, isLoading: addingDispatch } = useAsync();
   const { run: runUpdateDispatch, isLoading: updatingDispatch } = useAsync();
 
   useEffect(() => {
+    runGetOrders(fetcher(API_ROUTES.order), {
+      refetch: () => runGetClients(fetcher(API_ROUTES.order)),
+      onSuccess: (response: AxiosResponse<IOrderValidationSchema[]>) => {
+        if (props.dispatch?.orderId && response) {
+          setSearchOrder(
+            getOrderSearch(
+              response.data.find((x) => x._id === props.dispatch?.orderId)
+            ) ?? ''
+          );
+        }
+      },
+    });
+
     runGetClients(fetcher(API_ROUTES.client), {
       refetch: () => runGetClients(fetcher(API_ROUTES.client)),
       onSuccess: (response: AxiosResponse<IClientValidationSchema[]>) => {
@@ -102,7 +134,37 @@ export const DispatchForm = (props: DispathFormProps) => {
   const clientList = clientResponse?.data ?? [];
   const clientFildsToFilter = ['name', 'ruc', 'alias'];
   const transportList = responseTransport?.data ?? [];
+  const ordertFildsToFilter = ['cliente', 'fechaProgramacion', 'notas'];
+  const orderList = orderResponse?.data ?? [];
 
+  // Handlers
+  function getOrderSearch(order?: IOrderValidationSchema) {
+    if (!order) return '';
+    return `${order.cliente} - ${order.fechaProgramacion.split('T')[0]} - ${
+      order.cantidadCubos
+    } cubos`;
+  }
+
+  const handleSelectOrder = (option: IAutocompleteOptions) => {
+    const order = orderList.find((x) => x._id === option.value);
+    const client = clientResponse.data.find((x) => x._id === order?.clienteId);
+    if (!order) return;
+    setSearchOrder(getOrderSearch(order));
+    const quantity = order?.cantidadCubos ?? 0;
+    const price = order?.precioCubo ?? 0;
+    setClientSelected(client);
+
+    setDispatch({
+      ...dispatch,
+      orderId: order?._id ?? '',
+      clientId: client?._id ?? '',
+      obra: order?.obra,
+      quantity,
+      price,
+      subTotal: quantity * price,
+      total: quantity * price,
+    });
+  };
   const handleSelectClient = (option: IAutocompleteOptions) => {
     const client = clientList.find((x) => x._id === option.value);
     setClientSelected(client);
@@ -117,6 +179,7 @@ export const DispatchForm = (props: DispathFormProps) => {
     setDispatch({
       ...dispatch,
       transportId: item?._id ?? '',
+      phoneNumberToSend: item?.phone,
     });
   };
 
@@ -156,35 +219,51 @@ export const DispatchForm = (props: DispathFormProps) => {
   };
 
   return (
-    <Box as="form" onSubmit={handleSubmitForm}>
-      <Grid
-        templateColumns={{ base: 'repeat(2, 1fr)', md: 'repeat(10, 1fr)' }}
-        gap={2}
-      >
-        <GridItem colSpan={2}>
-          <FormControl id="material" width={{ base: '', md: '' }} isRequired>
-            <FormLabel mb="6px" fontSize={{ base: 12, md: 14 }}>
-              Material
+    <Box as="form" onSubmit={handleSubmitForm} fontSize={12}>
+      <Box as={Flex} gap={10} alignItems="start" justifyContent="center">
+        <Box width="50%" mb={2} as={Flex} flexDir="column" gap={2}>
+          <FormControl id="payment-done">
+            <FormLabel mb="6px" fontSize={{ base: 12 }}>
+              Fecha
             </FormLabel>
             <Input
               px={{ base: '5px', md: '3px' }}
-              fontSize={{ base: 12, md: 14 }}
+              fontSize={{ base: 12 }}
               lineHeight="14px"
               height="32px"
-              type="text"
-              value={dispatch.description}
-              placeholder="MEZCLA ASFALTICA"
-              onChange={(e) =>
-                setDispatch({ ...dispatch, description: e.target.value })
-              }
+              type="date"
+              value={dispatch.date}
+              onChange={(e) => {
+                setDispatch({ ...dispatch, date: e.target.value });
+              }}
+              placeholder=""
               required
             />
           </FormControl>
-        </GridItem>
-
-        <GridItem colSpan={2}>
-          <FormControl id="client" width={{ base: '', md: '' }} isRequired>
-            <FormLabel mb="6px" fontSize={{ base: 12, md: 14 }}>
+          <Box>
+            <Text>Pedido: (opcional)</Text>
+            <AutoComplete
+              isLoading={loadingOrders}
+              placeholder="Buscar Pedidos por cliente o fecha"
+              value={searchOrder ?? ''}
+              onChange={(value) => setSearchOrder(value)}
+              onSelect={handleSelectOrder}
+              options={orderList
+                .filter((order: any) => {
+                  return ordertFildsToFilter.some((property) => {
+                    const value = order[property] as string;
+                    const searchValue = value?.toLowerCase();
+                    return searchValue?.includes(searchOrder.toLowerCase());
+                  });
+                })
+                .map((order) => ({
+                  label: getOrderSearch(order),
+                  value: order._id ?? '',
+                }))}
+            />
+          </Box>
+          <FormControl id="client" isRequired>
+            <FormLabel mb="6px" fontSize={{ base: 12 }}>
               Cliente
             </FormLabel>
             <AutoComplete
@@ -220,16 +299,33 @@ export const DispatchForm = (props: DispathFormProps) => {
               )}
             />
           </FormControl>
-        </GridItem>
 
-        <GridItem colSpan={1}>
-          <FormControl id="proyect" width={{ base: '', md: '' }}>
-            <FormLabel mb="6px" fontSize={{ base: 12, md: 14 }}>
+          <FormControl id="material" isRequired>
+            <FormLabel mb="6px" fontSize={{ base: 12 }}>
+              Material
+            </FormLabel>
+            <Input
+              px={{ base: '5px', md: '3px' }}
+              fontSize={{ base: 12 }}
+              lineHeight="14px"
+              height="32px"
+              type="text"
+              value={dispatch.description}
+              placeholder="MEZCLA ASFALTICA"
+              onChange={(e) =>
+                setDispatch({ ...dispatch, description: e.target.value })
+              }
+              required
+            />
+          </FormControl>
+
+          <FormControl id="proyect">
+            <FormLabel mb="6px" fontSize={{ base: 12 }}>
               Obra
             </FormLabel>
             <Input
               px={{ base: '5px', md: '3px' }}
-              fontSize={{ base: 12, md: 14 }}
+              fontSize={{ base: 12 }}
               lineHeight="14px"
               height="32px"
               type="text"
@@ -241,70 +337,11 @@ export const DispatchForm = (props: DispathFormProps) => {
               required
             />
           </FormControl>
-        </GridItem>
+        </Box>
 
-        <GridItem colSpan={1}>
-          <FormControl id="plate" width={{ base: '', md: '' }}>
-            <FormLabel mb="6px" fontSize={{ base: 12, md: 14 }}>
-              Placa
-            </FormLabel>
-            <Input
-              px={{ base: '5px', md: '3px' }}
-              fontSize={{ base: 12, md: 14 }}
-              lineHeight="14px"
-              height="32px"
-              type="text"
-              isDisabled
-              placeholder="ABC-123"
-              required
-              value={transportSelected?.plate}
-            />
-          </FormControl>
-        </GridItem>
-
-        <GridItem colSpan={1}>
-          <FormControl id="invoice">
-            <FormLabel mb="6px" fontSize={{ base: 12, md: 14 }}>
-              Factura
-            </FormLabel>
-            <Input
-              px={{ base: '5px', md: '3px' }}
-              fontSize={{ base: 12, md: 14 }}
-              lineHeight="14px"
-              height="32px"
-              type="text"
-              value={dispatch.invoice}
-              onChange={(e) => {
-                setDispatch({ ...dispatch, invoice: e.target.value });
-              }}
-              placeholder="E001-1"
-            />
-          </FormControl>
-        </GridItem>
-
-        <GridItem colSpan={1}>
-          <FormControl id="guide" width={{ base: '', md: '' }}>
-            <FormLabel mb="6px" fontSize={{ base: 12, md: 14 }}>
-              Guia
-            </FormLabel>
-            <Input
-              px={{ base: '5px', md: '3px' }}
-              fontSize={{ base: 12, md: 14 }}
-              lineHeight="14px"
-              height="32px"
-              type="text"
-              value={dispatch.guia}
-              onChange={(e) => {
-                setDispatch({ ...dispatch, guia: e.target.value });
-              }}
-              placeholder="EG01-00001"
-            />
-          </FormControl>
-        </GridItem>
-
-        <GridItem colSpan={2}>
-          <FormControl id="carrier" width={{ base: '', md: '' }} isRequired>
-            <FormLabel mb="6px" fontSize={{ base: 12, md: 14 }}>
+        <Box flex={1}>
+          <FormControl id="carrier" isRequired>
+            <FormLabel mb="6px" fontSize={{ base: 12 }}>
               Transportista
             </FormLabel>
             <AutoComplete
@@ -344,181 +381,233 @@ export const DispatchForm = (props: DispathFormProps) => {
               )}
             />
           </FormControl>
-        </GridItem>
 
-        <GridItem colSpan={1}>
-          <FormControl id="nro-cubos" width={{ base: '', md: '' }}>
-            <FormLabel mb="6px" fontSize={{ base: 12, md: 14 }}>
-              M3:
-            </FormLabel>
-            <Input
-              px={{ base: '5px', md: '3px' }}
-              fontSize={{ base: 12, md: 14 }}
-              lineHeight="14px"
-              height="32px"
-              type="number"
-              value={dispatch.quantity}
-              onChange={(e) => {
-                let quantity = 0;
-                if (e.target.value) {
-                  quantity = Number(e.target.value);
+          <Flex flexDir={{ base: 'column', md: 'row' }}>
+            <FormControl id="plate">
+              <FormLabel mb="6px" fontSize={{ base: 12 }}>
+                Placa
+              </FormLabel>
+              <Input
+                px={{ base: '5px', md: '3px' }}
+                fontSize={{ base: 12 }}
+                lineHeight="14px"
+                height="32px"
+                type="text"
+                required
+                value={transportSelected?.plate}
+              />
+            </FormControl>
+            <FormControl id="phone">
+              <FormLabel mb="6px" fontSize={{ base: 12 }}>
+                Celular
+              </FormLabel>
+              <Input
+                px={{ base: '5px', md: '3px' }}
+                fontSize={{ base: 12 }}
+                lineHeight="14px"
+                height="32px"
+                type="text"
+                required
+                onChange={(e) =>
+                  setDispatch({
+                    ...dispatch,
+                    phoneNumberToSend: e.target.value,
+                  })
                 }
-                const subTotal = dispatch.price * quantity;
-                const total = subTotal + (dispatch.igv ?? 0);
-                setDispatch({ ...dispatch, quantity, subTotal, total });
+                value={dispatch?.phoneNumberToSend}
+              />
+            </FormControl>
+          </Flex>
+
+          <Flex flexDir={{ base: 'column', md: 'row' }}>
+            <FormControl id="invoice">
+              <FormLabel mb="6px" fontSize={{ base: 12 }}>
+                Factura
+              </FormLabel>
+              <Input
+                px={{ base: '5px', md: '3px' }}
+                fontSize={{ base: 12 }}
+                lineHeight="14px"
+                height="32px"
+                type="text"
+                value={dispatch.invoice}
+                onChange={(e) => {
+                  setDispatch({ ...dispatch, invoice: e.target.value });
+                }}
+              />
+            </FormControl>
+
+            <FormControl id="guide">
+              <FormLabel mb="6px" fontSize={{ base: 12 }}>
+                Guia
+              </FormLabel>
+              <Input
+                px={{ base: '5px', md: '3px' }}
+                fontSize={{ base: 12 }}
+                lineHeight="14px"
+                height="32px"
+                type="text"
+                value={dispatch.guia}
+                onChange={(e) => {
+                  setDispatch({ ...dispatch, guia: e.target.value });
+                }}
+              />
+            </FormControl>
+          </Flex>
+
+          <FormControl id="notes">
+            <FormLabel mb="6px" fontSize={{ base: 12 }}>
+              Notas
+            </FormLabel>
+            <Textarea
+              size="xs"
+              name="notas"
+              value={dispatch.note}
+              onChange={(e) => {
+                setDispatch({ ...dispatch, note: e.target.value });
               }}
-              placeholder="1"
-              required
             />
           </FormControl>
-        </GridItem>
+        </Box>
+      </Box>
 
-        <GridItem colSpan={1}>
-          <FormControl id="price" width={{ base: '', md: '' }}>
-            <FormLabel mb="6px" fontSize={{ base: 12, md: 14 }}>
-              Precio
-            </FormLabel>
-            <Input
-              px={{ base: '5px', md: '3px' }}
-              fontSize={{ base: 12, md: 14 }}
-              lineHeight="14px"
-              height="32px"
-              type="number"
-              value={dispatch.price}
-              onChange={(e) => {
-                let price = 0;
-                if (e.target.value) {
-                  price = Number(e.target.value);
-                }
-                const subTotal = dispatch.quantity * price;
-                const total = subTotal + (dispatch.igv ?? 0);
-                setDispatch({ ...dispatch, price, subTotal, total });
-              }}
-              placeholder="480"
-              required
-            />
-          </FormControl>
-        </GridItem>
+      <Flex flexDir="row" flexWrap="wrap" my={2} gap={2}>
+        <FormControl id="nro-cubos" width={{ base: '48%', md: '10%' }}>
+          <FormLabel mb="6px" fontSize={{ base: 12 }}>
+            M3:
+          </FormLabel>
+          <NumberInput
+            fontSize={{ base: 10 }}
+            size="xs"
+            value={dispatch.quantity}
+            onChange={(value) => {
+              let quantity = 0;
+              let igv = 0;
 
-        <GridItem colSpan={1}>
-          <FormLabel mb="6px" fontSize={{ base: 12, md: 14 }}>
+              if (value) {
+                quantity = Number(value);
+              }
+              const subTotal = dispatch.price * quantity;
+              if (igvCheck) {
+                igv = subTotal * 0.18;
+              }
+              const total = subTotal + igv;
+              setDispatch({ ...dispatch, quantity, subTotal, total, igv });
+            }}
+          >
+            <NumberInputField />
+          </NumberInput>
+        </FormControl>
+
+        <FormControl id="price" width={{ base: '48%', md: '10%' }}>
+          <FormLabel mb="6px" fontSize={{ base: 12 }}>
+            Precio
+          </FormLabel>
+          <NumberInput
+            fontSize={{ base: 10 }}
+            size="xs"
+            value={dispatch.price}
+            onChange={(value) => {
+              let price = 0;
+              let igv = 0;
+              if (value) {
+                price = Number(value);
+              }
+              const subTotal = dispatch.quantity * price;
+              if (igvCheck) {
+                igv = subTotal * 0.18;
+              }
+              const total = subTotal + igv;
+              setDispatch({ ...dispatch, price, subTotal, total, igv });
+            }}
+          >
+            <NumberInputField />
+          </NumberInput>
+        </FormControl>
+
+        <FormControl width={{ base: '48%', md: '10%' }}>
+          <FormLabel mb="6px" fontSize={{ base: 12 }}>
             Subtotal
           </FormLabel>
-          <Input
-            px={{ base: '5px', md: '3px' }}
-            fontSize={{ base: 12, md: 14 }}
-            lineHeight="14px"
-            height="32px"
-            type="text"
+          <NumberInput
+            fontSize={{ base: 10 }}
+            size="xs"
             value={dispatch.subTotal}
-            placeholder="0"
-            disabled
-            required
-          />
-        </GridItem>
+            isDisabled
+          >
+            <NumberInputField />
+          </NumberInput>
+        </FormControl>
 
-        <GridItem colSpan={1}>
-          <FormLabel mb="6px" fontSize={{ base: 12, md: 14 }}>
+        <FormControl width={{ base: '48%', md: '10%' }}>
+          <FormLabel mb="6px" fontSize={{ base: 12 }}>
             IGV
           </FormLabel>
           <NumberInput
-            px={{ base: '5px', md: '3px' }}
-            fontSize={{ base: 10, md: 12 }}
-            lineHeight="14px"
-            height="30px"
-            size="sm"
+            fontSize={10}
+            size="xs"
             value={dispatch.igv}
+            isDisabled
             onChange={(value) => {
               let igv = 0;
               if (value) {
                 igv = Number(value);
               }
               const total = dispatch.subTotal + igv;
-              setDispatch({ ...dispatch, igv, total });
+              setDispatch({ ...dispatch, total, igv });
             }}
           >
             <NumberInputField />
           </NumberInput>
-        </GridItem>
+        </FormControl>
 
-        <GridItem colSpan={1}>
-          <FormLabel mb="6px" fontSize={{ base: 12, md: 14 }}>
+        <FormControl width={{ base: '48%', md: '10%' }}>
+          <FormLabel mb="6px" fontSize={{ base: 12 }}>
             Total
           </FormLabel>
           <Input
-            px={{ base: '5px', md: '3px' }}
-            fontSize={{ base: 12, md: 14 }}
-            lineHeight="14px"
-            height="32px"
+            size="xs"
             type="text"
             value={dispatch.total}
             placeholder="subtotal + igv"
             disabled
             required
           />
-        </GridItem>
-
-        <GridItem colSpan={1}>
-          <FormControl id="payment-done" width={{ base: '', md: '' }}>
-            <FormLabel mb="6px" fontSize={{ base: 12, md: 14 }}>
-              Pagos
-            </FormLabel>
-            <Input
-              px={{ base: '5px', md: '3px' }}
-              fontSize={{ base: 12, md: 14 }}
-              lineHeight="14px"
-              height="32px"
-              type="text"
-              value={dispatch.pagado}
-              onChange={(e) => {
-                setDispatch({ ...dispatch, pagado: e.target.value });
-              }}
-              placeholder=""
-            />
-          </FormControl>
-        </GridItem>
-        <GridItem colSpan={1}>
-          <FormControl id="payment-done" width={{ base: '', md: '' }}>
-            <FormLabel mb="6px" fontSize={{ base: 12, md: 14 }}>
-              Fecha
-            </FormLabel>
-            <Input
-              px={{ base: '5px', md: '3px' }}
-              fontSize={{ base: 12, md: 14 }}
-              lineHeight="14px"
-              height="32px"
-              type="date"
-              value={dispatch.date}
-              onChange={(e) => {
-                setDispatch({ ...dispatch, date: e.target.value });
-              }}
-              placeholder=""
-              required
-            />
-          </FormControl>
-        </GridItem>
-      </Grid>
-
-      <GridItem colSpan={2}>
-        <FormControl id="invoice">
-          <FormLabel mb="6px" fontSize={{ base: 12, md: 14 }}>
-            Notas
-          </FormLabel>
-          <Textarea
-            size="xs"
-            name="notas"
-            value={dispatch.note}
-            onChange={(e) => {
-              setDispatch({ ...dispatch, note: e.target.value });
+        </FormControl>
+        <Box
+          alignItems="start"
+          justifyItems="center"
+          as={Flex}
+          flexDir="column"
+          flex={1}
+          gap={2}
+        >
+          <Text>IGV?</Text>
+          <Switch
+            id="isChecked"
+            defaultValue={igvCheck.toString()}
+            flex={1}
+            isChecked={igvCheck}
+            onChange={(value) => {
+              const ivgCheck = value.target.checked;
+              let igvValue = 0;
+              setIgvCheck(ivgCheck);
+              if (ivgCheck) {
+                igvValue = dispatch.subTotal * 0.18;
+              }
+              setDispatch({
+                ...dispatch,
+                igv: igvValue,
+                total: dispatch.subTotal + igvValue,
+              });
             }}
           />
-        </FormControl>
-      </GridItem>
-
+        </Box>
+      </Flex>
       <Box mt="10px" gap={2} as={Flex}>
         <Button
           loadingText="Enviando"
-          size={{ base: 'sm', md: 'md' }}
+          size={{ base: 'sm' }}
           onClick={() => {
             setDispatch(defaultValue);
             props.onClose();
@@ -531,7 +620,7 @@ export const DispatchForm = (props: DispathFormProps) => {
           isLoading={addingDispatch || updatingDispatch}
           loadingText="Enviando"
           colorScheme="blue"
-          size={{ base: 'sm', md: 'md' }}
+          size={{ base: 'sm' }}
         >
           Guardar
         </Button>

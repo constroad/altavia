@@ -8,6 +8,7 @@ export const generatePedidoColumns = (
       label: 'Cliente',
       width: '20%',
     },
+    { key: 'obra', label: 'Obra', width: '15%' },
     { key: 'tipoMAC', label: 'Mac', width: '10%' },
     {
       key: 'fechaProgramacion',

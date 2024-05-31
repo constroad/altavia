@@ -219,6 +219,7 @@ export const PedidoForm = (props: PedidoFormProps) => {
                   tipoMAC: e.target.value,
                 });
               }}
+              size="sm"
             >
               <option value="Mac 1">Mac 1</option>
               <option value="Mac 2">Mac 2</option>
@@ -228,6 +229,7 @@ export const PedidoForm = (props: PedidoFormProps) => {
           <FormControl>
             <FormLabel>Fecha</FormLabel>
             <Input
+              size="sm"
               type="date"
               name="fechaProgramacion"
               value={order.fechaProgramacion}
@@ -236,9 +238,21 @@ export const PedidoForm = (props: PedidoFormProps) => {
           </FormControl>
         </Flex>
 
+        <FormControl as={Flex} flexDir="column">
+          <FormLabel width="100px">Obra</FormLabel>
+          <Input
+            type='text'
+            size="sm"
+            name="obra"
+            value={order.obra}
+            onChange={handleChange}
+          >
+          </Input>
+        </FormControl>
         <FormControl as={Flex}>
           <FormLabel width="100px">Precio m3</FormLabel>
           <NumberInput
+            size="sm"
             name="precioCubo"
             value={order.precioCubo}
             onChange={(value) => handleNumberChange('precioCubo', value)}
@@ -249,6 +263,7 @@ export const PedidoForm = (props: PedidoFormProps) => {
         <FormControl as={Flex}>
           <FormLabel width="100px">Cantidad</FormLabel>
           <NumberInput
+            size="sm"
             name="cantidadCubos"
             value={order.cantidadCubos}
             onChange={(value) => {
@@ -261,6 +276,7 @@ export const PedidoForm = (props: PedidoFormProps) => {
         <FormControl as={Flex}>
           <FormLabel width="100px">Total S/.</FormLabel>
           <NumberInput
+            size="sm"
             name="totalPedido"
             value={order.totalPedido}
             onChange={(value) => handleNumberChange('totalPedido', value)}
@@ -272,6 +288,7 @@ export const PedidoForm = (props: PedidoFormProps) => {
           <FormControl>
             <FormLabel>Adelanto S/.</FormLabel>
             <NumberInput
+              size="sm"
               name="montoAdelanto"
               value={order.montoAdelanto}
               onChange={(value) => handleNumberChange('montoAdelanto', value)}
@@ -283,6 +300,7 @@ export const PedidoForm = (props: PedidoFormProps) => {
             <FormLabel>Monto por Cobrar</FormLabel>
             <NumberInput
               isDisabled
+              size="sm"
               name="montoPorCobrar"
               value={order.montoPorCobrar}
               onChange={(value) => handleNumberChange('montoPorCobrar', value)}
@@ -306,6 +324,7 @@ export const PedidoForm = (props: PedidoFormProps) => {
               <FormControl as={Flex} alignItems="center">
                 <FormLabel width={20}>PEN</FormLabel>
                 <NumberInput
+                  size="sm"
                   name="galonesPEN"
                   value={order.consumos?.galonesPEN}
                   onChange={(value) =>
@@ -321,6 +340,7 @@ export const PedidoForm = (props: PedidoFormProps) => {
               <FormControl as={Flex} alignItems="center">
                 <FormLabel width={20}>IFO</FormLabel>
                 <NumberInput
+                  size="sm"
                   name="galonesPEN"
                   value={order.consumos?.galonesIFO}
                   onChange={(value) =>
@@ -336,6 +356,7 @@ export const PedidoForm = (props: PedidoFormProps) => {
               <FormControl as={Flex} alignItems="center">
                 <FormLabel width={20}>Petroleo</FormLabel>
                 <NumberInput
+                  size="sm"
                   name="galonesPEN"
                   value={order.consumos?.galonesPetroleo}
                   onChange={(value) =>
@@ -351,6 +372,7 @@ export const PedidoForm = (props: PedidoFormProps) => {
               <FormControl as={Flex} alignItems="center">
                 <FormLabel width={20}>M3 Arena</FormLabel>
                 <NumberInput
+                  size="sm"
                   name="galonesPEN"
                   value={order.consumos?.m3Arena}
                   onChange={(value) =>
@@ -366,6 +388,7 @@ export const PedidoForm = (props: PedidoFormProps) => {
               <FormControl as={Flex} alignItems="center">
                 <FormLabel width={20}>M3 Piedra</FormLabel>
                 <NumberInput
+                  size="sm"
                   name="galonesPEN"
                   value={order.consumos?.m3Piedra}
                   onChange={(value) =>

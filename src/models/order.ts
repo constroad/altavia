@@ -17,6 +17,7 @@ export const orderValidationSchema = z.object({
   tipoMAC: z.string(),
   fechaProgramacion: z.string(),
   notas: z.string().optional(),
+  obra: z.string().optional(),
   certificados: z.array(z.object({
     _id: z.string(),
     url: z.string().optional(),
@@ -67,6 +68,7 @@ export interface OrderModel extends Document {
   cotizacionId?: string;
   tipoMAC: string;
   fechaProgramacion: Date;
+  obra?: string;
   notas?: string;
   certificados?: ICertificado[];
   consumos?: IConsumos;
@@ -106,6 +108,7 @@ try {
     tipoMAC: { type: String, required: true },
     fechaProgramacion: { type: Date, required: true },
     notas: { type: String, required: false },
+    obra: { type: String, required: false },
     certificados: { type: [CertificadoSchema], required: false },
     consumos: { type: ConsumosSchema, required: false },
     precioCubo: { type: Number, required: true },

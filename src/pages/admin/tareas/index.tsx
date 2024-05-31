@@ -316,7 +316,7 @@ export const TasksPage = () => {
   return (
     <AdministrationLayout>
       <Box w='100%'>
-        <Flex alignItems="center" justifyContent="space-between" mb='10px'>
+        <Flex alignItems="center" justifyContent="space-between" mb='2px'>
           <Flex flexDir='column'>
             <Text textTransform='capitalize' fontWeight={600} fontSize={{ base: 15, md: 18 }} lineHeight='18px'>
               {currentMonth} {yearOfCurrentWeek}
@@ -357,7 +357,7 @@ export const TasksPage = () => {
           </Flex>
         </Flex>
 
-        {isMobile && (
+        {isDesktop && (
           <Flex gap='50px' fontSize={12} width='100%' justifyContent='start' mt='2px'>
             <Flex alignItems='center'>
               Día actual <Box bg={CONSTROAD_COLORS.lightGray} w='10px' h='10px' ml='5px' border='0.5px solid' />
@@ -369,7 +369,7 @@ export const TasksPage = () => {
           </Flex>
         )}
 
-        <Flex flexDir={{ base: 'column', md: 'row' }} mt='1px' gap='2px'>
+        <Flex flexDir={{ base: 'column', md: 'row' }} mt='1px' gap='10px'>
           <DayCard
             startDayWeek={startDayWeek}
             selectedDay={daySelectedTask}
@@ -382,38 +382,26 @@ export const TasksPage = () => {
         </Flex>
 
         {isDesktop && (
-          <Flex gap='50px' fontSize={12} width='100%' justifyContent='start' mt='2px'>
-            <Flex alignItems='center'>
-              Día actual <Box bg={CONSTROAD_COLORS.lightGray} w='10px' h='10px' ml='5px' border='0.5px solid' />
-            </Flex>
-
-            <Flex alignItems='center'>
-              Día seleccionado <Box bg={CONSTROAD_COLORS.yellow} w='10px' h='10px' ml='5px' border='0.5px solid' />
-            </Flex>
-          </Flex>
-        )}
-
-        {isDesktop && (
-          <Flex flexDir='row' width='100%' justifyContent='space-between' mt='10px'>
+          <Flex flexDir='row' width='100%' justifyContent='space-between' mt='30px'>
             <Flex width='79%' rounded='6px' border='1px solid' borderColor='gray.400' h='450px' flexDir='column'>
-              <Flex fontSize={12} fontWeight={600} bg='gray.600' color='white' roundedTop='5px' px='8px' py='3px' justifyContent='space-between'>
+              <Flex fontSize={12} fontWeight={600} bg='black' color='white' roundedTop='5px' px='8px' py='3px' justifyContent='space-between'>
                 <Flex gap='20px'>
                   <Text>TAREAS ({dayTasks.length})</Text>
-                  <Flex>
+                  {/* <Flex>
                     <Text fontWeight={600} textTransform='lowercase'>{'(' + format(daySelectedTask ?? currentDay, 'EEEE', { locale: es })}</Text>
                     <Text fontWeight={600} ml='5px'>{format(daySelectedTask ?? currentDay, 'dd/MM') + ')'}</Text>
-                  </Flex>
+                  </Flex> */}
                 </Flex>
 
                 <Flex>
-                  <Button maxW='16px' minW='16px' maxH='16px' p={0} colorScheme='gray' rounded='4px' border='0.5px solid black' onClick={onAddTaskClick}>
-                    <PlusIcon fontSize={10}/>
+                  <Button maxH='16px' p={0} colorScheme='gray' rounded='4px' border='0.5px solid black' onClick={onAddTaskClick} fontSize={12} px='4px'>
+                    Añadir tarea <PlusIcon fontSize={10} className='ml-[5px]'/>
                   </Button>
                 </Flex>
               </Flex>
               <Flex gap='10px' mt='5px' py='2px' px='8px'>
                 <Flex flex={1} h='400px' rounded='6px' border='0.5px solid' flexDir='column' gap='4px'>
-                  <Text fontSize={12} fontWeight={600} bg='gray.600' color='white' roundedTop='6px' px='6px'>PENDIENTE</Text>
+                  <Text fontSize={12} fontWeight={600} bg='black' color='white' roundedTop='6px' px='6px'>PENDIENTE</Text>
                   <Flex w='100%' flexDir='column' gap='2px' px='6px' py='2px'>
                     {pendingTasks.map(item => (
                       <Flex key={item.title} fontSize={{ base: 10, md: 12 }} fontWeight={600} px='4px' py='2px' border='0.5px solid' rounded='4px' justifyContent='space-between' alignItems='center'>
@@ -428,11 +416,14 @@ export const TasksPage = () => {
                         </Flex>
                       </Flex>
                     ))}
+                    {pendingTasks.length === 0 && (
+                      <Flex w='100%' justifyContent='center' fontSize={10} h='100px' alignItems='center'>No hay tareas pendientes.</Flex>
+                    )}
                   </Flex>
                 </Flex>
 
                 <Flex flex={1} h='400px' rounded='6px' border='0.5px solid' flexDir='column' gap='4px'>
-                  <Text fontSize={12} fontWeight={600} bg='gray.600' color='white' roundedTop='6px' px='6px'>EN PROGRESO</Text>
+                  <Text fontSize={12} fontWeight={600} bg='black' color='white' roundedTop='6px' px='6px'>EN PROGRESO</Text>
                   <Flex w='100%' flexDir='column' gap='2px' px='6px' py='2px'>
                     {inProgressTasks.map(item => (
                       <Flex key={item.title} fontSize={{ base: 10, md: 12 }} fontWeight={600} px='4px' py='2px' border='0.5px solid' rounded='4px' justifyContent='space-between' alignItems='center'>
@@ -447,11 +438,14 @@ export const TasksPage = () => {
                         </Flex>
                       </Flex>
                     ))}
+                    {inProgressTasks.length === 0 && (
+                      <Flex w='100%' justifyContent='center' fontSize={10} h='100px' alignItems='center'>No hay tareas en progreso.</Flex>
+                    )}
                   </Flex>
                 </Flex>
 
                 <Flex flex={1} h='400px' rounded='6px' border='0.5px solid' flexDir='column' gap='4px'>
-                  <Text fontSize={12} fontWeight={600} bg='gray.600' color='white' roundedTop='6px' px='6px'>TERMINADO</Text>
+                  <Text fontSize={12} fontWeight={600} bg='black' color='white' roundedTop='6px' px='6px'>TERMINADO</Text>
                   <Flex w='100%' flexDir='column' gap='2px' px='6px' py='2px'>
                     {doneTasks.map(item => (
                       <Flex key={item.title} fontSize={{ base: 10, md: 12 }} fontWeight={600} px='4px' py='2px' border='0.5px solid' rounded='4px' justifyContent='space-between' alignItems='center'>
@@ -466,16 +460,19 @@ export const TasksPage = () => {
                         </Flex>
                       </Flex>
                     ))}
+                    {doneTasks.length === 0 && (
+                      <Flex w='100%' justifyContent='center' fontSize={10} h='100px' alignItems='center'>No hay tareas terminadas.</Flex>
+                    )}
                   </Flex>
                 </Flex>
               </Flex>
             </Flex>
             <Flex width='20%' rounded='6px' border='1px solid' borderColor='gray.400' h='450px' flexDir='column'>
-              <Flex fontSize={12} fontWeight={600} roundedTop='5px' bg='gray.600' color='white' width='100%' px='8px' py='3px' justifyContent='space-between'>
+              <Flex fontSize={12} fontWeight={600} roundedTop='5px' bg='black' color='white' width='100%' px='8px' py='3px' justifyContent='space-between'>
                 <Text> NOTAS ({notes.length}) </Text>
                 <Flex>
-                  <Button maxW='16px' minW='16px' maxH='16px' p={0} colorScheme='gray' rounded='4px' border='0.5px solid black' onClick={onAddNoteClick}>
-                    <PlusIcon fontSize={10}/>
+                  <Button fontSize={12} px='4px' maxH='16px' colorScheme='gray' rounded='4px' border='0.5px solid black' onClick={onAddNoteClick}>
+                    Añadir nota <PlusIcon fontSize={10} className='ml-[5px]'/>
                   </Button>
                 </Flex>
               </Flex>

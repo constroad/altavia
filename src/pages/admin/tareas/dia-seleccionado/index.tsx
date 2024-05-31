@@ -327,11 +327,11 @@ export const SelectedDayPage = () => {
         
         <Flex flexDir='row' width='100%' justifyContent='space-between' mt='5px' flexDirection='column' gap='20px'>
           <Flex width='100%' rounded='6px' border='1px solid' borderColor='gray.400' minH='200px' maxH='450px' flexDir='column'>
-            <Flex fontSize={12} fontWeight={600} bg='gray.600' color='white' roundedTop='5px' px='8px' py='3px' justifyContent='space-between'>
+            <Flex fontSize={12} fontWeight={600} bg='black' color='white' roundedTop='5px' px='8px' py='3px' justifyContent='space-between'>
               <Text>TAREAS ({dayTasks.length})</Text>
               <Flex>
-                <Button maxW='16px' minW='16px' maxH='16px' p={0} colorScheme='gray' rounded='4px' border='0.5px solid black' onClick={onAddTaskClick}>
-                  <PlusIcon fontSize={10}/>
+                <Button size='xs' fontSize={10} fontWeight={600} p={0} px='3px' colorScheme='gray' rounded='4px' border='0.5px solid black' onClick={onAddTaskClick} maxH='16px'>
+                  Añadir tarea <PlusIcon fontSize={10} className='ml-[5px]'/>
                 </Button>
               </Flex>
             </Flex>
@@ -339,8 +339,8 @@ export const SelectedDayPage = () => {
             <Flex gap='10px' my='5px' py='2px' px='8px' flexDir='column' maxH='510px'>
 
               <Flex maxH='150px' minH='54px' rounded='6px' border='0.5px solid' flexDir='column'>
-                <Flex width='100%' justifyContent='space-between' alignItems='center' bg='gray.600' roundedTop='6px' px='4px' py='4px' borderBottom='0.5px black solid'>
-                  <Text fontSize={10} fontWeight={600} textAlign='center' color='white'>PENDIENTE ({pendingTasks.length})</Text>
+                <Flex width='100%' justifyContent='space-between' alignItems='center' bg='black' roundedTop='6px' px='4px' py='4px' borderBottom='0.5px black solid'>
+                  <Text fontSize={10} fontWeight={600} textAlign='center' color='white'>PENDIENTES ({pendingTasks.length})</Text>
                 </Flex>
 
                 <Flex flexDir='column' gap='4.5px' mt='4px' px='4px' overflowY='scroll' pb='4px'>
@@ -357,11 +357,14 @@ export const SelectedDayPage = () => {
                       </Flex>
                     </Flex>
                   ))}
+                  {pendingTasks.length === 0 && (
+                    <Flex w='100%' justifyContent='center' fontSize={10} >No hay tareas pendientes.</Flex>
+                  )}
                 </Flex>
               </Flex>
 
               <Flex maxH='150px' minH='54px' rounded='6px' border='0.5px solid' flexDir='column'>
-                <Flex width='100%' justifyContent='space-between' alignItems='center' bg='gray.600' roundedTop='6px' px='4px' py='4px' borderBottom='0.5px solid black'>
+                <Flex width='100%' justifyContent='space-between' alignItems='center' bg='black' roundedTop='6px' px='4px' py='4px' borderBottom='0.5px solid black'>
                   <Text fontSize={10} fontWeight={600} textAlign='center' color='white'>EN PROGRESO ({inProgressTasks.length})</Text>
                 </Flex>
 
@@ -379,12 +382,15 @@ export const SelectedDayPage = () => {
                       </Flex>
                     </Flex>
                   ))}
+                  {inProgressTasks.length === 0 && (
+                    <Flex w='100%' justifyContent='center' fontSize={10} >No hay tareas en progreso.</Flex>
+                  )}
                 </Flex>
               </Flex>
 
               <Flex maxH='150px' minH='54px' rounded='6px' border='0.5px solid' flexDir='column'>
-                <Flex width='100%' justifyContent='space-between' alignItems='center' bg='gray.600' roundedTop='6px' px='4px' py='4px' borderBottom='0.5px solid black'>
-                  <Text fontSize={10} fontWeight={600} textAlign='center' color='white'>TERMINADO ({doneTasks.length})</Text>
+                <Flex width='100%' justifyContent='space-between' alignItems='center' bg='black' roundedTop='6px' px='4px' py='4px' borderBottom='0.5px solid black'>
+                  <Text fontSize={10} fontWeight={600} textAlign='center' color='white'>TERMINADOS ({doneTasks.length})</Text>
                 </Flex>
 
                 <Flex flexDir='column' gap='4.5px' mt='4px' px='4px' overflowY='scroll' pb='4px'>
@@ -401,6 +407,9 @@ export const SelectedDayPage = () => {
                       </Flex>
                     </Flex>
                   ))}
+                  {doneTasks.length === 0 && (
+                    <Flex w='100%' justifyContent='center' fontSize={10} >No hay tareas terminadas.</Flex>
+                  )}
                 </Flex>
               </Flex>
             </Flex>
@@ -408,10 +417,10 @@ export const SelectedDayPage = () => {
           </Flex>
 
           <Flex width='100%' rounded='6px' border='1px solid' borderColor='gray.400' minH='54px' maxH='150px' flexDir='column'>
-            <Flex fontSize={12} fontWeight={600} roundedTop='5px' bg='gray.600' color='white' width='100%' px='4px' py='3px' w='100%' justifyContent='space-between' alignItems='center'>
+            <Flex fontSize={12} fontWeight={600} roundedTop='5px' bg='black' color='white' width='100%' px='4px' py='3px' w='100%' justifyContent='space-between' alignItems='center'>
               <Text>NOTAS ({notes.length})</Text>
-              <Button maxW='16px' minW='16px' maxH='16px' p={0} colorScheme='gray' rounded='4px' onClick={onAddNoteClick}>
-                <PlusIcon fontSize={10}/>
+              <Button size='xs' fontSize={10} fontWeight={600} p={0} px='3px' colorScheme='gray' rounded='4px' onClick={onAddNoteClick} maxH='16px'>
+                Añadir nota <PlusIcon fontSize={10} className='ml-[5px]'/>
               </Button>
             </Flex>
 

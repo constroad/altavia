@@ -1,28 +1,38 @@
 import NextAuth from 'next-auth'
 import CredentialsProvider from 'next-auth/providers/credentials'
+import { NextAuthOptions } from 'next-auth'
 
-export default NextAuth({
+// Helper function to load and parse environment variables
+const parseEnvList = (envVar: string): string[] => {
+  return (process.env[envVar] || '').split(',').map(item => item.trim());
+}
+
+// Load usernames and passwords from environment variables
+const usernames = parseEnvList('USERNAMES');
+const passwords = parseEnvList('PASSWORDS');
+
+const options: NextAuthOptions = {
   providers: [
     CredentialsProvider({
       name: 'Credentials',
       credentials: {
         username: { label: "Username", type: "text" },
-        password: {  label: "Password", type: "password" },
+        password: { label: "Password", type: "password" },
       },
       authorize: async (credentials, req) => {
-        if (
-          credentials &&
-          credentials.username === process.env.USERNAME &&
-          credentials.password === process.env.PASSWORD
-        ) {
-          return { id: '1', name: 'Admin' };
-        } else {
-          return null;
+        if (credentials) {
+          const userIndex = usernames.indexOf(credentials.username);
+          if (userIndex !== -1 && credentials.password === passwords[userIndex]) {
+            return { id: String(userIndex + 1), name: credentials.username };
+          }
         }
+        return null;
       },
     })
   ],
   session: {
     maxAge: 14400, // 8 hours
   },
-})
+}
+
+export default NextAuth(options)

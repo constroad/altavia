@@ -16,6 +16,7 @@ interface IDispatchList extends IDispatchValidationSchema {
   client: string;
   clientRuc: string;
   company: string;
+  driverName: string;
   plate: string;
 }
 
@@ -100,6 +101,7 @@ const DispatchPage = () => {
         clientRuc: client?.ruc ?? '',
         company: transport?.company ?? '',
         plate: transport?.plate ?? '',
+        driverName: transport?.driverName ?? ''
       };
     });
   }, [dispatchResponse, clientResponse, responseTransport]);

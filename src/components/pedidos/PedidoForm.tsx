@@ -107,6 +107,9 @@ export const PedidoForm = (props: PedidoFormProps) => {
     if (name === 'cantidadCubos' || name === 'precioCubo') {
       totalPedido = 'totalPedido';
       totalPedidoValue = order.cantidadCubos * order.precioCubo;
+
+      montoPorCobrar = 'montoPorCobrar';
+      totalMontoCobrar = totalPedidoValue - (order.montoAdelanto ?? 0);
     }
     if (name === 'montoAdelanto') {
       montoPorCobrar = 'montoPorCobrar';

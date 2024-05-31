@@ -151,7 +151,6 @@ export const DispatchForm = (props: DispathFormProps) => {
       order.cantidadCubos
     } cubos`;
   }
-
   const handleSelectOrder = (option: IAutocompleteOptions) => {
     const order = orderList.find((x) => x._id === option.value);
     const client = clientResponse.data.find((x) => x._id === order?.clienteId);
@@ -204,7 +203,7 @@ export const DispatchForm = (props: DispathFormProps) => {
         onSuccess: () => {
           toast.success('Despacho actualizado con éxito!');
           props.onSuccess?.();
-          onOpen()
+          onOpen();
         },
         onError: () => {
           toast.error('ocurrio un error actualizando un despacho');
@@ -227,9 +226,9 @@ export const DispatchForm = (props: DispathFormProps) => {
 
   const handleGenerateDispatchNote = async () => {
     if (clientSelected && dispatch && transportSelected) {
-      const { slashDate, peruvianTime, currentYear } = getDate();
+      const { slashDate, peruvianTime, currentYear, month } = getDate();
       const number = props.dispatchList.data.length + 1;
-      const dispatchNoteNumber = `${currentYear}-${number}`;
+      const dispatchNoteNumber = `${currentYear}${month}-${number}`;
 
       const pdfData: DispatchNotePDFType = {
         nro: dispatchNoteNumber,
@@ -261,10 +260,23 @@ export const DispatchForm = (props: DispathFormProps) => {
       link.click();
       document.body.removeChild(link);
 
+      const path = `${API_ROUTES.dispatch}/${dispatch._id}`;
+      runUpdateDispatch(
+        putDisptach(path, {
+          ...dispatch,
+          nroVale: dispatch.nroVale ?? dispatchNoteNumber,
+        }),
+        {
+          onError: () => {
+            toast.error('ocurrio un error actualizando un despacho');
+          },
+        }
+      );
+
       sendWhatsAppMessage(dispatch.phoneNumberToSend ?? '');
 
-      onClose()
-      props.onClose()
+      onClose();
+      props.onClose();
       return;
     }
     toast.warning('faltan datos');
@@ -272,8 +284,8 @@ export const DispatchForm = (props: DispathFormProps) => {
 
   const sendWhatsAppMessage = (phone: string) => {
     if (!phone) {
-      toast.warning("Ingrese el numero de celular")
-      return
+      toast.warning('Ingrese el numero de celular');
+      return;
     }
     const message = `ConstRoad te envia el vale de despacho
      - Obra: ${dispatch.obra}
@@ -692,11 +704,7 @@ export const DispatchForm = (props: DispathFormProps) => {
         </Button>
 
         {props.dispatch?._id && (
-          <Button
-            size="sm"
-            colorScheme="blue"
-            onClick={handleGenerateDispatchNote}
-          >
+          <Button size="sm" colorScheme="blue" onClick={onOpen}>
             <DownloadIcon fontSize={20} />
             <Text ml="5px">Vale</Text>
           </Button>
@@ -710,25 +718,27 @@ export const DispatchForm = (props: DispathFormProps) => {
         onClose={onClose}
         heading="Imprimir vale"
       >
-        <>
-          <FormLabel mb="6px" fontSize={{ base: 12 }}>
-            Celular
-          </FormLabel>
-          <Input
-            px={{ base: '5px', md: '3px' }}
-            fontSize={{ base: 12 }}
-            lineHeight="14px"
-            height="32px"
-            type="text"
-            required
-            onChange={(e) =>
-              setDispatch({
-                ...dispatch,
-                phoneNumberToSend: e.target.value,
-              })
-            }
-            value={dispatch?.phoneNumberToSend}
-          />
+        <Flex flexDir="column" gap={2}>
+          <Box>
+            <FormLabel mb="6px" fontSize={{ base: 12 }}>
+              Celular
+            </FormLabel>
+            <Input
+              px={{ base: '5px', md: '3px' }}
+              fontSize={{ base: 12 }}
+              lineHeight="14px"
+              height="32px"
+              type="text"
+              required
+              onChange={(e) =>
+                setDispatch({
+                  ...dispatch,
+                  phoneNumberToSend: e.target.value,
+                })
+              }
+              value={dispatch?.phoneNumberToSend}
+            />
+          </Box>
 
           <Button
             size="sm"
@@ -738,7 +748,7 @@ export const DispatchForm = (props: DispathFormProps) => {
             <DownloadIcon fontSize={20} />
             <Text ml="5px">Descargar</Text>
           </Button>
-        </>
+        </Flex>
       </Modal>
     </Box>
   );

@@ -1,4 +1,4 @@
-import { Flex, Text } from '@chakra-ui/react';
+import { Box, Flex, Text } from '@chakra-ui/react';
 import { TableColumn } from '../Table';
 import { CONSTROAD_COLORS } from 'src/styles/shared';
 
@@ -12,8 +12,10 @@ export const generateDispatchColumns = () => {
         return (
           <Flex flexDir="column" lineHeight={3}>
             <Text>{item}</Text>
+            <Flex gap={2}>
             <Text color="gray">Fecha:{row.date}</Text>
             <Text color="gray">obra:{row.obra}</Text>
+            </Flex>
           </Flex>
         );
       },
@@ -39,8 +41,10 @@ export const generateDispatchColumns = () => {
         return (
           <Flex flexDir="column" lineHeight={3}>
             <Text>{item}</Text>
-            <Text color="gray">placa:{row.plate}</Text>
-            <Text color="gray">Chofer:{row.driverName}</Text>
+            <Box as={Flex} gap={2}>
+              <Text color="gray">placa:{row.plate}</Text>
+              <Text color="gray">Chofer:{row.driverName}</Text>
+            </Box>
           </Flex>
         );
       },
@@ -62,6 +66,9 @@ export const generateDispatchColumns = () => {
       bgColor: CONSTROAD_COLORS.yellow,
       label: 'Total',
       width: '5%',
+      render: (item) => {
+        return (<Text color="red">{item}</Text>)
+      }
     },
   ];
 

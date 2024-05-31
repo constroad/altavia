@@ -54,6 +54,7 @@ export const getDate = (dateIsoString?: string) => {
     shortDate,
     slashDate,
     day,
+    month,
     peruvianTime: peruvianTimeFinal,
   };
 };

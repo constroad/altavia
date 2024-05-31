@@ -19,14 +19,19 @@ export const getDate = (dateIsoString?: string) => {
     date = new Date(dateIsoString);
   }
 
-  // Crear una nueva fecha en la zona horaria de Perú
   const peruDate = new Date(date.toLocaleString('en-US', { timeZone: 'America/Lima' }));
+
+  let hour = peruDate.getHours();
+  if (hour === 0) {
+    hour = 12;
+  }
 
   const dayIndex = peruDate.getDay();
   const weekDays = ['domingo', 'lunes', 'martes', 'miércoles', 'jueves', 'viernes', 'sábado'];
   const currentDayName = weekDays[dayIndex];
-  const currentDayMonth = peruDate.toLocaleDateString('es-ES', { day: '2-digit', month: 'long', timeZone: 'America/Lima' });
-  const currentYear = peruDate.toLocaleDateString('es-ES', { year: 'numeric', timeZone: 'America/Lima' });
+
+  const currentDayMonth = peruDate.toLocaleDateString('es-ES', { day: '2-digit', month: 'long' });
+  const currentYear = peruDate.toLocaleDateString('es-ES', { year: 'numeric' });
 
   const year = peruDate.getFullYear().toString().slice(-2);
   const month = (peruDate.getMonth() + 1).toString().padStart(2, '0');
@@ -35,13 +40,12 @@ export const getDate = (dateIsoString?: string) => {
   const shortDate = `${day}-${month}-${year}`;
   const slashDate = `${day}/${month}/${year}`;
 
-  // Obtener la hora actual en la zona horaria de Perú
-  const peruvianTime = peruDate.toLocaleTimeString('es-PE', {
-    timeZone: 'America/Lima',
-    hour: '2-digit' as const,
-    minute: '2-digit' as const,
-    hour12: true,
-  });
+  // Formatear la hora en formato de 12 horas con indicador de AM/PM
+  const options = { hour: '2-digit' as const, minute: '2-digit' as const, hour12: true, timeZone: 'America/Lima' };
+  const peruvianTime = peruDate.toLocaleTimeString('en-US', options);
+
+  // Construir la cadena de tiempo final
+  const peruvianTimeFinal = `${peruvianTime}`;
 
   return {
     currentDayName,
@@ -49,9 +53,9 @@ export const getDate = (dateIsoString?: string) => {
     currentYear,
     shortDate,
     slashDate,
-    peruvianTime, // Agregamos la hora actual de Perú
+    peruvianTime: peruvianTimeFinal,
   };
-}
+};
 
 export const formatPriceNumber = (number: number) => {
   const formattedNumber = number.toFixed(2).replace(/\B(?=(\d{3})+(?!\d))/g, ",");

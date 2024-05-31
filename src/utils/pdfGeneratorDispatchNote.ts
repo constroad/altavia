@@ -89,7 +89,7 @@ export const generateDispatchNotePDF = async (data: DispatchNotePDFType) => {
   const pdfBytes = await pdfDoc.save();
 
   // Save the modified PDF to a file (optional)
-  fs.writeFileSync('output.pdf', pdfBytes);
+  // fs.writeFileSync('output.pdf', pdfBytes);
 
   return pdfBytes;
 };

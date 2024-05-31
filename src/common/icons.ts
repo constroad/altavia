@@ -13,7 +13,8 @@ import {
   FaCaretUp,
   FaCaretDown,
   FaRegTrashAlt,
-  FaTruckLoading
+  FaTruckLoading,
+  FaCloudDownloadAlt
 } from "react-icons/fa";
 import { FaUserTie, FaUserShield, FaTruckFast } from "react-icons/fa6";
 import { IoLogoWhatsapp, IoMdMail, IoMdClose } from "react-icons/io";
@@ -29,6 +30,7 @@ import { FaRoadBarrier } from "react-icons/fa6";
 import { GiBoxUnpacking } from "react-icons/gi";
 
 export const ArrowBackIcon = IoArrowBackOutline
+export const DownloadIcon = FaCloudDownloadAlt
 export const CalculatorIcon = BsCalculatorFill
 export const DisplayOptionIcon = FaCaretDown
 export const SubstracIcon = RiSubtractLine

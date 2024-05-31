@@ -9,6 +9,7 @@ import {
   Input,
   NumberInput,
   NumberInputField,
+  Text,
   Textarea,
 } from '@chakra-ui/react';
 import axios, { AxiosResponse } from 'axios';
@@ -23,11 +24,15 @@ import { API_ROUTES } from 'src/common/consts';
 import { ITransportValidationSchema } from 'src/models/transport';
 import { toast } from '../Toast';
 import { AddTransport } from './AddTransport';
+import { getDate } from 'src/common/utils';
+import { DownloadIcon } from 'src/common/icons';
+import { DispatchNotePDFType } from './utils';
 
 interface DispathFormProps {
   dispatch?: IDispatchValidationSchema;
   onSuccess: () => void;
   onClose: () => void;
+  dispatchList: any;
 }
 
 const defaultValue: IDispatchValidationSchema = {
@@ -154,6 +159,39 @@ export const DispatchForm = (props: DispathFormProps) => {
       },
     });
   };
+
+  const handleGenerateDispatchNote = async() => {
+    if (clientSelected && dispatch && transportSelected) {
+      const { slashDate, peruvianTime, currentYear } = getDate()
+      const number = props.dispatchList.data.length + 1
+      const dispatchNoteNumber = `${currentYear}-${number}`
+
+      const pdfData: DispatchNotePDFType = {
+        nro: dispatchNoteNumber,
+        date: slashDate,
+        clientName: clientSelected.name,
+        proyect: dispatch.obra || '',
+        material: dispatch.description,
+        amount: dispatch.quantity,
+        plate: transportSelected.plate,
+        transportist: transportSelected.driverName || '',
+        hour: peruvianTime,
+        note: dispatch.note || '',
+      }
+  
+      const response = await axios.post( API_ROUTES.generateDispatchNotePDF, { pdfData }, {responseType: 'arraybuffer'} )
+      const blob = new Blob([response.data], { type: 'application/pdf' });
+      const pdfName = `Despacho_${transportSelected.plate}_${slashDate}.pdf`
+  
+      const pdfUrl = URL.createObjectURL(blob);
+      const link = document.createElement('a');
+      link.href = pdfUrl;
+      link.setAttribute('download', pdfName);
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);      
+    }
+  }
 
   return (
     <Box as="form" onSubmit={handleSubmitForm}>
@@ -534,6 +572,11 @@ export const DispatchForm = (props: DispathFormProps) => {
           size={{ base: 'sm', md: 'md' }}
         >
           Guardar
+        </Button>
+
+        <Button size={{base: 'sm', md: 'md'}} colorScheme='blue' onClick={handleGenerateDispatchNote}>
+          <DownloadIcon fontSize={20}/>
+          <Text ml='5px'>Vale</Text>
         </Button>
       </Box>
     </Box>

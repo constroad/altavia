@@ -49,9 +49,9 @@ export const PedidoForm = (props: PedidoFormProps) => {
 
   useEffect(() => {
     if (props.order) {
-      let fechaVencimiento =''
-      if (props.order.fechaVencimiento) {        
-        fechaVencimiento= props.order.fechaVencimiento.split('T')[0]
+      let fechaVencimiento = '';
+      if (props.order.fechaVencimiento) {
+        fechaVencimiento = props.order.fechaVencimiento.split('T')[0];
       }
       setOrder({
         ...props.order,
@@ -100,14 +100,18 @@ export const PedidoForm = (props: PedidoFormProps) => {
     if (name === 'cantidadCubos') {
       totalPedido = 'totalPedido';
       totalPedidoValue = parseFloat(value) * order.precioCubo;
-
-      montoPorCobrar = 'montoPorCobrar';
+      if (order.isCredit) {
+        montoPorCobrar = 'montoPorCobrar';
+        totalMontoCobrar = order.totalPedido - (order.montoAdelanto ?? 0);
+      }
     }
     if (name === 'precioCubo') {
       totalPedido = 'totalPedido';
       totalPedidoValue = order.cantidadCubos * parseFloat(value);
-
-      montoPorCobrar = 'montoPorCobrar';
+      if (order.isCredit) {
+        montoPorCobrar = 'montoPorCobrar';
+        totalMontoCobrar = order.totalPedido - (order.montoAdelanto ?? 0);
+      }
     }
     if (name === 'montoAdelanto') {
       montoPorCobrar = 'montoPorCobrar';
@@ -127,6 +131,11 @@ export const PedidoForm = (props: PedidoFormProps) => {
     if (!order.cliente) {
       toast.warning('Selecciona un cliente');
       return;
+    }
+
+    if (order.isCredit && !order.fechaVencimiento) {
+      toast.warning("Selecciona una fecha de vencimiento")
+      return
     }
 
     if (_id) {
@@ -316,6 +325,8 @@ export const PedidoForm = (props: PedidoFormProps) => {
                 setOrder({
                   ...order,
                   isCredit,
+                  montoPorCobrar:
+                    order.totalPedido - (order.montoAdelanto ?? 0),
                   status: isCredit ? OrderStatus.pending : OrderStatus.paid,
                 });
               }}

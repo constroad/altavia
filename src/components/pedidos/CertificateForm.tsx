@@ -5,9 +5,9 @@ import { formatISODate } from 'src/utils/general';
 import { IOrderValidationSchema } from 'src/models/order';
 
 interface CertificateFormProps {
-  certificate?: IOrderValidationSchema['certificados'][0];
-  onCancel: () => void;
-  onSave: (item: IOrderValidationSchema['certificados'][0]) => void;
+  // certificate?: IOrderValidationSchema['certificados'][0];
+  // onCancel: () => void;
+  // onSave: (item: IOrderValidationSchema['certificados'][0]) => void;
 }
 const defaultValue = {
   _id: '',
@@ -17,21 +17,21 @@ const defaultValue = {
   empresa: '',
 };
 export const CertificateForm = (props: CertificateFormProps) => {
-  const [certificate, setCertificate] =
-    useState<IOrderValidationSchema['certificados'][0]>(defaultValue);
+  // const [certificate, setCertificate] =
+  //   useState<IOrderValidationSchema['certificados'][0]>(defaultValue);
 
-  useEffect(() => {
-    if (props.certificate) {
-      setCertificate(props.certificate);
-    }
-  }, [props.certificate]);
+  // useEffect(() => {
+  //   if (props.certificate) {
+  //     // setCertificate(props.certificate);
+  //   }
+  // }, [props.certificate]);
 
   // handlers
   const handleAddItem = () => {
-    const {_id} = certificate
-    const newId = !_id ? uuidv4() : _id
-    props.onSave({...certificate, _id: newId});
-    setCertificate(defaultValue);
+    // const {_id} = certificate
+    // const newId = !_id ? uuidv4() : _id
+    // props.onSave({...certificate, _id: newId});
+    // setCertificate(defaultValue);
   };
   const handleOpenUrl = (url: string) => {
     const win = window.open(url, '_blank');
@@ -40,7 +40,7 @@ export const CertificateForm = (props: CertificateFormProps) => {
 
   return (
     <Flex flexDir="column" gap={2}>
-      <Flex>
+      {/* <Flex>
         <Text width="100px">Empresa:</Text>
         <Input
           placeholder="Empresa"
@@ -112,7 +112,7 @@ export const CertificateForm = (props: CertificateFormProps) => {
         <Button onClick={handleAddItem} colorScheme="blue">
           Guardar
         </Button>
-      </Box>
+      </Box> */}
     </Flex>
   );
 };

@@ -4,85 +4,86 @@ import { IOrderValidationSchema } from 'src/models/order';
 import { CertificateForm } from './CertificateForm';
 
 interface CertificateProps {
-  list: IOrderValidationSchema['certificados'];
-  onSave?: (values: IOrderValidationSchema['certificados']) => void;
+  // list: IOrderValidationSchema['certificados'];
+  // onSave?: (values: IOrderValidationSchema['certificados']) => void;
 }
 
 export const Certificate = (props: CertificateProps) => {
-  const [certificates, setCertificates] = useState<
-    IOrderValidationSchema['certificados']
-  >([]);
-  const [certificateSelected, setCertificateSelected] = useState<
-    IOrderValidationSchema['certificados'][0] | undefined
-  >();
+  // const [certificates, setCertificates] = useState<
+  //   IOrderValidationSchema['certificados']
+  // >([]);
+  // const [certificateSelected, setCertificateSelected] = useState<
+  //   IOrderValidationSchema['certificados'][0] | undefined
+  // >();
   const { isOpen, onOpen, onClose } = useDisclosure();
 
-  useEffect(() => {
-    if (props.list.length > 0 && certificates.length === 0) {
-      setCertificates(props.list);
-    }
-  }, [props.list]);
+  // useEffect(() => {
+  //   if (props.list.length > 0 && certificates.length === 0) {
+  //     setCertificates(props.list);
+  //   }
+  // }, [props.list]);
 
-  const handleAddCertificate = (
-    item: IOrderValidationSchema['certificados'][0]
-  ) => {
-    // update certificate
-    if (certificateSelected) {
-      const listUpdated = certificates.map((cert) => {
-        if (cert._id === item._id) {
-          return item;
-        }
-        return cert;
-      });
-      setCertificates(listUpdated);
-      props.onSave?.(listUpdated);
-      onClose();
-      setCertificateSelected(undefined);
-      return;
-    }
+  // const handleAddCertificate = (
+  //   item: IOrderValidationSchema['certificados'][0]
+  // ) => {
+  //   // update certificate
+  //   if (certificateSelected) {
+  //     const listUpdated = certificates.map((cert) => {
+  //       if (cert._id === item._id) {
+  //         return item;
+  //       }
+  //       return cert;
+  //     });
+  //     setCertificates(listUpdated);
+  //     props.onSave?.(listUpdated);
+  //     onClose();
+  //     setCertificateSelected(undefined);
+  //     return;
+  //   }
 
-    // new
-    const newList = [...certificates];
-    newList.push(item);
-    setCertificates([...newList]);
-    props.onSave?.([...newList]);
-    setCertificateSelected(undefined);
-    onClose();
-  };
+  //   // new
+  //   const newList = [...certificates];
+  //   newList.push(item);
+  //   setCertificates([...newList]);
+  //   props.onSave?.([...newList]);
+  //   setCertificateSelected(undefined);
+  //   onClose();
+  // };
 
-  const handleSelectCertificate = (
-    item: IOrderValidationSchema['certificados'][0]
-  ) => {
-    setCertificateSelected(item);
-    onOpen();
-  };
+  // const handleSelectCertificate = (
+  //   item: IOrderValidationSchema['certificados'][0]
+  // ) => {
+  //   setCertificateSelected(item);
+  //   onOpen();
+  // };
 
-  const handleDeleteCertificate = (
-    item: IOrderValidationSchema['certificados'][0]
-  ) => {
-    let newList = [...certificates];
+  // const handleDeleteCertificate = (
+  //   item: IOrderValidationSchema['certificados'][0]
+  // ) => {
+  //   let newList = [...certificates];
 
-    newList = newList.filter((x) => x._id !== item._id);
-    setCertificates([...newList]);
-    props.onSave?.([...newList]);
-    onClose();
-  };
+  //   newList = newList.filter((x) => x._id !== item._id);
+  //   setCertificates([...newList]);
+  //   props.onSave?.([...newList]);
+  //   onClose();
+  // };
 
   return (
     <Flex flexDir="column" gap={2}>
       {isOpen && (
-        <CertificateForm
-          certificate={certificateSelected}
-          onCancel={() => {
-            onClose();
-            setCertificateSelected(undefined);
-          }}
-          onSave={handleAddCertificate}
-        />
+        <></>
+        // <CertificateForm
+        //   certificate={certificateSelected}
+        //   onCancel={() => {
+        //     onClose();
+        //     setCertificateSelected(undefined);
+        //   }}
+        //   onSave={handleAddCertificate}
+        // />
       )}
       {!isOpen && (
         <>
-          <Box>
+          {/* <Box>
             {certificates?.map((item, idx) => (
               <Flex key={idx} fontSize={13}>
                 <Box flex={1}>
@@ -106,7 +107,7 @@ export const Certificate = (props: CertificateProps) => {
                 </Flex>
               </Flex>
             ))}
-          </Box>
+          </Box> */}
           <Button onClick={onOpen}>Agregar certificado</Button>
         </>
       )}

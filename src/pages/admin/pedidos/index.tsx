@@ -1,10 +1,12 @@
 import { Flex, useDisclosure, Text, Button, Box } from '@chakra-ui/react';
 import axios from 'axios';
 import { useEffect, useMemo, useState } from 'react';
-import { API_ROUTES } from 'src/common/consts';
+import { useRouter } from 'next/router';
+
+import { ADMIN_ROUTES, API_ROUTES } from 'src/common/consts';
 import { useAsync } from 'src/common/hooks';
 import { Modal, TableComponent, toast, IntranetLayout } from 'src/components';
-import { PedidoForm, generatePedidoColumns } from 'src/components/pedidos';
+import { generatePedidoColumns } from 'src/components/pedidos';
 import { IOrderValidationSchema } from 'src/models/order';
 
 const fetcher = (path: string) => axios.get(path);
@@ -21,6 +23,7 @@ const Pedidos = () => {
     isOpen: isOpenDelete,
     onOpen: onOpenDelete,
   } = useDisclosure();
+  const router = useRouter();
 
   // API
   const {
@@ -54,18 +57,16 @@ const Pedidos = () => {
   const handleDeleteOrder = () => {
     runDeleteOrder(deleteOrder(`${API_ROUTES.order}/${orderSelected?._id}`), {
       onSuccess: () => {
-        toast.success(`Eliminaste el pedido ${orderSelected?.cliente}`)
-        refetch()
-        setOrderSelected(undefined)
-        onCloseDelete()
-      }
-    })
+        toast.success(`Eliminaste el pedido ${orderSelected?.cliente}`);
+        refetch();
+        setOrderSelected(undefined);
+        onCloseDelete();
+      },
+    });
   };
-
-  const handleCloseOrderModal = () => {
-    onClose()
-    setOrderSelected(undefined)
-  }
+  const handleGoToOrder = (id: string) => {
+    router.push(`${ADMIN_ROUTES.orders}/${id}`);
+  };
 
   const columns = generatePedidoColumns();
 
@@ -95,7 +96,7 @@ const Pedidos = () => {
             Pedidos
           </Text>
 
-          <Button autoFocus onClick={onOpen}>
+          <Button autoFocus onClick={() => handleGoToOrder('new')}>
             Agregar Pedido
           </Button>
         </Flex>
@@ -105,12 +106,11 @@ const Pedidos = () => {
             data={orderListSorted}
             columns={columns}
             onDelete={(item) => {
-              setOrderSelected(item)
-              onOpenDelete()
+              setOrderSelected(item);
+              onOpenDelete();
             }}
             onEdit={(item) => {
-              setOrderSelected(item)
-              onOpen()
+              handleGoToOrder(item._id);
             }}
             isLoading={isLoading}
             pagination
@@ -118,20 +118,6 @@ const Pedidos = () => {
           />
         </Box>
       </Flex>
-
-      {/* order form modal */}
-      <Modal
-        hideCancelButton
-        isOpen={isOpen}
-        onClose={handleCloseOrderModal}
-        heading={orderSelected ? 'Editar pedido' : 'Añadir pedido'}
-      >
-        <PedidoForm
-          order={orderSelected}
-          onClose={handleCloseOrderModal}
-          onSuccess={refetch}
-        />
-      </Modal>
 
       {/* delete client modal */}
       <Modal

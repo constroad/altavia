@@ -3,7 +3,7 @@ import mongoose, { Document, Schema, Model } from 'mongoose';
 
 export enum OrderStatus {
    pending= 'pending',
-   completed= 'completed',
+   paid= 'paid',
    deleted= 'deleted',
    rejected= 'rejected'
 }
@@ -16,28 +16,16 @@ export const orderValidationSchema = z.object({
   cotizacionId: z.string().optional(),
   tipoMAC: z.string(),
   fechaProgramacion: z.string(),
+  fechaVencimiento: z.string().optional(),
   notas: z.string().optional(),
   obra: z.string().optional(),
-  certificados: z.array(z.object({
-    _id: z.string(),
-    url: z.string().optional(),
-    fecha: z.string(),
-    obra: z.string(),
-    empresa: z.string(),
-  })),
-  consumos: z.object({
-    galonesPEN: z.number(),
-    galonesIFO: z.number(),
-    galonesPetroleo: z.number(),
-    m3Arena: z.number(),
-    m3Piedra: z.number(),
-  }).optional(),
   precioCubo: z.number(),
   cantidadCubos: z.number(),
   totalPedido: z.number(),
   montoAdelanto: z.number().optional(),
   montoPorCobrar: z.number().optional(),
-  status: z.string().optional(),
+  status: z.nativeEnum(OrderStatus).optional(),
+  isCredit: z.boolean().default(false),
   createdAt: z.string().optional(),
   updatedAt: z.string().optional()
 })
@@ -68,16 +56,16 @@ export interface OrderModel extends Document {
   cotizacionId?: string;
   tipoMAC: string;
   fechaProgramacion: Date;
+  fechaVencimiento?: string;
   obra?: string;
   notas?: string;
-  certificados?: ICertificado[];
-  consumos?: IConsumos;
   cantidadCubos: number;
   precioCubo: number;
   totalPedido: number;
   montoAdelanto?: number;
   montoPorCobrar?: number;
   status?: string;
+  isCredit: boolean;
 }
 
 const CertificadoSchema = new Schema<ICertificado>({
@@ -107,15 +95,15 @@ try {
     cotizacionId: { type: String, required: false },
     tipoMAC: { type: String, required: true },
     fechaProgramacion: { type: Date, required: true },
+    fechaVencimiento: { type: Date, required: false },
     notas: { type: String, required: false },
     obra: { type: String, required: false },
-    certificados: { type: [CertificadoSchema], required: false },
-    consumos: { type: ConsumosSchema, required: false },
     precioCubo: { type: Number, required: true },
     totalPedido: { type: Number, required: true },
     cantidadCubos: { type: Number, required: true },
     montoAdelanto: { type: Number, required: false },
     montoPorCobrar: { type: Number, required: false },
+    isCredit: { type: Boolean, required: true },
     status: { type: String, required: false, default: OrderStatus.pending },
   }, {
     timestamps: true, // this will add both createdAt y updatedAt automatically

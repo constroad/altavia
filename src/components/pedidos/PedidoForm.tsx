@@ -1,6 +1,5 @@
 import {
   Box,
-  Stack,
   FormControl,
   FormLabel,
   NumberInput,
@@ -8,13 +7,9 @@ import {
   Textarea,
   Input,
   Button,
-  Accordion,
-  AccordionButton,
-  AccordionIcon,
-  AccordionItem,
-  AccordionPanel,
   Flex,
   Select,
+  Switch,
 } from '@chakra-ui/react';
 import { IOrderValidationSchema } from 'src/models/order';
 import { useEffect, useState } from 'react';
@@ -27,7 +22,6 @@ import { IClientValidationSchema } from 'src/models/client';
 import { AutoComplete, IAutocompleteOptions } from '../autoComplete';
 import { formatISODate } from 'src/utils/general';
 import { AddClient } from './AddClient';
-import { Certificate } from './Certificates';
 
 interface PedidoFormProps {
   order?: IOrderValidationSchema;
@@ -44,20 +38,13 @@ export const PedidoForm = (props: PedidoFormProps) => {
     tipoMAC: 'Mac 2',
     fechaProgramacion: formatISODate(new Date().toDateString()),
     notas: '',
-    certificados: [],
-    consumos: {
-      galonesPEN: 0,
-      galonesIFO: 0,
-      galonesPetroleo: 0,
-      m3Arena: 0,
-      m3Piedra: 0,
-    },
     precioCubo: 480,
     cantidadCubos: 1,
     totalPedido: 480,
     montoAdelanto: 0,
     montoPorCobrar: 0,
-    status: OrderStatus.pending,
+    isCredit: false,
+    status: OrderStatus.paid,
   });
 
   useEffect(() => {
@@ -99,33 +86,33 @@ export const PedidoForm = (props: PedidoFormProps) => {
   };
 
   const handleNumberChange = (name: string, value: string) => {
+    console.log('number', { name, value });
     let totalPedido = '';
     let montoPorCobrar = '';
     let totalPedidoValue = 0;
     let totalMontoCobrar = 0;
 
-    if (name === 'cantidadCubos' || name === 'precioCubo') {
+    if (name === 'cantidadCubos') {
       totalPedido = 'totalPedido';
-      totalPedidoValue = order.cantidadCubos * order.precioCubo;
+      totalPedidoValue = parseFloat(value) * order.precioCubo;
 
       montoPorCobrar = 'montoPorCobrar';
-      totalMontoCobrar = totalPedidoValue - (order.montoAdelanto ?? 0);
+    }
+    if (name === 'precioCubo') {
+      totalPedido = 'totalPedido';
+      totalPedidoValue = order.cantidadCubos * parseFloat(value);
+
+      montoPorCobrar = 'montoPorCobrar';
     }
     if (name === 'montoAdelanto') {
       montoPorCobrar = 'montoPorCobrar';
-      totalMontoCobrar = order.totalPedido - Number(value);
+      totalMontoCobrar = order.totalPedido - parseFloat(value);
     }
     setOrder({
       ...order,
-      [name]: parseFloat(value || '0'),
-      [totalPedido]: totalPedidoValue,
-      [montoPorCobrar]: totalMontoCobrar,
-    });
-  };
-  const handleObjectChange = (name: string, value: any) => {
-    setOrder({
-      ...order,
       [name]: value,
+      [totalPedido]: isNaN(totalPedidoValue) ? 0 : totalPedidoValue,
+      [montoPorCobrar]: isNaN(totalMontoCobrar) ? 0 : totalMontoCobrar,
     });
   };
 
@@ -139,29 +126,41 @@ export const PedidoForm = (props: PedidoFormProps) => {
 
     if (_id) {
       const path = `${API_ROUTES.order}/${_id}`;
-      runUpdateOrder(axios.put(path, payload), {
+      runUpdateOrder(
+        axios.put(path, {
+          ...payload,
+          cantidadCubos: parseFloat(payload.cantidadCubos.toString()),
+        }),
+        {
+          onSuccess: () => {
+            toast.success('Pedido actualizado con éxito!');
+            props.onSuccess?.();
+            props.onClose?.();
+          },
+          onError: () => {
+            toast.error('ocurrio un error actualizando un pedido');
+          },
+        }
+      );
+      return;
+    }
+
+    runAddOrder(
+      postOrder(API_ROUTES.order, {
+        ...payload,
+        cantidadCubos: parseFloat(payload.cantidadCubos.toString()),
+      }),
+      {
         onSuccess: () => {
-          toast.success('Pedido actualizado con éxito!');
+          toast.success('Pedido añadido con éxito!');
           props.onSuccess?.();
           props.onClose?.();
         },
         onError: () => {
-          toast.error('ocurrio un error actualizando un pedido');
+          toast.error('ocurrio un error agregando un pedido');
         },
-      });
-      return;
-    }
-
-    runAddOrder(postOrder(API_ROUTES.order, payload), {
-      onSuccess: () => {
-        toast.success('Pedido añadido con éxito!');
-        props.onSuccess?.();
-        props.onClose?.();
-      },
-      onError: () => {
-        toast.error('ocurrio un error agregando un pedido');
-      },
-    });
+      }
+    );
   };
   const handleSelectClient = (option: IAutocompleteOptions) => {
     setSearchClient(option.label);
@@ -177,272 +176,225 @@ export const PedidoForm = (props: PedidoFormProps) => {
 
   // Renders
   return (
-    <Box as="form" onSubmit={handleSubmit}>
-      <Stack spacing={2}>
-        <FormControl>
-          <FormLabel>Cliente *</FormLabel>
-          <AutoComplete
-            isLoading={loadingClients}
-            placeholder="Buscar cliente por nombre, alias o RUC"
-            value={searchClient ?? ''}
-            onChange={(value) => setSearchClient(value)}
-            onSelect={handleSelectClient}
-            options={clientList
-              .filter((client: any) => {
-                return clientFildsToFilter.some((property) => {
-                  const value = client[property] as string;
-                  const searchValue = value?.toLowerCase();
-                  return searchValue?.includes(searchClient.toLowerCase());
-                });
-              })
-              .map((client) => ({
-                label: client.name,
-                value: client._id ?? '',
-              }))}
-            renderNoFound={() => (
-              <AddClient
-                onSuccess={() => {
-                  refetch();
-                  setSearchClient('');
-                }}
-              />
-            )}
-          />
-        </FormControl>
-        <Flex>
+    <Box as="form" onSubmit={handleSubmit} mt={5} fontSize="12px">
+      <Flex gap={5}>
+        <Box width="48%" as={Flex} flexDir="column" gap={1}>
           <FormControl>
-            <FormLabel>Tipo de MAC</FormLabel>
-            <Select
-              name="tipoMAC"
-              placeholder="Selecciona"
-              defaultValue="Mac 2"
-              onChange={(e) => {
+            <FormLabel fontSize="inherit">Cliente *</FormLabel>
+            <AutoComplete
+              isLoading={loadingClients}
+              placeholder="Buscar cliente por nombre, alias o RUC"
+              value={searchClient ?? ''}
+              onChange={(value) => setSearchClient(value)}
+              onSelect={handleSelectClient}
+              options={clientList
+                .filter((client: any) => {
+                  return clientFildsToFilter.some((property) => {
+                    const value = client[property] as string;
+                    const searchValue = value?.toLowerCase();
+                    return searchValue?.includes(searchClient.toLowerCase());
+                  });
+                })
+                .map((client) => ({
+                  label: client.name,
+                  value: client._id ?? '',
+                }))}
+              renderNoFound={() => (
+                <AddClient
+                  onSuccess={() => {
+                    refetch();
+                    setSearchClient('');
+                  }}
+                />
+              )}
+            />
+          </FormControl>
+          <Flex>
+            <FormControl>
+              <FormLabel fontSize="inherit">MAC</FormLabel>
+              <Select
+                name="tipoMAC"
+                placeholder="Selecciona"
+                defaultValue="Mac 2"
+                onChange={(e) => {
+                  setOrder({
+                    ...order,
+                    tipoMAC: e.target.value,
+                  });
+                }}
+                size="xs"
+              >
+                <option value="Mac 1">Mac 1</option>
+                <option value="Mac 2">Mac 2</option>
+                <option value="Mac 3">Mac 3</option>
+              </Select>
+            </FormControl>
+            <FormControl>
+              <FormLabel fontSize="inherit">Fecha</FormLabel>
+              <Input
+                size="xs"
+                type="date"
+                name="fechaProgramacion"
+                value={order.fechaProgramacion}
+                onChange={handleChange}
+              />
+            </FormControl>
+          </Flex>
+
+          <FormControl>
+            <FormLabel fontSize="inherit" width="100px">
+              Obra
+            </FormLabel>
+            <Input
+              type="text"
+              size="xs"
+              name="obra"
+              value={order.obra}
+              onChange={handleChange}
+            ></Input>
+          </FormControl>
+          <Flex gap={2} flexDir={{ base: 'column', md: 'row' }}>
+            <FormControl>
+              <FormLabel fontSize="inherit" width="100px">
+                Precio
+              </FormLabel>
+              <NumberInput
+                size="xs"
+                name="precioCubo"
+                value={order.precioCubo}
+                onChange={(value) => handleNumberChange('precioCubo', value)}
+              >
+                <NumberInputField />
+              </NumberInput>
+            </FormControl>
+            <FormControl>
+              <FormLabel fontSize="inherit" width="100px">
+                Cantidad
+              </FormLabel>
+              <NumberInput
+                size="xs"
+                name="cantidadCubos"
+                value={order.cantidadCubos}
+                onChange={(value) => {
+                  handleNumberChange('cantidadCubos', value);
+                }}
+              >
+                <NumberInputField />
+              </NumberInput>
+            </FormControl>
+            <FormControl>
+              <FormLabel fontSize="inherit" width="100px">
+                Total S/.
+              </FormLabel>
+              <NumberInput
+                isDisabled
+                size="xs"
+                name="totalPedido"
+                value={order.totalPedido}
+                onChange={(value) => handleNumberChange('totalPedido', value)}
+              >
+                <NumberInputField />
+              </NumberInput>
+            </FormControl>
+          </Flex>
+        </Box>
+        {/* Second Column */}
+        <Box flex={1} as={Flex} flexDir="column" gap={2}>
+          <Flex gap={2}>
+            <FormLabel fontSize="inherit">Es al credito?</FormLabel>
+            <Switch
+              id="isChecked"
+              flex={1}
+              isChecked={order.isCredit}
+              onChange={(value) => {
+                const isCredit = value.target.checked;
                 setOrder({
                   ...order,
-                  tipoMAC: e.target.value,
+                  isCredit,
+                  status: isCredit ? OrderStatus.pending : OrderStatus.paid,
                 });
               }}
-              size="sm"
-            >
-              <option value="Mac 1">Mac 1</option>
-              <option value="Mac 2">Mac 2</option>
-              <option value="Mac 3">Mac 3</option>
-            </Select>
-          </FormControl>
+            />
+          </Flex>
+          <Flex gap={2} flexDir={{ base: 'column', md: 'row' }}>
+            <FormControl>
+              <FormLabel fontSize="inherit">Adelanto</FormLabel>
+              <NumberInput
+                isDisabled={!order.isCredit}
+                size="xs"
+                name="montoAdelanto"
+                value={order.montoAdelanto}
+                onChange={(value) => handleNumberChange('montoAdelanto', value)}
+              >
+                <NumberInputField />
+              </NumberInput>
+            </FormControl>
+            <FormControl>
+              <FormLabel fontSize="inherit">Adeuda</FormLabel>
+              <NumberInput
+                isDisabled
+                size="xs"
+                name="montoPorCobrar"
+                value={order.montoPorCobrar}
+                onChange={(value) =>
+                  handleNumberChange('montoPorCobrar', value)
+                }
+              >
+                <NumberInputField />
+              </NumberInput>
+            </FormControl>
+            <FormControl>
+              <FormLabel fontSize="inherit">Vencimiento</FormLabel>
+              <Input
+                isDisabled={!order.isCredit}
+                size="xs"
+                type="date"
+                name="fechaVencimiento"
+                value={order.fechaVencimiento ?? ''}
+                onChange={handleChange}
+              />
+            </FormControl>
+          </Flex>
+
           <FormControl>
-            <FormLabel>Fecha</FormLabel>
-            <Input
+            <FormLabel fontSize="inherit">Notas</FormLabel>
+            <Textarea
               size="sm"
-              type="date"
-              name="fechaProgramacion"
-              value={order.fechaProgramacion}
+              name="notas"
+              value={order.notas}
               onChange={handleChange}
             />
           </FormControl>
-        </Flex>
-
-        <FormControl as={Flex} flexDir="column">
-          <FormLabel width="100px">Obra</FormLabel>
-          <Input
-            type='text'
-            size="sm"
-            name="obra"
-            value={order.obra}
-            onChange={handleChange}
-          >
-          </Input>
-        </FormControl>
-        <FormControl as={Flex}>
-          <FormLabel width="100px">Precio m3</FormLabel>
-          <NumberInput
-            size="sm"
-            name="precioCubo"
-            value={order.precioCubo}
-            onChange={(value) => handleNumberChange('precioCubo', value)}
-          >
-            <NumberInputField />
-          </NumberInput>
-        </FormControl>
-        <FormControl as={Flex}>
-          <FormLabel width="100px">Cantidad</FormLabel>
-          <NumberInput
-            size="sm"
-            name="cantidadCubos"
-            value={order.cantidadCubos}
-            onChange={(value) => {
-              handleNumberChange('cantidadCubos', value);
-            }}
-          >
-            <NumberInputField />
-          </NumberInput>
-        </FormControl>
-        <FormControl as={Flex}>
-          <FormLabel width="100px">Total S/.</FormLabel>
-          <NumberInput
-            size="sm"
-            name="totalPedido"
-            value={order.totalPedido}
-            onChange={(value) => handleNumberChange('totalPedido', value)}
-          >
-            <NumberInputField />
-          </NumberInput>
-        </FormControl>
-        <Flex>
-          <FormControl>
-            <FormLabel>Adelanto S/.</FormLabel>
-            <NumberInput
-              size="sm"
-              name="montoAdelanto"
-              value={order.montoAdelanto}
-              onChange={(value) => handleNumberChange('montoAdelanto', value)}
-            >
-              <NumberInputField />
-            </NumberInput>
-          </FormControl>
-          <FormControl>
-            <FormLabel>Monto por Cobrar</FormLabel>
-            <NumberInput
-              isDisabled
-              size="sm"
-              name="montoPorCobrar"
-              value={order.montoPorCobrar}
-              onChange={(value) => handleNumberChange('montoPorCobrar', value)}
-            >
-              <NumberInputField />
-            </NumberInput>
-          </FormControl>
-        </Flex>
-
-        <Accordion allowMultiple>
-          <AccordionItem>
-            <h2>
-              <AccordionButton>
-                <Box as="span" flex="1" textAlign="left">
-                  Consumos
-                </Box>
-                <AccordionIcon />
-              </AccordionButton>
-            </h2>
-            <AccordionPanel pb={4} bgColor="purple" color="white">
-              <FormControl as={Flex} alignItems="center">
-                <FormLabel width={20}>PEN</FormLabel>
-                <NumberInput
-                  size="sm"
-                  name="galonesPEN"
-                  value={order.consumos?.galonesPEN}
-                  onChange={(value) =>
-                    handleObjectChange('consumos', {
-                      ...order.consumos,
-                      galonesPEN: parseFloat(value),
-                    })
-                  }
-                >
-                  <NumberInputField />
-                </NumberInput>
-              </FormControl>
-              <FormControl as={Flex} alignItems="center">
-                <FormLabel width={20}>IFO</FormLabel>
-                <NumberInput
-                  size="sm"
-                  name="galonesPEN"
-                  value={order.consumos?.galonesIFO}
-                  onChange={(value) =>
-                    handleObjectChange('consumos', {
-                      ...order.consumos,
-                      galonesIFO: parseFloat(value),
-                    })
-                  }
-                >
-                  <NumberInputField />
-                </NumberInput>
-              </FormControl>
-              <FormControl as={Flex} alignItems="center">
-                <FormLabel width={20}>Petroleo</FormLabel>
-                <NumberInput
-                  size="sm"
-                  name="galonesPEN"
-                  value={order.consumos?.galonesPetroleo}
-                  onChange={(value) =>
-                    handleObjectChange('consumos', {
-                      ...order.consumos,
-                      galonesPetroleo: parseFloat(value),
-                    })
-                  }
-                >
-                  <NumberInputField />
-                </NumberInput>
-              </FormControl>
-              <FormControl as={Flex} alignItems="center">
-                <FormLabel width={20}>M3 Arena</FormLabel>
-                <NumberInput
-                  size="sm"
-                  name="galonesPEN"
-                  value={order.consumos?.m3Arena}
-                  onChange={(value) =>
-                    handleObjectChange('consumos', {
-                      ...order.consumos,
-                      m3Arena: parseFloat(value),
-                    })
-                  }
-                >
-                  <NumberInputField />
-                </NumberInput>
-              </FormControl>
-              <FormControl as={Flex} alignItems="center">
-                <FormLabel width={20}>M3 Piedra</FormLabel>
-                <NumberInput
-                  size="sm"
-                  name="galonesPEN"
-                  value={order.consumos?.m3Piedra}
-                  onChange={(value) =>
-                    handleObjectChange('consumos', {
-                      ...order.consumos,
-                      m3Piedra: parseFloat(value),
-                    })
-                  }
-                >
-                  <NumberInputField />
-                </NumberInput>
-              </FormControl>
-            </AccordionPanel>
-          </AccordionItem>
-
-          <AccordionItem>
-            <h2>
-              <AccordionButton>
-                <Box as="span" flex="1" textAlign="left">
-                  Certificados
-                </Box>
-                <AccordionIcon />
-              </AccordionButton>
-            </h2>
-            <AccordionPanel pb={4}>
-              <Certificate
-                list={order.certificados}
-                onSave={(certificados) => {
-                  setOrder({ ...order, certificados });
-                }}
-              />
-            </AccordionPanel>
-          </AccordionItem>
-        </Accordion>
-
-        <FormControl>
-          <FormLabel>Notas</FormLabel>
-          <Textarea name="notas" value={order.notas} onChange={handleChange} />
-        </FormControl>
-
-        <Flex alignItems="center" width="100%" justifyContent="end" gap={2}>
-          <Button onClick={props.onClose}>Cancelar</Button>
-          <Button
-            type="submit"
-            colorScheme="blue"
-            isLoading={addingOrder || updatingOrder}
-          >
-            Guardar
-          </Button>
-        </Flex>
-      </Stack>
+        </Box>
+      </Flex>
+      <Flex
+        mt={5}
+        alignItems="center"
+        width="100%"
+        justifyContent="end"
+        gap={2}
+      >
+        <Button size="sm" onClick={props.onClose}>
+          Cancelar
+        </Button>
+        <Button
+          size="sm"
+          type="submit"
+          colorScheme="yellow"
+          isLoading={addingOrder || updatingOrder}
+        >
+          Guardar
+        </Button>
+        <Button
+          size="sm"
+          isDisabled
+          // type="submit"
+          colorScheme="yellow"
+          isLoading={updatingOrder}
+        >
+          Cancelar deuda
+        </Button>
+      </Flex>
     </Box>
   );
 };

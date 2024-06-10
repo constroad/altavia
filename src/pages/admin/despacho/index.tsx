@@ -25,7 +25,7 @@ import {
 import { IClientValidationSchema } from 'src/models/client';
 import { ITransportValidationSchema } from 'src/models/transport';
 import { IOrderValidationSchema } from 'src/models/order';
-import { DownloadIcon } from 'src/common/icons';
+import { DownloadIcon, RefreshIcon } from 'src/common/icons';
 import { getDate } from 'src/common/utils';
 import { formatISODate, getDateStringRange } from 'src/utils/general';
 import { TablePagination, TableAction } from '../../../components/Table/Table';
@@ -357,11 +357,19 @@ const DispatchPage = () => {
           <Flex alignItems="center" gap={2}>
             <Button
               autoFocus
+              onClick={() => refetch()}
+              size="sm"
+              isLoading={addingDispatch}
+            >
+              <RefreshIcon />
+            </Button>
+            <Button
+              autoFocus
               onClick={handleAddDispatch}
               size="sm"
               isLoading={addingDispatch}
             >
-              + Despacho
+              + {!isMobile && 'Despacho'}
             </Button>
           </Flex>
         </Flex>

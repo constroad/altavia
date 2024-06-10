@@ -303,8 +303,6 @@ const DispatchPage = () => {
     });
   }, [dispatchResponse, clientResponse, responseTransport]);
 
-  console.log('listDispatch', listDispatch);
-
   const deleteFooter = (
     <Button
       isLoading={deletingDispatch}
@@ -357,11 +355,6 @@ const DispatchPage = () => {
             </FormControl>
           </Flex>
           <Flex alignItems="center" gap={2}>
-            {(isLoading || loadingOrders || updatingDispatch) && (
-              <Text color="green" fontSize={12}>
-                actualizando...
-              </Text>
-            )}
             <Button
               autoFocus
               onClick={handleAddDispatch}
@@ -374,7 +367,7 @@ const DispatchPage = () => {
         </Flex>
 
         <TableComponent
-          // isLoading={isLoading || loadingOrders || updatingDispatch}
+          isLoading={isLoading || loadingOrders || updatingDispatch}
           data={[...listDispatch]}
           columns={columns}
           pagination

@@ -1,11 +1,32 @@
-import Dispatch, { DispatchModel } from '../models/dispatch';
+import Dispatch, { DispatchModel, IGetAll } from '../models/dispatch';
+interface IPagination {
+  page?: string
+  limit?: string
+}
 
 export class DispatchRepository {
 
-  async getAll(): Promise<DispatchModel[]> {
+  async getAll(query?: IPagination): Promise<IGetAll> {
     try {
-      const dispatchs = await Dispatch.find({}).sort({ createdAt: -1 });
-      return dispatchs;
+      const {page, limit, ...filters} = query || {}
+      const pageNumber = parseInt(page as string, 10);
+      const limitNumber = parseInt(limit as string, 10);
+
+      const total = await Dispatch.countDocuments({...filters});
+      const dispatchs = await Dispatch.find({...filters})
+      .sort({ createdAt: -1 })
+      .skip((pageNumber - 1) * limitNumber)
+      .limit(limitNumber);
+
+      return {
+        dispatchs: dispatchs as IGetAll['dispatchs'],
+        pagination: {
+          page: pageNumber,
+          limit: limitNumber,
+          totalRecords: total,
+          totalPages: Math.ceil(total / limitNumber),
+        }
+      };
     } catch (error) {
       console.error('Error getting dispatchs:', error);
       throw new Error('Error getting dispatchs');

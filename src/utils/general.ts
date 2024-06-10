@@ -5,3 +5,15 @@ export function formatISODate(isoString: string) {
   const day = String(date.getDate()).padStart(2, '0');
   return `${year}-${month}-${day}`;
 }
+
+export function getDateStringRange(): { dateTo: string, dateFrom: string } {
+  const dateTo = new Date();
+
+  const dateFrom = new Date();
+  dateFrom.setDate(dateTo.getDate() - 7);
+
+  return {
+    dateTo: formatISODate(dateTo.toDateString()),
+    dateFrom: formatISODate(dateFrom.toDateString())
+  };
+}

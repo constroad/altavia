@@ -77,10 +77,10 @@ export const TransportForm = (props: TransportFormProps) => {
   };
 
   return (
-    <Box onSubmit={handleSubmit} fontSize={12}>
-      <Stack spacing={2}>
-        <FormControl as={Flex}>
-          <FormLabel width="100px" fontSize="inherit">
+    <Box onSubmit={handleSubmit} fontSize="inherit" width="inherit">
+      <Flex flexDir="column" width="inherit">
+        <FormControl as={Flex} flexDir="column" gap={0}>
+          <FormLabel fontSize="inherit">
             Empresa(*)
           </FormLabel>
           <Input
@@ -91,8 +91,8 @@ export const TransportForm = (props: TransportFormProps) => {
             }
           />
         </FormControl>
-        <FormControl as={Flex}>
-          <FormLabel width="100px" fontSize="inherit">
+        <FormControl as={Flex} flexDir="column">
+          <FormLabel fontSize="inherit">
             Placa(*)
           </FormLabel>
           <Input
@@ -103,8 +103,8 @@ export const TransportForm = (props: TransportFormProps) => {
             }
           />
         </FormControl>
-        <FormControl as={Flex}>
-          <FormLabel width="100px" fontSize="inherit">
+        <FormControl as={Flex} flexDir="column">
+          <FormLabel fontSize="inherit">
             Conductor
           </FormLabel>
           <Input
@@ -115,8 +115,8 @@ export const TransportForm = (props: TransportFormProps) => {
             }
           />
         </FormControl>
-        <FormControl as={Flex}>
-          <FormLabel width="100px" fontSize="inherit">
+        <FormControl as={Flex} flexDir="column">
+          <FormLabel fontSize="inherit">
             Licencia
           </FormLabel>
           <Input
@@ -127,8 +127,8 @@ export const TransportForm = (props: TransportFormProps) => {
             }
           />
         </FormControl>
-        <FormControl as={Flex}>
-          <FormLabel width="100px" fontSize="inherit">
+        <FormControl as={Flex} flexDir="column">
+          <FormLabel fontSize="inherit">
             Celular
           </FormLabel>
           <Input
@@ -140,10 +140,7 @@ export const TransportForm = (props: TransportFormProps) => {
           />
         </FormControl>
 
-        <Flex alignItems="center" width="100%" justifyContent="end" gap={2}>
-          <Button size="xs" onClick={props.onClose}>
-            Cancelar
-          </Button>
+        <Flex alignItems="center" mt={5}>
           <Button
             size="xs"
             colorScheme="blue"
@@ -153,7 +150,7 @@ export const TransportForm = (props: TransportFormProps) => {
             Guardar
           </Button>
         </Flex>
-      </Stack>
+      </Flex>
     </Box>
   );
 };

@@ -91,7 +91,6 @@ export const PedidoForm = (props: PedidoFormProps) => {
   };
 
   const handleNumberChange = (name: string, value: string) => {
-    console.log('number', { name, value });
     let totalPedido = '';
     let montoPorCobrar = '';
     let totalPedidoValue = 0;
@@ -134,8 +133,8 @@ export const PedidoForm = (props: PedidoFormProps) => {
     }
 
     if (order.isCredit && !order.fechaVencimiento) {
-      toast.warning("Selecciona una fecha de vencimiento")
-      return
+      toast.warning('Selecciona una fecha de vencimiento');
+      return;
     }
 
     if (_id) {
@@ -389,12 +388,13 @@ export const PedidoForm = (props: PedidoFormProps) => {
         width="100%"
         justifyContent="end"
         gap={2}
+        wrap="wrap"
       >
-        <Button size="sm" onClick={props.onClose}>
+        <Button size="xs" onClick={props.onClose}>
           Cancelar
         </Button>
         <Button
-          size="sm"
+          size="xs"
           type="submit"
           colorScheme="yellow"
           isLoading={addingOrder || updatingOrder}
@@ -402,14 +402,13 @@ export const PedidoForm = (props: PedidoFormProps) => {
           Guardar
         </Button>
         <Button
-          size="sm"
-          isDisabled
-          // type="submit"
+          size="xs"
+          isDisabled={!order.isCredit}
           colorScheme="yellow"
           isLoading={updatingOrder}
         >
           Cancelar deuda
-        </Button>
+        </Button>        
       </Flex>
     </Box>
   );

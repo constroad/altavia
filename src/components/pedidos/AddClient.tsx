@@ -24,7 +24,7 @@ export const AddClient = (props: AddClientProps) => {
   const [client, setClient] = useState('');
   const [ruc, setRuc] = useState('');
   const { isOpen, onOpen, onClose } = useDisclosure();
-  const { run: runAddClient, isLoading: addingClient } = useAsync();
+  const { run: runAddClient, isLoading: addingClient, cache } = useAsync();
 
   const handleSaveClient = () => {
     if (!client) {
@@ -38,18 +38,18 @@ export const AddClient = (props: AddClientProps) => {
       },
     });
   };
+
   return (
-    <Box display="flex" p={2} gap={2} alignItems="center">
+    <Box display="flex" p={2} gap={2} alignItems="center" width="inherit" fontSize="inherit">
       {isOpen ? (
-        <Box display="flex" gap={2} alignItems="start" flexDir="column" fontSize={12}>
-          <Box display="flex" gap={1} alignItems="center">
-            <Text fontSize="inherit" width="100px">Cliente (*):</Text>
+        <Box display="flex" alignItems="start" flexDir="column" width="inherit">
+          <Box display="flex" flexDir="column">
+            <Text fontSize="inherit">Cliente (*):</Text>
             <Input
               placeholder="Nombre"
               size="xs"
               value={client}
               onChange={(e) => setClient(e.target.value)}
-              fontSize={{ base: 10, md: 12 }}
               borderColor="#e2e8f0"
               ring="none"
               outline="none"
@@ -57,14 +57,13 @@ export const AddClient = (props: AddClientProps) => {
               _active={{ outline: 'none', ring: '0px' }}
             />
           </Box>
-          <Box display="flex" gap={1} alignItems="center">
-            <Text fontSize="inherit" width="100px">Ruc:</Text>
+          <Box display="flex" flexDir="column">
+            <Text fontSize="inherit">Ruc:</Text>
             <Input
               placeholder="Nombre"
               size="xs"
               value={ruc}
               onChange={(e) => setRuc(e.target.value)}
-              fontSize={{ base: 10, md: 12 }}
               borderColor="#e2e8f0"
               ring="none"
               outline="none"
@@ -72,10 +71,7 @@ export const AddClient = (props: AddClientProps) => {
               _active={{ outline: 'none', ring: '0px' }}
             />
           </Box>
-          <Flex gap={2}>
-            <Button size="xs" onClick={onClose}>
-              Cancelar
-            </Button>
+          <Flex gap={2} mt={2}>
             <Button
               colorScheme="blue"
               size="xs"
@@ -89,7 +85,7 @@ export const AddClient = (props: AddClientProps) => {
       ) : (
         <>
           <Text>{textNoFound}</Text>
-          <Button  size="xs" onClick={onOpen}>Agregar cliente?</Button>
+          <Button width="100%" size="xs" onClick={onOpen} wordBreak="break-word">Agregar</Button>
         </>
       )}
     </Box>

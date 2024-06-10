@@ -1,4 +1,4 @@
-import { Flex, useDisclosure, Text, Button, Box } from '@chakra-ui/react';
+import { Flex, useDisclosure, Button, Box } from '@chakra-ui/react';
 import axios from 'axios';
 import { useEffect, useMemo, useState } from 'react';
 import { useRouter } from 'next/router';
@@ -17,7 +17,6 @@ const Pedidos = () => {
     IOrderValidationSchema | undefined
   >();
   const [orderList, setOrderList] = useState<IOrderValidationSchema[]>([]);
-  const { onClose, isOpen, onOpen } = useDisclosure();
   const {
     onClose: onCloseDelete,
     isOpen: isOpenDelete,
@@ -84,20 +83,12 @@ const Pedidos = () => {
   );
 
   return (
-    <IntranetLayout>
+    <IntranetLayout title='Listado de Pedidos'>
       <Flex flexDir="column" width="100%" gap={2} mt={5}>
-        <Flex width="100%" justifyContent="space-between">
-          <Text
-            fontSize={{ base: 25, md: 36 }}
-            fontWeight={700}
-            color="black"
-            lineHeight={{ base: '28px', md: '39px' }}
-          >
-            Pedidos
-          </Text>
+        <Flex width="100%" justifyContent="end">
 
-          <Button autoFocus onClick={() => handleGoToOrder('new')}>
-            Agregar Pedido
+          <Button size="sm"    colorScheme="yellow" autoFocus onClick={() => handleGoToOrder('new')}>
+            + Agregar
           </Button>
         </Flex>
 

@@ -1,5 +1,5 @@
 import { useRouter } from 'next/router';
-import { Box, Button, Text } from '@chakra-ui/react';
+import { Box, Button, Flex, Text } from '@chakra-ui/react';
 
 import { CustomHead } from '../Portal/CustomHead';
 import { IntranetNavbar } from './IntranetNavbar';
@@ -10,69 +10,78 @@ import { NoSessionPage } from '../NoSessionPage';
 import { useQuote } from 'src/context';
 
 interface IIntranetLayout {
-  children: React.ReactNode
-  noPaddingTop?: boolean
-  onBackClick?: () => void
+  title?: string;
+  children: React.ReactNode;
+  noPaddingTop?: boolean;
+  onBackClick?: () => void;
 }
 
 export const IntranetLayout = (props: IIntranetLayout) => {
-  const { children, onBackClick } = props
-  const { data: session } = useSession()
-  const router = useRouter()
+  const { children, onBackClick } = props;
+  const { data: session } = useSession();
+  const router = useRouter();
   const { setNewServiceQuoteSelected } = useQuote();
 
   const handleBackClick = () => {
-    setNewServiceQuoteSelected(undefined)
-    if (onBackClick) onBackClick()
-    else router.push(APP_ROUTES.admin)
-  }
+    setNewServiceQuoteSelected(undefined);
+    if (onBackClick) onBackClick();
+    else router.push(APP_ROUTES.admin);
+  };
 
   return (
-    <div className='w-full min-h-screen'>
+    <div className="w-full min-h-screen">
       <CustomHead />
-      <IntranetNavbar/>
+      <IntranetNavbar />
       {session && (
         <Box
-          as='main'
-          width='100%'
-          minHeight={{base:'calc(100vh - 55px)', md: 'calc(100vh - 70px)'}}
+          as="main"
+          width="100%"
+          minHeight={{ base: 'calc(100vh - 55px)', md: 'calc(100vh - 70px)' }}
           paddingTop={{
-            base: props.noPaddingTop ? '0px' : '30px',
-            md: props.noPaddingTop ? '0px' : '40px'
+            base: props.noPaddingTop ? '0px' : '10px',
+            md: props.noPaddingTop ? '0px' : '15px',
           }}
-          paddingBottom={{ base: '30px', md: '40px'}}
+          paddingBottom={{ base: '30px', md: '40px' }}
           paddingX={{ base: '30px', md: '50px' }}
-          position='relative'
+          position="relative"
         >
-          {children}
-
-          {router.pathname !== '/admin' && (
-            <Box position='fixed' top={{ base: '57px', md: '76px' }} left={{ base: '30px', md: '50px' }}>
-              <Button
-                fontSize={{ base: 12, md: 15 }}
-                width={{ base: '70px', md: '161px' }}
-                height={{ base: '25px', md: '30px' }}
-                bg='gray.200'
-                color='black'
-                _hover={{bg: 'gray.100'}}
-                fontWeight={500}
-                onClick={handleBackClick}
-                gap='10px'
-                justifyContent='center'
-                paddingX='5px'
+          <Flex alignItems="center" justifyContent="space-between">
+            <Box>
+              <Text
+                fontSize={{ base: 20, md: 30 }}
+                fontWeight={700}
+                color="black"
+                lineHeight={{ base: '28px', md: '39px' }}
               >
-                <ArrowBackIcon color='black' fontSize={18}/>
-                <Text>Volver</Text>
-              </Button>
+                {props.title}
+              </Text>
             </Box>
-          )}
-
+            {router.pathname !== '/admin' && (
+              <Box>
+                <Button
+                  fontSize={{ base: 12, md: 15 }}
+                  width={{ base: '70px', md: '161px' }}
+                  height={{ base: '25px', md: '30px' }}
+                  bg="gray.200"
+                  color="black"
+                  _hover={{ bg: 'gray.100' }}
+                  fontWeight={500}
+                  onClick={handleBackClick}
+                  gap="10px"
+                  justifyContent="center"
+                  paddingX="5px"
+                >
+                  <ArrowBackIcon color="black" fontSize={18} />
+                  <Text>Volver</Text>
+                </Button>
+              </Box>
+            )}
+          </Flex>
+          {children}
         </Box>
       )}
 
-      {!session && (
-        <NoSessionPage />
-      )}
+      {!session && <NoSessionPage />}
     </div>
-  )
-}
+  );
+};

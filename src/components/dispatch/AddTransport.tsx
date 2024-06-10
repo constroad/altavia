@@ -15,7 +15,7 @@ export const AddTransport = (props: AddTransportProps) => {
         <>
           <Text>{textNoFound}</Text>
           <Button size="xs" onClick={onOpen}>
-            Agregar transporte?
+            Agregar
           </Button>
         </>
       )}

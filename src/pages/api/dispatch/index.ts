@@ -10,7 +10,39 @@ const router = createRouter<NextApiRequest, NextApiResponse>();
 const getAll = async (req: NextApiRequest, res: NextApiResponse) => {
   const repo = new DispatchRepository();
   try {
-    const result = await repo.getAll();
+    const { page = 1, limit = 10, startDate, endDate } = req.query;
+    const query: any = {
+      page,
+      limit
+    };
+    // if (startDate || endDate) {
+    //   query.date = {};
+    //   if (startDate) {
+    //     query.date.$gte = new Date(startDate as string);
+    //   }
+    //   if (endDate) {
+    //     query.date.$lte = new Date(endDate as string);
+    //   }
+    // }    
+    if (startDate || endDate) {
+      query.$and = [];
+      if (startDate) {
+        query.$and.push({ 
+          date: { 
+            $gte: new Date(new Date(startDate as string).toISOString()).toISOString() 
+          } 
+        });
+      }
+      if (endDate) {
+        query.$and.push({ 
+          date: { 
+            $lte: new Date(new Date(endDate as string).toISOString()).toISOString() 
+          } 
+        });
+      }
+    }
+    const result = await repo.getAll(query);
+    
     res.status(200).json(result);
   } catch (error: any) {
     console.error(error.message);

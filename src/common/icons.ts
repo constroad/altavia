@@ -14,9 +14,11 @@ import {
   FaCaretDown,
   FaRegTrashAlt,
   FaTruckLoading,
-  FaCloudDownloadAlt
+  FaCloudDownloadAlt,
+  FaWhatsapp
 } from "react-icons/fa";
-import { FaUserTie, FaUserShield, FaTruckFast } from "react-icons/fa6";
+import { FiMoreVertical } from 'react-icons/fi'
+import { FaUserTie, FaUserShield, FaTruckFast, FaRoadBarrier } from "react-icons/fa6";
 import { IoLogoWhatsapp, IoMdMail, IoMdClose } from "react-icons/io";
 import { BsCalculatorFill, BsInboxesFill } from "react-icons/bs";
 import { IoArrowBackOutline, IoSearch } from "react-icons/io5";
@@ -26,7 +28,6 @@ import { BiSolidPencil, BiTask } from "react-icons/bi";
 import { RiSubtractLine } from "react-icons/ri";
 import { GrUserWorker } from "react-icons/gr";
 import { LuContainer } from "react-icons/lu";
-import { FaRoadBarrier } from "react-icons/fa6";
 import { GiBoxUnpacking } from "react-icons/gi";
 
 export const ArrowBackIcon = IoArrowBackOutline
@@ -64,3 +65,5 @@ export const ClientsIcon = FaUserTie
 export const QuoteIcon = HiClipboardDocumentList
 export const TaskIcon = BiTask
 export const ServiceIcon = FaRoadBarrier
+export const MenuVerticalIcon = FiMoreVertical
+export const WhatsappIcon = FaWhatsapp

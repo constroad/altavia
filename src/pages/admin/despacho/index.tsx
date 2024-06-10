@@ -1,28 +1,66 @@
 import React, { useEffect, useMemo, useState } from 'react';
-import { Button, Flex, Text, useDisclosure } from '@chakra-ui/react';
+import {
+  Box,
+  Button,
+  Flex,
+  FormControl,
+  FormLabel,
+  Input,
+  Text,
+  useDisclosure,
+} from '@chakra-ui/react';
 import { IntranetLayout, Modal, TableComponent, toast } from 'src/components';
 import axios from 'axios';
-import { IDispatchValidationSchema } from 'src/models/dispatch';
+import {
+  IDispatchList,
+  IDispatchValidationSchema,
+  IGetAll,
+} from 'src/models/dispatch';
 import { useAsync } from 'src/common/hooks';
 import { API_ROUTES } from 'src/common/consts';
-import { DispatchForm, generateDispatchColumns } from 'src/components/dispatch';
+import {
+  DispatchNotePDFType,
+  generateDispatchColumns,
+} from 'src/components/dispatch';
 import { IClientValidationSchema } from 'src/models/client';
 import { ITransportValidationSchema } from 'src/models/transport';
+import { IOrderValidationSchema } from 'src/models/order';
+import { DownloadIcon } from 'src/common/icons';
+import { getDate } from 'src/common/utils';
+import { formatISODate, getDateStringRange } from 'src/utils/general';
+import { TablePagination, TableAction } from '../../../components/Table/Table';
 
 const fetcher = (path: string) => axios.get(path);
+const postDisptach = (path: string, data: any) => axios.post(path, { data });
 const deleteDispatch = (path: string) => axios.delete(path);
+const putDisptach = (path: string, data: any) => axios.put(path, data);
 
-interface IDispatchList extends IDispatchValidationSchema {
-  client: string;
-  clientRuc: string;
-  company: string;
-  driverName: string;
-  plate: string;
-}
+const defaultValueDispatch: IDispatchValidationSchema = {
+  date: formatISODate(new Date().toDateString()),
+  transportId: '',
+  clientId: '',
+  invoice: '',
+  description: 'Mezcla asfaltica',
+  guia: '',
+  obra: '',
+  igvCheck: true,
+  driverName: '',
+  driverCard: '',
+  quantity: 0,
+  price: 480,
+  subTotal: 0,
+  igv: 0,
+  total: 0,
+  note: '',
+};
 
 const DispatchPage = () => {
-  const [dispatchSelected, setDispatchSelected] =
-    useState<IDispatchValidationSchema>();
+  const {dateTo, dateFrom} = getDateStringRange()
+  const [startDate, setStartDate] = useState(dateFrom)
+  const [endDate, setEndDate] = useState(dateTo)
+  const [page, setPage] = useState(1);
+  const [itemsPerPage, setItemsPerPage] = useState(20);
+  const [dispatchSelected, setDispatchSelected] = useState<IDispatchList>();
   const { onClose, isOpen, onOpen } = useDisclosure();
   const {
     onClose: onCloseDelete,
@@ -32,11 +70,16 @@ const DispatchPage = () => {
 
   // API
   const {
+    run: runGetOrders,
+    isLoading: loadingOrders,
+    data: orderResponse,
+  } = useAsync<IOrderValidationSchema[]>();
+  const {
     run: runGetDispatchs,
     data: dispatchResponse,
     isLoading,
     refetch,
-  } = useAsync<IDispatchValidationSchema[]>();
+  } = useAsync<IGetAll>();
   const {
     run: runGetClients,
     data: clientResponse,
@@ -47,14 +90,31 @@ const DispatchPage = () => {
     data: responseTransport,
     refetch: refetchTransport,
   } = useAsync<ITransportValidationSchema[]>();
+  const { run: runAddDispatch, isLoading: addingDispatch } = useAsync();
   const { run: runDeleteDispatch, isLoading: deletingDispatch } = useAsync();
+  const { run: runUpdateDispatch, isLoading: updatingDispatch } = useAsync();
 
   useEffect(() => {
-    runGetDispatchs(fetcher(API_ROUTES.dispatch), {
-      refetch: () => runGetDispatchs(fetcher(API_ROUTES.dispatch)),
+    const queryParams = new URLSearchParams({
+      page: page.toString(),
+      limit: itemsPerPage.toString(),
+      startDate: startDate || '',
+      endDate: endDate || '',
+    });
+    const path = `${API_ROUTES.dispatch}?${queryParams.toString()}`;
+    runGetDispatchs(fetcher(path), {
+      refetch: () => runGetDispatchs(fetcher(path)),
+    });
+  }, [page, itemsPerPage, startDate, endDate]);
+
+  useEffect(() => {
+    runGetOrders(fetcher(API_ROUTES.order), {
+      cacheKey: API_ROUTES.order,
+      refetch: () => runGetOrders(fetcher(API_ROUTES.order)),
     });
 
     runGetClients(fetcher(API_ROUTES.client), {
+      cacheKey: API_ROUTES.client,
       refetch: () => runGetClients(fetcher(API_ROUTES.client)),
     });
 
@@ -64,10 +124,6 @@ const DispatchPage = () => {
   }, []);
 
   // handlers
-  const handleCloseDispatchModal = () => {
-    onClose();
-    setDispatchSelected(undefined);
-  };
   const handleDeleteDispatch = () => {
     runDeleteDispatch(
       deleteDispatch(`${API_ROUTES.dispatch}/${dispatchSelected?._id}`),
@@ -76,32 +132,162 @@ const DispatchPage = () => {
           toast.success(
             `Eliminaste el pedido ${dispatchSelected?.description}`
           );
+          setDispatchSelected(undefined);
+          onCloseDelete();
           refetch();
           refetchTransport();
           refetchClients();
-          setDispatchSelected(undefined);
-          onCloseDelete();
         },
       }
     );
   };
 
-  const columns = generateDispatchColumns();
+  const handleAddDispatch = () => {
+    runAddDispatch(postDisptach(API_ROUTES.dispatch, defaultValueDispatch), {
+      onSuccess: () => {
+        refetch();
+      },
+      onError: () => {
+        toast.error('ocurrio un error agregando un Despacho');
+      },
+    });
+  };
+
+  const updateDispatch = (payload: IDispatchValidationSchema) => {
+    const path = `${API_ROUTES.dispatch}/${payload._id}`;
+    runUpdateDispatch(putDisptach(path, payload), {
+      onSuccess: () => {
+        refetch();
+      },
+      onError: () => {
+        toast.error('ocurrio un error actualizando un despacho');
+      },
+    });
+  };
+
+  const sendWhatsAppMessage = (phone: string) => {
+    if (!phone) {
+      toast.warning('Ingrese el numero de celular');
+      return;
+    }
+    const message = `ConstRoad te envia el vale de despacho
+     - Obra: ${dispatchSelected?.obra}
+     - Nro Cubos: ${dispatchSelected?.quantity}
+    `;
+    const url = `https://api.whatsapp.com/send?phone=51${phone}&text=${message}`;
+    const win = window.open(url, '_blank');
+    win?.focus();
+    onClose();
+    setDispatchSelected(undefined);
+  };
+
+  const handleGenerateDispatchNote = async () => {
+    if (!dispatchSelected) {
+      return;
+    }
+    if (!dispatchSelected.phoneNumber) {
+      toast.warning('Ingrese un numero de telefono');
+      return;
+    }
+    const { slashDate, peruvianTime, currentYear, month } = getDate();
+    const number = dispatchResponse?.data?.dispatchs?.length + 1;
+    const dispatchNoteNumber = `${currentYear}${month}-${number}`;
+
+    const pdfData: DispatchNotePDFType = {
+      nro: dispatchNoteNumber,
+      date: slashDate,
+      clientName: dispatchSelected.client ?? '',
+      proyect: dispatchSelected.obra ?? '',
+      material: dispatchSelected.description ?? '',
+      amount: dispatchSelected.quantity ?? 0,
+      plate: dispatchSelected.plate ?? '',
+      transportist:
+        dispatchSelected.driverName || dispatchSelected.company || '',
+      hour: peruvianTime,
+      note: dispatchSelected.note || '',
+    };
+
+    const response = await axios.post(
+      API_ROUTES.generateDispatchNotePDF,
+      { pdfData },
+      { responseType: 'arraybuffer' }
+    );
+    const blob = new Blob([response.data], { type: 'application/pdf' });
+    const pdfName = `Despacho_${dispatchSelected?.plate}_${slashDate}.pdf`;
+
+    const pdfUrl = URL.createObjectURL(blob);
+    const link = document.createElement('a');
+    link.href = pdfUrl;
+    link.setAttribute('download', pdfName);
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+
+    const path = `${API_ROUTES.dispatch}/${dispatchSelected?._id}`;
+    runUpdateDispatch(
+      putDisptach(path, {
+        ...dispatchSelected,
+        nroVale: dispatchSelected.nroVale ?? dispatchNoteNumber,
+      }),
+      {
+        onError: () => {
+          toast.error('ocurrio un error actualizando un despacho');
+        },
+      }
+    );
+
+    sendWhatsAppMessage(dispatchSelected.phoneNumber ?? '');
+
+    onClose();
+  };
+
+  const handleOnTableChange = (
+    action: TableAction,
+    pagination: TablePagination
+  ) => {
+    if (action === 'paginate') {
+      setPage(pagination.page);
+      setItemsPerPage(pagination.itemsPerPage);
+    }
+  };
+
+  const columns = generateDispatchColumns({
+    orderList: orderResponse?.data ?? [],
+    reloadClient: refetchClients,
+    clientList: clientResponse?.data ?? [],
+    reloadTransport: refetchTransport,
+    transportList: responseTransport?.data ?? [],
+    updateDispatch,
+    onDelete: (dispatch) => {
+      setDispatchSelected(dispatch);
+      onOpenDelete();
+    },
+    onSendVale: (dispatch) => {
+      onOpen();
+      setDispatchSelected(dispatch);
+    },
+  });
+
   const listDispatch = useMemo((): IDispatchList[] => {
     if (!dispatchResponse) return [];
 
-    return dispatchResponse.data.map((item) => {
+    return dispatchResponse.data.dispatchs.map((item) => {
       const transport = responseTransport?.data?.find(
         (x) => x._id === item.transportId
       );
-      const client = clientResponse?.data?.find((x) => x._id === item.clientId);
+      const order = orderResponse?.data?.find((x) => x._id === item.orderId);
+      let client = clientResponse?.data?.find((x) => x._id === item.clientId);
+      if (order) {
+        client = clientResponse?.data?.find((x) => x._id === order.clienteId);
+      }
       return {
         ...item,
+        obra: order?.obra || item.obra,
         client: client?.name ?? '',
         clientRuc: client?.ruc ?? '',
         company: transport?.company ?? '',
         plate: transport?.plate ?? '',
-        driverName: transport?.driverName ?? ''
+        driverName: item.driverName || transport?.driverName || '',
       };
     });
   }, [dispatchResponse, clientResponse, responseTransport]);
@@ -119,61 +305,66 @@ const DispatchPage = () => {
   );
 
   return (
-    <IntranetLayout>
+    <IntranetLayout title="Control de Despachos">
       <Flex
         flexDir="column"
         alignItems={{ base: '', md: '' }}
         gap="15px"
         mt={5}
       >
-        <Flex width="100%" justifyContent="space-between">
-          <Text
-            fontSize={{ base: 25, md: 30 }}
-            fontWeight={700}
-            color="black"
-            lineHeight={{ base: '28px', md: '39px' }}
-            marginTop="10px"
-            textAlign="center"
+        <Flex width="100%" alignItems="end" justifyContent="space-between">
+          <Flex gap={2}>
+            <FormControl id="payment-done">
+              <FormLabel mb="6px" fontSize={{ base: 12 }}>
+                Desde:
+              </FormLabel>
+              <Input
+               value={startDate}
+               onChange={(e) => setStartDate(e.target.value)}
+                px={{ base: '5px', md: '3px' }}
+                fontSize={{ base: 12 }}
+                lineHeight="14px"
+                height="32px"
+                type="date"
+              />
+            </FormControl>
+            <FormControl id="payment-done">
+              <FormLabel mb="6px" fontSize={{ base: 12 }}>
+                Hasta
+              </FormLabel>
+              <Input
+               value={endDate}
+               onChange={(e) => setEndDate(e.target.value)}
+                px={{ base: '5px', md: '3px' }}
+                fontSize={{ base: 12 }}
+                lineHeight="14px"
+                height="32px"
+                type="date"
+              />
+            </FormControl>
+          </Flex>
+
+          <Button
+            autoFocus
+            onClick={handleAddDispatch}
+            size="sm"
+            isLoading={addingDispatch}
           >
-            CONTROL DE DESPACHOS
-          </Text>
-
-          {!isOpen && (
-            <Button autoFocus onClick={onOpen}>
-              Agregar Despacho
-            </Button>
-          )}
+            + Despacho
+          </Button>
         </Flex>
-        {isOpen && (
-          <DispatchForm
-            onSuccess={() => {
-              refetch();
-              refetchClients();
-              refetchTransport();
-            }}
-            dispatch={dispatchSelected}
-            onClose={handleCloseDispatchModal}
-            dispatchList={dispatchResponse}
-          />
-        )}
 
-        {!isOpen && (
-          <TableComponent
-            isLoading={isLoading}
-            data={listDispatch}
-            columns={columns}
-            onDelete={(item) => {
-              setDispatchSelected(item);
-              onOpenDelete();
-            }}
-            onEdit={(item) => {
-              setDispatchSelected(item);
-              onOpen();
-            }}
-            pagination
-            actions
-          />
-        )}
+        <TableComponent
+          isLoading={isLoading || loadingOrders || updatingDispatch}
+          data={listDispatch}
+          columns={columns}
+          pagination
+          onChange={handleOnTableChange}
+          currentPage={page}
+          itemsPerPage={itemsPerPage}
+          totalPages={dispatchResponse?.data?.pagination?.totalPages ?? 0}
+          totalRecords={dispatchResponse?.data?.pagination?.totalRecords ?? 0}
+        />
       </Flex>
 
       {/* delete dispatch modal */}
@@ -183,6 +374,48 @@ const DispatchPage = () => {
         heading={`¿Estás seguro de eliminar este Pedido ${dispatchSelected?.description}?`}
         footer={deleteFooter}
       />
+
+      {/* download vale */}
+      <Modal
+        hideCancelButton
+        isOpen={isOpen}
+        onClose={onClose}
+        heading="Imprimir vale"
+      >
+        <Flex flexDir="column" gap={2}>
+          <Box>
+            <FormLabel mb="6px" fontSize={{ base: 12 }}>
+              Celular
+            </FormLabel>
+            <Input
+              px={{ base: '5px', md: '3px' }}
+              fontSize={{ base: 12 }}
+              lineHeight="14px"
+              height="32px"
+              type="text"
+              required
+              onChange={(e) => {
+                if (dispatchSelected) {
+                  setDispatchSelected({
+                    ...dispatchSelected,
+                    phoneNumber: e.target.value,
+                  });
+                }
+              }}
+              value={dispatchSelected?.phoneNumber}
+            />
+          </Box>
+
+          <Button
+            size="sm"
+            colorScheme="blue"
+            onClick={handleGenerateDispatchNote}
+          >
+            <DownloadIcon fontSize={20} />
+            <Text ml="5px">Descargar y enviar por whatsApp</Text>
+          </Button>
+        </Flex>
+      </Modal>
     </IntranetLayout>
   );
 };

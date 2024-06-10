@@ -4,8 +4,8 @@ import {
   ReactNode,
   useEffect,
   useState,
-} from 'react'
-import { IoSearchSharp } from 'react-icons/io5'
+} from 'react';
+import { IoSearchSharp } from 'react-icons/io5';
 import {
   Box,
   Flex,
@@ -16,78 +16,95 @@ import {
   ListItem,
   Spinner,
   UnorderedList,
-} from '@chakra-ui/react'
+} from '@chakra-ui/react';
 
-
-import { ClickAwayListener } from '../clickAwayListener'
-import { isEmpty } from 'lodash'
+import { ClickAwayListener } from '../clickAwayListener';
+import { isEmpty } from 'lodash';
 
 export interface IAutocompleteOptions {
-  value: string
-  label: string
+  value: string;
+  label: string;
+  filter?: string;
 }
 
 export interface IDropdownOptions {
-  onClose: () => void
+  onClose: () => void;
 }
-type IInputProps = Omit<InputProps, 'onChange'|'placeholder'>
+type IInputProps = Omit<InputProps, 'onChange' | 'placeholder'>;
 type AutocompleteProps = {
-  isLoading?: boolean
-  placeholder: string
-  value: string
-  onChange: (value: string) => void
-  options: IAutocompleteOptions[]
-  renderOption?: (option: IAutocompleteOptions) => ReactNode
-  renderNoFound?: (options: IDropdownOptions) => ReactNode
-  onSearch?: (value: string) => void
-  onSelect?: (option: IAutocompleteOptions) => void
-  onEnter?: (value: string) => void
-  rightIcon?: ReactNode
-  inputProps?: IInputProps
-  displayOptions?: boolean
-}
+  isLoading?: boolean;
+  placeholder: string;
+  value: string;
+  onChange?: (value: string) => void;
+  options: IAutocompleteOptions[];
+  renderOption?: (option: IAutocompleteOptions) => ReactNode;
+  renderNoFound?: (options: IDropdownOptions) => ReactNode;
+  onSearch?: (value: string) => void;
+  onSelect?: (option: IAutocompleteOptions) => void;
+  onEnter?: (value: string) => void;
+  rightIcon?: ReactNode;
+  inputProps?: IInputProps;
+  displayOptions?: boolean;
+};
 
 export const AutoComplete = (props: AutocompleteProps) => {
-  const { options, placeholder, value, displayOptions = true } = props
-  const [openResultBox, setOpenResultBox] = useState<boolean>(false)
-  const [searchValue, setSearchValue] = useState<string>('')
+  const { options, placeholder, value, displayOptions = true } = props;
+  const [openResultBox, setOpenResultBox] = useState<boolean>(false);
+  const [searchValue, setSearchValue] = useState<string>('');
+  const [localOptions, setLocalOptions] = useState<IAutocompleteOptions[]>([]);
 
   useEffect(() => {
-    setSearchValue(value)
-  }, [value])
+    setSearchValue(value);
+  }, [value]);
+
+  useEffect(() => {
+    if (options.length > 0) {
+      setLocalOptions(options);
+    }
+  }, [options]);
 
   //========= handlers =========
   const handleOnchange = (event: ChangeEvent<HTMLInputElement>) => {
-    const value = event.target.value
-    setSearchValue(value)
-    props.onChange(value)
+    const value = event.target.value;
+    setSearchValue(value);
+    if (value.length > 0) {
+      const optionList = [...options].filter(
+        (x) =>
+        x.label.toLowerCase().includes(value) || x.filter?.toLowerCase()?.includes(value)
+      );
+      setLocalOptions([...optionList]);
+    } else {
+      setLocalOptions([...options]);
+    }
+
+    props.onChange?.(value);
     if (!displayOptions) {
-      setOpenResultBox(false)
-      return
+      setOpenResultBox(false);
+      return;
     }
     if (value.length > 0) {
-      setOpenResultBox(true)
+      setOpenResultBox(true);
     } else {
-      setOpenResultBox(false)
+      setOpenResultBox(false);
     }
-  }
+  };
   const onKeyDown = (e: KeyboardEvent<HTMLInputElement>) => {
     if (e.key === 'Enter') {
-      props.onEnter?.(searchValue)
+      props.onEnter?.(searchValue);
     }
-  }
+  };
 
   const handleOnSelect = (option: IAutocompleteOptions) => {
-    handleOnClose()
-    props.onSelect?.(option)
-  }
+    handleOnClose();
+    props.onSelect?.(option);
+  };
   const handleOnClose = () => {
-    setOpenResultBox(false)
-  }
+    setOpenResultBox(false);
+  };
   const handleOnInputClick = () => {
-    setOpenResultBox(true)
-  }
-  const emptyOptions = isEmpty(options)
+    setOpenResultBox(true);
+  };
+  const emptyOptions = isEmpty(localOptions);
 
   //========= renders =========
   return (
@@ -104,24 +121,25 @@ export const AutoComplete = (props: AutocompleteProps) => {
       >
         <InputGroup>
           <InputLeftElement width="32px" height="32px">
-            <IoSearchSharp color="mid-gray-5" fontSize={18} />
+            <IoSearchSharp color="gray" fontSize={18} />
           </InputLeftElement>
 
           <Input
             placeholder={placeholder}
-            fontSize={14}
-            paddingY="4px"
-            paddingX="36px"
-            height="32px"
+            fontSize="inherit"
+            paddingY="3px"
+            paddingLeft="30px"
+            height="auto"
             onChange={handleOnchange}
             onClick={handleOnInputClick}
             value={searchValue}
-            borderColor="light-gray-3"
+            borderColor="inherit"
             borderRadius={openResultBox ? 0 : 6}
             onKeyDown={onKeyDown}
             aria-label="search"
-            size={props.inputProps?.size ?? "sm"}
-            // {...props.inputProps}
+            size={props.inputProps?.size ?? 'sm'}
+            isDisabled={props.inputProps?.isDisabled ?? false}
+            // {...props.inputProps}            
             _focus={{
               ring: 'none',
               roundedTop: 6,
@@ -144,14 +162,14 @@ export const AutoComplete = (props: AutocompleteProps) => {
         >
           <UnorderedList styleType="none" marginLeft="0px">
             {openResultBox &&
-              options?.map((option) => {
+              localOptions.map((option) => {
                 return (
                   <ListItem
                     key={option.value}
                     paddingX={2}
                     paddingY={1}
                     width="100%"
-                    fontSize={12}
+                    fontSize="inherit"
                     background="white"
                     _hover={{
                       background: 'light-gray-2',
@@ -162,7 +180,7 @@ export const AutoComplete = (props: AutocompleteProps) => {
                       ? props.renderOption(option)
                       : option.label}
                   </ListItem>
-                )
+                );
               })}
           </UnorderedList>
         </Box>
@@ -197,5 +215,5 @@ export const AutoComplete = (props: AutocompleteProps) => {
         )}
       </Box>
     </ClickAwayListener>
-  )
-}
+  );
+};

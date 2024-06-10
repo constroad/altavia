@@ -55,9 +55,9 @@ const defaultValueDispatch: IDispatchValidationSchema = {
 };
 
 const DispatchPage = () => {
-  const {dateTo, dateFrom} = getDateStringRange()
-  const [startDate, setStartDate] = useState(dateFrom)
-  const [endDate, setEndDate] = useState(dateTo)
+  const { dateTo, dateFrom } = getDateStringRange();
+  const [startDate, setStartDate] = useState(dateFrom);
+  const [endDate, setEndDate] = useState(dateTo);
   const [page, setPage] = useState(1);
   const [itemsPerPage, setItemsPerPage] = useState(20);
   const [dispatchSelected, setDispatchSelected] = useState<IDispatchList>();
@@ -319,8 +319,8 @@ const DispatchPage = () => {
                 Desde:
               </FormLabel>
               <Input
-               value={startDate}
-               onChange={(e) => setStartDate(e.target.value)}
+                value={startDate}
+                onChange={(e) => setStartDate(e.target.value)}
                 px={{ base: '5px', md: '3px' }}
                 fontSize={{ base: 12 }}
                 lineHeight="14px"
@@ -333,8 +333,8 @@ const DispatchPage = () => {
                 Hasta
               </FormLabel>
               <Input
-               value={endDate}
-               onChange={(e) => setEndDate(e.target.value)}
+                value={endDate}
+                onChange={(e) => setEndDate(e.target.value)}
                 px={{ base: '5px', md: '3px' }}
                 fontSize={{ base: 12 }}
                 lineHeight="14px"
@@ -343,19 +343,23 @@ const DispatchPage = () => {
               />
             </FormControl>
           </Flex>
-
-          <Button
-            autoFocus
-            onClick={handleAddDispatch}
-            size="sm"
-            isLoading={addingDispatch}
-          >
-            + Despacho
-          </Button>
+          <Flex alignItems="center" gap={2}>
+            {isLoading ||
+              loadingOrders ||
+              (updatingDispatch && <Text color="green" fontSize={12}>actualizando...</Text>)}
+            <Button
+              autoFocus
+              onClick={handleAddDispatch}
+              size="sm"
+              isLoading={addingDispatch}
+            >
+              + Despacho
+            </Button>
+          </Flex>
         </Flex>
 
         <TableComponent
-          isLoading={isLoading || loadingOrders || updatingDispatch}
+          // isLoading={isLoading || loadingOrders || updatingDispatch}
           data={listDispatch}
           columns={columns}
           pagination

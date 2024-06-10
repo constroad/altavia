@@ -47,8 +47,6 @@ export const TableComponent = (props: Props) => {
     onEdit,
     actions,
     isLoading,
-    // itemsPerPage: pagesPerPage = 10,
-    // currentPage: page
   } = props;
   const [currentPage, setCurrentPage] = useState(props.currentPage ?? 1);
   const [itemsPerPage, setItemsPerPage] = useState(props.itemsPerPage ?? 10);
@@ -90,9 +88,9 @@ export const TableComponent = (props: Props) => {
       <Table border="collapse">
         <Thead h={{ base: '32px', md: 'auto' }}>
           <Tr fontSize={10}>
-            {columns.map((column) => (
+            {columns.map((column, idx) => (
               <Th
-                key={column.key}
+                key={`header-${column.key}-${idx}`}
                 background={column.bgColor ?? CONSTROAD_COLORS.black}
                 color="white"
                 textAlign="start"
@@ -151,15 +149,15 @@ export const TableComponent = (props: Props) => {
             !isLoading &&
             currentItems.map((row, index) => (
               <Tr
-                key={index}
+              key={`row-${index}`}
                 onClick={() => handleSelectRow(row)}
                 h="38px"
                 maxH="38px"
                 minH="38px"
               >
-                {columns.map((column) => (
+                {columns.map((column, idx) => (
                   <Td
-                    key={column.key}
+                  key={`item-${column.key}-${idx}`}
                     width={column.width}
                     maxWidth={column.width}
                     py={1}

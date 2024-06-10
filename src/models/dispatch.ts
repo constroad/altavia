@@ -28,6 +28,7 @@ export const dispatchValidationSchema = z.object({
 });
 export type IDispatchValidationSchema = z.infer<typeof dispatchValidationSchema>
 export interface IDispatchList extends IDispatchValidationSchema {
+  order: string;
   client: string;
   clientRuc: string;
   company: string;

@@ -4,6 +4,7 @@ import mongoose, { Document, Schema, Model } from 'mongoose';
 export enum OrderStatus {
    pending= 'pending',
    paid= 'paid',
+   dispatched= 'dispatched',
    deleted= 'deleted',
    rejected= 'rejected'
 }

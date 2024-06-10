@@ -16,7 +16,7 @@ import {
   IDispatchValidationSchema,
   IGetAll,
 } from 'src/models/dispatch';
-import { useAsync } from 'src/common/hooks';
+import { useAsync, useScreenSize } from 'src/common/hooks';
 import { API_ROUTES } from 'src/common/consts';
 import {
   DispatchNotePDFType,
@@ -55,6 +55,8 @@ const defaultValueDispatch: IDispatchValidationSchema = {
 };
 
 const DispatchPage = () => {
+  const { isMobile } = useScreenSize();
+
   const { dateTo, dateFrom } = getDateStringRange();
   const [startDate, setStartDate] = useState(dateFrom);
   const [endDate, setEndDate] = useState(dateTo);
@@ -145,6 +147,7 @@ const DispatchPage = () => {
   const handleAddDispatch = () => {
     runAddDispatch(postDisptach(API_ROUTES.dispatch, defaultValueDispatch), {
       onSuccess: () => {
+        setDispatchSelected(undefined);
         refetch();
       },
       onError: () => {
@@ -157,6 +160,7 @@ const DispatchPage = () => {
     const path = `${API_ROUTES.dispatch}/${payload._id}`;
     runUpdateDispatch(putDisptach(path, payload), {
       onSuccess: () => {
+        setDispatchSelected(undefined);
         refetch();
       },
       onError: () => {
@@ -252,6 +256,7 @@ const DispatchPage = () => {
   };
 
   const columns = generateDispatchColumns({
+    isMobile,
     orderList: orderResponse?.data ?? [],
     reloadClient: refetchClients,
     clientList: clientResponse?.data ?? [],
@@ -282,6 +287,12 @@ const DispatchPage = () => {
       }
       return {
         ...item,
+        order: order
+          ? `${client?.name} ${
+              new Date(order.fechaProgramacion).toLocaleDateString('es-PE') ??
+              ''
+            } ${order.cantidadCubos} cubos`
+          : '',
         obra: order?.obra || item.obra,
         client: client?.name ?? '',
         clientRuc: client?.ruc ?? '',
@@ -291,6 +302,8 @@ const DispatchPage = () => {
       };
     });
   }, [dispatchResponse, clientResponse, responseTransport]);
+
+  console.log('listDispatch', listDispatch);
 
   const deleteFooter = (
     <Button
@@ -344,9 +357,11 @@ const DispatchPage = () => {
             </FormControl>
           </Flex>
           <Flex alignItems="center" gap={2}>
-            {isLoading ||
-              loadingOrders ||
-              (updatingDispatch && <Text color="green" fontSize={12}>actualizando...</Text>)}
+            {(isLoading || loadingOrders || updatingDispatch) && (
+              <Text color="green" fontSize={12}>
+                actualizando...
+              </Text>
+            )}
             <Button
               autoFocus
               onClick={handleAddDispatch}
@@ -360,7 +375,7 @@ const DispatchPage = () => {
 
         <TableComponent
           // isLoading={isLoading || loadingOrders || updatingDispatch}
-          data={listDispatch}
+          data={[...listDispatch]}
           columns={columns}
           pagination
           onChange={handleOnTableChange}

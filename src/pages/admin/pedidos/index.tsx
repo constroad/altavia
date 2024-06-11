@@ -5,7 +5,7 @@ import { useRouter } from 'next/router';
 
 import { ADMIN_ROUTES, API_ROUTES } from 'src/common/consts';
 import { useAsync } from 'src/common/hooks';
-import { Modal, TableComponent, toast, IntranetLayout } from 'src/components';
+import { Modal, TableComponent, toast, IntranetLayout, TableAction, TablePagination } from 'src/components';
 import { generatePedidoColumns } from 'src/components/pedidos';
 import { IOrderValidationSchema } from 'src/models/order';
 
@@ -17,6 +17,9 @@ const Pedidos = () => {
     IOrderValidationSchema | undefined
   >();
   const [orderList, setOrderList] = useState<IOrderValidationSchema[]>([]);
+  const [currentPage, setCurrentPage] = useState(1)
+  const [itemsPerPage, setItemsPerPage] = useState(20)
+
   const {
     onClose: onCloseDelete,
     isOpen: isOpenDelete,
@@ -52,6 +55,12 @@ const Pedidos = () => {
     return sortedList;
   }, [orderList]);
 
+  function getListPerPage(data: any[], filesPerPage: number, actualPage: number) {
+    const startIndex = (actualPage - 1) * filesPerPage;
+    const endIndex = actualPage * filesPerPage;
+    return data.slice(startIndex, endIndex);
+  }
+
   // handlers
   const handleDeleteOrder = () => {
     runDeleteOrder(deleteOrder(`${API_ROUTES.order}/${orderSelected?._id}`), {
@@ -68,6 +77,19 @@ const Pedidos = () => {
   };
 
   const columns = generatePedidoColumns();
+
+  const totalPages = Math.ceil(orderListSorted.length / itemsPerPage);
+  const dataPerPage = getListPerPage(orderListSorted, itemsPerPage, currentPage)
+
+  const handleOnTableChange = (
+    action: TableAction,
+    pagination: TablePagination
+  ) => {
+    if (action === 'paginate') {
+      setCurrentPage(pagination.page);
+      setItemsPerPage(pagination.itemsPerPage);
+    }
+  };
 
   // Renders
   const deleteFooter = (
@@ -94,7 +116,7 @@ const Pedidos = () => {
 
         <Box w="100%">
           <TableComponent
-            data={orderListSorted}
+            data={dataPerPage}
             columns={columns}
             onDelete={(item) => {
               setOrderSelected(item);
@@ -105,6 +127,11 @@ const Pedidos = () => {
             }}
             isLoading={isLoading}
             pagination
+            currentPage={currentPage}
+            onChange={handleOnTableChange}
+            itemsPerPage={itemsPerPage}
+            totalPages={totalPages}
+            totalRecords={orderListSorted.length}
             actions
           />
         </Box>

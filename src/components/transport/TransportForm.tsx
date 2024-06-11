@@ -5,7 +5,7 @@ import {
   FormControl,
   FormLabel,
   Input,
-  Stack,
+  Text,
 } from '@chakra-ui/react';
 import axios from 'axios';
 import { useState } from 'react';
@@ -80,10 +80,9 @@ export const TransportForm = (props: TransportFormProps) => {
     <Box onSubmit={handleSubmit} fontSize="inherit" width="inherit">
       <Flex flexDir="column" width="inherit">
         <FormControl as={Flex} flexDir="column" gap={0}>
-          <FormLabel fontSize="inherit">
-            Empresa(*)
-          </FormLabel>
+          <Text fontSize="inherit">Empresa(*)</Text>
           <Input
+            placeholder="Enpresa"
             size="xs"
             value={transport.company}
             onChange={(e) =>
@@ -92,9 +91,7 @@ export const TransportForm = (props: TransportFormProps) => {
           />
         </FormControl>
         <FormControl as={Flex} flexDir="column">
-          <FormLabel fontSize="inherit">
-            Placa(*)
-          </FormLabel>
+          <Text fontSize="inherit">Placa(*)</Text>
           <Input
             size="xs"
             value={transport.plate}
@@ -104,10 +101,9 @@ export const TransportForm = (props: TransportFormProps) => {
           />
         </FormControl>
         <FormControl as={Flex} flexDir="column">
-          <FormLabel fontSize="inherit">
-            Conductor
-          </FormLabel>
+          <Text fontSize="inherit">Conductor</Text>
           <Input
+          fontSize="inherit"
             size="xs"
             value={transport.driverName}
             onChange={(e) =>
@@ -116,10 +112,9 @@ export const TransportForm = (props: TransportFormProps) => {
           />
         </FormControl>
         <FormControl as={Flex} flexDir="column">
-          <FormLabel fontSize="inherit">
-            Licencia
-          </FormLabel>
+          <Text fontSize="inherit">Licencia</Text>
           <Input
+          fontSize="inherit"
             size="xs"
             value={transport.driverCard}
             onChange={(e) =>
@@ -128,10 +123,9 @@ export const TransportForm = (props: TransportFormProps) => {
           />
         </FormControl>
         <FormControl as={Flex} flexDir="column">
-          <FormLabel fontSize="inherit">
-            Celular
-          </FormLabel>
+          <Text fontSize="inherit">Celular</Text>
           <Input
+            fontSize="inherit"
             size="xs"
             value={transport.phone}
             onChange={(e) =>

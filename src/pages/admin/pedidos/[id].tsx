@@ -54,7 +54,7 @@ const Pedido = () => {
           />
 
           {/* Listado de Despachos */}
-          <AddDispatch orderId={order?._id} />
+          {/* <AddDispatch orderId={order?._id} /> */}
         </Flex>
       )}
     </IntranetLayout>

@@ -53,7 +53,13 @@ export const generateDispatchColumns = (props: ColumnsProps) => {
             placeholder="Pedidos por cliente o fecha"
             value={row.order}
             onSelect={(option) => {
-              updateDispatch({ ...row, orderId: option.value });
+              const order = orderList.find((x) => x._id === option.value)
+              updateDispatch({
+                ...row,
+                orderId: option.value,
+                clientId: order?.clienteId ?? '',
+                obra: order?.obra ?? ''
+              });
             }}
             options={orderList.map((order) => ({
               label: `${order.cliente} - ${new Date(
@@ -502,7 +508,13 @@ export const generateDispatchColumns = (props: ColumnsProps) => {
                 placeholder="Buscar cliente por nombre, alias o RUC"
                 value={row.client}
                 onSelect={(option) => {
-                  updateDispatch({ ...row, clientId: option.value });
+                  const order = orderList.find((x) => x._id === option.value)
+                  updateDispatch({
+                    ...row,
+                    orderId: option.value,
+                    clientId: order?.clienteId ?? '',
+                    obra: order?.obra ?? ''
+                  });
                 }}
                 options={clientList.map((client) => ({
                   label: client.name,

@@ -57,7 +57,6 @@ const defaultValueDispatch: IDispatchValidationSchema = {
 
 const DispatchPage = () => {
   const { isMobile } = useScreenSize();
-
   const { dateTo, dateFrom } = getDateStringRange();
   const [startDate, setStartDate] = useState(dateFrom);
   const [clientId, setClientId] = useState('');
@@ -104,10 +103,11 @@ const DispatchPage = () => {
       limit: itemsPerPage.toString(),
       startDate: startDate || '',
       endDate: endDate || '',
-      clientId
+      clientId,
     });
     const path = `${API_ROUTES.dispatch}?${queryParams.toString()}`;
     runGetDispatchs(fetcher(path), {
+      cacheKey: path,
       refetch: () => runGetDispatchs(fetcher(path)),
     });
   }, [page, itemsPerPage, startDate, endDate, clientId]);
@@ -124,6 +124,7 @@ const DispatchPage = () => {
     });
 
     runGetTransports(fetcher(API_ROUTES.transport), {
+      cacheKey: API_ROUTES.transport,
       refetch: () => runGetTransports(fetcher(API_ROUTES.transport)),
     });
   }, []);
@@ -331,33 +332,35 @@ const DispatchPage = () => {
         mt={5}
       >
         <Flex width="100%" alignItems="end" justifyContent="space-between">
-          <Flex gap={2}>
-            <FormControl id="payment-done">
+          <Flex gap={{base: 1, md: 2}}>
+            <FormControl>
               <FormLabel mb="6px" fontSize={{ base: 12 }}>
                 Desde:
               </FormLabel>
               <Input
                 value={startDate}
                 onChange={(e) => setStartDate(e.target.value)}
-                px={{ base: '5px', md: '3px' }}
+                paddingInlineEnd={1}
+                paddingInlineStart={1}
                 fontSize={{ base: 12 }}
-                lineHeight="14px"
                 height="32px"
                 type="date"
+                width="100px"
               />
             </FormControl>
-            <FormControl id="payment-done">
+            <FormControl>
               <FormLabel mb="6px" fontSize={{ base: 12 }}>
                 Hasta
               </FormLabel>
               <Input
                 value={endDate}
                 onChange={(e) => setEndDate(e.target.value)}
-                px={{ base: '5px', md: '3px' }}
+                paddingInlineEnd={1}
+                paddingInlineStart={1}
                 fontSize={{ base: 12 }}
-                lineHeight="14px"
                 height="32px"
                 type="date"
+                width="100px"
               />
             </FormControl>
             <Flex flexDir="column" fontSize="inherit">
@@ -367,18 +370,20 @@ const DispatchPage = () => {
               <Select
                 defaultValue=""
                 size="sm"
-                width="150px"
+                width={{base: "90px" , md: "150px"}}
                 onChange={(e) => setClientId(e.target.value)}
                 fontSize={12}
               >
                 <option value="">Todos</option>
                 {clientResponse?.data?.map((client) => (
-                  <option key={`filter-${client._id}`} value={client._id}>{client.name}</option>
+                  <option key={`filter-${client._id}`} value={client._id}>
+                    {client.name}
+                  </option>
                 ))}
               </Select>
             </Flex>
           </Flex>
-          <Flex alignItems="center" gap={2}>
+          <Flex alignItems="center" gap={1}>
             <Button autoFocus onClick={() => refetch()} size="sm">
               <RefreshIcon />
             </Button>

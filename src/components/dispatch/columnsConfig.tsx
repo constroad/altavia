@@ -196,7 +196,7 @@ export const generateDispatchColumns = (props: ColumnsProps) => {
                 });
               }}
               options={transportList.map((t) => ({
-                label: `${t.driverName}-${t.plate}`,
+                label: `${t.company}-${t.driverName}-${t.plate}`,
                 value: t._id ?? '',
                 filter: `${t.company}-${t.driverName}-${t.plate}`,
               }))}
@@ -568,7 +568,7 @@ export const generateDispatchColumns = (props: ColumnsProps) => {
                   });
                 }}
                 options={transportList.map((t) => ({
-                  label: `${t.driverName}-${t.plate}`,
+                  label: `${t.company}-${t.driverName}-${t.plate}`,
                   value: t._id ?? '',
                   filter: `${t.company}-${t.driverName}-${t.plate}`,
                 }))}

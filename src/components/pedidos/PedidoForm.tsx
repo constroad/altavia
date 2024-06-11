@@ -143,6 +143,7 @@ export const PedidoForm = (props: PedidoFormProps) => {
         axios.put(path, {
           ...payload,
           cantidadCubos: parseFloat(payload.cantidadCubos.toString()),
+          precioCubo: parseFloat(payload.precioCubo.toString()),
           montoAdelanto: parseFloat(payload.montoAdelanto?.toString() ?? '0')
         }),
         {
@@ -163,6 +164,7 @@ export const PedidoForm = (props: PedidoFormProps) => {
       postOrder(API_ROUTES.order, {
         ...payload,
         cantidadCubos: parseFloat(payload.cantidadCubos.toString()),
+        precioCubo: parseFloat(payload.precioCubo.toString()),
         montoAdelanto: parseFloat(payload.montoAdelanto?.toString() ?? '0')
       }),
       {

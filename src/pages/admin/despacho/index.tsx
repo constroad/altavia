@@ -114,7 +114,7 @@ const DispatchPage = () => {
 
   useEffect(() => {
     runGetOrders(fetcher(API_ROUTES.order), {
-      cacheKey: API_ROUTES.order,
+      // cacheKey: API_ROUTES.order,
       refetch: () => runGetOrders(fetcher(API_ROUTES.order)),
     });
 

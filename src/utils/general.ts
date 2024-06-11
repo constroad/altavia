@@ -17,3 +17,7 @@ export function getDateStringRange(): { dateTo: string, dateFrom: string } {
     dateFrom: formatISODate(dateFrom.toDateString())
   };
 }
+
+export function formatMoney(amount: number) {
+  return (amount).toFixed(2).replace(/\d(?=(\d{3})+\.)/g, '$&,'); 
+};

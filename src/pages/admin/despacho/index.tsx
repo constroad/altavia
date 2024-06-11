@@ -27,9 +27,10 @@ import { ITransportValidationSchema } from 'src/models/transport';
 import { IOrderValidationSchema } from 'src/models/order';
 import { DownloadIcon, RefreshIcon } from 'src/common/icons';
 import { getDate } from 'src/common/utils';
-import { formatISODate, getDateStringRange } from 'src/utils/general';
+import { formatISODate, formatMoney, getDateStringRange } from 'src/utils/general';
 import { TablePagination, TableAction } from '../../../components/Table/Table';
 import { Select } from '@chakra-ui/react';
+import { CONSTROAD_COLORS } from 'src/styles/shared';
 
 const fetcher = (path: string) => axios.get(path);
 const postDisptach = (path: string, data: any) => axios.post(path, { data });
@@ -332,7 +333,7 @@ const DispatchPage = () => {
         mt={5}
       >
         <Flex width="100%" alignItems="end" justifyContent="space-between">
-          <Flex gap={{base: 1, md: 2}}>
+          <Flex gap={{ base: 1, md: 2 }}>
             <FormControl>
               <FormLabel mb="6px" fontSize={{ base: 12 }}>
                 Desde:
@@ -370,7 +371,7 @@ const DispatchPage = () => {
               <Select
                 defaultValue=""
                 size="sm"
-                width={{base: "90px" , md: "150px"}}
+                width={{ base: '90px', md: '150px' }}
                 onChange={(e) => setClientId(e.target.value)}
                 fontSize={12}
               >
@@ -395,6 +396,31 @@ const DispatchPage = () => {
             >
               + {!isMobile && 'Despacho'}
             </Button>
+          </Flex>
+        </Flex>
+        <Flex flexDir="column" fontSize="12px" width="210px">
+          <Flex>
+            <Box width="30%" bgColor="black" color="white">
+              M3:
+            </Box>
+            <Text flex={1} textAlign="right" bgColor={CONSTROAD_COLORS.yellow}>
+              {listDispatch
+                .map((x) => x.quantity)
+                .reduce((prev, current) => prev + current, 0)}
+            </Text>
+          </Flex>
+          <Flex>
+            <Box width="30%" bgColor="black" color="white">
+              Total:
+            </Box>
+            <Text textAlign="right" flex={1} bgColor={CONSTROAD_COLORS.yellow}>
+              S/.
+              {formatMoney(
+                listDispatch
+                  .map((x) => x.total)
+                  .reduce((prev, current) => prev + current, 0)
+              )}
+            </Text>
           </Flex>
         </Flex>
 

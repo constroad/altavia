@@ -1,5 +1,4 @@
 import {
-  Box,
   Table,
   Thead,
   Tbody,
@@ -9,13 +8,13 @@ import {
   Button,
   Flex,
   CircularProgress,
-  IconButton,
 } from '@chakra-ui/react';
 import { TableColumn, TableData } from './TableTypes';
 import { CONSTROAD_COLORS } from 'src/styles/shared';
 import { EditIcon, TrashIcon } from 'src/common/icons';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { Pagination } from './Pagination';
+import { v4 as uuidv4 } from 'uuid';
 
 export type TableAction = 'paginate' | 'filter';
 export type TablePagination = {
@@ -39,17 +38,19 @@ interface Props {
 }
 
 export const TableComponent = (props: Props) => {
-  const {
-    data,
-    columns,
-    onDelete,
-    onSelectRow,
-    onEdit,
-    actions,
-    isLoading,
-  } = props;
+  const [currentItems, setCurrentItems] = useState<TableData[]>([])
+  const { data, columns, onDelete, onSelectRow, onEdit, actions, isLoading } =
+    props;
   const [currentPage, setCurrentPage] = useState(props.currentPage ?? 1);
   const [itemsPerPage, setItemsPerPage] = useState(props.itemsPerPage ?? 10);
+
+  useEffect(() => {
+    if (props.currentPage) {
+      setCurrentItems(data)
+      return
+    }
+    setCurrentItems([...data.slice(indexOfFirstItem, indexOfLastItem)])
+  }, [data, props.currentPage]);
 
   const handleSelectRow = (item: any) => {
     if (onSelectRow) {
@@ -59,9 +60,9 @@ export const TableComponent = (props: Props) => {
 
   const indexOfLastItem = currentPage * itemsPerPage;
   const indexOfFirstItem = indexOfLastItem - itemsPerPage;
-  const currentItems = props.currentPage
-    ? data
-    : data.slice(indexOfFirstItem, indexOfLastItem);
+  // const currentItems = props.currentPage
+  //   ? data
+  //   : data.slice(indexOfFirstItem, indexOfLastItem);
 
   const paginate = (pageNumber: number, items: number) => {
     setCurrentPage(pageNumber);
@@ -149,7 +150,7 @@ export const TableComponent = (props: Props) => {
             !isLoading &&
             currentItems.map((row, index) => (
               <Tr
-              key={`row-${index}`}
+                key={`row-${uuidv4()}`}
                 onClick={() => handleSelectRow(row)}
                 h="38px"
                 maxH="38px"
@@ -157,7 +158,7 @@ export const TableComponent = (props: Props) => {
               >
                 {columns.map((column, idx) => (
                   <Td
-                  key={`item-${column.key}-${idx}`}
+                    key={`item-${column.key}-${idx}`}
                     width={column.width}
                     maxWidth={column.width}
                     py={1}

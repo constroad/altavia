@@ -10,7 +10,7 @@ const router = createRouter<NextApiRequest, NextApiResponse>();
 const getAll = async (req: NextApiRequest, res: NextApiResponse) => {
   const repo = new DispatchRepository();
   try {
-    const { page = 1, limit = 10, startDate, endDate } = req.query;
+    const { page = 1, limit = 10, startDate, endDate, clientId } = req.query;
     const query: any = {
       page,
       limit
@@ -24,6 +24,9 @@ const getAll = async (req: NextApiRequest, res: NextApiResponse) => {
     //     query.date.$lte = new Date(endDate as string);
     //   }
     // }    
+    if (clientId) {
+      query.clientId = clientId
+    }
     if (startDate || endDate) {
       query.$and = [];
       if (startDate) {

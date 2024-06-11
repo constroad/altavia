@@ -1,6 +1,6 @@
 export interface TableColumn<T = any> {
   key: string;
-  label: string;
+  label: string | React.ReactNode;
   width?: string;
   bgColor?: string;
   textAlign?: 'start' | 'center' | 'end';

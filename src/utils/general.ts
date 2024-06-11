@@ -10,7 +10,7 @@ export function getDateStringRange(): { dateTo: string, dateFrom: string } {
   const dateTo = new Date();
 
   const dateFrom = new Date();
-  dateFrom.setDate(dateTo.getDate() - 7);
+  dateFrom.setDate(dateTo.getDate() - 14);
 
   return {
     dateTo: formatISODate(dateTo.toDateString()),

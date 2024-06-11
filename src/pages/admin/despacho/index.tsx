@@ -29,6 +29,7 @@ import { DownloadIcon, RefreshIcon } from 'src/common/icons';
 import { getDate } from 'src/common/utils';
 import { formatISODate, getDateStringRange } from 'src/utils/general';
 import { TablePagination, TableAction } from '../../../components/Table/Table';
+import { Select } from '@chakra-ui/react';
 
 const fetcher = (path: string) => axios.get(path);
 const postDisptach = (path: string, data: any) => axios.post(path, { data });
@@ -59,6 +60,7 @@ const DispatchPage = () => {
 
   const { dateTo, dateFrom } = getDateStringRange();
   const [startDate, setStartDate] = useState(dateFrom);
+  const [clientId, setClientId] = useState('');
   const [endDate, setEndDate] = useState(dateTo);
   const [page, setPage] = useState(1);
   const [itemsPerPage, setItemsPerPage] = useState(20);
@@ -102,12 +104,13 @@ const DispatchPage = () => {
       limit: itemsPerPage.toString(),
       startDate: startDate || '',
       endDate: endDate || '',
+      clientId
     });
     const path = `${API_ROUTES.dispatch}?${queryParams.toString()}`;
     runGetDispatchs(fetcher(path), {
       refetch: () => runGetDispatchs(fetcher(path)),
     });
-  }, [page, itemsPerPage, startDate, endDate]);
+  }, [page, itemsPerPage, startDate, endDate, clientId]);
 
   useEffect(() => {
     runGetOrders(fetcher(API_ROUTES.order), {
@@ -145,15 +148,18 @@ const DispatchPage = () => {
   };
 
   const handleAddDispatch = () => {
-    runAddDispatch(postDisptach(API_ROUTES.dispatch, defaultValueDispatch), {
-      onSuccess: () => {
-        setDispatchSelected(undefined);
-        refetch();
-      },
-      onError: () => {
-        toast.error('ocurrio un error agregando un Despacho');
-      },
-    });
+    runAddDispatch(
+      postDisptach(API_ROUTES.dispatch, { ...defaultValueDispatch }),
+      {
+        onSuccess: () => {
+          refetch();
+          setDispatchSelected(undefined);
+        },
+        onError: () => {
+          toast.error('ocurrio un error agregando un Despacho');
+        },
+      }
+    );
   };
 
   const updateDispatch = (payload: IDispatchValidationSchema) => {
@@ -257,6 +263,7 @@ const DispatchPage = () => {
 
   const columns = generateDispatchColumns({
     isMobile,
+    isLoading: isLoading || loadingOrders || updatingDispatch,
     orderList: orderResponse?.data ?? [],
     reloadClient: refetchClients,
     clientList: clientResponse?.data ?? [],
@@ -301,7 +308,7 @@ const DispatchPage = () => {
         driverName: item.driverName || transport?.driverName || '',
       };
     });
-  }, [dispatchResponse, clientResponse, responseTransport]);
+  }, [dispatchResponse, clientResponse, responseTransport, isLoading]);
 
   const deleteFooter = (
     <Button
@@ -353,14 +360,26 @@ const DispatchPage = () => {
                 type="date"
               />
             </FormControl>
+            <Flex flexDir="column" fontSize="inherit">
+              <Text fontSize={{ base: 12 }} mb="6px">
+                Cliente:
+              </Text>
+              <Select
+                defaultValue=""
+                size="sm"
+                width="150px"
+                onChange={(e) => setClientId(e.target.value)}
+                fontSize={12}
+              >
+                <option value="">Todos</option>
+                {clientResponse?.data?.map((client) => (
+                  <option key={`filter-${client._id}`} value={client._id}>{client.name}</option>
+                ))}
+              </Select>
+            </Flex>
           </Flex>
           <Flex alignItems="center" gap={2}>
-            <Button
-              autoFocus
-              onClick={() => refetch()}
-              size="sm"
-              isLoading={addingDispatch}
-            >
+            <Button autoFocus onClick={() => refetch()} size="sm">
               <RefreshIcon />
             </Button>
             <Button
@@ -375,8 +394,8 @@ const DispatchPage = () => {
         </Flex>
 
         <TableComponent
-          isLoading={isLoading || loadingOrders || updatingDispatch}
-          data={[...listDispatch]}
+          // isLoading={isLoading || loadingOrders || updatingDispatch}
+          data={listDispatch}
           columns={columns}
           pagination
           onChange={handleOnTableChange}

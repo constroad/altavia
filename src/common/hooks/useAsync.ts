@@ -103,10 +103,12 @@ export function useAsync<T>(initialState?: InputActions) {
         )
       }
       if (config?.refetch) {
-        safeSetState({ refetch: () => {
-          cache.delete(config?.cacheKey ?? '')
-          config?.refetch?.()
-        } })
+        safeSetState({
+          refetch: () => {
+            cache.delete(config?.cacheKey ?? '')
+            config?.refetch?.()
+          }
+        })
       }
       setError(undefined)
       safeSetState({ status: 'pending' })

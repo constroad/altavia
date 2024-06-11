@@ -11,6 +11,7 @@ import {
   MenuList,
   NumberInput,
   NumberInputField,
+  Spinner,
   Switch,
   Text,
 } from '@chakra-ui/react';
@@ -27,6 +28,7 @@ import { AddTransport } from './AddTransport';
 import { useScreenSize } from 'src/common/hooks/useScreenSize';
 
 interface ColumnsProps {
+  isLoading?: boolean;
   isMobile?: boolean;
   orderList: IOrderValidationSchema[];
   reloadClient: () => Promise<any>;
@@ -303,7 +305,6 @@ export const generateDispatchColumns = (props: ColumnsProps) => {
               if (e.target.value === item.toString()) return;
               let quantity = 0;
               let igv = 0;
-
               if (e.target.value) {
                 quantity = Number(e.target.value);
               }
@@ -388,14 +389,14 @@ export const generateDispatchColumns = (props: ColumnsProps) => {
       render: (item) => {
         return (
           <Text color="red" fontWeight={600} textAlign="right">
-            {item}
+            {item.toFixed(2)}
           </Text>
         );
       },
     },
     {
       key: '_id',
-      label: '',
+      label: <>{props.isLoading && <Spinner size="xs" />}</>,
       width: '5%',
       render: (item, row) => {
         return (
@@ -742,7 +743,7 @@ export const generateDispatchColumns = (props: ColumnsProps) => {
     },
     {
       key: '_id',
-      label: '',
+      label: <>{props.isLoading && <Spinner size="xs" />}</>,
       width: '5%',
       render: (item, row) => {
         return (
@@ -777,5 +778,5 @@ export const generateDispatchColumns = (props: ColumnsProps) => {
       },
     },
   ];
-  return mobileColumns
+  return mobileColumns;
 };

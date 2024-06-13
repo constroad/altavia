@@ -181,7 +181,7 @@ export const generateDispatchColumns = (props: ColumnsProps) => {
           <Flex flexDir="column" lineHeight={3}>
             <AutoComplete
               placeholder="Buscar transportista"
-              value={`${row.plate}-${row.company}`}
+              value={row.plate}
               onSelect={(option) => {
                 const transportId = option.value;
                 const transport = transportList.find(
@@ -196,7 +196,7 @@ export const generateDispatchColumns = (props: ColumnsProps) => {
                 });
               }}
               options={transportList.map((t) => ({
-                label: `${t.company}-${t.driverName}-${t.plate}`,
+                label: t.plate ?? '',
                 value: t._id ?? '',
                 filter: `${t.company}-${t.driverName}-${t.plate}`,
               }))}

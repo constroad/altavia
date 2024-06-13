@@ -1,9 +1,8 @@
-import React, { useEffect, useMemo, useState } from 'react';
+import React, { useState } from 'react';
 import {
   Box,
   Button,
   Flex,
-  FormControl,
   FormLabel,
   Input,
   Text,
@@ -11,28 +10,19 @@ import {
 } from '@chakra-ui/react';
 import { IntranetLayout, Modal, TableComponent, toast } from 'src/components';
 import axios from 'axios';
-import {
-  IDispatchList,
-  IDispatchValidationSchema,
-  IGetAll,
-} from 'src/models/dispatch';
-import { useAsync, useScreenSize } from 'src/common/hooks';
+import { IDispatchList, IDispatchValidationSchema } from 'src/models/dispatch';
+import { useScreenSize } from 'src/common/hooks';
 import { API_ROUTES } from 'src/common/consts';
 import {
-  DispatchNotePDFType,
+  SearchDispatch,
+  Summary,
   generateDispatchColumns,
 } from 'src/components/dispatch';
-import { IClientValidationSchema } from 'src/models/client';
-import { ITransportValidationSchema } from 'src/models/transport';
-import { IOrderValidationSchema } from 'src/models/order';
-import { DownloadIcon, RefreshIcon } from 'src/common/icons';
-import { getDate } from 'src/common/utils';
-import { formatISODate, formatMoney, getDateStringRange } from 'src/utils/general';
+import { DownloadIcon } from 'src/common/icons';
+import { formatISODate, getDateStringRange } from 'src/utils/general';
 import { TablePagination, TableAction } from '../../../components/Table/Table';
-import { Select } from '@chakra-ui/react';
-import { CONSTROAD_COLORS } from 'src/styles/shared';
+import { useDispatch } from 'src/common/hooks/useDispatch';
 
-const fetcher = (path: string) => axios.get(path);
 const postDisptach = (path: string, data: any) => axios.post(path, { data });
 const deleteDispatch = (path: string) => axios.delete(path);
 const putDisptach = (path: string, data: any) => axios.put(path, data);
@@ -73,62 +63,34 @@ const DispatchPage = () => {
   } = useDisclosure();
 
   // API
-  const {
-    run: runGetOrders,
-    isLoading: loadingOrders,
-    data: orderResponse,
-  } = useAsync<IOrderValidationSchema[]>();
-  const {
-    run: runGetDispatchs,
-    data: dispatchResponse,
-    isLoading,
-    refetch,
-  } = useAsync<IGetAll>();
-  const {
-    run: runGetClients,
-    data: clientResponse,
-    refetch: refetchClients,
-  } = useAsync<IClientValidationSchema[]>();
-  const {
-    run: runGetTransports,
-    data: responseTransport,
-    refetch: refetchTransport,
-  } = useAsync<ITransportValidationSchema[]>();
-  const { run: runAddDispatch, isLoading: addingDispatch } = useAsync();
-  const { run: runDeleteDispatch, isLoading: deletingDispatch } = useAsync();
-  const { run: runUpdateDispatch, isLoading: updatingDispatch } = useAsync();
 
-  useEffect(() => {
-    const queryParams = new URLSearchParams({
-      page: page.toString(),
-      limit: itemsPerPage.toString(),
+  const {
+    dispatchResponse,
+    clientResponse,
+    responseTransport,
+    isLoading,
+    deletingDispatch,
+    refetch,
+    runDeleteDispatch,
+    refetchClients,
+    refetchTransport,
+    runAddDispatch,
+    runUpdateDispatch,
+    loadingOrders,
+    updatingDispatch,
+    orderResponse,
+    addingDispatch,
+    handleGenerateDispatchNote,
+    listDispatch,
+  } = useDispatch({
+    query: {
+      page: page,
+      limit: itemsPerPage,
       startDate: startDate || '',
       endDate: endDate || '',
       clientId,
-    });
-    const path = `${API_ROUTES.dispatch}?${queryParams.toString()}`;
-    runGetDispatchs(fetcher(path), {
-      cacheKey: path,
-      refetch: () => runGetDispatchs(fetcher(path)),
-    });
-  }, [page, itemsPerPage, startDate, endDate, clientId]);
-
-  useEffect(() => {
-    runGetOrders(fetcher(API_ROUTES.order), {
-      // cacheKey: API_ROUTES.order,
-      refetch: () => runGetOrders(fetcher(API_ROUTES.order)),
-    });
-
-    runGetClients(fetcher(API_ROUTES.client), {
-      cacheKey: API_ROUTES.client,
-      refetch: () => runGetClients(fetcher(API_ROUTES.client)),
-    });
-
-    runGetTransports(fetcher(API_ROUTES.transport), {
-      cacheKey: API_ROUTES.transport,
-      refetch: () => runGetTransports(fetcher(API_ROUTES.transport)),
-    });
-  }, []);
+    },
+  });
 
   // handlers
   const handleDeleteDispatch = () => {
@@ -177,82 +139,6 @@ const DispatchPage = () => {
     });
   };
 
-  const sendWhatsAppMessage = (phone: string) => {
-    if (!phone) {
-      toast.warning('Ingrese el numero de celular');
-      return;
-    }
-    const message = `ConstRoad te envia el vale de despacho
-     - Obra: ${dispatchSelected?.obra}
-     - Nro Cubos: ${dispatchSelected?.quantity}
-    `;
-    const url = `https://api.whatsapp.com/send?phone=51${phone}&text=${message}`;
-    const win = window.open(url, '_blank');
-    win?.focus();
-    onClose();
-    setDispatchSelected(undefined);
-  };
-
-  const handleGenerateDispatchNote = async () => {
-    if (!dispatchSelected) {
-      return;
-    }
-    if (!dispatchSelected.phoneNumber) {
-      toast.warning('Ingrese un numero de telefono');
-      return;
-    }
-    const { slashDate, peruvianTime, currentYear, month } = getDate();
-    const number = dispatchResponse?.data?.dispatchs?.length + 1;
-    const dispatchNoteNumber = `${currentYear}${month}-${number}`;
-
-    const pdfData: DispatchNotePDFType = {
-      nro: dispatchNoteNumber,
-      date: slashDate,
-      clientName: dispatchSelected.client ?? '',
-      proyect: dispatchSelected.obra ?? '',
-      material: dispatchSelected.description ?? '',
-      amount: dispatchSelected.quantity ?? 0,
-      plate: dispatchSelected.plate ?? '',
-      transportist:
-        dispatchSelected.driverName || dispatchSelected.company || '',
-      hour: peruvianTime,
-      note: dispatchSelected.note || '',
-    };
-
-    const response = await axios.post(
-      API_ROUTES.generateDispatchNotePDF,
-      { pdfData },
-      { responseType: 'arraybuffer' }
-    );
-    const blob = new Blob([response.data], { type: 'application/pdf' });
-    const pdfName = `Despacho_${dispatchSelected?.plate}_${slashDate}.pdf`;
-
-    const pdfUrl = URL.createObjectURL(blob);
-    const link = document.createElement('a');
-    link.href = pdfUrl;
-    link.setAttribute('download', pdfName);
-    document.body.appendChild(link);
-    link.click();
-    document.body.removeChild(link);
-
-    const path = `${API_ROUTES.dispatch}/${dispatchSelected?._id}`;
-    runUpdateDispatch(
-      putDisptach(path, {
-        ...dispatchSelected,
-        nroVale: dispatchSelected.nroVale ?? dispatchNoteNumber,
-      }),
-      {
-        onError: () => {
-          toast.error('ocurrio un error actualizando un despacho');
-        },
-      }
-    );
-
-    sendWhatsAppMessage(dispatchSelected.phoneNumber ?? '');
-
-    onClose();
-  };
-
   const handleOnTableChange = (
     action: TableAction,
     pagination: TablePagination
@@ -282,36 +168,6 @@ const DispatchPage = () => {
     },
   });
 
-  const listDispatch = useMemo((): IDispatchList[] => {
-    if (!dispatchResponse) return [];
-
-    return dispatchResponse.data.dispatchs.map((item) => {
-      const transport = responseTransport?.data?.find(
-        (x) => x._id === item.transportId
-      );
-      const order = orderResponse?.data?.find((x) => x._id === item.orderId);
-      let client = clientResponse?.data?.find((x) => x._id === item.clientId);
-      if (order) {
-        client = clientResponse?.data?.find((x) => x._id === order.clienteId);
-      }
-      return {
-        ...item,
-        order: order
-          ? `${client?.name} ${
-              new Date(order.fechaProgramacion).toLocaleDateString('es-PE') ??
-              ''
-            } ${order.cantidadCubos} cubos`
-          : '',
-        obra: order?.obra || item.obra,
-        client: client?.name ?? '',
-        clientRuc: client?.ruc ?? '',
-        company: transport?.company ?? '',
-        plate: transport?.plate ?? '',
-        driverName: item.driverName || transport?.driverName || '',
-      };
-    });
-  }, [dispatchResponse, clientResponse, responseTransport, isLoading]);
-
   const deleteFooter = (
     <Button
       isLoading={deletingDispatch}
@@ -332,99 +188,29 @@ const DispatchPage = () => {
         gap="15px"
         mt={5}
       >
-        <Flex width="100%" alignItems="end" justifyContent="space-between">
-          <Flex gap={{ base: 1, md: 2 }}>
-            <FormControl>
-              <FormLabel mb="6px" fontSize={{ base: 12 }}>
-                Desde:
-              </FormLabel>
-              <Input
-                value={startDate}
-                onChange={(e) => setStartDate(e.target.value)}
-                paddingInlineEnd={1}
-                paddingInlineStart={1}
-                fontSize={{ base: 12 }}
-                height="32px"
-                type="date"
-                width="100px"
-              />
-            </FormControl>
-            <FormControl>
-              <FormLabel mb="6px" fontSize={{ base: 12 }}>
-                Hasta
-              </FormLabel>
-              <Input
-                value={endDate}
-                onChange={(e) => setEndDate(e.target.value)}
-                paddingInlineEnd={1}
-                paddingInlineStart={1}
-                fontSize={{ base: 12 }}
-                height="32px"
-                type="date"
-                width="100px"
-              />
-            </FormControl>
-            <Flex flexDir="column" fontSize="inherit">
-              <Text fontSize={{ base: 12 }} mb="6px">
-                Cliente:
-              </Text>
-              <Select
-                defaultValue=""
-                size="sm"
-                width={{ base: '90px', md: '150px' }}
-                onChange={(e) => setClientId(e.target.value)}
-                fontSize={12}
-              >
-                <option value="">Todos</option>
-                {clientResponse?.data?.map((client) => (
-                  <option key={`filter-${client._id}`} value={client._id}>
-                    {client.name}
-                  </option>
-                ))}
-              </Select>
-            </Flex>
-          </Flex>
-          <Flex alignItems="center" gap={1}>
-            <Button autoFocus onClick={() => refetch()} size="sm">
-              <RefreshIcon />
-            </Button>
-            <Button
-              autoFocus
-              onClick={handleAddDispatch}
-              size="sm"
-              isLoading={addingDispatch}
-            >
-              + {!isMobile && 'Despacho'}
-            </Button>
-          </Flex>
-        </Flex>
-        <Flex flexDir="column" fontSize="12px" width="210px">
-          <Flex>
-            <Box width="30%" bgColor="black" color="white">
-              M3:
-            </Box>
-            <Text flex={1} textAlign="right" bgColor={CONSTROAD_COLORS.yellow}>
-              {listDispatch
-                .map((x) => x.quantity)
-                .reduce((prev, current) => prev + current, 0)}
-            </Text>
-          </Flex>
-          <Flex>
-            <Box width="30%" bgColor="black" color="white">
-              Total:
-            </Box>
-            <Text textAlign="right" flex={1} bgColor={CONSTROAD_COLORS.yellow}>
-              S/.
-              {formatMoney(
-                listDispatch
-                  .map((x) => x.total)
-                  .reduce((prev, current) => prev + current, 0)
-              )}
-            </Text>
-          </Flex>
-        </Flex>
-
+        <SearchDispatch
+          clientList={clientResponse?.data ?? []}
+          startDate={startDate}
+          endDate={endDate}
+          clientId={clientId}
+          isSearching={isLoading}
+          onSearch={({ startDate, endDate, clientId }) => {
+            setStartDate(startDate);
+            setEndDate(endDate);
+            setClientId(clientId);
+          }}
+        />
         <TableComponent
+          toolbar={
+            <Summary
+              listDispatch={listDispatch}
+              onRefreshDispatch={refetch}
+              onAddDispatch={handleAddDispatch}
+              addindDispatch={addingDispatch}
+              totalRecords={dispatchResponse?.data?.pagination?.totalRecords}
+              onSaveDispatch={console.log}
+            />
+          }
           // isLoading={isLoading || loadingOrders || updatingDispatch}
           data={listDispatch}
           columns={columns}
@@ -479,7 +265,14 @@ const DispatchPage = () => {
           <Button
             size="sm"
             colorScheme="blue"
-            onClick={handleGenerateDispatchNote}
+            onClick={() =>
+              handleGenerateDispatchNote(dispatchSelected, {
+                onSuccess: () => {
+                  onClose();
+                  setDispatchSelected(undefined);
+                },
+              })
+            }
           >
             <DownloadIcon fontSize={20} />
             <Text ml="5px">Descargar y enviar por whatsApp</Text>

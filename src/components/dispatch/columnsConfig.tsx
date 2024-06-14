@@ -14,18 +14,23 @@ import {
   Spinner,
   Switch,
   Text,
+  Tooltip,
 } from '@chakra-ui/react';
 import { TableColumn } from '../Table';
 import { CONSTROAD_COLORS } from 'src/styles/shared';
-import { IDispatchValidationSchema, IDispatchList } from 'src/models/dispatch';
+import { IDispatchList } from 'src/models/dispatch';
 import { AutoComplete } from '../autoComplete';
 import { IClientValidationSchema } from 'src/models/client';
 import { ITransportValidationSchema } from 'src/models/transport';
 import { IOrderValidationSchema } from 'src/models/order';
-import { MenuVerticalIcon, TrashIcon, WhatsappIcon } from 'src/common/icons';
+import {
+  MenuVerticalIcon,
+  CircleIcon,
+  TrashIcon,
+  WhatsappIcon,
+} from 'src/common/icons';
 import { AddClient } from '../pedidos/AddClient';
 import { AddTransport } from './AddTransport';
-import { useScreenSize } from 'src/common/hooks/useScreenSize';
 
 interface ColumnsProps {
   isLoading?: boolean;
@@ -35,7 +40,7 @@ interface ColumnsProps {
   clientList: IClientValidationSchema[];
   reloadTransport: () => Promise<any>;
   transportList: ITransportValidationSchema[];
-  updateDispatch: (payload: IDispatchValidationSchema) => void;
+  updateDispatch: (payload: IDispatchList) => void;
   onDelete: (dispatch: IDispatchList) => void;
   onSendVale: (dispatch: IDispatchList) => void;
 }
@@ -53,12 +58,15 @@ export const generateDispatchColumns = (props: ColumnsProps) => {
             placeholder="Pedidos por cliente o fecha"
             value={row.order}
             onSelect={(option) => {
-              const order = orderList.find((x) => x._id === option.value)
+              const order = orderList.find((x) => x._id === option.value);
+              const orderText = `${order?.cliente} - ${order?.fechaProgramacion} - ${order?.cantidadCubos} cubos`;
               updateDispatch({
                 ...row,
+                order: orderText,
                 orderId: option.value,
                 clientId: order?.clienteId ?? '',
-                obra: order?.obra ?? ''
+                client: order?.cliente ?? '',
+                obra: order?.obra ?? '',
               });
             }}
             options={orderList.map((order) => ({
@@ -189,6 +197,7 @@ export const generateDispatchColumns = (props: ColumnsProps) => {
                 );
                 updateDispatch({
                   ...row,
+                  plate: transport?.plate ?? '',
                   transportId,
                   driverName: transport?.driverName ?? '',
                   driverCard: transport?.driverCard ?? '',
@@ -405,6 +414,9 @@ export const generateDispatchColumns = (props: ColumnsProps) => {
       label: <>{props.isLoading && <Spinner size="xs" />}</>,
       width: '5%',
       render: (item, row) => {
+        if (row.status !== undefined) {
+          return <CircleIcon color="green" size="sm" />;
+        }
         return (
           <Menu data-testid="page-menu" variant="brand">
             <MenuButton
@@ -508,12 +520,12 @@ export const generateDispatchColumns = (props: ColumnsProps) => {
                 placeholder="Buscar cliente por nombre, alias o RUC"
                 value={row.client}
                 onSelect={(option) => {
-                  const order = orderList.find((x) => x._id === option.value)
+                  const order = orderList.find((x) => x._id === option.value);
                   updateDispatch({
                     ...row,
                     orderId: option.value,
                     clientId: order?.clienteId ?? '',
-                    obra: order?.obra ?? ''
+                    obra: order?.obra ?? '',
                   });
                 }}
                 options={clientList.map((client) => ({

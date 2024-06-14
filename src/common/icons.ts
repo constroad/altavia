@@ -15,7 +15,8 @@ import {
   FaRegTrashAlt,
   FaTruckLoading,
   FaCloudDownloadAlt,
-  FaWhatsapp
+  FaWhatsapp,
+  FaCircle
 } from "react-icons/fa";
 import { FiMoreVertical } from 'react-icons/fi'
 import { FaUserTie, FaUserShield, FaTruckFast, FaRoadBarrier } from "react-icons/fa6";
@@ -69,4 +70,5 @@ export const MenuVerticalIcon = FiMoreVertical
 export const WhatsappIcon = FaWhatsapp
 export const RefreshIcon = IoMdRefresh
 export const SaveIcon = IoIosSave
+export const CircleIcon = FaCircle
 

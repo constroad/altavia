@@ -2,9 +2,9 @@ import Transport, { TransportModel } from '../models/transport';
 
 export class TransportRepository {
 
-  async getAll(): Promise<TransportModel[]> {
+  async getAll(filter: object): Promise<TransportModel[]> {
     try {
-      const transports = await Transport.find({}).sort({ createdAt: -1 });
+      const transports = await Transport.find({...filter}).sort({ createdAt: -1 });
       return transports;
     } catch (error) {
       console.error('Error getting transports:', error);

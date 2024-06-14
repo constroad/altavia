@@ -24,7 +24,7 @@ setInterval(() => {
   }
 }, 5000);
 
-type InputActions = {
+type InputActions  = {
   onSuccess?: (data: any) => void
   onStart?: () => void
   onFinish?: () => void
@@ -37,10 +37,10 @@ type AsyncBody = {
   finsished: 'finished' | 'no-finished'
 }
 
-type RunConfig = {
+type RunConfig<T =any>= {
   cacheKey?: string
   refetch?: () => Promise<any>
-  onSuccess?: (data: any) => void
+  onSuccess?: (data: AxiosResponse<T>) => void
   onError?: (error: any) => void
   onFinish?: () => void
   skipErrorWhenStatus?: number
@@ -96,7 +96,7 @@ export function useAsync<T>(initialState?: InputActions) {
   )
 
   const run = React.useCallback(
-    async (promise: any, config?: RunConfig) => {
+    async (promise: any, config?: RunConfig<T>) => {
       if (!promise || !promise.then) {
         throw new Error(
           `The argument passed to useAsync().run must be a promise. Maybe a function that's passed isn't returning anything?`
@@ -120,6 +120,7 @@ export function useAsync<T>(initialState?: InputActions) {
           const data = cache.get(config?.cacheKey);
           setData({ ...data })
           initialState?.onSuccess?.(data)
+          config?.onSuccess?.(data)
           return data
         } else {
           const data = await promise

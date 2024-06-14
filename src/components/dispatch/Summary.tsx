@@ -67,7 +67,7 @@ export const Summary = (props: SummaryProps) => {
             +
           </Button>
         </Tooltip>
-        {/* <Tooltip label="Guardar cambios">
+        <Tooltip label="Guardar cambios">
           <Button
             autoFocus
             onClick={props.onSaveDispatch}
@@ -75,7 +75,7 @@ export const Summary = (props: SummaryProps) => {
           >
             <SaveIcon />
           </Button>
-        </Tooltip> */}
+        </Tooltip>
       </Flex>
     </Flex>
   );

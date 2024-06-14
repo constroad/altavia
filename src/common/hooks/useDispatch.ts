@@ -9,6 +9,7 @@ import axios from "axios";
 import { toast } from "src/components";
 import { getDate } from "../utils";
 import { DispatchNotePDFType } from "src/components/dispatch";
+import { useDispatchContext } from "src/context/DispatchContext/DispatchContext";
 
 
 const fetcher = (path: string) => axios.get(path);
@@ -24,20 +25,16 @@ type UseDispatchProps = {
   }
 }
 export const useDispatch = (props: UseDispatchProps) => {
+  const {dispatchResponse,getDispatchs, refetchDispatch, isLoadingDispatch, setDispatchResponse} = useDispatchContext()
   const { query } = props
 
+  console.log('dispatchResponse:', dispatchResponse);
   // API
   const {
     run: runGetOrders,
     isLoading: loadingOrders,
     data: orderResponse,
   } = useAsync<IOrderValidationSchema[]>();
-  const {
-    run: runGetDispatchs,
-    data: dispatchResponse,
-    isLoading,
-    refetch,
-  } = useAsync<IGetAll>();
   const {
     run: runGetClients,
     data: clientResponse,
@@ -53,18 +50,13 @@ export const useDispatch = (props: UseDispatchProps) => {
   const { run: runUpdateDispatch, isLoading: updatingDispatch } = useAsync();
 
   useEffect(() => {
-    const queryParams = new URLSearchParams({
-      page: query.page.toString(),
-      limit: query.limit.toString(),
-      startDate: query.startDate ?? '',
-      endDate: query.endDate ?? '',
-      clientId: query.clientId ?? '',
-    });
-    const path = `${API_ROUTES.dispatch}?${queryParams.toString()}`;
-    runGetDispatchs(fetcher(path), {
-      cacheKey: path,
-      refetch: () => runGetDispatchs(fetcher(path)),
-    });
+    getDispatchs({
+      page: query.page,
+      limit: query.limit,
+      startDate: query.startDate,
+      endDate: query.endDate,
+      clientId: query.clientId,
+    })
   }, [ query.page, query.limit, query.startDate, query.endDate, query.clientId ]);
 
   useEffect(() => {
@@ -119,7 +111,7 @@ export const useDispatch = (props: UseDispatchProps) => {
       return;
     }
     const { slashDate, peruvianTime, currentYear, month } = getDate();
-    const number = dispatchResponse?.data?.dispatchs?.length + 1;
+    const number = dispatchResponse?.dispatchs?.length ?? 0 + 1;
     const dispatchNoteNumber = `${currentYear}${month}-${number}`;
 
     const pdfData: DispatchNotePDFType = {
@@ -171,47 +163,19 @@ export const useDispatch = (props: UseDispatchProps) => {
 
   };
 
-  const listDispatch = useMemo((): IDispatchList[] => {
-    if (!dispatchResponse) return [];
-
-    return dispatchResponse.data.dispatchs.map((item) => {
-      const transport = responseTransport?.data?.find(
-        (x) => x._id === item.transportId
-      );
-      const order = orderResponse?.data?.find((x) => x._id === item.orderId);
-      let client = clientResponse?.data?.find((x) => x._id === item.clientId);
-      if (order) {
-        client = clientResponse?.data?.find((x) => x._id === order.clienteId);
-      }
-      return {
-        ...item,
-        order: order
-          ? `${client?.name} ${new Date(order.fechaProgramacion).toLocaleDateString('es-PE') ??
-          ''
-          } ${order.cantidadCubos} cubos`
-          : '',
-        obra: order?.obra || item.obra,
-        client: client?.name || '',
-        clientRuc: client?.ruc || '',
-        company: transport?.company || '',
-        plate: transport?.plate || '',
-        driverName: item.driverName || transport?.driverName || '',
-      };
-    });
-  }, [ dispatchResponse, clientResponse, responseTransport, isLoading ]);
-
   return {
     //DISPATCH
     dispatchResponse,
-    isLoading,
-    refetch,
+    setDispatchResponse,
+    isLoadingDispatch,
+    refetchDispatch,
     runAddDispatch,
     addingDispatch,
     runDeleteDispatch,
     deletingDispatch,
     runUpdateDispatch,
     updatingDispatch,
-    listDispatch,
+    listDispatch: dispatchResponse?.dispatchs ?? [],
     //ORDERS
     orderResponse,
     loadingOrders,

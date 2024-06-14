@@ -1,4 +1,9 @@
+import mongoose from 'mongoose';
 import Dispatch, { DispatchModel, IGetAll } from '../models/dispatch';
+import { ClientRepository } from './clientRepository';
+import { OrderRepository } from './orderRepository';
+import { TransportRepository } from './transportRepository';
+import { isEmpty } from 'lodash';
 interface IPagination {
   page?: string
   limit?: string
@@ -8,22 +13,77 @@ export class DispatchRepository {
 
   async getAll(query?: IPagination): Promise<IGetAll> {
     try {
-      const {page, limit, ...filters} = query || {}
+      const { page, limit, ...filters } = query || {}
       const pageNumber = parseInt(page as string, 10);
       const limitNumber = parseInt(limit as string, 10);
 
-      const total = await Dispatch.countDocuments({...filters});
-      const dispatchs = await Dispatch.find({...filters})
-      .sort({ createdAt: -1 })
-      .skip((pageNumber - 1) * limitNumber)
-      .limit(limitNumber);
+      const total = await Dispatch.countDocuments({ ...filters });
+      const dispatchs = await Dispatch.find({ ...filters })
+        .sort({ createdAt: -1 })
+        .skip((pageNumber - 1) * limitNumber)
+        .limit(limitNumber);
+
+      const clientIds = dispatchs.filter((x) => !isEmpty(x.clientId)).map((d) => new mongoose.Types.ObjectId(d.clientId))
+      const orderIds = dispatchs.filter((x) => !isEmpty(x.orderId)).map((d) => new mongoose.Types.ObjectId(d.orderId))
+      const transportIds = dispatchs.filter((x) => !isEmpty(x.transportId)).map((d) => new mongoose.Types.ObjectId(d.transportId))
+
+      // getClients Data
+      const clientRepo = new ClientRepository()
+      const clients = await clientRepo.getAll(
+        { _id: { $in: clientIds } },
+      );
+      const clientsMap = Object.fromEntries(
+        clients.map((x) => [ x._id.toString(), x ])
+      );
+      const orderRepo = new OrderRepository()
+      const orders = await orderRepo.getAll(
+        { _id: orderIds },
+      )
+      const ordersMap = Object.fromEntries(
+        orders.map((x) => [ x._id.toString(), x ])
+      );
+      const transportRepo = new TransportRepository()
+      const transports = await transportRepo.getAll(
+        { _id: transportIds },
+      )
+      const transportsMap = Object.fromEntries(
+        transports.map((x) => [ x._id.toString(), x ])
+      );
+
+      const totals = dispatchs.reduce((prev, curr) => {
+        return {
+          m3: prev.m3 + curr.quantity,
+          total: prev.total + curr.total,
+        }
+      }, {m3:0, total:0})
 
       return {
-        dispatchs: dispatchs as IGetAll['dispatchs'],
+        dispatchs: dispatchs.map((x) => {
+          let orderText = ''
+          const orderData = ordersMap[ x.orderId ?? '' ]
+          if (orderData) {
+            orderText = `${ordersMap[ x.orderId ?? '' ]?.cliente} ${ordersMap[ x.orderId ?? '' ]?.fechaProgramacion} ${ordersMap[ x.orderId ?? '' ]?.cantidadCubos}`
+          }
+          return {
+            ...x.toObject(),
+            __v: undefined,
+            order: orderText,
+            client: clientsMap[ x.clientId ]?.name ?? '',
+            clientRuc: clientsMap[ x.clientId ]?.name ?? '',
+            company: transportsMap[ x.transportId ]?.name ?? '',
+            driverName: x.driverName ?? transportsMap[ x.transportId ]?.driverName ?? '',
+            plate: transportsMap[ x.transportId ]?.plate ?? '',
+            obra: ordersMap[ x.orderId ?? '' ]?.obra ?? x.obra
+          }
+        }) as IGetAll[ 'dispatchs' ],
+        summary: {
+          nroRecords: total,
+          m3: totals.m3,
+          total: totals.total
+        },
         pagination: {
           page: pageNumber,
           limit: limitNumber,
-          totalRecords: total,
           totalPages: Math.ceil(total / limitNumber),
         }
       };
@@ -57,7 +117,9 @@ export class DispatchRepository {
 
   async update(id: string, data: Partial<DispatchModel>): Promise<DispatchModel> {
     try {
+      console.log('update', data);
       const dispatchUpdated = await Dispatch.findByIdAndUpdate(id, data, { new: true });
+      console.log('dispatchUpdated', dispatchUpdated);
       if (!dispatchUpdated) {
         throw new Error('Dispatch no found');
       }

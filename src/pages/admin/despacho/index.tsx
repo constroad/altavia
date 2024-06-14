@@ -10,7 +10,10 @@ import {
 } from '@chakra-ui/react';
 import { IntranetLayout, Modal, TableComponent, toast } from 'src/components';
 import axios from 'axios';
-import { IDispatchList, IDispatchValidationSchema } from 'src/models/dispatch';
+import {
+  IDispatchList,
+  IGetAll,
+} from 'src/models/dispatch';
 import { useScreenSize } from 'src/common/hooks';
 import { API_ROUTES } from 'src/common/consts';
 import {
@@ -22,12 +25,13 @@ import { DownloadIcon } from 'src/common/icons';
 import { formatISODate, getDateStringRange } from 'src/utils/general';
 import { TablePagination, TableAction } from '../../../components/Table/Table';
 import { useDispatch } from 'src/common/hooks/useDispatch';
+import { v4 as uuidv4 } from 'uuid';
 
 const postDisptach = (path: string, data: any) => axios.post(path, { data });
 const deleteDispatch = (path: string) => axios.delete(path);
 const putDisptach = (path: string, data: any) => axios.put(path, data);
 
-const defaultValueDispatch: IDispatchValidationSchema = {
+const defaultValueDispatch: IDispatchList = {
   date: formatISODate(new Date().toDateString()),
   transportId: '',
   clientId: '',
@@ -44,6 +48,11 @@ const defaultValueDispatch: IDispatchValidationSchema = {
   igv: 0,
   total: 0,
   note: '',
+  order: '',
+  client: '',
+  clientRuc: '',
+  company: '',
+  plate: '',
 };
 
 const DispatchPage = () => {
@@ -66,11 +75,12 @@ const DispatchPage = () => {
 
   const {
     dispatchResponse,
+    setDispatchResponse,
     clientResponse,
     responseTransport,
-    isLoading,
+    isLoadingDispatch,
     deletingDispatch,
-    refetch,
+    refetchDispatch,
     runDeleteDispatch,
     refetchClients,
     refetchTransport,
@@ -93,7 +103,17 @@ const DispatchPage = () => {
   });
 
   // handlers
-  const handleDeleteDispatch = () => {
+  const handleDeleteDispatch = (data?: IGetAll) => {
+    if (dispatchSelected?.status === 'New' && data) {
+      const newList = [...listDispatch].filter(
+        (x) => x._id !== dispatchSelected._id
+      );
+      setDispatchResponse({ ...data, dispatchs: [...newList] });
+      setDispatchSelected(undefined);
+      onCloseDelete();
+      return;
+    }
+
     runDeleteDispatch(
       deleteDispatch(`${API_ROUTES.dispatch}/${dispatchSelected?._id}`),
       {
@@ -103,7 +123,7 @@ const DispatchPage = () => {
           );
           setDispatchSelected(undefined);
           onCloseDelete();
-          refetch();
+          refetchDispatch();
           refetchTransport();
           refetchClients();
         },
@@ -111,32 +131,74 @@ const DispatchPage = () => {
     );
   };
 
-  const handleAddDispatch = () => {
-    runAddDispatch(
-      postDisptach(API_ROUTES.dispatch, { ...defaultValueDispatch }),
-      {
-        onSuccess: () => {
-          refetch();
-          setDispatchSelected(undefined);
-        },
-        onError: () => {
-          toast.error('ocurrio un error agregando un Despacho');
-        },
-      }
-    );
+  const handleAddDispatch = (data?: IGetAll) => {
+    const newPayload = {
+      ...defaultValueDispatch,
+      status: 'New',
+      _id: uuidv4(),
+    };
+    if (data) {
+      const newList = [...listDispatch];
+      newList.unshift(newPayload as IDispatchList);
+      setDispatchResponse({ ...data, dispatchs: [...newList] });
+    }
   };
 
-  const updateDispatch = (payload: IDispatchValidationSchema) => {
-    const path = `${API_ROUTES.dispatch}/${payload._id}`;
-    runUpdateDispatch(putDisptach(path, payload), {
-      onSuccess: () => {
-        setDispatchSelected(undefined);
-        refetch();
-      },
-      onError: () => {
-        toast.error('ocurrio un error actualizando un despacho');
-      },
-    });
+  const updateDispatch = (data?: IGetAll) => (payload: IDispatchList) => {
+    if (data) {
+      const newList = [...listDispatch].map((x) => {
+        if (x._id === payload._id) {
+          let status = 'Edit';
+          if (payload.status === 'New') {
+            status = 'New';
+          }
+          // const status = payload.
+          return {
+            ...payload,
+            status,
+          } as IDispatchList;
+        }
+        return x;
+      });
+      setDispatchResponse({ ...data, dispatchs: [...newList] });
+    }
+  };
+
+  const onSave = async (data?: IGetAll) => {
+    if (!data) return;
+    const dispatchs = data.dispatchs.filter(
+      (x) => x.status === 'New' || x.status === 'Edit'
+    );
+    const responseAll = await Promise.all(
+      dispatchs.map((item) => {
+        //add new
+        if (item.status === 'New') {
+          return runAddDispatch(
+            postDisptach(API_ROUTES.dispatch, {
+              ...item,
+              _id: undefined,
+            }),
+            {
+              onError: () => {
+                toast.error('ocurrio un error agregando un Despacho');
+              },
+            }
+          );
+        }
+        //edit
+        const path = `${API_ROUTES.dispatch}/${item._id}`;
+        return runUpdateDispatch(
+          putDisptach(path, { ...item, _id: undefined }),
+          {
+            onError: () => {
+              toast.error('ocurrio un error actualizando un despacho');
+            },
+          }
+        );
+      })
+    );
+    setDispatchSelected(undefined);
+    refetchDispatch();
   };
 
   const handleOnTableChange = (
@@ -151,13 +213,13 @@ const DispatchPage = () => {
 
   const columns = generateDispatchColumns({
     isMobile,
-    isLoading: isLoading || loadingOrders || updatingDispatch,
+    isLoading: isLoadingDispatch || loadingOrders,
     orderList: orderResponse?.data ?? [],
     reloadClient: refetchClients,
     clientList: clientResponse?.data ?? [],
     reloadTransport: refetchTransport,
     transportList: responseTransport?.data ?? [],
-    updateDispatch,
+    updateDispatch: updateDispatch(dispatchResponse),
     onDelete: (dispatch) => {
       setDispatchSelected(dispatch);
       onOpenDelete();
@@ -167,6 +229,7 @@ const DispatchPage = () => {
       setDispatchSelected(dispatch);
     },
   });
+  const dispatchSummary = dispatchResponse?.summary;
 
   const deleteFooter = (
     <Button
@@ -174,7 +237,7 @@ const DispatchPage = () => {
       variant="ghost"
       autoFocus
       colorScheme="red"
-      onClick={handleDeleteDispatch}
+      onClick={() => handleDeleteDispatch(dispatchResponse)}
     >
       Confirm
     </Button>
@@ -193,7 +256,7 @@ const DispatchPage = () => {
           startDate={startDate}
           endDate={endDate}
           clientId={clientId}
-          isSearching={isLoading}
+          isSearching={isLoadingDispatch}
           onSearch={({ startDate, endDate, clientId }) => {
             setStartDate(startDate);
             setEndDate(endDate);
@@ -204,11 +267,11 @@ const DispatchPage = () => {
           toolbar={
             <Summary
               listDispatch={listDispatch}
-              onRefreshDispatch={refetch}
-              onAddDispatch={handleAddDispatch}
+              onRefreshDispatch={refetchDispatch}
+              onAddDispatch={() => handleAddDispatch(dispatchResponse)}
               addindDispatch={addingDispatch}
-              totalRecords={dispatchResponse?.data?.pagination?.totalRecords}
-              onSaveDispatch={console.log}
+              totalRecords={dispatchSummary?.nroRecords ?? 0}
+              onSaveDispatch={() => onSave(dispatchResponse)}
             />
           }
           // isLoading={isLoading || loadingOrders || updatingDispatch}
@@ -218,8 +281,8 @@ const DispatchPage = () => {
           onChange={handleOnTableChange}
           currentPage={page}
           itemsPerPage={itemsPerPage}
-          totalPages={dispatchResponse?.data?.pagination?.totalPages ?? 0}
-          totalRecords={dispatchResponse?.data?.pagination?.totalRecords ?? 0}
+          totalPages={dispatchResponse?.pagination?.totalPages ?? 0}
+          totalRecords={dispatchSummary?.nroRecords ?? 0}
         />
       </Flex>
 

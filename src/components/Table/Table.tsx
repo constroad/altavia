@@ -155,7 +155,8 @@ export const TableComponent = (props: Props) => {
             !isLoading &&
             currentItems.map((row, index) => (
               <Tr
-                key={`row-${uuidv4()}`}
+                // key={`row-${uuidv4()}`}
+                key={`row-${row._id ?? index}`}
                 onClick={() => handleSelectRow(row)}
                 h="38px"
                 maxH="38px"

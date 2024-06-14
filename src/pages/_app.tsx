@@ -6,6 +6,7 @@ import { SessionProvider } from 'next-auth/react';
 import '@/styles/globals.css';
 import { QuoteProvider, SidebarProvider } from 'src/context';
 import { ToastProvider } from 'src/components/Toast';
+import { DispatchProvider } from 'src/context/DispatchContext/DispatchContext';
 
 export default function App({
   Component,
@@ -20,23 +21,25 @@ export default function App({
   return (
     <ToastProvider>
       <SessionProvider session={session}>
-        <QuoteProvider>
-          <SidebarProvider>
-            {domLoaded && (
-              <ChakraProvider>
-                <SnackbarProvider
-                  maxSnack={3}
-                  anchorOrigin={{
-                    vertical: 'top',
-                    horizontal: 'right',
-                  }}
-                >
-                  <Component {...pageProps} />
-                </SnackbarProvider>
-              </ChakraProvider>
-            )}
-          </SidebarProvider>
-        </QuoteProvider>
+        <DispatchProvider>
+          <QuoteProvider>
+            <SidebarProvider>
+              {domLoaded && (
+                <ChakraProvider>
+                  <SnackbarProvider
+                    maxSnack={3}
+                    anchorOrigin={{
+                      vertical: 'top',
+                      horizontal: 'right',
+                    }}
+                  >
+                    <Component {...pageProps} />
+                  </SnackbarProvider>
+                </ChakraProvider>
+              )}
+            </SidebarProvider>
+          </QuoteProvider>
+        </DispatchProvider>
       </SessionProvider>
     </ToastProvider>
   );

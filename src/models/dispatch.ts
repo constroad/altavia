@@ -34,6 +34,7 @@ export interface IDispatchList extends IDispatchValidationSchema {
   company: string;
   driverName: string;
   plate: string;
+  status?: "New" | "Edit" | "Delete" | undefined
 }
 
 // DB model + schema
@@ -60,11 +61,15 @@ export interface DispatchModel extends Document {
 }
 
 export interface IGetAll {
-  dispatchs: IDispatchValidationSchema[],
+  dispatchs: IDispatchList[],
+  summary: {
+    nroRecords: number,
+    m3: number,
+    total: number
+  },
   pagination: {
     page: number,
     limit: number,
-    totalRecords: number,
     totalPages: number
   }
 }

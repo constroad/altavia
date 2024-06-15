@@ -348,7 +348,7 @@ export const PedidoForm = (props: PedidoFormProps) => {
                   <NumberInput
                     size="xs"
                     name="precioCubo"
-                    value={order.precioCubo}
+                    value={order.precioCubo.toFixed(2)}
                     onChange={(value) => {
                       const precioCubo = isNaN(parseFloat(value)) ? 0 : parseFloat(value);
                       const subTotal = order.cantidadCubos * precioCubo;
@@ -435,7 +435,6 @@ export const PedidoForm = (props: PedidoFormProps) => {
                   <NumberInput
                     isDisabled
                     size="xs"
-                    // defaultValue={order.igv.toFixed(2)}
                     value={(order.igv ?? 0).toFixed(2)}
                   >
                     <NumberInputField fontSize="inherit" paddingInlineEnd={0} />
@@ -454,7 +453,7 @@ export const PedidoForm = (props: PedidoFormProps) => {
                     onChange={(value) => {
                       const total = isNaN(parseFloat(value)) ? 0 : parseFloat(value);
                       const igvCheck = order.igvCheck;
-                      const igv = igvCheck ? total * 0.18 : 0;
+                      const igv = igvCheck ? (total - total / 1.18) : 0;
                       const subTotal = total - igv;
                       const precio = subTotal / order.cantidadCubos
                       const montoPorCobrar = order.isCredit

@@ -352,6 +352,8 @@ export const generateDispatchColumns = (props: ColumnsProps) => {
       render: (item, row) => {
         return (
           <NumberInput
+            precision={2}
+            step={0.2}
             size="xs"
             defaultValue={item}
             onBlur={(e) => {
@@ -384,7 +386,7 @@ export const generateDispatchColumns = (props: ColumnsProps) => {
           <Flex alignItems="center" gap={1}>
             <Switch
               size="sm"
-              id="isChecked"
+              id="isChecked"          
               defaultValue={(row.igvCheck ?? false).toString()}
               isChecked={row.igvCheck ?? false}
               onChange={(value) => {
@@ -397,7 +399,13 @@ export const generateDispatchColumns = (props: ColumnsProps) => {
                 updateDispatch({ ...row, igvCheck, igv: igvValue, total });
               }}
             />
-            <NumberInput isDisabled size="xs" defaultValue={item.toFixed(2)}>
+            <NumberInput
+              precision={2}
+              step={0.2}
+              isDisabled
+              size="xs"
+              defaultValue={item}
+            >
               <NumberInputField fontSize="inherit" paddingInlineEnd={0} />
             </NumberInput>
           </Flex>
@@ -409,11 +417,26 @@ export const generateDispatchColumns = (props: ColumnsProps) => {
       bgColor: CONSTROAD_COLORS.yellow,
       label: 'Total',
       width: '5%',
-      render: (item) => {
+      render: (item, row) => {
         return (
-          <Text color="red" fontWeight={600} textAlign="right">
-            {item.toFixed(2)}
-          </Text>
+          <NumberInput
+            precision={2}
+            step={0.2}
+            size="xs"
+            defaultValue={item}
+            onBlur={(e) => {
+              if (e.target.value === item.toString()) return;
+              const value = e.target.value;
+              const total = isNaN(parseFloat(value)) ? 0 : parseFloat(value);
+              const igvCheck = row.igvCheck;
+              const igv = igvCheck ? total - total / 1.18 : 0;
+              const subTotal = total - igv;
+              const price = subTotal / row.quantity;
+              updateDispatch({ ...row, price, subTotal, total, igv });
+            }}
+          >
+            <NumberInputField fontSize="inherit" paddingInlineEnd={0} />
+          </NumberInput>
         );
       },
     },
@@ -514,7 +537,10 @@ export const generateDispatchColumns = (props: ColumnsProps) => {
                 type="date"
                 value={formatISODate(item)}
                 onChange={(e) =>
-                  updateDispatch({ ...row, date: parseStringDateWithTime(e.target.value) })
+                  updateDispatch({
+                    ...row,
+                    date: parseStringDateWithTime(e.target.value),
+                  })
                 }
               />
             </GridItem>
@@ -723,6 +749,8 @@ export const generateDispatchColumns = (props: ColumnsProps) => {
               <Box>
                 <Text>Precio:</Text>
                 <NumberInput
+                  precision={2}
+                  step={0.2}
                   size="xs"
                   defaultValue={row.price}
                   onBlur={(e) => {
@@ -769,9 +797,11 @@ export const generateDispatchColumns = (props: ColumnsProps) => {
                     }}
                   />
                   <NumberInput
+                    precision={2}
+                    step={0.2}
                     isDisabled
                     size="xs"
-                    defaultValue={row.igv?.toFixed(2)}
+                    defaultValue={row.igv}
                   >
                     <NumberInputField fontSize="inherit" paddingInlineEnd={0} />
                   </NumberInput>
@@ -779,9 +809,26 @@ export const generateDispatchColumns = (props: ColumnsProps) => {
               </Box>
               <Flex flexDir="column" flex={1}>
                 <Text>Total:</Text>
-                <Text color="red" fontWeight={600} textAlign="right">
-                  {row.total}
-                </Text>
+                <NumberInput
+                  size="xs"
+                  defaultValue={row.total}
+                  precision={2}
+                  step={0.2}
+                  onBlur={(e) => {
+                    if (e.target.value === item.toString()) return;
+                    const value = e.target.value;
+                    const total = isNaN(parseFloat(value))
+                      ? 0
+                      : parseFloat(value);
+                    const igvCheck = row.igvCheck;
+                    const igv = igvCheck ? total - total / 1.18 : 0;
+                    const subTotal = total - igv;
+                    const price = subTotal / row.quantity;
+                    updateDispatch({ ...row, price, subTotal, total, igv });
+                  }}
+                >
+                  <NumberInputField fontSize="inherit" paddingInlineEnd={0} />
+                </NumberInput>
               </Flex>
             </GridItem>
           </Grid>
@@ -801,15 +848,27 @@ export const generateDispatchColumns = (props: ColumnsProps) => {
               minW="auto"
               h="auto"
               aria-label="Page details"
-              icon={<MenuVerticalIcon />}
+              icon={
+                row.status !== undefined ? (
+                  <CircleIcon color="green" />
+                ) : (
+                  <MenuVerticalIcon />
+                )
+              }
               rounded="full"
             />
 
             <MenuList maxW="170px">
-              <MenuItem onClick={() => props.onSendVale(row)} as={Flex} gap={2}>
-                <WhatsappIcon />
-                Enviar Vale
-              </MenuItem>
+              {!row.status && (
+                <MenuItem
+                  onClick={() => props.onSendVale(row)}
+                  as={Flex}
+                  gap={2}
+                >
+                  <WhatsappIcon />
+                  Enviar Vale
+                </MenuItem>
+              )}
               <MenuItem
                 onClick={() => props.onDelete(row)}
                 color="red"

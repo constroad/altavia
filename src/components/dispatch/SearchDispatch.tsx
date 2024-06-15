@@ -44,7 +44,9 @@ export const SearchDispatch = (props: SearchDispatchProps) => {
         </FormLabel>
         <Input
           value={startDate}
-          onChange={(e) => setStartDate(e.target.value)}
+          onChange={(e) => {
+            setStartDate(e.target.value)
+          }}
           paddingInlineEnd={1}
           paddingInlineStart={1}
           fontSize={{ base: 12 }}

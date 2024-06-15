@@ -15,37 +15,37 @@ const getAll = async (req: NextApiRequest, res: NextApiResponse) => {
       page,
       limit
     };
-    // if (startDate || endDate) {
-    //   query.date = {};
-    //   if (startDate) {
-    //     query.date.$gte = new Date(startDate as string);
-    //   }
-    //   if (endDate) {
-    //     query.date.$lte = new Date(endDate as string);
-    //   }
-    // }    
+    if (startDate || endDate) {
+      query.date = {};
+      if (startDate) {
+        query.date.$gte = new Date(`${startDate as string}T00:00` );
+      }
+      if (endDate) {
+        query.date.$lte = new Date(`${endDate as string}T23:00`);
+      }
+    }
     if (clientId) {
       query.clientId = clientId
     }
-    if (startDate || endDate) {
-      query.$and = [];
-      if (startDate) {
-        query.$and.push({ 
-          date: { 
-            $gte: new Date(new Date(startDate as string).toISOString()).toISOString() 
-          } 
-        });
-      }
-      if (endDate) {
-        query.$and.push({ 
-          date: { 
-            $lte: new Date(new Date(endDate as string).toISOString()).toISOString() 
-          } 
-        });
-      }
-    }
+    // if (startDate || endDate) {
+    //   query.$and = [];
+    //   if (startDate) {
+    //     query.$and.push({ 
+    //       date: { 
+    //         $gte: new Date(new Date(startDate as string).toISOString()).toISOString() 
+    //       } 
+    //     });
+    //   }
+    //   if (endDate) {
+    //     query.$and.push({ 
+    //       date: { 
+    //         $lte: new Date(new Date(endDate as string).toISOString()).toISOString() 
+    //       } 
+    //     });
+    //   }
+    // }
     const result = await repo.getAll(query);
-    
+
     res.status(200).json(result);
   } catch (error: any) {
     console.error(error.message);
@@ -55,13 +55,17 @@ const getAll = async (req: NextApiRequest, res: NextApiResponse) => {
 
 const addRecord = async (req: NextApiRequest, res: NextApiResponse) => {
   const newRecord = req.body.data as DispatchModel
+  console.log('newRecord::', newRecord)
   const repo = new DispatchRepository();
   try {
-    const result = dispatchValidationSchema.safeParse(newRecord);
+    const result = dispatchValidationSchema.safeParse({
+      ...newRecord,
+      date: new Date(newRecord.date)
+    });
 
     if (!result.success) {
       console.log(result.error)
-      res.status(400).json({ message: "Revise parametros obligatorios"});
+      res.status(400).json({ message: "Revise parametros obligatorios" });
       return
     }
 
@@ -70,7 +74,7 @@ const addRecord = async (req: NextApiRequest, res: NextApiResponse) => {
 
   } catch (error: any) {
     console.error(error);
-    res.status(500).json({ message: 'Error when saving dispatch'  });
+    res.status(500).json({ message: 'Error when saving dispatch' });
   }
 }
 

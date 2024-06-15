@@ -22,7 +22,7 @@ import {
   generateDispatchColumns,
 } from 'src/components/dispatch';
 import { DownloadIcon } from 'src/common/icons';
-import { formatISODate, getDateStringRange } from 'src/utils/general';
+import { getDateStringRange } from 'src/utils/general';
 import { TablePagination, TableAction } from '../../../components/Table/Table';
 import { useDispatch } from 'src/common/hooks/useDispatch';
 import { v4 as uuidv4 } from 'uuid';
@@ -32,7 +32,7 @@ const deleteDispatch = (path: string) => axios.delete(path);
 const putDisptach = (path: string, data: any) => axios.put(path, data);
 
 const defaultValueDispatch: IDispatchList = {
-  date: formatISODate(new Date().toDateString()),
+  date: new Date(),
   transportId: '',
   clientId: '',
   invoice: '',
@@ -53,6 +53,7 @@ const defaultValueDispatch: IDispatchList = {
   clientRuc: '',
   company: '',
   plate: '',
+  key: new Date().toISOString()
 };
 
 const DispatchPage = () => {
@@ -87,7 +88,6 @@ const DispatchPage = () => {
     runAddDispatch,
     runUpdateDispatch,
     loadingOrders,
-    updatingDispatch,
     orderResponse,
     addingDispatch,
     handleGenerateDispatchNote,
@@ -149,12 +149,13 @@ const DispatchPage = () => {
       const newList = [...listDispatch].map((x) => {
         if (x._id === payload._id) {
           let status = 'Edit';
+          const key = new Date().toISOString()
           if (payload.status === 'New') {
             status = 'New';
           }
-          // const status = payload.
           return {
             ...payload,
+            key,
             status,
           } as IDispatchList;
         }
@@ -169,7 +170,7 @@ const DispatchPage = () => {
     const dispatchs = data.dispatchs.filter(
       (x) => x.status === 'New' || x.status === 'Edit'
     );
-    const responseAll = await Promise.all(
+    await Promise.all(
       dispatchs.map((item) => {
         //add new
         if (item.status === 'New') {

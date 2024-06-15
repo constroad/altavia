@@ -62,7 +62,8 @@ export class DispatchRepository {
           let orderText = ''
           const orderData = ordersMap[ x.orderId ?? '' ]
           if (orderData) {
-            orderText = `${ordersMap[ x.orderId ?? '' ]?.cliente} ${ordersMap[ x.orderId ?? '' ]?.fechaProgramacion} ${ordersMap[ x.orderId ?? '' ]?.cantidadCubos}`
+            const scheduleDate = orderData?.fechaProgramacion.toLocaleDateString('es-PE')
+            orderText = `${orderData.cliente} ${scheduleDate} ${orderData.cantidadCubos}`
           }
           return {
             ...x.toObject(),
@@ -73,7 +74,8 @@ export class DispatchRepository {
             company: transportsMap[ x.transportId ]?.name ?? '',
             driverName: x.driverName ?? transportsMap[ x.transportId ]?.driverName ?? '',
             plate: transportsMap[ x.transportId ]?.plate ?? '',
-            obra: ordersMap[ x.orderId ?? '' ]?.obra ?? x.obra
+            obra: ordersMap[ x.orderId ?? '' ]?.obra ?? x.obra,
+            key: new Date().toISOString(),
           }
         }) as IGetAll[ 'dispatchs' ],
         summary: {

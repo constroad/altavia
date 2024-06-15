@@ -31,6 +31,7 @@ import {
 } from 'src/common/icons';
 import { AddClient } from '../pedidos/AddClient';
 import { AddTransport } from './AddTransport';
+import { parseStringDateWithTime, formatISODate } from 'src/utils/general';
 
 interface ColumnsProps {
   isLoading?: boolean;
@@ -88,18 +89,25 @@ export const generateDispatchColumns = (props: ColumnsProps) => {
       width: '3%',
       render: (item, row) => {
         return (
-          <Flex flexDir="column" lineHeight={3}>
-            <Input
-              px={{ base: '5px', md: '3px' }}
-              fontSize="inherit"
-              lineHeight="14px"
-              height="32px"
-              width="100%"
-              type="date"
-              value={item}
-              onChange={(e) => updateDispatch({ ...row, date: e.target.value })}
-            />
-          </Flex>
+          <Tooltip label={row?.date?.toString()}>
+            <Flex flexDir="column" lineHeight={3}>
+              <Input
+                px={{ base: '5px', md: '3px' }}
+                fontSize="inherit"
+                lineHeight="14px"
+                height="32px"
+                width="100%"
+                type="date"
+                value={formatISODate(item)}
+                onChange={(e) => {
+                  updateDispatch({
+                    ...row,
+                    date: parseStringDateWithTime(e.target.value),
+                  });
+                }}
+              />
+            </Flex>
+          </Tooltip>
         );
       },
     },
@@ -412,39 +420,54 @@ export const generateDispatchColumns = (props: ColumnsProps) => {
     {
       key: '_id',
       label: <>{props.isLoading && <Spinner size="xs" />}</>,
-      width: '5%',
+      width: '10%',
       render: (item, row) => {
-        if (row.status !== undefined) {
-          return <CircleIcon color="green" size="sm" />;
-        }
         return (
-          <Menu data-testid="page-menu" variant="brand">
-            <MenuButton
-              as={IconButton}
-              variant="unstyled"
-              minW="auto"
-              h="auto"
-              aria-label="Page details"
-              icon={<MenuVerticalIcon />}
-              rounded="full"
-            />
+          <Flex
+            width="inherit"
+            alignItems="center"
+            justifyContent="space-between"
+          >
+            <Menu data-testid="page-menu" variant="brand">
+              <MenuButton
+                as={IconButton}
+                variant="unstyled"
+                minW="auto"
+                h="auto"
+                aria-label="Page details"
+                icon={
+                  row.status !== undefined ? (
+                    <CircleIcon color="green" />
+                  ) : (
+                    <MenuVerticalIcon />
+                  )
+                }
+                rounded="full"
+              />
 
-            <MenuList maxW="170px">
-              <MenuItem onClick={() => props.onSendVale(row)} as={Flex} gap={2}>
-                <WhatsappIcon />
-                Enviar Vale
-              </MenuItem>
-              <MenuItem
-                onClick={() => props.onDelete(row)}
-                color="red"
-                as={Flex}
-                gap={2}
-              >
-                <TrashIcon />
-                Eliminar despacho
-              </MenuItem>
-            </MenuList>
-          </Menu>
+              <MenuList maxW="170px">
+                {!row.status && (
+                  <MenuItem
+                    onClick={() => props.onSendVale(row)}
+                    as={Flex}
+                    gap={2}
+                  >
+                    <WhatsappIcon />
+                    Enviar Vale
+                  </MenuItem>
+                )}
+                <MenuItem
+                  onClick={() => props.onDelete(row)}
+                  color="red"
+                  as={Flex}
+                  gap={2}
+                >
+                  <TrashIcon />
+                  Eliminar despacho
+                </MenuItem>
+              </MenuList>
+            </Menu>
+          </Flex>
         );
       },
     },
@@ -489,9 +512,9 @@ export const generateDispatchColumns = (props: ColumnsProps) => {
                 lineHeight="14px"
                 height="32px"
                 type="date"
-                value={row.date}
+                value={formatISODate(item)}
                 onChange={(e) =>
-                  updateDispatch({ ...row, date: e.target.value })
+                  updateDispatch({ ...row, date: parseStringDateWithTime(e.target.value) })
                 }
               />
             </GridItem>

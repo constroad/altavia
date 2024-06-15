@@ -1,11 +1,11 @@
-import { optional, z } from 'zod';
+import { z } from 'zod';
 import mongoose, { Document, Schema, Model } from 'mongoose';
 
 // Schema validation
 export const dispatchValidationSchema = z.object({
   _id: z.string().optional(),
   orderId: z.string().optional(),
-  date: z.string().min(1),
+  date: z.date(),
   transportId: z.string(),
   clientId: z.string(),
   invoice: z.string().optional(),
@@ -34,13 +34,14 @@ export interface IDispatchList extends IDispatchValidationSchema {
   company: string;
   driverName: string;
   plate: string;
-  status?: "New" | "Edit" | "Delete" | undefined
+  status?: "New" | "Edit" | "Delete" | undefined;
+  key: string; // this is only for re-render row in table
 }
 
 // DB model + schema
 export interface DispatchModel extends Document {
   orderId?: string;
-  date: string;
+  date: Date;
   transportId: string;
   clientId: string;
   invoice?: string;
@@ -81,7 +82,7 @@ try {
 } catch (e) {
   const dispatchDBSchema = new Schema({
     orderId: { type: String, optional: true },
-    date: { type: String, optional: false },
+    date: { type: Date, required: true },
     transportId: { type: String, optional: false },
     clientId: { type: String, optional: false },
     invoice: { type: String, optional: true },

@@ -28,7 +28,6 @@ export const useDispatch = (props: UseDispatchProps) => {
   const {dispatchResponse,getDispatchs, refetchDispatch, isLoadingDispatch, setDispatchResponse} = useDispatchContext()
   const { query } = props
 
-  console.log('dispatchResponse:', dispatchResponse);
   // API
   const {
     run: runGetOrders,

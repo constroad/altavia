@@ -36,7 +36,6 @@ const DispatchPage = () => {
   } = useDisclosure();
 
   // API
-
   const {
     dispatchResponse,
     clientResponse,
@@ -56,7 +55,7 @@ const DispatchPage = () => {
     onUpdateDispatch,
     onSaveAllDispatch,
     dispatchSelected,
-    onSelectDispatch
+    onSelectDispatch,
   } = useDispatch({
     query: {
       page: page,
@@ -116,12 +115,7 @@ const DispatchPage = () => {
 
   return (
     <IntranetLayout title="Control de Despachos">
-      <Flex
-        flexDir="column"
-        alignItems={{ base: '', md: '' }}
-        gap="15px"
-        mt={5}
-      >
+      <Flex flexDir="column" gap="15px" mt={5}>
         <SearchDispatch
           clientList={clientResponse?.data ?? []}
           startDate={startDate}
@@ -139,7 +133,7 @@ const DispatchPage = () => {
             <Summary
               listDispatch={listDispatch}
               onRefreshDispatch={refetchDispatch}
-              onAddDispatch={onAddDispatch}
+              onAddDispatch={() => onAddDispatch()}
               addindDispatch={addingDispatch}
               totalRecords={dispatchSummary?.nroRecords ?? 0}
               onSaveDispatch={onSaveAllDispatch}

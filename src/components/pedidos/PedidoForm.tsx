@@ -10,6 +10,9 @@ import {
   Flex,
   Select,
   Switch,
+  Tag,
+  Grid,
+  GridItem,
 } from '@chakra-ui/react';
 import { IOrderValidationSchema } from 'src/models/order';
 import { useEffect, useState } from 'react';
@@ -40,11 +43,15 @@ export const PedidoForm = (props: PedidoFormProps) => {
     notas: '',
     precioCubo: 480,
     cantidadCubos: 1,
+    subTotal: 480,
     totalPedido: 480,
     montoAdelanto: 0,
     montoPorCobrar: 0,
     isCredit: false,
-    status: OrderStatus.paid,
+    status: OrderStatus.pending,
+    isPaid: false,
+    igv: 0,
+    igvCheck: false,
   });
 
   useEffect(() => {
@@ -144,7 +151,7 @@ export const PedidoForm = (props: PedidoFormProps) => {
           ...payload,
           cantidadCubos: parseFloat(payload.cantidadCubos.toString()),
           precioCubo: parseFloat(payload.precioCubo.toString()),
-          montoAdelanto: parseFloat(payload.montoAdelanto?.toString() ?? '0')
+          montoAdelanto: parseFloat(payload.montoAdelanto?.toString() ?? '0'),
         }),
         {
           onSuccess: () => {
@@ -165,7 +172,7 @@ export const PedidoForm = (props: PedidoFormProps) => {
         ...payload,
         cantidadCubos: parseFloat(payload.cantidadCubos.toString()),
         precioCubo: parseFloat(payload.precioCubo.toString()),
-        montoAdelanto: parseFloat(payload.montoAdelanto?.toString() ?? '0')
+        montoAdelanto: parseFloat(payload.montoAdelanto?.toString() ?? '0'),
       }),
       {
         onSuccess: () => {
@@ -179,6 +186,7 @@ export const PedidoForm = (props: PedidoFormProps) => {
       }
     );
   };
+
   const handleSelectClient = (option: IAutocompleteOptions) => {
     setSearchClient(option.label);
     setOrder({
@@ -188,206 +196,407 @@ export const PedidoForm = (props: PedidoFormProps) => {
     });
   };
 
+  const onPayOrder = () => {
+    const { _id, ...payload } = order;
+    const path = `${API_ROUTES.order}/${_id}`;
+    runUpdateOrder(
+      axios.put(path, {
+        ...payload,
+        isPaid: true,
+      }),
+      {
+        onSuccess: () => {
+          toast.success('Deuda del pedido pagada con éxito!');
+          props.onSuccess?.();
+        },
+        onError: () => {
+          toast.error('ocurrio un error pagando la deuda del pedido');
+        },
+      }
+    );
+  };
+
   const clientList = clientResponse?.data ?? [];
   const clientFildsToFilter = ['name', 'ruc', 'alias'];
 
   // Renders
   return (
     <Box as="form" onSubmit={handleSubmit} mt={5} fontSize="12px">
-      <Flex gap={5}>
-        <Box width="48%" as={Flex} flexDir="column" gap={1}>
-          <FormControl>
-            <FormLabel fontSize="inherit">Cliente *</FormLabel>
-            <AutoComplete
-              isLoading={loadingClients}
-              placeholder="Buscar cliente por nombre, alias o RUC"
-              value={searchClient ?? ''}
-              onChange={(value) => setSearchClient(value)}
-              onSelect={handleSelectClient}
-              options={clientList
-                .filter((client: any) => {
-                  return clientFildsToFilter.some((property) => {
-                    const value = client[property] as string;
-                    const searchValue = value?.toLowerCase();
-                    return searchValue?.includes(searchClient.toLowerCase());
-                  });
-                })
-                .map((client) => ({
-                  label: client.name,
-                  value: client._id ?? '',
-                }))}
-              renderNoFound={() => (
-                <AddClient
-                  onSuccess={() => {
-                    refetch();
-                    setSearchClient('');
+      <Grid
+        templateColumns={{ base: 'repeat(1, 1fr)', md: 'repeat(2, 1fr)' }}
+        gap={2}
+      >
+        <GridItem w="100%">
+          <Box as={Flex} flexDir="column" gap={1}>
+            <FormControl>
+              <FormLabel fontSize="inherit">Cliente *</FormLabel>
+              <AutoComplete
+                isLoading={loadingClients}
+                placeholder="Buscar cliente por nombre, alias o RUC"
+                value={searchClient ?? ''}
+                onChange={(value) => setSearchClient(value)}
+                onSelect={handleSelectClient}
+                options={clientList
+                  .filter((client: any) => {
+                    return clientFildsToFilter.some((property) => {
+                      const value = client[property] as string;
+                      const searchValue = value?.toLowerCase();
+                      return searchValue?.includes(searchClient.toLowerCase());
+                    });
+                  })
+                  .map((client) => ({
+                    label: client.name,
+                    value: client._id ?? '',
+                  }))}
+                renderNoFound={() => (
+                  <AddClient
+                    onSuccess={() => {
+                      refetch();
+                      setSearchClient('');
+                    }}
+                  />
+                )}
+              />
+            </FormControl>
+            <Grid templateColumns="repeat(2, 1fr)" gap={2}>
+              <GridItem>
+                <FormControl>
+                  <FormLabel fontSize="inherit">MAC</FormLabel>
+                  <Select
+                    name="tipoMAC"
+                    placeholder="Selecciona"
+                    value="Mac 2"
+                    onChange={(e) => {
+                      setOrder({
+                        ...order,
+                        tipoMAC: e.target.value,
+                      });
+                    }}
+                    size="xs"
+                  >
+                    <option value="Mac 1">Mac 1</option>
+                    <option value="Mac 2">Mac 2</option>
+                    <option value="Mac 3">Mac 3</option>
+                  </Select>
+                </FormControl>
+              </GridItem>
+              <GridItem>
+                <FormControl>
+                  <FormLabel fontSize="inherit">Fecha</FormLabel>
+                  <Input
+                    size="xs"
+                    type="date"
+                    name="fechaProgramacion"
+                    value={order.fechaProgramacion}
+                    onChange={handleChange}
+                  />
+                </FormControl>
+              </GridItem>
+            </Grid>
+
+            <Grid templateColumns="repeat(2, 1fr)" gap={2}>
+              <GridItem>
+                <FormControl>
+                  <FormLabel fontSize="inherit" width="100px">
+                    Obra
+                  </FormLabel>
+                  <Input
+                    type="text"
+                    size="xs"
+                    name="obra"
+                    value={order.obra}
+                    onChange={handleChange}
+                  ></Input>
+                </FormControl>
+              </GridItem>
+              <GridItem>
+                <FormLabel fontSize="inherit">Estado:</FormLabel>
+                <Select
+                  name="tipoMAC"
+                  placeholder="Selecciona"
+                  value={order.status ?? OrderStatus.pending}
+                  onChange={(e) => {
+                    setOrder({
+                      ...order,
+                      status: e.target.value as OrderStatus,
+                    });
+                  }}
+                  size="xs"
+                >
+                  <option value={OrderStatus.pending}>
+                    {OrderStatus.pending}
+                  </option>
+                  <option value={OrderStatus.dispatched}>
+                    {OrderStatus.dispatched}
+                  </option>
+                  <option value={OrderStatus.rejected}>
+                    {OrderStatus.rejected}
+                  </option>
+                </Select>
+              </GridItem>
+            </Grid>
+
+            <Grid
+              templateColumns={{ base: 'repeat(2, 1fr)', md: 'repeat(4, 1fr)' }}
+              gap={2}
+            >
+              <GridItem>
+                <FormControl>
+                  <FormLabel fontSize="inherit" width="100px">
+                    Precio
+                  </FormLabel>
+                  <NumberInput
+                    size="xs"
+                    name="precioCubo"
+                    value={order.precioCubo}
+                    onChange={(value) => {
+                      const precioCubo = isNaN(parseFloat(value))
+                        ? 0
+                        : parseFloat(value);
+                      const subTotal = order.cantidadCubos * precioCubo;
+                      const igv = order.igvCheck ? subTotal * 0.18 : 0;
+                      const total = subTotal + igv;
+                      const montoPorCobrar = order.isCredit
+                        ? total - order.montoAdelanto
+                        : 0;
+                      setOrder({
+                        ...order,
+                        //@ts-ignore
+                        precioCubo: value,
+                        subTotal,
+                        igv,
+                        totalPedido: total,
+                        montoPorCobrar,
+                      });
+                    }}
+                  >
+                    <NumberInputField />
+                  </NumberInput>
+                </FormControl>
+              </GridItem>
+              <GridItem>
+                <FormControl>
+                  <FormLabel fontSize="inherit" width="100px">
+                    Cantidad
+                  </FormLabel>
+                  <NumberInput
+                    size="xs"
+                    name="cantidadCubos"
+                    value={order.cantidadCubos}
+                    onChange={(value) => {
+                      const cantidadCubos = isNaN(parseFloat(value))
+                        ? 0
+                        : parseFloat(value);
+                      const subTotal = cantidadCubos * order.precioCubo;
+                      const igv = order.igvCheck ? subTotal * 0.18 : 0;
+                      const total = subTotal + igv;
+                      const montoPorCobrar = order.isCredit
+                        ? total - order.montoAdelanto
+                        : 0;
+                      setOrder({
+                        ...order,
+                        //@ts-ignore
+                        cantidadCubos: value,
+                        subTotal,
+                        igv,
+                        totalPedido: total,
+                        montoPorCobrar,
+                      });
+                    }}
+                  >
+                    <NumberInputField />
+                  </NumberInput>
+                </FormControl>
+              </GridItem>
+
+              <GridItem>
+                <FormControl>
+                  <FormLabel fontSize="inherit" width="100px">
+                    Igv
+                    <Switch
+                      size="sm"
+                      id="isChecked"
+                      defaultValue={(order.igvCheck ?? false).toString()}
+                      isChecked={order.igvCheck ?? false}
+                      onChange={(value) => {
+                        const igvCheck = value.target.checked;
+                        const subTotal = order.cantidadCubos * order.precioCubo;
+                        const igvValue = igvCheck ? subTotal * 0.18 : 0;
+                        const total = subTotal + igvValue;
+                        const montoPorCobrar = order.isCredit
+                          ? total - (order.montoAdelanto ?? 0)
+                          : 0;
+                        setOrder({
+                          ...order,
+                          igvCheck,
+                          igv: igvValue,
+                          totalPedido: total,
+                          montoPorCobrar,
+                        });
+                      }}
+                    />
+                  </FormLabel>
+                  <NumberInput
+                    isDisabled
+                    size="xs"
+                    value={(order.igv ?? 0).toFixed(2)}
+                  >
+                    <NumberInputField fontSize="inherit" paddingInlineEnd={0} />
+                  </NumberInput>
+                </FormControl>
+              </GridItem>
+              <GridItem>
+                <FormControl>
+                  <FormLabel fontSize="inherit" width="100px">
+                    Total S/.
+                  </FormLabel>
+                  <NumberInput
+                    size="xs"
+                    name="totalPedido"
+                    value={order.totalPedido}
+                    onChange={(value) => {
+                      const total = isNaN(parseFloat(value))
+                        ? 0
+                        : parseFloat(value);
+                      const igvCheck = order.igvCheck;
+                      const igv = igvCheck ? total - total / 1.18 : 0;
+                      const subTotal = total - igv;
+                      const precio = subTotal / order.cantidadCubos;
+                      const montoPorCobrar = order.isCredit
+                        ? total - (order.montoAdelanto ?? 0)
+                        : 0;
+
+                      setOrder({
+                        ...order,
+                        igvCheck,
+                        igv,
+                        subTotal,
+                        //@ts-ignore
+                        totalPedido: value,
+                        precioCubo: precio,
+                        montoPorCobrar,
+                      });
+                    }}
+                  >
+                    <NumberInputField />
+                  </NumberInput>
+                </FormControl>
+              </GridItem>
+            </Grid>
+          </Box>
+        </GridItem>
+        <GridItem w="100%">
+          <Grid
+            templateColumns={{ base: 'repeat(2, 1fr)', md: 'repeat(4, 1fr)' }}
+            gap={2}
+          >
+            <GridItem>
+              <FormLabel fontSize="inherit">credito?</FormLabel>
+              <Box width="30px">
+                <Switch
+                  flex={1}
+                  width={10}
+                  isChecked={order.isCredit}
+                  onChange={(value) => {
+                    const isCredit = value.target.checked;
+                    const montoAdelanto = isCredit ? order.montoAdelanto : 0;
+                    const montoPorCobrar = isCredit
+                      ? order.totalPedido - (order.montoAdelanto ?? 0)
+                      : 0;
+                    setOrder({
+                      ...order,
+                      isCredit,
+                      montoPorCobrar,
+                      montoAdelanto,
+                      fechaVencimiento: !isCredit
+                        ? undefined
+                        : order.fechaVencimiento,
+                    });
                   }}
                 />
+              </Box>
+            </GridItem>
+            <GridItem>
+              <FormControl>
+                <FormLabel fontSize="inherit">Adelanto</FormLabel>
+                <NumberInput
+                  isDisabled={!order.isCredit}
+                  size="xs"
+                  name="montoAdelanto"
+                  value={order.montoAdelanto}
+                  onChange={(value) => {
+                    const montoAdelanto = isNaN(parseFloat(value))
+                      ? 0
+                      : parseFloat(value);
+                    const montoPorCobrar = order.totalPedido - montoAdelanto;
+                    setOrder({
+                      ...order,
+                      //@ts-ignore
+                      montoAdelanto: value,
+                      montoPorCobrar,
+                    });
+                  }}
+                >
+                  <NumberInputField />
+                </NumberInput>
+              </FormControl>
+            </GridItem>
+            <GridItem>
+              <FormControl>
+                <FormLabel fontSize="inherit">Adeuda</FormLabel>
+                <NumberInput
+                  isDisabled
+                  size="xs"
+                  name="montoPorCobrar"
+                  value={order.montoPorCobrar}
+                  onChange={(value) =>
+                    handleNumberChange('montoPorCobrar', value)
+                  }
+                >
+                  <NumberInputField />
+                </NumberInput>
+              </FormControl>
+            </GridItem>
+            <GridItem>
+              <FormControl>
+                <FormLabel fontSize="inherit">Vencimiento</FormLabel>
+                <Input
+                  isDisabled={!order.isCredit}
+                  size="xs"
+                  type="date"
+                  name="fechaVencimiento"
+                  value={order.fechaVencimiento ?? ''}
+                  onChange={handleChange}
+                />
+              </FormControl>
+            </GridItem>
+          </Grid>
+          <Box flex={1} as={Flex} flexDir="column" gap={2}>
+            <FormControl>
+              <FormLabel fontSize="inherit">Notas</FormLabel>
+              <Textarea
+                size="sm"
+                name="notas"
+                value={order.notas}
+                onChange={handleChange}
+              />
+            </FormControl>
+            <Flex alignItems="center" justifyContent="space-between">
+              {order.isCredit && (
+                <Tag
+                  fontSize="inherit"
+                  colorScheme={!order.isPaid ? 'red' : 'green'}
+                >
+                  Estado: {!order.isPaid ? 'Adeuda' : 'Pagado'}
+                </Tag>
               )}
-            />
-          </FormControl>
-          <Flex>
-            <FormControl>
-              <FormLabel fontSize="inherit">MAC</FormLabel>
-              <Select
-                name="tipoMAC"
-                placeholder="Selecciona"
-                defaultValue="Mac 2"
-                onChange={(e) => {
-                  setOrder({
-                    ...order,
-                    tipoMAC: e.target.value,
-                  });
-                }}
-                size="xs"
-              >
-                <option value="Mac 1">Mac 1</option>
-                <option value="Mac 2">Mac 2</option>
-                <option value="Mac 3">Mac 3</option>
-              </Select>
-            </FormControl>
-            <FormControl>
-              <FormLabel fontSize="inherit">Fecha</FormLabel>
-              <Input
-                size="xs"
-                type="date"
-                name="fechaProgramacion"
-                value={order.fechaProgramacion}
-                onChange={handleChange}
-              />
-            </FormControl>
-          </Flex>
+            </Flex>
+          </Box>
+        </GridItem>
+      </Grid>
 
-          <FormControl>
-            <FormLabel fontSize="inherit" width="100px">
-              Obra
-            </FormLabel>
-            <Input
-              type="text"
-              size="xs"
-              name="obra"
-              value={order.obra}
-              onChange={handleChange}
-            ></Input>
-          </FormControl>
-          <Flex gap={2} flexDir={{ base: 'column', md: 'row' }}>
-            <FormControl>
-              <FormLabel fontSize="inherit" width="100px">
-                Precio
-              </FormLabel>
-              <NumberInput
-                size="xs"
-                name="precioCubo"
-                value={order.precioCubo}
-                onChange={(value) => handleNumberChange('precioCubo', value)}
-              >
-                <NumberInputField />
-              </NumberInput>
-            </FormControl>
-            <FormControl>
-              <FormLabel fontSize="inherit" width="100px">
-                Cantidad
-              </FormLabel>
-              <NumberInput
-                size="xs"
-                name="cantidadCubos"
-                value={order.cantidadCubos}
-                onChange={(value) => {
-                  handleNumberChange('cantidadCubos', value);
-                }}
-              >
-                <NumberInputField />
-              </NumberInput>
-            </FormControl>
-            <FormControl>
-              <FormLabel fontSize="inherit" width="100px">
-                Total S/.
-              </FormLabel>
-              <NumberInput
-                isDisabled
-                size="xs"
-                name="totalPedido"
-                value={order.totalPedido}
-                onChange={(value) => handleNumberChange('totalPedido', value)}
-              >
-                <NumberInputField />
-              </NumberInput>
-            </FormControl>
-          </Flex>
-        </Box>
-        {/* Second Column */}
-        <Box flex={1} as={Flex} flexDir="column" gap={2}>
-          <Flex gap={2}>
-            <FormLabel fontSize="inherit">Es al credito?</FormLabel>
-            <Switch
-              id="isChecked"
-              flex={1}
-              isChecked={order.isCredit}
-              onChange={(value) => {
-                const isCredit = value.target.checked;
-                setOrder({
-                  ...order,
-                  isCredit,
-                  montoPorCobrar:
-                    order.totalPedido - (order.montoAdelanto ?? 0),
-                  status: isCredit ? OrderStatus.pending : OrderStatus.paid,
-                });
-              }}
-            />
-          </Flex>
-          <Flex gap={2} flexDir={{ base: 'column', md: 'row' }}>
-            <FormControl>
-              <FormLabel fontSize="inherit">Adelanto</FormLabel>
-              <NumberInput
-                isDisabled={!order.isCredit}
-                size="xs"
-                name="montoAdelanto"
-                value={order.montoAdelanto}
-                onChange={(value) => handleNumberChange('montoAdelanto', value)}
-              >
-                <NumberInputField />
-              </NumberInput>
-            </FormControl>
-            <FormControl>
-              <FormLabel fontSize="inherit">Adeuda</FormLabel>
-              <NumberInput
-                isDisabled
-                size="xs"
-                name="montoPorCobrar"
-                value={order.montoPorCobrar}
-                onChange={(value) =>
-                  handleNumberChange('montoPorCobrar', value)
-                }
-              >
-                <NumberInputField />
-              </NumberInput>
-            </FormControl>
-            <FormControl>
-              <FormLabel fontSize="inherit">Vencimiento</FormLabel>
-              <Input
-                isDisabled={!order.isCredit}
-                size="xs"
-                type="date"
-                name="fechaVencimiento"
-                value={order.fechaVencimiento ?? ''}
-                onChange={handleChange}
-              />
-            </FormControl>
-          </Flex>
-
-          <FormControl>
-            <FormLabel fontSize="inherit">Notas</FormLabel>
-            <Textarea
-              size="sm"
-              name="notas"
-              value={order.notas}
-              onChange={handleChange}
-            />
-          </FormControl>
-        </Box>
-      </Flex>
       <Flex
-        mt={5}
+        mt={2}
         alignItems="center"
         width="100%"
         justifyContent="end"
@@ -405,14 +614,17 @@ export const PedidoForm = (props: PedidoFormProps) => {
         >
           Guardar
         </Button>
-        <Button
-          size="xs"
-          isDisabled={!order.isCredit}
-          colorScheme="yellow"
-          isLoading={updatingOrder}
-        >
-          Cancelar deuda
-        </Button>        
+        {order._id && (
+          <Button
+            size="xs"
+            isDisabled={!order.isCredit || order.isPaid}
+            colorScheme="yellow"
+            isLoading={updatingOrder}
+            onClick={onPayOrder}
+          >
+            Pagar deuda
+          </Button>
+        )}
       </Flex>
     </Box>
   );

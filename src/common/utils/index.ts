@@ -89,5 +89,12 @@ export function b64toBlob(base64Data: any, contentType = '', sliceSize = 512) {
   return blob;
 }
 
+export function getEnumOptions(enumObj: any): { value: string, label: string }[] {
+  return Object.keys(enumObj).map(key => ({
+      value: enumObj[key],
+      label: key
+  }));
+}
+
 export * from './api'
 export * from './numberToWords'

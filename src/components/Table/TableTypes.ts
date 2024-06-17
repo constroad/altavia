@@ -8,5 +8,5 @@ export interface TableColumn<T = any> {
 }
 
 export interface TableData {
-  [key: string]: string | number | any;
+  [key: string]: string | number | any,
 }

@@ -2,11 +2,10 @@ import { z } from 'zod';
 import mongoose, { Document, Schema, Model } from 'mongoose';
 
 export enum OrderStatus {
-   pending= 'pending',
-   paid= 'paid',
-   dispatched= 'dispatched',
-   deleted= 'deleted',
-   rejected= 'rejected'
+   pending= 'pendiente',
+   dispatched= 'despachado',
+   deleted= 'eliminado',
+   rejected= 'rechazado'
 }
 
 // Schema validation
@@ -20,13 +19,17 @@ export const orderValidationSchema = z.object({
   fechaVencimiento: z.string().optional(),
   notas: z.string().optional(),
   obra: z.string().optional(),
+  igv: z.number(),
+  igvCheck: z.boolean().optional().default(true),
   precioCubo: z.number(),
   cantidadCubos: z.number(),
+  subTotal: z.number(),
   totalPedido: z.number(),
-  montoAdelanto: z.number().optional(),
-  montoPorCobrar: z.number().optional(),
+  montoAdelanto: z.number(),
+  montoPorCobrar: z.number(),
   status: z.nativeEnum(OrderStatus).optional(),
   isCredit: z.boolean().default(false),
+  isPaid: z.boolean().default(false),
   createdAt: z.string().optional(),
   updatedAt: z.string().optional()
 })
@@ -57,16 +60,20 @@ export interface OrderModel extends Document {
   cotizacionId?: string;
   tipoMAC: string;
   fechaProgramacion: Date;
-  fechaVencimiento?: string;
+  fechaVencimiento?: Date;
   obra?: string;
   notas?: string;
   cantidadCubos: number;
   precioCubo: number;
+  subTotal: number;
   totalPedido: number;
-  montoAdelanto?: number;
-  montoPorCobrar?: number;
+  montoAdelanto: number;
+  montoPorCobrar: number;
   status?: string;
   isCredit: boolean;
+  isPaid: boolean;
+  igv: number;
+  igvCheck?: boolean
 }
 
 const CertificadoSchema = new Schema<ICertificado>({
@@ -101,10 +108,14 @@ try {
     obra: { type: String, required: false },
     precioCubo: { type: Number, required: true },
     totalPedido: { type: Number, required: true },
+    subTotal: { type: Number, optional: false },
     cantidadCubos: { type: Number, required: true },
-    montoAdelanto: { type: Number, required: false },
-    montoPorCobrar: { type: Number, required: false },
+    montoAdelanto: { type: Number, required: true },
+    montoPorCobrar: { type: Number, required: true },
+    igvCheck: { type: Boolean, optional: true },
+    igv: { type: Number, optional: true },
     isCredit: { type: Boolean, required: true },
+    isPaid: { type: Boolean, required: true },
     status: { type: String, required: false, default: OrderStatus.pending },
   }, {
     timestamps: true, // this will add both createdAt y updatedAt automatically

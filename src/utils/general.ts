@@ -1,5 +1,10 @@
-export function formatISODate(isoString: string) {
-  const date = new Date(isoString);
+export function formatISODate(isoString: string | Date) {
+  let date: Date;
+  if (typeof isoString === "string") {
+    date = new Date(isoString);    
+  } else {
+    date = isoString
+  }
   const year = date.getFullYear();
   const month = String(date.getMonth() + 1).padStart(2, '0');
   const day = String(date.getDate()).padStart(2, '0');
@@ -19,5 +24,11 @@ export function getDateStringRange(): { dateTo: string, dateFrom: string } {
 }
 
 export function formatMoney(amount: number) {
-  return (amount).toFixed(2).replace(/\d(?=(\d{3})+\.)/g, '$&,'); 
+  return (amount).toFixed(2).replace(/\d(?=(\d{3})+\.)/g, '$&,');
 };
+
+export const parseStringDateWithTime = (dateString: string | Date) => {
+  const now = new Date();
+  const date = new Date(`${dateString}T${now.getHours()}:${now.getMinutes()}`);
+  return date
+}

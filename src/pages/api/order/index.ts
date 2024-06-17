@@ -10,7 +10,7 @@ const router = createRouter<NextApiRequest, NextApiResponse>();
 const getAll = async (req: NextApiRequest, res: NextApiResponse) => {
   const repo = new OrderRepository();
   try {
-    const result = await repo.getAll();
+    const result = await repo.getAll({});
     res.status(200).json(result);
   } catch (error: any) {
     console.error(error.message);

@@ -3,10 +3,11 @@ import axios from 'axios';
 import { useRouter } from 'next/router';
 import { useEffect } from 'react';
 import { ADMIN_ROUTES, API_ROUTES } from 'src/common/consts';
-import { useAsync } from 'src/common/hooks';
+import { useAsync, useDispatch } from 'src/common/hooks';
 import { IntranetLayout } from 'src/components';
 import { PedidoForm } from 'src/components/pedidos';
 import { AddDispatch } from 'src/components/pedidos/AddDispatch';
+import { DispatchList } from 'src/components/pedidos/DispatchList';
 import { IOrderValidationSchema } from 'src/models/order';
 
 const fetcher = (path: string) => axios.get(path);
@@ -38,8 +39,7 @@ const Pedido = () => {
     router.push(ADMIN_ROUTES.orders);
   };
 
-
-  const order = orderResponse?.data
+  const order = orderResponse?.data;
 
   return (
     <IntranetLayout onBackClick={handleBackToOrders} title="Pedido">
@@ -54,6 +54,7 @@ const Pedido = () => {
           />
 
           {/* Listado de Despachos */}
+          {order?._id && <DispatchList order={order} />}
           {/* <AddDispatch orderId={order?._id} /> */}
         </Flex>
       )}

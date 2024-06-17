@@ -14,34 +14,55 @@ import {
   Spinner,
   Switch,
   Text,
+  Tooltip,
 } from '@chakra-ui/react';
 import { TableColumn } from '../Table';
 import { CONSTROAD_COLORS } from 'src/styles/shared';
-import { IDispatchValidationSchema, IDispatchList } from 'src/models/dispatch';
+import { IDispatchList } from 'src/models/dispatch';
 import { AutoComplete } from '../autoComplete';
 import { IClientValidationSchema } from 'src/models/client';
 import { ITransportValidationSchema } from 'src/models/transport';
 import { IOrderValidationSchema } from 'src/models/order';
-import { MenuVerticalIcon, TrashIcon, WhatsappIcon } from 'src/common/icons';
+import {
+  MenuVerticalIcon,
+  CircleIcon,
+  TrashIcon,
+  WhatsappIcon,
+} from 'src/common/icons';
 import { AddClient } from '../pedidos/AddClient';
 import { AddTransport } from './AddTransport';
-import { useScreenSize } from 'src/common/hooks/useScreenSize';
+import { parseStringDateWithTime, formatISODate } from 'src/utils/general';
 
+type TableView = 'Dispatch' | 'Order';
+const orderViewColumns = [
+  'date',
+  'company',
+  'driverName',
+  'guia',
+  'note',
+  'quantity',
+  'price',
+  'igv',
+  'total',
+  '_id',
+];
 interface ColumnsProps {
+  view?: TableView;
   isLoading?: boolean;
   isMobile?: boolean;
   orderList: IOrderValidationSchema[];
-  reloadClient: () => Promise<any>;
+  reloadClient?: () => Promise<any>;
   clientList: IClientValidationSchema[];
   reloadTransport: () => Promise<any>;
   transportList: ITransportValidationSchema[];
-  updateDispatch: (payload: IDispatchValidationSchema) => void;
+  updateDispatch: (payload: IDispatchList) => void;
   onDelete: (dispatch: IDispatchList) => void;
   onSendVale: (dispatch: IDispatchList) => void;
 }
 export const generateDispatchColumns = (props: ColumnsProps) => {
   const { orderList, clientList, transportList, updateDispatch, isMobile } =
     props;
+  const isOrderView = props.view === 'Order';
   const columns: TableColumn<IDispatchList>[] = [
     {
       key: 'orderId',
@@ -53,12 +74,15 @@ export const generateDispatchColumns = (props: ColumnsProps) => {
             placeholder="Pedidos por cliente o fecha"
             value={row.order}
             onSelect={(option) => {
-              const order = orderList.find((x) => x._id === option.value)
+              const order = orderList.find((x) => x._id === option.value);
+              const orderText = `${order?.cliente} - ${order?.fechaProgramacion} - ${order?.cantidadCubos} cubos`;
               updateDispatch({
                 ...row,
+                order: orderText,
                 orderId: option.value,
                 clientId: order?.clienteId ?? '',
-                obra: order?.obra ?? ''
+                client: order?.cliente ?? '',
+                obra: order?.obra ?? '',
               });
             }}
             options={orderList.map((order) => ({
@@ -80,18 +104,25 @@ export const generateDispatchColumns = (props: ColumnsProps) => {
       width: '3%',
       render: (item, row) => {
         return (
-          <Flex flexDir="column" lineHeight={3}>
-            <Input
-              px={{ base: '5px', md: '3px' }}
-              fontSize="inherit"
-              lineHeight="14px"
-              height="32px"
-              width="100%"
-              type="date"
-              value={item}
-              onChange={(e) => updateDispatch({ ...row, date: e.target.value })}
-            />
-          </Flex>
+          <Tooltip label={row?.date?.toString()}>
+            <Flex flexDir="column" lineHeight={3}>
+              <Input
+                px={{ base: '5px', md: '3px' }}
+                fontSize="inherit"
+                lineHeight="14px"
+                height="32px"
+                width="100%"
+                type="date"
+                value={formatISODate(item ?? new Date())}
+                onChange={(e) => {
+                  updateDispatch({
+                    ...row,
+                    date: parseStringDateWithTime(e.target.value),
+                  });
+                }}
+              />
+            </Flex>
+          </Tooltip>
         );
       },
     },
@@ -136,11 +167,12 @@ export const generateDispatchColumns = (props: ColumnsProps) => {
                 value: client._id ?? '',
                 filter: `${client.name}-${client.ruc}-${client.alias}`,
               }))}
-              renderNoFound={() => (
+              renderNoFound={({ onClose }) => (
                 <AddClient
                   textNoFound=""
                   onSuccess={() => {
-                    props.reloadClient();
+                    onClose();
+                    props.reloadClient?.();
                   }}
                 />
               )}
@@ -181,7 +213,7 @@ export const generateDispatchColumns = (props: ColumnsProps) => {
           <Flex flexDir="column" lineHeight={3}>
             <AutoComplete
               placeholder="Buscar transportista"
-              value={`${row.plate}-${row.company}`}
+              value={row.plate}
               onSelect={(option) => {
                 const transportId = option.value;
                 const transport = transportList.find(
@@ -189,6 +221,7 @@ export const generateDispatchColumns = (props: ColumnsProps) => {
                 );
                 updateDispatch({
                   ...row,
+                  plate: transport?.plate ?? '',
                   transportId,
                   driverName: transport?.driverName ?? '',
                   driverCard: transport?.driverCard ?? '',
@@ -196,14 +229,15 @@ export const generateDispatchColumns = (props: ColumnsProps) => {
                 });
               }}
               options={transportList.map((t) => ({
-                label: `${t.company}-${t.driverName}-${t.plate}`,
+                label: t.plate ?? '',
                 value: t._id ?? '',
                 filter: `${t.company}-${t.driverName}-${t.plate}`,
               }))}
-              renderNoFound={() => (
+              renderNoFound={({ onClose }) => (
                 <AddTransport
                   textNoFound=""
                   onSuccess={() => {
+                    onClose();
                     props.reloadTransport();
                   }}
                 />
@@ -336,7 +370,7 @@ export const generateDispatchColumns = (props: ColumnsProps) => {
         return (
           <NumberInput
             size="xs"
-            defaultValue={item}
+            defaultValue={item?.toFixed(2)}
             onBlur={(e) => {
               if (e.target.value === item.toString()) return;
               let price = 0;
@@ -380,7 +414,7 @@ export const generateDispatchColumns = (props: ColumnsProps) => {
                 updateDispatch({ ...row, igvCheck, igv: igvValue, total });
               }}
             />
-            <NumberInput isDisabled size="xs" defaultValue={item.toFixed(2)}>
+            <NumberInput isDisabled size="xs" defaultValue={item?.toFixed(2)}>
               <NumberInputField fontSize="inherit" paddingInlineEnd={0} />
             </NumberInput>
           </Flex>
@@ -392,51 +426,85 @@ export const generateDispatchColumns = (props: ColumnsProps) => {
       bgColor: CONSTROAD_COLORS.yellow,
       label: 'Total',
       width: '5%',
-      render: (item) => {
+      render: (item, row) => {
         return (
-          <Text color="red" fontWeight={600} textAlign="right">
-            {item.toFixed(2)}
-          </Text>
+          <NumberInput
+            size="xs"
+            defaultValue={item?.toFixed(2)}
+            onBlur={(e) => {
+              if (e.target.value === item.toString()) return;
+              const value = e.target.value;
+              const total = isNaN(parseFloat(value)) ? 0 : parseFloat(value);
+              const igvCheck = row.igvCheck;
+              const igv = igvCheck ? total - total / 1.18 : 0;
+              const subTotal = total - igv;
+              const price = subTotal / row.quantity;
+              updateDispatch({ ...row, price, subTotal, total, igv });
+            }}
+          >
+            <NumberInputField fontSize="inherit" paddingInlineEnd={0} />
+          </NumberInput>
         );
       },
     },
     {
       key: '_id',
       label: <>{props.isLoading && <Spinner size="xs" />}</>,
-      width: '5%',
+      width: '10%',
       render: (item, row) => {
         return (
-          <Menu data-testid="page-menu" variant="brand">
-            <MenuButton
-              as={IconButton}
-              variant="unstyled"
-              minW="auto"
-              h="auto"
-              aria-label="Page details"
-              icon={<MenuVerticalIcon />}
-              rounded="full"
-            />
+          <Flex
+            width="inherit"
+            alignItems="center"
+            justifyContent="space-between"
+          >
+            <Menu data-testid="page-menu" variant="brand">
+              <MenuButton
+                as={IconButton}
+                variant="unstyled"
+                minW="auto"
+                h="auto"
+                aria-label="Page details"
+                icon={
+                  row.status !== undefined ? (
+                    <CircleIcon color="green" />
+                  ) : (
+                    <MenuVerticalIcon />
+                  )
+                }
+                rounded="full"
+              />
 
-            <MenuList maxW="170px">
-              <MenuItem onClick={() => props.onSendVale(row)} as={Flex} gap={2}>
-                <WhatsappIcon />
-                Enviar Vale
-              </MenuItem>
-              <MenuItem
-                onClick={() => props.onDelete(row)}
-                color="red"
-                as={Flex}
-                gap={2}
-              >
-                <TrashIcon />
-                Eliminar despacho
-              </MenuItem>
-            </MenuList>
-          </Menu>
+              <MenuList maxW="170px">
+                {!row.status && (
+                  <MenuItem
+                    onClick={() => props.onSendVale(row)}
+                    as={Flex}
+                    gap={2}
+                  >
+                    <WhatsappIcon />
+                    Enviar Vale
+                  </MenuItem>
+                )}
+                <MenuItem
+                  onClick={() => props.onDelete(row)}
+                  color="red"
+                  as={Flex}
+                  gap={2}
+                >
+                  <TrashIcon />
+                  Eliminar despacho
+                </MenuItem>
+              </MenuList>
+            </Menu>
+          </Flex>
         );
       },
     },
   ];
+  if (!isMobile && isOrderView) {
+    return columns.filter((x) => orderViewColumns.includes(x.key));
+  }
   if (!isMobile) {
     return columns;
   }
@@ -448,28 +516,30 @@ export const generateDispatchColumns = (props: ColumnsProps) => {
       render: (item, row) => {
         return (
           <Grid templateColumns="repeat(2, 1fr)" gap={2} my={4}>
-            <GridItem colSpan={2}>
-              <AutoComplete
-                placeholder="Pedidos por cliente o fecha"
-                value={row.order}
-                onSelect={(option) => {
-                  updateDispatch({ ...row, orderId: option.value });
-                }}
-                options={orderList.map((order) => ({
-                  label: `${order.cliente} - ${new Date(
-                    order.fechaProgramacion
-                  ).toLocaleDateString('es-PE')} - ${
-                    order.cantidadCubos
-                  } cubos`,
-                  value: order._id ?? '',
-                  filter: `${order.cliente} - ${new Date(
-                    order.fechaProgramacion
-                  ).toLocaleDateString('es-PE')} - ${
-                    order.cantidadCubos
-                  } cubos`,
-                }))}
-              />
-            </GridItem>
+            {!isOrderView && (
+              <GridItem colSpan={2}>
+                <AutoComplete
+                  placeholder="Pedidos por cliente o fecha"
+                  value={row.order}
+                  onSelect={(option) => {
+                    updateDispatch({ ...row, orderId: option.value });
+                  }}
+                  options={orderList.map((order) => ({
+                    label: `${order.cliente} - ${new Date(
+                      order.fechaProgramacion
+                    ).toLocaleDateString('es-PE')} - ${
+                      order.cantidadCubos
+                    } cubos`,
+                    value: order._id ?? '',
+                    filter: `${order.cliente} - ${new Date(
+                      order.fechaProgramacion
+                    ).toLocaleDateString('es-PE')} - ${
+                      order.cantidadCubos
+                    } cubos`,
+                  }))}
+                />
+              </GridItem>
+            )}
             <GridItem>
               <Input
                 px={{ base: '5px', md: '3px' }}
@@ -477,9 +547,12 @@ export const generateDispatchColumns = (props: ColumnsProps) => {
                 lineHeight="14px"
                 height="32px"
                 type="date"
-                value={row.date}
+                value={formatISODate(row.date)}
                 onChange={(e) =>
-                  updateDispatch({ ...row, date: e.target.value })
+                  updateDispatch({
+                    ...row,
+                    date: parseStringDateWithTime(e.target.value),
+                  })
                 }
               />
             </GridItem>
@@ -502,54 +575,60 @@ export const generateDispatchColumns = (props: ColumnsProps) => {
                 }}
               />
             </GridItem>
-            <GridItem>
-              <AutoComplete
-                inputProps={{ isDisabled: !!row.orderId }}
-                placeholder="Buscar cliente por nombre, alias o RUC"
-                value={row.client}
-                onSelect={(option) => {
-                  const order = orderList.find((x) => x._id === option.value)
-                  updateDispatch({
-                    ...row,
-                    orderId: option.value,
-                    clientId: order?.clienteId ?? '',
-                    obra: order?.obra ?? ''
-                  });
-                }}
-                options={clientList.map((client) => ({
-                  label: client.name,
-                  value: client._id ?? '',
-                  filter: `${client.name}-${client.ruc}-${client.alias}`,
-                }))}
-                renderNoFound={() => (
-                  <AddClient
-                    textNoFound=""
-                    onSuccess={() => {
-                      props.reloadClient();
+            {!isOrderView && (
+              <>
+                <GridItem>
+                  <AutoComplete
+                    inputProps={{ isDisabled: !!row.orderId }}
+                    placeholder="Buscar cliente por nombre, alias o RUC"
+                    value={row.client}
+                    onSelect={(option) => {
+                      const order = orderList.find(
+                        (x) => x._id === option.value
+                      );
+                      updateDispatch({
+                        ...row,
+                        orderId: option.value,
+                        clientId: order?.clienteId ?? '',
+                        obra: order?.obra ?? '',
+                      });
+                    }}
+                    options={clientList.map((client) => ({
+                      label: client.name,
+                      value: client._id ?? '',
+                      filter: `${client.name}-${client.ruc}-${client.alias}`,
+                    }))}
+                    renderNoFound={() => (
+                      <AddClient
+                        textNoFound=""
+                        onSuccess={() => {
+                          props.reloadClient?.();
+                        }}
+                      />
+                    )}
+                  />
+                </GridItem>
+                <GridItem>
+                  <Input
+                    placeholder="Obra"
+                    isDisabled={!!row.orderId}
+                    px={{ base: '5px', md: '3px' }}
+                    fontSize="inherit"
+                    lineHeight="14px"
+                    height="32px"
+                    width="100%"
+                    defaultValue={row.obra}
+                    onBlur={(e) => {
+                      if (
+                        e.target.value.toLowerCase() !== row.obra?.toLowerCase()
+                      ) {
+                        updateDispatch({ ...row, obra: e.target.value });
+                      }
                     }}
                   />
-                )}
-              />
-            </GridItem>
-            <GridItem>
-              <Input
-                placeholder="Obra"
-                isDisabled={!!row.orderId}
-                px={{ base: '5px', md: '3px' }}
-                fontSize="inherit"
-                lineHeight="14px"
-                height="32px"
-                width="100%"
-                defaultValue={row.obra}
-                onBlur={(e) => {
-                  if (
-                    e.target.value.toLowerCase() !== row.obra?.toLowerCase()
-                  ) {
-                    updateDispatch({ ...row, obra: e.target.value });
-                  }
-                }}
-              />
-            </GridItem>
+                </GridItem>
+              </>
+            )}
             <GridItem>
               <AutoComplete
                 placeholder="Buscar transportista"
@@ -689,7 +768,7 @@ export const generateDispatchColumns = (props: ColumnsProps) => {
                 <Text>Precio:</Text>
                 <NumberInput
                   size="xs"
-                  defaultValue={row.price}
+                  defaultValue={row.price?.toFixed(2)}
                   onBlur={(e) => {
                     if (e.target.value === row.price.toString()) return;
                     let price = 0;
@@ -744,9 +823,24 @@ export const generateDispatchColumns = (props: ColumnsProps) => {
               </Box>
               <Flex flexDir="column" flex={1}>
                 <Text>Total:</Text>
-                <Text color="red" fontWeight={600} textAlign="right">
-                  {row.total}
-                </Text>
+                <NumberInput
+                  size="xs"
+                  defaultValue={row.total?.toFixed(2)}
+                  onBlur={(e) => {
+                    if (e.target.value === item.toString()) return;
+                    const value = e.target.value;
+                    const total = isNaN(parseFloat(value))
+                      ? 0
+                      : parseFloat(value);
+                    const igvCheck = row.igvCheck;
+                    const igv = igvCheck ? total - total / 1.18 : 0;
+                    const subTotal = total - igv;
+                    const price = subTotal / row.quantity;
+                    updateDispatch({ ...row, price, subTotal, total, igv });
+                  }}
+                >
+                  <NumberInputField fontSize="inherit" paddingInlineEnd={0} />
+                </NumberInput>
               </Flex>
             </GridItem>
           </Grid>
@@ -766,15 +860,27 @@ export const generateDispatchColumns = (props: ColumnsProps) => {
               minW="auto"
               h="auto"
               aria-label="Page details"
-              icon={<MenuVerticalIcon />}
+              icon={
+                row.status !== undefined ? (
+                  <CircleIcon color="green" />
+                ) : (
+                  <MenuVerticalIcon />
+                )
+              }
               rounded="full"
             />
 
             <MenuList maxW="170px">
-              <MenuItem onClick={() => props.onSendVale(row)} as={Flex} gap={2}>
-                <WhatsappIcon />
-                Enviar Vale
-              </MenuItem>
+              {!row.status && (
+                <MenuItem
+                  onClick={() => props.onSendVale(row)}
+                  as={Flex}
+                  gap={2}
+                >
+                  <WhatsappIcon />
+                  Enviar Vale
+                </MenuItem>
+              )}
               <MenuItem
                 onClick={() => props.onDelete(row)}
                 color="red"
@@ -790,5 +896,6 @@ export const generateDispatchColumns = (props: ColumnsProps) => {
       },
     },
   ];
+
   return mobileColumns;
 };

@@ -70,7 +70,8 @@ export const AutoComplete = (props: AutocompleteProps) => {
     if (value.length > 0) {
       const optionList = [...options].filter(
         (x) =>
-        x.label.toLowerCase().includes(value) || x.filter?.toLowerCase()?.includes(value)
+        x.label.toLowerCase().includes(value.toLowerCase()) || 
+        x.filter?.toLowerCase()?.includes(value.toLowerCase())
       );
       setLocalOptions([...optionList]);
     } else {
@@ -138,8 +139,7 @@ export const AutoComplete = (props: AutocompleteProps) => {
             onKeyDown={onKeyDown}
             aria-label="search"
             size={props.inputProps?.size ?? 'sm'}
-            isDisabled={props.inputProps?.isDisabled ?? false}
-            // {...props.inputProps}            
+            isDisabled={props.inputProps?.isDisabled ?? false}            
             _focus={{
               ring: 'none',
               roundedTop: 6,
@@ -199,7 +199,10 @@ export const AutoComplete = (props: AutocompleteProps) => {
           >
             {props.renderNoFound ? (
               props.renderNoFound({
-                onClose: handleOnClose,
+                onClose: () => {
+                  handleOnClose()
+                  setSearchValue('')
+                },
               })
             ) : (
               <Flex

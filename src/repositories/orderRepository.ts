@@ -2,9 +2,9 @@ import Order, { OrderModel } from '../models/order';
 
 export class OrderRepository {
 
-  async getAll(): Promise<OrderModel[]> {
+  async getAll(filter: object): Promise<OrderModel[]> {
     try {
-      const orders = await Order.find({}).sort({ createdAt: -1 });
+      const orders = await Order.find({...filter}).sort({ createdAt: -1 });
       return orders;
     } catch (error) {
       console.error('Error getting orders:', error);

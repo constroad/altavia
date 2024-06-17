@@ -8,11 +8,12 @@ import {
   Button,
   Flex,
   CircularProgress,
+  Box,
 } from '@chakra-ui/react';
 import { TableColumn, TableData } from './TableTypes';
 import { CONSTROAD_COLORS } from 'src/styles/shared';
 import { EditIcon, TrashIcon } from 'src/common/icons';
-import { useEffect, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import { Pagination } from './Pagination';
 import { v4 as uuidv4 } from 'uuid';
 
@@ -35,35 +36,38 @@ interface Props {
   currentPage?: number;
   totalPages?: number;
   totalRecords?: number;
+  // Renders
+  toolbar?: React.ReactNode;
 }
 
 export const TableComponent = (props: Props) => {
-  const [currentItems, setCurrentItems] = useState<TableData[]>([])
-  const { data, columns, onDelete, onSelectRow, onEdit, actions, isLoading } =
-    props;
+  const [currentItems, setCurrentItems] = useState<TableData[]>([]);
+  const { data, columns, onDelete, onSelectRow, onEdit, isLoading } = props;
   const [currentPage, setCurrentPage] = useState(props.currentPage ?? 1);
   const [itemsPerPage, setItemsPerPage] = useState(props.itemsPerPage ?? 10);
 
+  const indexOfLastItem = useMemo(
+    () => currentPage * itemsPerPage,
+    [currentPage, itemsPerPage]
+  );
+  const indexOfFirstItem = useMemo(
+    () => indexOfLastItem - itemsPerPage,
+    [indexOfLastItem, itemsPerPage]
+  );
+
   useEffect(() => {
     if (props.currentPage) {
-      setCurrentItems(data)
-      return
+      setCurrentItems(data);
+      return;
     }
-    setCurrentItems([...data.slice(indexOfFirstItem, indexOfLastItem)])
-  }, [data, props.currentPage]);
+    setCurrentItems([...data.slice(indexOfFirstItem, indexOfLastItem)]);
+  }, [data, props.currentPage, indexOfLastItem, indexOfFirstItem]);
 
   const handleSelectRow = (item: any) => {
     if (onSelectRow) {
       onSelectRow(item);
     }
   };
-
-  const indexOfLastItem = currentPage * itemsPerPage;
-  const indexOfFirstItem = indexOfLastItem - itemsPerPage;
-  // const currentItems = props.currentPage
-  //   ? data
-  //   : data.slice(indexOfFirstItem, indexOfLastItem);
-
   const paginate = (pageNumber: number, items: number) => {
     setCurrentPage(pageNumber);
     setItemsPerPage(items);
@@ -82,10 +86,11 @@ export const TableComponent = (props: Props) => {
       border={`0.5px solid ${CONSTROAD_COLORS.darkGray}`}
       w="100%"
       minW="100%"
-      // h="455px"
       flexDir="column"
       justifyContent="space-between"
+      fontSize="inherit"
     >
+      <Box>{props.toolbar}</Box>
       <Table border="collapse">
         <Thead h={{ base: '32px', md: 'auto' }}>
           <Tr fontSize={10}>
@@ -150,7 +155,8 @@ export const TableComponent = (props: Props) => {
             !isLoading &&
             currentItems.map((row, index) => (
               <Tr
-                key={`row-${uuidv4()}`}
+                // key={`row-${uuidv4()}`}
+                key={`row-${row?._id ? `${row?._id}-${row?.key}` : index}`}
                 onClick={() => handleSelectRow(row)}
                 h="38px"
                 maxH="38px"

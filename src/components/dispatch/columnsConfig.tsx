@@ -83,6 +83,7 @@ export const generateDispatchColumns = (props: ColumnsProps) => {
                 clientId: order?.clienteId ?? '',
                 client: order?.cliente ?? '',
                 obra: order?.obra ?? '',
+                price: order?.precioCubo ?? 0
               });
             }}
             options={orderList.map((order) => ({
@@ -113,7 +114,7 @@ export const generateDispatchColumns = (props: ColumnsProps) => {
                 height="32px"
                 width="100%"
                 type="date"
-                value={formatISODate(item ?? new Date())}
+                value={formatISODate(item)}
                 onChange={(e) => {
                   updateDispatch({
                     ...row,

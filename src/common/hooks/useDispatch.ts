@@ -208,7 +208,7 @@ export const useDispatch = (props: UseDispatchProps) => {
   const onAddDispatch = (payload?: Partial<IDispatchList>) => {
     if (!dispatchResponse) return
     const data = dispatchResponse
-    const newPayload = {
+    let newPayload = {
       ...defaultValueDispatch,
       ...payload,
       status: 'New',
@@ -276,6 +276,7 @@ export const useDispatch = (props: UseDispatchProps) => {
   }
 
   const onSaveAllDispatch = async (props?: optionsCallback) => {
+    debugger
     if (!dispatchResponse) return
     const data = dispatchResponse
     const dispatchs = data.dispatchs.filter(

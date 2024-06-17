@@ -3,10 +3,9 @@ import axios from 'axios';
 import { useRouter } from 'next/router';
 import { useEffect } from 'react';
 import { ADMIN_ROUTES, API_ROUTES } from 'src/common/consts';
-import { useAsync, useDispatch } from 'src/common/hooks';
+import { useAsync } from 'src/common/hooks';
 import { IntranetLayout } from 'src/components';
 import { PedidoForm } from 'src/components/pedidos';
-import { AddDispatch } from 'src/components/pedidos/AddDispatch';
 import { DispatchList } from 'src/components/pedidos/DispatchList';
 import { IOrderValidationSchema } from 'src/models/order';
 
@@ -53,9 +52,7 @@ const Pedido = () => {
             onSuccess={refetch}
           />
 
-          {/* Listado de Despachos */}
           {order?._id && <DispatchList order={order} />}
-          {/* <AddDispatch orderId={order?._id} /> */}
         </Flex>
       )}
     </IntranetLayout>

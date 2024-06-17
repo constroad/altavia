@@ -9,7 +9,7 @@ import {
 } from 'react';
 import { API_ROUTES } from 'src/common/consts';
 import { useAsync } from 'src/common/hooks';
-import { IDispatchList, IGetAll } from 'src/models/dispatch';
+import { IGetAll } from 'src/models/dispatch';
 
 type DispatchQuery = {
   page: number;
@@ -17,6 +17,7 @@ type DispatchQuery = {
   startDate?: string;
   endDate?: string;
   clientId?: string;
+  orderId?: string;
 };
 
 interface DispatchContextProps {
@@ -34,7 +35,6 @@ const fetcher = (path: string) => axios.get(path);
 export const DispatchProvider = ({ children }: PropsWithChildren) => {
   const [dispatchResponse, setDispatchResponse] = useState<IGetAll>();
 
-  // console.log('dispatchResponse:', dispatchResponse);
   //API
   const {
     run: runGetDispatchs,
@@ -49,10 +49,11 @@ export const DispatchProvider = ({ children }: PropsWithChildren) => {
       startDate: params.startDate ?? '',
       endDate: params.endDate ?? '',
       clientId: params.clientId ?? '',
+      orderId: params.orderId ?? '',
     });
     const path = `${API_ROUTES.dispatch}?${queryParams.toString()}`;
     runGetDispatchs(fetcher(path), {
-      cacheKey: path,
+      // cacheKey: path,
       refetch: () =>
         runGetDispatchs(fetcher(path), {
           onSuccess: (response) => {

@@ -313,7 +313,7 @@ export const PedidoForm = (props: PedidoFormProps) => {
                 <FormLabel fontSize="inherit">Estado:</FormLabel>
                 <Select
                   name="tipoMAC"
-                  placeholder="Selecciona"                  
+                  placeholder="Selecciona"
                   value={order.status ?? OrderStatus.pending}
                   onChange={(e) => {
                     setOrder({
@@ -348,9 +348,11 @@ export const PedidoForm = (props: PedidoFormProps) => {
                   <NumberInput
                     size="xs"
                     name="precioCubo"
-                    value={order.precioCubo.toFixed(2)}
+                    value={order.precioCubo}
                     onChange={(value) => {
-                      const precioCubo = isNaN(parseFloat(value)) ? 0 : parseFloat(value);
+                      const precioCubo = isNaN(parseFloat(value))
+                        ? 0
+                        : parseFloat(value);
                       const subTotal = order.cantidadCubos * precioCubo;
                       const igv = order.igvCheck ? subTotal * 0.18 : 0;
                       const total = subTotal + igv;
@@ -360,7 +362,7 @@ export const PedidoForm = (props: PedidoFormProps) => {
                       setOrder({
                         ...order,
                         //@ts-ignore
-                        precioCubo : value,
+                        precioCubo: value,
                         subTotal,
                         igv,
                         totalPedido: total,
@@ -382,7 +384,9 @@ export const PedidoForm = (props: PedidoFormProps) => {
                     name="cantidadCubos"
                     value={order.cantidadCubos}
                     onChange={(value) => {
-                      const cantidadCubos = isNaN(parseFloat(value)) ? 0 : parseFloat(value);
+                      const cantidadCubos = isNaN(parseFloat(value))
+                        ? 0
+                        : parseFloat(value);
                       const subTotal = cantidadCubos * order.precioCubo;
                       const igv = order.igvCheck ? subTotal * 0.18 : 0;
                       const total = subTotal + igv;
@@ -451,15 +455,17 @@ export const PedidoForm = (props: PedidoFormProps) => {
                     name="totalPedido"
                     value={order.totalPedido}
                     onChange={(value) => {
-                      const total = isNaN(parseFloat(value)) ? 0 : parseFloat(value);
+                      const total = isNaN(parseFloat(value))
+                        ? 0
+                        : parseFloat(value);
                       const igvCheck = order.igvCheck;
-                      const igv = igvCheck ? (total - total / 1.18) : 0;
+                      const igv = igvCheck ? total - total / 1.18 : 0;
                       const subTotal = total - igv;
-                      const precio = subTotal / order.cantidadCubos
+                      const precio = subTotal / order.cantidadCubos;
                       const montoPorCobrar = order.isCredit
                         ? total - (order.montoAdelanto ?? 0)
                         : 0;
-                      
+
                       setOrder({
                         ...order,
                         igvCheck,
@@ -519,7 +525,9 @@ export const PedidoForm = (props: PedidoFormProps) => {
                   name="montoAdelanto"
                   value={order.montoAdelanto}
                   onChange={(value) => {
-                    const montoAdelanto = isNaN(parseFloat(value)) ? 0 : parseFloat(value);
+                    const montoAdelanto = isNaN(parseFloat(value))
+                      ? 0
+                      : parseFloat(value);
                     const montoPorCobrar = order.totalPedido - montoAdelanto;
                     setOrder({
                       ...order,
@@ -588,7 +596,7 @@ export const PedidoForm = (props: PedidoFormProps) => {
       </Grid>
 
       <Flex
-        mt={5}
+        mt={2}
         alignItems="center"
         width="100%"
         justifyContent="end"

@@ -199,7 +199,10 @@ export const AutoComplete = (props: AutocompleteProps) => {
           >
             {props.renderNoFound ? (
               props.renderNoFound({
-                onClose: handleOnClose,
+                onClose: () => {
+                  handleOnClose()
+                  setSearchValue('')
+                },
               })
             ) : (
               <Flex

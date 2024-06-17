@@ -7,9 +7,10 @@ import {
   FormLabel,
   Input,
   Text,
+  Textarea,
   useDisclosure,
 } from '@chakra-ui/react';
-import { IntranetLayout, Modal, TableComponent, toast } from 'src/components';
+import { CustomDivider, IntranetLayout, Modal, TableComponent, toast } from 'src/components';
 import axios from 'axios';
 import {
   IDispatchList,
@@ -20,12 +21,13 @@ import { useAsync, useScreenSize } from 'src/common/hooks';
 import { API_ROUTES } from 'src/common/consts';
 import {
   DispatchNotePDFType,
+  PDFViewer,
   generateDispatchColumns,
 } from 'src/components/dispatch';
 import { IClientValidationSchema } from 'src/models/client';
 import { ITransportValidationSchema } from 'src/models/transport';
 import { IOrderValidationSchema } from 'src/models/order';
-import { DownloadIcon, RefreshIcon } from 'src/common/icons';
+import { DownloadIcon, RefreshIcon, WhatsAppIcon } from 'src/common/icons';
 import { getDate } from 'src/common/utils';
 import { formatISODate, formatMoney, getDateStringRange } from 'src/utils/general';
 import { TablePagination, TableAction } from '../../../components/Table/Table';
@@ -71,6 +73,9 @@ const DispatchPage = () => {
     isOpen: isOpenDelete,
     onOpen: onOpenDelete,
   } = useDisclosure();
+
+  const [image, setImage] = useState<string | null>(null);
+  const [whatsappMessage, setWhatsappMessage] = useState('')
 
   // API
   const {
@@ -130,6 +135,24 @@ const DispatchPage = () => {
     });
   }, []);
 
+  useEffect(() => {
+    if (dispatchSelected) {
+      handlePreview()
+    }
+  }, [dispatchSelected])
+
+  useEffect(() => {
+    if (dispatchSelected) {
+      const message =
+      `ConstRoad te envia el vale de despacho
+        - Obra: ${dispatchSelected?.obra}
+        - Nro Cubos: ${dispatchSelected?.quantity}
+      `;
+      setWhatsappMessage(message)
+    }
+  }, [dispatchSelected])
+  
+
   // handlers
   const handleDeleteDispatch = () => {
     runDeleteDispatch(
@@ -150,8 +173,11 @@ const DispatchPage = () => {
   };
 
   const handleAddDispatch = () => {
+    const { currentYear, month } = getDate();
+    const number = dispatchResponse?.data?.dispatchs?.length + 1;
+    const dispatchNoteNumber = `${currentYear}${month}-${number}`;
     runAddDispatch(
-      postDisptach(API_ROUTES.dispatch, { ...defaultValueDispatch }),
+      postDisptach(API_ROUTES.dispatch, { ...defaultValueDispatch, nroVale: dispatchNoteNumber }),
       {
         onSuccess: () => {
           refetch();
@@ -177,16 +203,12 @@ const DispatchPage = () => {
     });
   };
 
-  const sendWhatsAppMessage = (phone: string) => {
-    if (!phone) {
+  const handleSendWhatsAppMessage = () => {
+    if (!dispatchSelected?.phoneNumber) {
       toast.warning('Ingrese el numero de celular');
       return;
     }
-    const message = `ConstRoad te envia el vale de despacho
-     - Obra: ${dispatchSelected?.obra}
-     - Nro Cubos: ${dispatchSelected?.quantity}
-    `;
-    const url = `https://api.whatsapp.com/send?phone=51${phone}&text=${message}`;
+    const url = `https://api.whatsapp.com/send?phone=51${dispatchSelected.phoneNumber}&text=${whatsappMessage}`;
     const win = window.open(url, '_blank');
     win?.focus();
     onClose();
@@ -197,17 +219,14 @@ const DispatchPage = () => {
     if (!dispatchSelected) {
       return;
     }
-    if (!dispatchSelected.phoneNumber) {
-      toast.warning('Ingrese un numero de telefono');
-      return;
-    }
-    const { slashDate, peruvianTime, currentYear, month } = getDate();
-    const number = dispatchResponse?.data?.dispatchs?.length + 1;
-    const dispatchNoteNumber = `${currentYear}${month}-${number}`;
+    const [year, months, day] = dispatchSelected.date.split('-')
+    const newDate = `${day}/${months}/${year}`
+
+    const { peruvianTime } = getDate();
 
     const pdfData: DispatchNotePDFType = {
-      nro: dispatchNoteNumber,
-      date: slashDate,
+      nro: dispatchSelected.nroVale ?? '',
+      date: newDate,
       clientName: dispatchSelected.client ?? '',
       proyect: dispatchSelected.obra ?? '',
       material: dispatchSelected.description ?? '',
@@ -225,7 +244,7 @@ const DispatchPage = () => {
       { responseType: 'arraybuffer' }
     );
     const blob = new Blob([response.data], { type: 'application/pdf' });
-    const pdfName = `Despacho_${dispatchSelected?.plate}_${slashDate}.pdf`;
+    const pdfName = `Despacho_${dispatchSelected?.plate}_${newDate}.pdf`;
 
     const pdfUrl = URL.createObjectURL(blob);
     const link = document.createElement('a');
@@ -234,23 +253,6 @@ const DispatchPage = () => {
     document.body.appendChild(link);
     link.click();
     document.body.removeChild(link);
-
-    const path = `${API_ROUTES.dispatch}/${dispatchSelected?._id}`;
-    runUpdateDispatch(
-      putDisptach(path, {
-        ...dispatchSelected,
-        nroVale: dispatchSelected.nroVale ?? dispatchNoteNumber,
-      }),
-      {
-        onError: () => {
-          toast.error('ocurrio un error actualizando un despacho');
-        },
-      }
-    );
-
-    sendWhatsAppMessage(dispatchSelected.phoneNumber ?? '');
-
-    onClose();
   };
 
   const handleOnTableChange = (
@@ -312,6 +314,41 @@ const DispatchPage = () => {
     });
   }, [dispatchResponse, clientResponse, responseTransport, isLoading]);
 
+  const handlePreview = async () => {
+    if (!dispatchSelected) return
+    else {
+      const [year, months, day] = dispatchSelected.date.split('-')
+      const newDate = `${day}/${months}/${year}`
+
+      const { peruvianTime } = getDate();
+  
+      const pdfData: DispatchNotePDFType = {
+        nro: dispatchSelected.nroVale ?? '',
+        date: newDate,
+        clientName: dispatchSelected.client ?? '',
+        proyect: dispatchSelected.obra ?? '',
+        material: dispatchSelected.description ?? '',
+        amount: dispatchSelected.quantity ?? 0,
+        plate: dispatchSelected.plate ?? '',
+        transportist:
+          dispatchSelected.driverName || dispatchSelected.company || '',
+        hour: peruvianTime,
+        note: dispatchSelected.note || '',
+      };
+  
+      try {
+        const response = await axios.post('/api/pdf-preview', {pdfData});
+        setImage(response.data.imageBase64);
+      } catch (error) {
+        console.error('Error al generar la previsualización del PDF', error);
+      }
+    }
+  };
+
+  const [year, months, day] = dispatchSelected!?.date.split('-') || ["", "", ""]
+  const newDate = `${day}/${months}/${year}`
+  const pdfName = `Despacho_${dispatchSelected?.plate}_${newDate}.pdf`;
+
   const deleteFooter = (
     <Button
       isLoading={deletingDispatch}
@@ -332,7 +369,13 @@ const DispatchPage = () => {
         gap="15px"
         mt={5}
       >
-        <Flex width="100%" alignItems="end" justifyContent="space-between">
+        <Flex
+          width="100%"
+          alignItems={{ base: 'start', md: "end" }}
+          justifyContent="space-between"
+          flexDir={{ base: 'column', md: 'row' }}
+          gap={{ base: '4px', md: '0px' }}
+        >
           <Flex gap={{ base: 1, md: 2 }}>
             <FormControl>
               <FormLabel mb="6px" fontSize={{ base: 12 }}>
@@ -445,45 +488,80 @@ const DispatchPage = () => {
         footer={deleteFooter}
       />
 
-      {/* download vale */}
-      <Modal
+      {/* download vale  ----  TRABAJAR AQUII */}
+      <Modal  
         hideCancelButton
         isOpen={isOpen}
         onClose={onClose}
         heading="Imprimir vale"
+        width='950px'
       >
-        <Flex flexDir="column" gap={2}>
-          <Box>
-            <FormLabel mb="6px" fontSize={{ base: 12 }}>
-              Celular
-            </FormLabel>
-            <Input
-              px={{ base: '5px', md: '3px' }}
-              fontSize={{ base: 12 }}
-              lineHeight="14px"
-              height="32px"
-              type="text"
-              required
-              onChange={(e) => {
-                if (dispatchSelected) {
-                  setDispatchSelected({
-                    ...dispatchSelected,
-                    phoneNumber: e.target.value,
-                  });
-                }
-              }}
-              value={dispatchSelected?.phoneNumber}
-            />
-          </Box>
+        <Flex w='100%' h={{ base: 'auto', md: '450px'}} justifyContent='space-between' flexDir={{ base: 'column', md: 'row' }} gap={{base: '20px', md: '0px'}}>
+          {/* PDF VIEWER */}
+          <Flex w={{ base: '100%', md: '49%'}} flexDir='column' h={{ base: 'auto', md: '450px'}} alignItems='center' justifyContent='space-between'>
+            <Flex flexDir='column' w='100%' h='88%'>
+              <Text fontWeight={600}>Previsualizar PDF</Text>
+              {image && (
+                <PDFViewer pdfImage={image} pdfName={pdfName} />
+              )}
+            </Flex>
+            <Button
+              size='sm'
+              mt={{ base: '10px', md: '0px' }}
+              colorScheme='blue'
+              onClick={handleGenerateDispatchNote}
+            >
+              <DownloadIcon fontSize={20} />
+              <Text ml='5px'>Descargar vale</Text>
+            </Button>
+          </Flex>
 
-          <Button
-            size="sm"
-            colorScheme="blue"
-            onClick={handleGenerateDispatchNote}
-          >
-            <DownloadIcon fontSize={20} />
-            <Text ml="5px">Descargar y enviar por whatsApp</Text>
-          </Button>
+          {isMobile && <CustomDivider/>}
+          
+          {/* SEND WHATSAPP MESSAGE */}
+          <Flex flexDir="column" gap={2} w={{ base: '100%', md: '49%'}} justifyContent='space-between'>
+            <Flex flexDir='column'>
+              <Flex flexDir='column'>
+                <Text fontWeight={600} fontSize={{ base: 12, md: 14 }}>Mensaje:</Text> 
+                <Textarea value={whatsappMessage} onChange={(e) => setWhatsappMessage(e.target.value)} fontSize={12} mt={{ base: '5px', md: '10px'}} />
+              </Flex>
+
+              <Box mt={{ base: '15px', md: '40px' }}>
+                <FormLabel mb="6px" fontSize={{ base: 12, md: 14 }} fontWeight={600}>
+                  Celular
+                </FormLabel>
+                <Input
+                  px={{ base: '5px', md: '3px' }}
+                  fontSize={{ base: 12 }}
+                  lineHeight="14px"
+                  height="32px"
+                  type="text"
+                  required
+                  onChange={(e) => {
+                    if (dispatchSelected) {
+                      setDispatchSelected({
+                        ...dispatchSelected,
+                        phoneNumber: e.target.value,
+                      });
+                    }
+                  }}
+                  value={dispatchSelected?.phoneNumber}
+                />
+              </Box>
+            </Flex>
+
+            <Flex w='100%' justifyContent='center'>
+              <Button
+                w='fit-content'
+                size="sm"
+                colorScheme="blue"
+                onClick={handleSendWhatsAppMessage}
+              >
+                <WhatsAppIcon fontSize={20} />
+                <Text ml="5px">Enviar por WhatsApp</Text>
+              </Button>
+            </Flex>
+          </Flex>
         </Flex>
       </Modal>
     </IntranetLayout>

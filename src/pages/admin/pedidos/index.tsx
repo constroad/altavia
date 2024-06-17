@@ -91,6 +91,35 @@ const Pedidos = () => {
     }
   };
 
+  // const generateDispatchReport = async() => {
+  //   const mockData = {
+  //     client: 'Renato',
+  //     proyect: 'Pampilla',
+  //     date: 'dd/mm/yy',
+  //     total: 235,
+  //     dispatchs: [
+  //       { driverName: 'conductor1', driverCard: 'abc-123', quantity: 200, hour: '08:55 AM'  },
+  //       { driverName: 'conductor2', driverCard: 'abc-124', quantity: 35, hour: '09:37 AM'  },
+  //     ]
+  //   }
+
+  //   const response = await axios.post(
+  //     API_ROUTES.generateDispatchReportPDF,
+  //     { mockData },
+  //     { responseType: 'arraybuffer' }
+  //   );
+  //   const blob = new Blob([response.data], { type: 'application/pdf' });
+  //   const pdfName = `Reporte_Despachos_${mockData.client}_${mockData.date}.pdf`;
+
+  //   const pdfUrl = URL.createObjectURL(blob);
+  //   const link = document.createElement('a');
+  //   link.href = pdfUrl;
+  //   link.setAttribute('download', pdfName);
+  //   document.body.appendChild(link);
+  //   link.click();
+  //   document.body.removeChild(link);
+  // }
+
   // Renders
   const deleteFooter = (
     <Button
@@ -107,7 +136,9 @@ const Pedidos = () => {
   return (
     <IntranetLayout title='Listado de Pedidos'>
       <Flex flexDir="column" width="100%" gap={2} mt={5}>
-        <Flex width="100%" justifyContent="end">
+        <Flex width="100%" justifyContent="end" gap='4px'>
+
+          {/* <Button size='sm' onClick={generateDispatchReport}>Reporte de despacho</Button> */}
 
           <Button size="sm"    colorScheme="yellow" autoFocus onClick={() => handleGoToOrder('new')}>
             + Agregar

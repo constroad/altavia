@@ -147,10 +147,6 @@ export const useDispatch = (props: UseDispatchProps) => {
     if (!dispatch) {
       return;
     }
-    if (!dispatch.phoneNumber) {
-      toast.warning('Ingrese un numero de telefono');
-      return;
-    }
     const dispatchDate = new Date(dispatch.date)
     const { peruvianTime, slashDate } = getDate(dispatchDate.toISOString());
 

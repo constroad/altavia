@@ -1,6 +1,6 @@
 import { IClientValidationSchema } from "src/models/client";
 import { IDispatchList } from "src/models/dispatch";
-import { IOrderValidationSchema } from "src/models/order";
+import { IOrderGetAll, IOrderValidationSchema } from "src/models/order";
 import { ITransportValidationSchema } from "src/models/transport";
 import { useAsync } from "./useAsync";
 import { useEffect, useMemo, useState } from "react";
@@ -35,10 +35,9 @@ const defaultValueDispatch: IDispatchList = {
   clientRuc: '',
   company: '',
   plate: '',
-  key: new Date().toISOString()
+  key: new Date().toISOString(),
+  isPaid: false
 };
-
-
 
 const fetcher = (path: string) => axios.get(path);
 const postDisptach = (path: string, data: any) => axios.post(path, { data });
@@ -53,6 +52,7 @@ type UseDispatchProps = {
     endDate?: string,
     clientId?: string,
     orderId?: string,
+    isPaid?: boolean,
   }
 }
 
@@ -71,7 +71,7 @@ export const useDispatch = (props: UseDispatchProps) => {
     run: runGetOrders,
     isLoading: loadingOrders,
     data: orderResponse,
-  } = useAsync<IOrderValidationSchema[]>();
+  } = useAsync<IOrderGetAll>();
   const {
     run: runGetClients,
     data: clientResponse,
@@ -97,8 +97,9 @@ export const useDispatch = (props: UseDispatchProps) => {
       endDate: query.endDate,
       clientId: query.clientId,
       orderId: query.orderId,
+      isPaid: query.isPaid,
     })
-  }, [ query.page, query.limit, query.startDate, query.endDate, query.clientId, query.orderId ]);
+  }, [ query.page, query.limit, query.startDate, query.endDate, query.clientId, query.orderId, query.isPaid ]);
 
   useEffect(() => {
     runGetOrders(fetcher(API_ROUTES.order), {
@@ -273,7 +274,6 @@ export const useDispatch = (props: UseDispatchProps) => {
   }
 
   const onSaveAllDispatch = async (props?: optionsCallback) => {
-    // debugger
     if (!dispatchResponse) return
     const data = dispatchResponse
     const dispatchs = data.dispatchs.filter(

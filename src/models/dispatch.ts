@@ -23,6 +23,7 @@ export const dispatchValidationSchema = z.object({
   note: z.string().optional(),
   nroVale: z.string().optional(),
   phoneNumber: z.string().optional(),
+  isPaid: z.boolean().optional().default(false),
   createdAt: z.string().optional(),
   updatedAt: z.string().optional(),  
 });
@@ -59,6 +60,7 @@ export interface DispatchModel extends Document {
   nroVale?: string;
   phoneNumber?: string;
   igvCheck?: boolean
+  isPaid?: boolean
 }
 
 export interface IGetAll {
@@ -94,6 +96,7 @@ try {
     quantity: { type: Number, optional: false },
     price: { type: Number, optional: false },
     igvCheck: { type: Boolean, optional: true },
+    isPaid: { type: Boolean, optional: true, default: false },
     igv: { type: Number, optional: true },
     subTotal: { type: Number, optional: false },
     total: { type: Number, optional: false },

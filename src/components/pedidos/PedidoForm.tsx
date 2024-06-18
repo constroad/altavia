@@ -17,7 +17,7 @@ import {
 import { IOrderValidationSchema } from 'src/models/order';
 import { useEffect, useState } from 'react';
 import axios from 'axios';
-import { useAsync } from 'src/common/hooks';
+import { useAsync, useDispatch } from 'src/common/hooks';
 import { API_ROUTES } from 'src/common/consts';
 import { toast } from '../Toast';
 import { OrderStatus } from '../../models/order';
@@ -33,6 +33,7 @@ interface PedidoFormProps {
 }
 const fetcher = (path: string) => axios.get(path);
 const postOrder = (path: string, data: any) => axios.post(path, { data });
+const putDisptach = (path: string, data: any) => axios.put(path, data);
 
 export const PedidoForm = (props: PedidoFormProps) => {
   const [searchClient, setSearchClient] = useState(props.order?.cliente ?? '');
@@ -52,6 +53,13 @@ export const PedidoForm = (props: PedidoFormProps) => {
     isPaid: false,
     igv: 0,
     igvCheck: false,
+  });
+  const { listDispatch, runUpdateDispatch, refetchDispatch } = useDispatch({
+    query: {
+      page: 1,
+      limit: 50,
+      orderId: props?.order?._id,
+    },
   });
 
   useEffect(() => {
@@ -196,9 +204,21 @@ export const PedidoForm = (props: PedidoFormProps) => {
     });
   };
 
-  const onPayOrder = () => {
+  const onPayOrder = async () => {
     const { _id, ...payload } = order;
     const path = `${API_ROUTES.order}/${_id}`;
+    await Promise.all(
+      listDispatch.map((item) => {
+        const pathUpdateDispatch = `${API_ROUTES.dispatch}/${item?._id ?? ''}`;
+        return runUpdateDispatch(
+          putDisptach(pathUpdateDispatch, {
+          ...item,
+          isPaid: true,
+          _id: undefined,
+        }));
+      })
+    );
+
     runUpdateOrder(
       axios.put(path, {
         ...payload,
@@ -206,6 +226,7 @@ export const PedidoForm = (props: PedidoFormProps) => {
       }),
       {
         onSuccess: () => {
+          refetchDispatch()
           toast.success('Deuda del pedido pagada con éxito!');
           props.onSuccess?.();
         },

@@ -44,7 +44,7 @@ export const TableComponent = (props: Props) => {
   const [currentItems, setCurrentItems] = useState<TableData[]>([]);
   const { data, columns, onDelete, onSelectRow, onEdit, isLoading } = props;
   const [currentPage, setCurrentPage] = useState(props.currentPage ?? 1);
-  const [itemsPerPage, setItemsPerPage] = useState(props.itemsPerPage ?? 10);
+  const [itemsPerPage, setItemsPerPage] = useState(props.itemsPerPage ?? 20);
 
   const indexOfLastItem = useMemo(
     () => currentPage * itemsPerPage,
@@ -98,12 +98,15 @@ export const TableComponent = (props: Props) => {
               <Th
                 key={`header-${column.key}-${idx}`}
                 background={column.bgColor ?? CONSTROAD_COLORS.black}
-                color="white"
-                textAlign="start"
-                padding={{ base: 1, md: 2 }}
+                color={column.color ?? 'white'}
+                textAlign="center"
+                padding={0}
                 fontSize={{ base: 10, md: 12 }}
               >
-                {column.label}
+                {typeof column.label === 'string' && (
+                  <Box padding={{ base: 1, md: 2 }}>{column.label}</Box>
+                )}
+                {typeof column.label !== 'string' && column.label}
               </Th>
             ))}
             {(onEdit || onDelete) && (
@@ -111,7 +114,7 @@ export const TableComponent = (props: Props) => {
                 background={CONSTROAD_COLORS.black}
                 color="white"
                 textAlign="center"
-                padding={{ base: 1, md: 2 }}
+                padding={0}
                 width="5%"
                 fontSize={{ base: 10, md: 12 }}
               >
@@ -161,6 +164,9 @@ export const TableComponent = (props: Props) => {
                 h="38px"
                 maxH="38px"
                 minH="38px"
+                _hover={{
+                  background: 'whitesmoke',
+                }}
               >
                 {columns.map((column, idx) => (
                   <Td
@@ -213,6 +219,25 @@ export const TableComponent = (props: Props) => {
                 )}
               </Tr>
             ))}
+
+          {/* summaries */}
+          {columns.some((x) => x.summary) && columns.map((column, idx) => (
+            <Td key={`summary-${column.key}-${idx}`} padding={0} px={1}>
+              {column.summary && (
+                <Box
+                  bgColor="pink"
+                  textAlign="right"
+                  fontWeight={600}
+                  fontSize={12}
+                >
+                  {currentItems.reduce(
+                    (prev, curr) => prev + (curr[column.key] ?? 0),
+                    0
+                  )}
+                </Box>
+              )}
+            </Td>
+          ))}
         </Tbody>
       </Table>
 

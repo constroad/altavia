@@ -32,7 +32,6 @@ const Pedidos = () => {
   const [orderSelected, setOrderSelected] = useState<
     IOrderValidationSchema | undefined
   >();
-  // const [orderList, setOrderList] = useState<IOrderValidationSchema[]>([]);
   const [page, setPage] = useState(1);
   const [itemsPerPage, setItemsPerPage] = useState(20);
   const [clientId, setClientId] = useState('');
@@ -68,16 +67,6 @@ const Pedidos = () => {
     });
   }, []);
 
-  // function getListPerPage(
-  //   data: any[],
-  //   filesPerPage: number,
-  //   actualPage: number
-  // ) {
-  //   const startIndex = (actualPage - 1) * filesPerPage;
-  //   const endIndex = actualPage * filesPerPage;
-  //   return data.slice(startIndex, endIndex);
-  // }
-
   // handlers
   const handleDeleteOrder = () => {
     runDeleteOrder(deleteOrder(`${API_ROUTES.order}/${orderSelected?._id}`), {
@@ -94,13 +83,6 @@ const Pedidos = () => {
   };
 
   const columns = generatePedidoColumns();
-
-  // const totalPages = Math.ceil(orderListSorted.length / itemsPerPage);
-  // const dataPerPage = getListPerPage(
-  //   orderListSorted,
-  //   itemsPerPage,
-  //   currentPage
-  // );
 
   const clientList = clientResponse?.data ?? [];
   const orderList = orderResponse?.data?.orders ?? []

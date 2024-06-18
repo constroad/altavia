@@ -10,7 +10,7 @@ const router = createRouter<NextApiRequest, NextApiResponse>();
 const getAll = async (req: NextApiRequest, res: NextApiResponse) => {
   const repo = new OrderRepository();
   try {
-    const { page = 1, limit = 20, clientId, isPaid } = req.query
+    const { page, limit, clientId, isPaid } = req.query
     const pagination = { page: page as string, limit: limit as string }
     const filter: any = {}
     if (clientId) {

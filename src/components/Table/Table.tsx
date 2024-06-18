@@ -44,7 +44,7 @@ export const TableComponent = (props: Props) => {
   const [currentItems, setCurrentItems] = useState<TableData[]>([]);
   const { data, columns, onDelete, onSelectRow, onEdit, isLoading } = props;
   const [currentPage, setCurrentPage] = useState(props.currentPage ?? 1);
-  const [itemsPerPage, setItemsPerPage] = useState(props.itemsPerPage ?? 10);
+  const [itemsPerPage, setItemsPerPage] = useState(props.itemsPerPage ?? 20);
 
   const indexOfLastItem = useMemo(
     () => currentPage * itemsPerPage,

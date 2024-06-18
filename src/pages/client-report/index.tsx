@@ -5,7 +5,8 @@ import { PortalLayout } from 'src/components'
 export const ClientReportPage = () => {
   return (
     <PortalLayout>
-      <Flex w='100%' mx='30px' justifyContent='center'>
+      <Flex w='100%' px='70px' justifyContent='center'>
+        {/* trabajar aqui */}
         <Flex fontWeight={600}>ClientReportPage</Flex>
       </Flex>
     </PortalLayout>

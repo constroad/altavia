@@ -14,7 +14,7 @@ const getAll = async (req: NextApiRequest, res: NextApiResponse) => {
     const pagination = { page: page as string, limit: limit as string }
     const filter: any = {}
     if (clientId) {
-      filter.clientId = clientId
+      filter.clienteId = clientId
     }
     if (isPaid) {
       filter.isPaid = isPaid

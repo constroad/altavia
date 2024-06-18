@@ -28,7 +28,6 @@ export class OrderRepository {
       const dispatchMap = Object.fromEntries(
         dispatches.map((x) => [ x.orderId, dispatches.filter((y) => y.orderId === x.orderId) ])
       )
-      // console.log('repository:', {dispatchMap})
 
       return {
         orders: orders.map((x) => {

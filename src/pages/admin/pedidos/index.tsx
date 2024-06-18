@@ -21,7 +21,7 @@ import {
   TablePagination,
 } from 'src/components';
 import { generatePedidoColumns } from 'src/components/pedidos';
-import { IOrderGetAll, IOrderList, IOrderValidationSchema } from 'src/models/order';
+import { IOrderGetAll, IOrderValidationSchema } from 'src/models/order';
 import { IClientValidationSchema } from 'src/models/client';
 import { SearchIcon } from 'src/common/icons';
 
@@ -35,6 +35,7 @@ const Pedidos = () => {
   const [page, setPage] = useState(1);
   const [itemsPerPage, setItemsPerPage] = useState(20);
   const [clientId, setClientId] = useState('');
+  const [isPaid, setIsPaid] = useState('');
 
   const {
     onClose: onCloseDelete,
@@ -44,11 +45,8 @@ const Pedidos = () => {
   const router = useRouter();
 
   // API
-  const {
-    run: runGetClients,
-    data: clientResponse,
-    refetch: refetchClients,
-  } = useAsync<IClientValidationSchema[]>();
+  const { run: runGetClients, data: clientResponse } =
+    useAsync<IClientValidationSchema[]>();
   const {
     run: runGetOrders,
     data: orderResponse,
@@ -58,12 +56,13 @@ const Pedidos = () => {
   const { run: runDeleteOrder, isLoading: deletingOrder } = useAsync();
 
   useEffect(() => {
+    const path = API_ROUTES.order;
+    runGetOrders(fetcher(path), {
+      refetch: () => runGetOrders(fetcher(path)),
+    });
     runGetClients(fetcher(API_ROUTES.client), {
       cacheKey: API_ROUTES.client,
       refetch: () => runGetClients(fetcher(API_ROUTES.client)),
-    });
-    runGetOrders(fetcher(API_ROUTES.order), {
-      refetch: () => runGetOrders(fetcher(API_ROUTES.order)),
     });
   }, []);
 
@@ -78,6 +77,19 @@ const Pedidos = () => {
       },
     });
   };
+  const onSearch = () => {
+    const queryParams = new URLSearchParams({});
+    if (isPaid !== '') {
+      queryParams.append('isPaid', isPaid);
+    }
+    if (clientId) {
+      queryParams.append('clientId', clientId);
+    }
+    const path = `${API_ROUTES.order}?${queryParams.toString()}`;
+    runGetOrders(fetcher(path), {
+      refetch: () => runGetOrders(fetcher(path)),
+    });
+  };
   const handleGoToOrder = (id: string) => {
     router.push(`${ADMIN_ROUTES.orders}/${id}`);
   };
@@ -85,8 +97,8 @@ const Pedidos = () => {
   const columns = generatePedidoColumns();
 
   const clientList = clientResponse?.data ?? [];
-  const orderList = orderResponse?.data?.orders ?? []
-  const pagination = orderResponse?.data?.pagination ?? {}
+  const orderList = orderResponse?.data?.orders ?? [];
+  const pagination = orderResponse?.data?.pagination ?? {};
 
   const handleOnTableChange = (
     action: TableAction,
@@ -121,9 +133,7 @@ const Pedidos = () => {
         >
           <Flex wrap="wrap" width="100%" alignItems="end" gap={1}>
             <Flex flexDir="column" fontSize="inherit">
-              <Text fontSize={{ base: 12 }}>
-                Cliente:
-              </Text>
+              <Text fontSize={{ base: 12 }}>Cliente:</Text>
               <Select
                 defaultValue=""
                 size="sm"
@@ -141,16 +151,14 @@ const Pedidos = () => {
               </Select>
             </Flex>
             <Flex flexDir="column" fontSize="inherit">
-              <Text fontSize={{ base: 12 }}>
-                Condicion:
-              </Text>
+              <Text fontSize={{ base: 12 }}>Condicion:</Text>
               <Select
                 defaultValue=""
                 size="sm"
                 width={{ base: '90px', md: '110px' }}
-                onChange={(e) => setClientId(e.target.value)}
+                onChange={(e) => setIsPaid(e.target.value)}
                 fontSize={12}
-                value={clientId}
+                value={isPaid}
               >
                 <option value="">Todos</option>
                 <option value="true">Pagado</option>
@@ -159,9 +167,9 @@ const Pedidos = () => {
             </Flex>
             <Button
               autoFocus
-              // onClick={onSearch}
+              onClick={onSearch}
               size="sm"
-              // isLoading={props.isSearching}
+              isLoading={isLoading}
             >
               <SearchIcon size="18px" />
             </Button>

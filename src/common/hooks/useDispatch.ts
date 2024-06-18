@@ -7,10 +7,10 @@ import { useEffect, useMemo, useState } from "react";
 import { API_ROUTES } from "../consts";
 import axios from "axios";
 import { toast } from "src/components";
-import { getDate } from "../utils";
 import { DispatchNotePDFType } from "src/components/dispatch";
 import { useDispatchContext } from "src/context/DispatchContext/DispatchContext";
 import { v4 as uuidv4 } from 'uuid';
+import { getDate } from 'src/common/utils';
 
 
 const defaultValueDispatch: IDispatchList = {
@@ -64,8 +64,6 @@ export const useDispatch = (props: UseDispatchProps) => {
   const [ dispatchSelected, setDispatchSelected ] = useState<IDispatchList>();
   const { dispatchResponse, getDispatchs, refetchDispatch, isLoadingDispatch, setDispatchResponse } = useDispatchContext()
   const { query } = props
-  console.log('query:', query)
-  console.log('dispatchResponse:', dispatchResponse)
 
   // API
   const {
@@ -123,6 +121,7 @@ export const useDispatch = (props: UseDispatchProps) => {
   //handlers
   const sendWhatsAppMessage = (
     dispatch?: IDispatchList,
+    message?: string,
     options?: {
       onSuccess: () => void
     }
@@ -131,10 +130,6 @@ export const useDispatch = (props: UseDispatchProps) => {
       toast.warning('Ingrese el numero de celular');
       return;
     }
-    const message = `ConstRoad te envia el vale de despacho
-     - Obra: ${dispatch?.obra}
-     - Nro Cubos: ${dispatch?.quantity}
-    `;
     const url = `https://api.whatsapp.com/send?phone=51${dispatch.phoneNumber}&text=${message}`;
     const win = window.open(url, '_blank');
     win?.focus();
@@ -200,11 +195,6 @@ export const useDispatch = (props: UseDispatchProps) => {
         },
       }
     );
-
-    sendWhatsAppMessage(dispatch, {
-      onSuccess: () => options?.onSuccess()
-    });
-
   };
 
   const onAddDispatch = (payload?: Partial<IDispatchList>) => {
@@ -255,8 +245,6 @@ export const useDispatch = (props: UseDispatchProps) => {
     );
   }
 
-  console.log('dispatchResponse:', dispatchResponse)
-
   const onUpdateDispatch = (payload: IDispatchList, props?: optionsCallback) => {
     if (!dispatchResponse) return
     const data = dispatchResponse
@@ -280,9 +268,13 @@ export const useDispatch = (props: UseDispatchProps) => {
   }
 
   const onSaveAllDispatch = async (props?: optionsCallback) => {
-    debugger
+    // debugger
     if (!dispatchResponse) return
     const data = dispatchResponse
+    const { currentYear, month } = getDate()
+    const currentVale = data.dispatchs.length + 1
+    const nro = `${currentYear}${month}-${currentVale}`
+
     const dispatchs = data.dispatchs.filter(
       (x) => x.status === 'New' || x.status === 'Edit'
     );
@@ -293,6 +285,7 @@ export const useDispatch = (props: UseDispatchProps) => {
           return runAddDispatch(
             postDisptach(API_ROUTES.dispatch, {
               ...item,
+              nroVale: nro,
               _id: undefined,
             }),
             {

@@ -48,6 +48,7 @@ export const generatePedidoColumns = () => {
       color: CONSTROAD_COLORS.black,
       label: 'M3 Pedidos',
       width: '5%',
+      summary: true,
       render: (item) => {
         return <Box textAlign="center">{item}</Box>
       }
@@ -68,6 +69,7 @@ export const generatePedidoColumns = () => {
       color: CONSTROAD_COLORS.black,
       label: 'Total',
       width: '5%',
+      summary: true,
       render: (item) => {
         return <Box textAlign="right">S/.{formatMoney(item)}</Box>;
       },
@@ -88,6 +90,7 @@ export const generatePedidoColumns = () => {
       color: CONSTROAD_COLORS.black,
       label: 'Debe',
       width: '5%',
+      summary: true,
       render: (item, row) => {
         return (
           <Box bgColor={row.isPaid ? "#d7ead4" : "pink"} rounded={2} textAlign="right">
@@ -99,8 +102,8 @@ export const generatePedidoColumns = () => {
         );
       },
     },
-    { key: 'm3dispatched', label: 'M3 Producidos', width: '10%' },
-    { key: 'm3Pending', label: 'M3 Pendientes', width: '10%' },
+    { key: 'm3dispatched', label: 'M3 Producidos', width: '10%', summary: true },
+    { key: 'm3Pending', label: 'M3 Pendientes', width: '10%', summary: true },
   ];
 
   return columns;

@@ -99,7 +99,7 @@ export const TableComponent = (props: Props) => {
                 key={`header-${column.key}-${idx}`}
                 background={column.bgColor ?? CONSTROAD_COLORS.black}
                 color={column.color ?? 'white'}
-                textAlign="start"
+                textAlign="center"
                 padding={0}
                 fontSize={{ base: 10, md: 12 }}
               >
@@ -125,15 +125,12 @@ export const TableComponent = (props: Props) => {
         </Thead>
         <Tbody fontSize={10}>
           {isLoading && (
-            <Tr
-              position="relative"
-              height="38px"              
-            >
+            <Tr position="relative" height="38px">
               <Td
                 width="100%"
                 textAlign="center"
                 position="absolute"
-                fontSize={12}           
+                fontSize={12}
               >
                 <CircularProgress
                   isIndeterminate
@@ -222,6 +219,25 @@ export const TableComponent = (props: Props) => {
                 )}
               </Tr>
             ))}
+
+          {/* summaries */}
+          {columns.some((x) => x.summary) && columns.map((column, idx) => (
+            <Td key={`summary-${column.key}-${idx}`} padding={0} px={1}>
+              {column.summary && (
+                <Box
+                  bgColor="pink"
+                  textAlign="right"
+                  fontWeight={600}
+                  fontSize={12}
+                >
+                  {currentItems.reduce(
+                    (prev, curr) => prev + (curr[column.key] ?? 0),
+                    0
+                  )}
+                </Box>
+              )}
+            </Td>
+          ))}
         </Tbody>
       </Table>
 

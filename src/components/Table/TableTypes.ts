@@ -5,6 +5,7 @@ export interface TableColumn<T = any> {
   bgColor?: string;
   color?: string;
   textAlign?: 'start' | 'center' | 'end';
+  summary?: boolean;
   render?: (item: any, row: T) => React.ReactNode; 
 }
 

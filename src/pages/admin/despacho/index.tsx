@@ -82,7 +82,7 @@ const DispatchPage = () => {
   const columns = generateDispatchColumns({
     isMobile,
     isLoading: isLoadingDispatch || loadingOrders,
-    orderList: orderResponse?.data ?? [],
+    orderList: orderResponse?.data?.orders ?? [],
     reloadClient: refetchClients,
     clientList: clientResponse?.data ?? [],
     reloadTransport: refetchTransport,

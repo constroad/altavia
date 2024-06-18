@@ -1,6 +1,6 @@
 import { IClientValidationSchema } from "src/models/client";
 import { IDispatchList } from "src/models/dispatch";
-import { IOrderValidationSchema } from "src/models/order";
+import { IOrderGetAll, IOrderValidationSchema } from "src/models/order";
 import { ITransportValidationSchema } from "src/models/transport";
 import { useAsync } from "./useAsync";
 import { useEffect, useMemo, useState } from "react";
@@ -70,7 +70,7 @@ export const useDispatch = (props: UseDispatchProps) => {
     run: runGetOrders,
     isLoading: loadingOrders,
     data: orderResponse,
-  } = useAsync<IOrderValidationSchema[]>();
+  } = useAsync<IOrderGetAll>();
   const {
     run: runGetClients,
     data: clientResponse,

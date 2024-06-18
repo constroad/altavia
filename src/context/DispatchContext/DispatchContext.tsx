@@ -18,6 +18,7 @@ type DispatchQuery = {
   endDate?: string;
   clientId?: string;
   orderId?: string;
+  isPaid?: boolean;
 };
 
 interface DispatchContextProps {
@@ -48,9 +49,16 @@ export const DispatchProvider = ({ children }: PropsWithChildren) => {
       limit: params.limit.toString(),
       startDate: params.startDate ?? '',
       endDate: params.endDate ?? '',
-      clientId: params.clientId ?? '',
-      orderId: params.orderId ?? '',
     });
+    if (params.clientId) {
+      queryParams.append("clientId", params.clientId ?? '')
+    }
+    if (params.orderId) {
+      queryParams.append("orderId", params.orderId ?? '')
+    }
+    if (params.isPaid !== undefined) {
+      queryParams.append("isPaid", params.isPaid?.toString() ?? '')
+    }
     const path = `${API_ROUTES.dispatch}?${queryParams.toString()}`;
     runGetDispatchs(fetcher(path), {
       // cacheKey: path,

@@ -25,6 +25,7 @@ const DispatchPage = () => {
   const { dateTo, dateFrom } = getDateStringRange();
   const [startDate, setStartDate] = useState(dateFrom);
   const [clientId, setClientId] = useState('');
+  const [isPaid, setIsPaid] = useState<boolean | undefined>();
   const [endDate, setEndDate] = useState(dateTo);
   const [page, setPage] = useState(1);
   const [itemsPerPage, setItemsPerPage] = useState(20);
@@ -63,6 +64,7 @@ const DispatchPage = () => {
       startDate: startDate || '',
       endDate: endDate || '',
       clientId,
+      isPaid
     },
   });
 
@@ -121,11 +123,13 @@ const DispatchPage = () => {
           startDate={startDate}
           endDate={endDate}
           clientId={clientId}
+          isPaid={isPaid}
           isSearching={isLoadingDispatch}
-          onSearch={({ startDate, endDate, clientId }) => {
+          onSearch={({ startDate, endDate, clientId, isPaid }) => {
             setStartDate(startDate);
             setEndDate(endDate);
             setClientId(clientId);
+            setIsPaid(isPaid)
           }}
         />
         <TableComponent

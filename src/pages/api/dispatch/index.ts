@@ -10,11 +10,11 @@ const router = createRouter<NextApiRequest, NextApiResponse>();
 const getAll = async (req: NextApiRequest, res: NextApiResponse) => {
   const repo = new DispatchRepository();
   try {
-    const { page = 1, limit = 10, startDate, endDate, clientId, orderId } = req.query;
+    const { page = 1, limit = 10, startDate, endDate, clientId, orderId, isPaid } = req.query;
     const query: any = {
       page,
       limit
-    };
+    };    
     if (startDate || endDate) {
       query.date = {};
       if (startDate) {
@@ -30,6 +30,10 @@ const getAll = async (req: NextApiRequest, res: NextApiResponse) => {
     if (orderId) {
       query.orderId = orderId
     }
+    if (isPaid) {
+      query.isPaid = isPaid
+    }
+    console.log('query::', query)
     const result = await repo.getAll(query);
 
     res.status(200).json(result);

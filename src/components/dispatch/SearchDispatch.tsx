@@ -1,13 +1,15 @@
 import {
+  Box,
   Button,
+  Checkbox,
   Flex,
-  FormControl,
   FormLabel,
   Input,
   Select,
   Text,
 } from '@chakra-ui/react';
 import { useState } from 'react';
+import { SearchIcon } from 'src/common/icons';
 import { IClientValidationSchema } from 'src/models/client';
 
 interface SearchDispatchProps {
@@ -15,11 +17,13 @@ interface SearchDispatchProps {
   startDate: string;
   endDate: string;
   clientId: string;
+  isPaid?: boolean;
   isSearching?: boolean;
   onSearch: (filters: {
     startDate: string;
     endDate: string;
     clientId: string;
+    isPaid?: boolean;
   }) => void;
 }
 
@@ -27,25 +31,34 @@ export const SearchDispatch = (props: SearchDispatchProps) => {
   const [startDate, setStartDate] = useState(props.startDate);
   const [clientId, setClientId] = useState(props.clientId);
   const [endDate, setEndDate] = useState(props.endDate);
+  const [isPaid, setIsPaid] = useState(props.isPaid);
 
   const onSearch = () => {
     props.onSearch({
       startDate,
       endDate,
       clientId,
+      isPaid
     });
   };
 
   return (
-    <Flex width={{base : "100%", sm: "450px"}} gap={1} alignItems="end" justifyContent="space-between">
-      <FormControl>
+    <Flex
+      wrap="wrap"
+      width={{ base: '100%', sm: '460px' }}
+      gap={1}
+      alignItems="end"
+      justifyContent="space-between"
+      fontSize="inherit"
+    >
+      <Box>
         <FormLabel mb="6px" fontSize={{ base: 12 }}>
           Desde:
         </FormLabel>
         <Input
           value={startDate}
           onChange={(e) => {
-            setStartDate(e.target.value)
+            setStartDate(e.target.value);
           }}
           paddingInlineEnd={1}
           paddingInlineStart={1}
@@ -54,8 +67,8 @@ export const SearchDispatch = (props: SearchDispatchProps) => {
           type="date"
           width="100px"
         />
-      </FormControl>
-      <FormControl>
+      </Box>
+      <Box>
         <FormLabel mb="6px" fontSize={{ base: 12 }}>
           Hasta
         </FormLabel>
@@ -69,7 +82,7 @@ export const SearchDispatch = (props: SearchDispatchProps) => {
           type="date"
           width="100px"
         />
-      </FormControl>
+      </Box>
       <Flex flexDir="column" fontSize="inherit">
         <Text fontSize={{ base: 12 }} mb="6px">
           Cliente:
@@ -77,7 +90,7 @@ export const SearchDispatch = (props: SearchDispatchProps) => {
         <Select
           defaultValue=""
           size="sm"
-          width={{ base: '90px', md: '150px' }}
+          width={{ base: '90px', md: '200px' }}
           onChange={(e) => setClientId(e.target.value)}
           fontSize={12}
           value={clientId}
@@ -90,15 +103,26 @@ export const SearchDispatch = (props: SearchDispatchProps) => {
           ))}
         </Select>
       </Flex>
+
       <Button
-        width="180px"
         autoFocus
         onClick={onSearch}
         size="sm"
         isLoading={props.isSearching}
       >
-        Buscar
+        <SearchIcon size="18px" />
       </Button>
+      <Box width="200px">
+        <Checkbox onChange={((e) => {
+          if (e.target.checked) {            
+            setIsPaid(false)
+            return
+          }
+          setIsPaid(undefined)
+        })}>
+          <Text fontSize={12}>Pendiente de Pago</Text>
+        </Checkbox>
+      </Box>
     </Flex>
   );
 };

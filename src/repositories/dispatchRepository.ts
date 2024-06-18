@@ -74,7 +74,7 @@ export class DispatchRepository {
             company: transportsMap[ x.transportId ]?.name ?? '',
             driverName: x.driverName ?? transportsMap[ x.transportId ]?.driverName ?? '',
             plate: transportsMap[ x.transportId ]?.plate ?? '',
-            obra: ordersMap[ x.orderId ?? '' ]?.obra ?? x.obra,
+            obra: orderData?.obra ?? x.obra,
             key: new Date().toISOString(),
           }
         }) as IGetAll[ 'dispatchs' ],

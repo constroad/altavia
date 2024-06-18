@@ -54,6 +54,7 @@ export const API_ROUTES = {
   generateQuotationPDF: '/api/generate-quotation-pdf',
   generateOrderPDF: '/api/generate-purchase-order-pdf',
   generateDispatchNotePDF: '/api/generate-dispatch-note-pdf',
+  generateDispatchReportPDF: '/api/generate-dispatch-report-pdf',
   task: '/api/task',
   note: '/api/note',
 }
@@ -102,5 +103,9 @@ export const PDF_TEMPLATE = {
   dispatchNote: {
     path: 'public/templates/dispatch-note',
     filename: 'plantilla_dispatch_note.pdf'
+  },
+  dispatchReport: {
+    path: 'public/templates/dispatch-note',
+    filename: 'plantilla_dispatch_report.pdf'
   }
 }

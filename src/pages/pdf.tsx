@@ -14,7 +14,7 @@ export default function Home() {
   const quotationAPI = '/api/get-quotation-pdf'
   const customAPI = '/api/get-custom-pdf'
 
-  const generatePDF = async (apiUrl: string) => {
+  const generatePDF = async (apiUrl: string) => { 
     setLoading(true);
     try {
       const response = await axios.post(apiUrl, {

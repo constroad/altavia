@@ -14,7 +14,7 @@ export class OrderRepository {
       const pageNumber = page ? parseInt(page, 10) : 1;
       const limitNumber = limit ? parseInt(limit, 10) : 50;
       const orders = await Order.find({ ...filters })
-        .sort({ createdAt: -1 })
+        .sort({ fechaProgramacion: -1 })
         .skip((pageNumber - 1) * limitNumber)
         .limit(limitNumber);
 

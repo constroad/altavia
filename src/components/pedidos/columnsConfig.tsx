@@ -8,7 +8,7 @@ export const generatePedidoColumns = () => {
     {
       key: 'cliente',
       label: 'Cliente',
-      width: '10%',
+      width: '15%',
     },
     {
       key: 'fechaProgramacion',
@@ -102,8 +102,8 @@ export const generatePedidoColumns = () => {
         );
       },
     },
-    { key: 'm3dispatched', label: 'M3 Producidos', width: '10%', summary: true },
-    { key: 'm3Pending', label: 'M3 Pendientes', width: '10%', summary: true },
+    { key: 'm3dispatched', label: 'M3 Producidos', width: '5%', summary: true },
+    { key: 'm3Pending', label: 'M3 Pendientes', width: '5%', summary: true },
   ];
 
   return columns;

@@ -3,6 +3,7 @@ export interface TableColumn<T = any> {
   label: string | React.ReactNode;
   width?: string;
   bgColor?: string;
+  color?: string;
   textAlign?: 'start' | 'center' | 'end';
   render?: (item: any, row: T) => React.ReactNode; 
 }

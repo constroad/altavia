@@ -11,13 +11,28 @@ interface IPagination {
 
 export class DispatchRepository {
 
-  async getAll(query?: IPagination): Promise<IGetAll> {
+  async getAllByIds(filters: object): Promise<DispatchModel[]> {
     try {
-      const { page, limit, ...filters } = query || {}
-      const pageNumber = parseInt(page as string, 10);
-      const limitNumber = parseInt(limit as string, 10);
+      const total = await Dispatch.countDocuments({ ...filters })
+      const dispatches = await Dispatch.find({ ...filters })
+        .sort({ createdAt: -1 })
 
+
+      return dispatches
+    } catch (error) {
+      console.error('Error getting dispatchs:', error);
+      throw new Error('Error getting dispatchs');
+    }
+  }
+  async getAll(filters: object, pagination?: IPagination): Promise<IGetAll> {
+    try {
+      // const { page, limit, ...filters } = query || {}
       const total = await Dispatch.countDocuments({ ...filters });
+
+      const { page, limit } = pagination || {}
+      const pageNumber = page ? parseInt(page, 10) : 1;
+      const limitNumber = limit ? parseInt(limit, 10) : total;
+
       const dispatchs = await Dispatch.find({ ...filters })
         .sort({ createdAt: -1 })
         .skip((pageNumber - 1) * limitNumber)
@@ -40,7 +55,7 @@ export class DispatchRepository {
         { _id: orderIds },
       )
       const ordersMap = Object.fromEntries(
-        orders.map((x) => [ x._id.toString(), x ])
+        orders.orders.map((x) => [ x._id?.toString(), x ])
       );
       const transportRepo = new TransportRepository()
       const transports = await transportRepo.getAll(
@@ -55,7 +70,7 @@ export class DispatchRepository {
           m3: prev.m3 + curr.quantity,
           total: prev.total + curr.total,
         }
-      }, {m3:0, total:0})
+      }, { m3: 0, total: 0 })
 
       return {
         dispatchs: dispatchs.map((x) => {

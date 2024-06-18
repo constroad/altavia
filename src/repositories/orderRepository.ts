@@ -1,11 +1,56 @@
-import Order, { OrderModel } from '../models/order';
+import Order, { IOrderGetAll, OrderModel } from '../models/order';
+import mongoose from 'mongoose';
+import { DispatchRepository } from './dispatchRepository';
+import { DispatchModel, IDispatchValidationSchema } from 'src/models/dispatch';
+interface IPagination {
+  page: string
+  limit: string
+}
 
 export class OrderRepository {
-
-  async getAll(filter: object): Promise<OrderModel[]> {
+  async getAll(filters: object, pagination?: IPagination): Promise<IOrderGetAll> {
     try {
-      const orders = await Order.find({...filter}).sort({ createdAt: -1 });
-      return orders;
+      const { page, limit } = pagination || {}
+      const pageNumber = page ? parseInt(page, 10) : 1;
+      const limitNumber = limit ? parseInt(limit, 10) : 50;
+      const orders = await Order.find({ ...filters })
+        .sort({ createdAt: -1 })
+        .skip((pageNumber - 1) * limitNumber)
+        .limit(limitNumber);
+
+      const total = await Order.countDocuments({ ...filters });
+      const orderIds = orders.map((x) => x._id)
+      // getting dispatches
+      const dispatchRepo = new DispatchRepository()
+      const dispatches = await dispatchRepo.getAllByIds({
+        orderId: { $in: orderIds }
+      })
+      const dispatchMap = Object.fromEntries(
+        dispatches.map((x) => [ x.orderId, dispatches.filter((y) => y.orderId === x.orderId) ])
+      )
+      // console.log('repository:', {dispatchMap})
+
+      return {
+        orders: orders.map((x) => {
+          const list: DispatchModel[] = dispatchMap[ x._id ] ?? []
+          const m3dispatched = list
+            .reduce((prev, curr) => {
+              return prev + curr.quantity
+            }, 0)
+          return {
+            ...x.toObject(),
+            __v: undefined,
+            dispatches: dispatches as IDispatchValidationSchema[],
+            m3dispatched,
+            m3Pending: x.cantidadCubos - m3dispatched
+          }
+        }),
+        pagination: {
+          page: pageNumber,
+          limit: limitNumber,
+          totalPages: Math.ceil(total / limitNumber),
+        }
+      };
     } catch (error) {
       console.error('Error getting orders:', error);
       throw new Error('Error getting orders');

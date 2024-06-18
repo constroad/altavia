@@ -10,7 +10,16 @@ const router = createRouter<NextApiRequest, NextApiResponse>();
 const getAll = async (req: NextApiRequest, res: NextApiResponse) => {
   const repo = new OrderRepository();
   try {
-    const result = await repo.getAll({});
+    const { page = 1, limit = 20, clientId, isPaid } = req.query
+    const pagination = { page: page as string, limit: limit as string }
+    const filter: any = {}
+    if (clientId) {
+      filter.clientId = clientId
+    }
+    if (isPaid) {
+      filter.isPaid = isPaid
+    }
+    const result = await repo.getAll(filter, pagination);
     res.status(200).json(result);
   } catch (error: any) {
     console.error(error.message);
@@ -26,7 +35,7 @@ const addRecord = async (req: NextApiRequest, res: NextApiResponse) => {
 
     if (!result.success) {
       console.log(result.error)
-      res.status(400).json({ message: "Revise parametros obligatorios"});
+      res.status(400).json({ message: "Revise parametros obligatorios" });
       return
     }
 
@@ -35,7 +44,7 @@ const addRecord = async (req: NextApiRequest, res: NextApiResponse) => {
 
   } catch (error: any) {
     console.error(error);
-    res.status(500).json({ message: 'Error when saving orders'  });
+    res.status(500).json({ message: 'Error when saving orders' });
   }
 }
 

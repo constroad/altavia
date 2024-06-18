@@ -1,5 +1,6 @@
 import { z } from 'zod';
 import mongoose, { Document, Schema, Model } from 'mongoose';
+import { IDispatchList, IDispatchValidationSchema } from './dispatch';
 
 export enum OrderStatus {
    pending= 'pendiente',
@@ -91,6 +92,21 @@ const ConsumosSchema = new Schema<IConsumos>({
   m3Arena: { type: Number, required: true },
   m3Piedra: { type: Number, required: true },
 });
+
+export interface IOrderList extends IOrderValidationSchema {
+  dispatches: IDispatchValidationSchema[],
+  m3dispatched: number,
+  m3Pending: number
+}
+
+export interface IOrderGetAll {
+  orders: IOrderList[],
+  pagination: {
+    page: number,
+    limit: number,
+    totalPages: number,
+  }
+}
 
 let Order: Model<OrderModel>;
 try {

@@ -638,7 +638,7 @@ export const PedidoForm = (props: PedidoFormProps) => {
         {order._id && (
           <Button
             size="xs"
-            // isDisabled={!order.isCredit || order.isPaid}
+            isDisabled={!order.isCredit || order.isPaid}
             colorScheme="yellow"
             isLoading={updatingOrder}
             onClick={onPayOrder}

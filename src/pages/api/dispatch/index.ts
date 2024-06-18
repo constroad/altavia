@@ -11,14 +11,12 @@ const getAll = async (req: NextApiRequest, res: NextApiResponse) => {
   const repo = new DispatchRepository();
   try {
     const { page = 1, limit = 10, startDate, endDate, clientId, orderId, isPaid } = req.query;
-    const query: any = {
-      page,
-      limit
-    };    
+    const pagination = { page: page as string, limit: limit as string }
+    const query: any = {};
     if (startDate || endDate) {
       query.date = {};
       if (startDate) {
-        query.date.$gte = new Date(`${startDate as string}T00:00` );
+        query.date.$gte = new Date(`${startDate as string}T00:00`);
       }
       if (endDate) {
         query.date.$lte = new Date(`${endDate as string}T23:00`);
@@ -33,8 +31,7 @@ const getAll = async (req: NextApiRequest, res: NextApiResponse) => {
     if (isPaid) {
       query.isPaid = isPaid
     }
-    console.log('query::', query)
-    const result = await repo.getAll(query);
+    const result = await repo.getAll(query, pagination);
 
     res.status(200).json(result);
   } catch (error: any) {

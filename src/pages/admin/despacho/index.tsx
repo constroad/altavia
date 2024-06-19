@@ -17,6 +17,7 @@ import {
   SearchDispatch,
   Summary,
   generateDispatchColumns,
+  getDispatchesPerMonth,
 } from 'src/components/dispatch';
 import { DownloadIcon, WhatsAppIcon } from 'src/common/icons';
 import { getDateStringRange } from 'src/utils/general';
@@ -99,10 +100,23 @@ const DispatchPage = () => {
   };
 
   const handlePreview = async(dispatch: any) => {
-    const { peruvianTime, slashDate } = getDate(dispatch.date)
+    const { currentYear, peruvianTime, slashDate } = getDate(dispatch.date)
+
+    let dispatchNumber
+
+    if (dispatch.nroVale) {
+      dispatchNumber = dispatch.nroVale
+      console.log('dispatchNumber:', dispatchNumber)
+
+    } else {
+      const { month, monthDispatches } = getDispatchesPerMonth(dispatch.date, listDispatch)
+      const index = monthDispatches?.findIndex(disp => disp._id === dispatch._id)
+      console.log('monthDispatches - preview:', monthDispatches)
+      dispatchNumber = `${currentYear}${month}-${index + 1}`
+    }
 
     const pdfData: DispatchNotePDFType = {
-      nro: dispatch?.nroVale ?? '',
+      nro: dispatchNumber,
       date: slashDate,
       clientName: dispatch?.client ?? '',
       proyect: dispatch?.obra ?? '',

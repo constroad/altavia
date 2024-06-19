@@ -7,7 +7,7 @@ import { useEffect, useMemo, useState } from "react";
 import { API_ROUTES } from "../consts";
 import axios from "axios";
 import { toast } from "src/components";
-import { DispatchNotePDFType } from "src/components/dispatch";
+import { DispatchNotePDFType, getDispatchesPerMonth } from "src/components/dispatch";
 import { useDispatchContext } from "src/context/DispatchContext/DispatchContext";
 import { v4 as uuidv4 } from 'uuid';
 import { getDate } from 'src/common/utils';
@@ -147,11 +147,23 @@ export const useDispatch = (props: UseDispatchProps) => {
     if (!dispatch) {
       return;
     }
+
+    let dispatchNumber
     const dispatchDate = new Date(dispatch.date)
+
+    if (dispatch.nroVale) {
+      dispatchNumber = dispatch.nroVale
+
+    } else {
+      const { month, monthDispatches } = getDispatchesPerMonth(dispatchDate, listDispatch)
+      const index = monthDispatches?.findIndex(disp => disp._id === dispatch._id)
+      dispatchNumber = `${currentYear}${month}-${index + 1}`
+    }
+
     const { peruvianTime, slashDate } = getDate(dispatchDate.toISOString());
 
     const pdfData: DispatchNotePDFType = {
-      nro: dispatch.nroVale ?? '',
+      nro: dispatchNumber,
       date: slashDate,
       clientName: dispatch.client ?? '',
       proyect: dispatch.obra ?? '',
@@ -179,17 +191,31 @@ export const useDispatch = (props: UseDispatchProps) => {
     document.body.appendChild(link);
     link.click();
     document.body.removeChild(link);
+
+    if (!dispatch.nroVale) {
+      const path = `${API_ROUTES.dispatch}/${dispatch?._id}`;
+      runUpdateDispatch(
+        putDisptach(path, {
+          ...dispatch,
+          nroVale: dispatchNumber,
+        }),
+        {
+          onError: () => {
+            toast.error('ocurrio un error actualizando un despacho');
+          },
+        }
+      );
+    }
+
+    options?.onSuccess()
   };
 
   const onAddDispatch = (payload?: Partial<IDispatchList>) => {
     if (!dispatchResponse) return
     const data = dispatchResponse
-    const month = defaultValueDispatch.date.toISOString().substring(5,7)
-    const monthDispatches = data.dispatchs.filter(disp => {
-      const date = new Date(disp.date)
-      return date.toISOString().includes(`${currentYear}-${month}`)
-    })
+    const { month, monthDispatches } = getDispatchesPerMonth(defaultValueDispatch.date, listDispatch)
     const nroVale = `${currentYear}${month}-${monthDispatches.length + 1}`
+  
     const newDefaultValueDispatch = {
       ...defaultValueDispatch,
       nroVale
@@ -242,12 +268,9 @@ export const useDispatch = (props: UseDispatchProps) => {
   const onUpdateDispatch = (payload: IDispatchList, props?: optionsCallback) => {
     if (!dispatchResponse) return
     const data = dispatchResponse
-    const month = payload.date.toISOString().substring(5,7)
-    const monthDispatches = data.dispatchs.filter(disp => {
-      const date = new Date(disp.date)
-      return date.toISOString().includes(`${currentYear}-${month}`)
-    })
-    const nroVale = `${currentYear}${month}-${monthDispatches.length}`
+    const { month, monthDispatches } = getDispatchesPerMonth(payload.date, listDispatch)
+    const index = monthDispatches?.findIndex(disp => disp._id === payload._id)
+    const nroVale = `${currentYear}${month}-${index + 1}`
 
     const newList = [ ...listDispatch ].map((x) => {
       if (x._id === payload._id) {

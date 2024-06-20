@@ -6,6 +6,7 @@ export const dispatchValidationSchema = z.object({
   _id: z.string().optional(),
   orderId: z.string().optional(),
   date: z.date(),
+  hour: z.string().optional(),
   transportId: z.string(),
   clientId: z.string(),
   invoice: z.string().optional(),
@@ -43,6 +44,7 @@ export interface IDispatchList extends IDispatchValidationSchema {
 export interface DispatchModel extends Document {
   orderId?: string;
   date: Date;
+  hour?: string;
   transportId: string;
   clientId: string;
   invoice?: string;
@@ -85,6 +87,7 @@ try {
   const dispatchDBSchema = new Schema({
     orderId: { type: String, optional: true },
     date: { type: Date, required: true },
+    hour: { type: String, optional: true },
     transportId: { type: String, optional: false },
     clientId: { type: String, optional: false },
     invoice: { type: String, optional: true },

@@ -66,7 +66,7 @@ export const createPdfAndConvertToImage = async (data: any) => {
   }
 
   // Draw text
-  firstPage.drawText(nro, { x: 489, y: 348.5, size: 13, font: helveticaBoldFont, color: red });
+  firstPage.drawText(nro, { x: 468, y: 348.5, size: 13, font: helveticaBoldFont, color: red });
   firstPage.drawText(date, { x: 480, y: 310, size: 10, font: helveticaBoldFont });
   firstPage.drawText(clientName.toUpperCase(), { x: 120, y: 260, size: 10, font: helveticaBoldFont });
   firstPage.drawText(proyect.toUpperCase(), { x: 120, y: 235, size: 10, font: helveticaBoldFont });

@@ -106,12 +106,10 @@ const DispatchPage = () => {
 
     if (dispatch.nroVale) {
       dispatchNumber = dispatch.nroVale
-      console.log('dispatchNumber:', dispatchNumber)
 
     } else {
       const { month, monthDispatches } = getDispatchesPerMonth(dispatch.date, listDispatch)
       const index = monthDispatches?.findIndex(disp => disp._id === dispatch._id)
-      console.log('monthDispatches - preview:', monthDispatches)
       dispatchNumber = `${currentYear}${month}-${index + 1}`
     }
 

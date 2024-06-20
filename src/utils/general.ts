@@ -5,9 +5,9 @@ export function formatISODate(isoString: string | Date) {
   } else {
     date = isoString
   }
-  const year = date.getFullYear();
-  const month = String(date.getMonth() + 1).padStart(2, '0');
-  const day = String(date.getDate()).padStart(2, '0');
+  const year = date?.getFullYear();
+  const month = String(date?.getMonth() + 1).padStart(2, '0');
+  const day = String(date?.getDate()).padStart(2, '0');
   return `${year}-${month}-${day}`;
 }
 
@@ -29,6 +29,18 @@ export function formatMoney(amount: number) {
 
 export const parseStringDateWithTime = (dateString: string | Date) => {
   const now = new Date();
-  const date = new Date(`${dateString}T${now.getHours()}:${now.getMinutes()}`);
+
+  let minutes = String(now.getMinutes())
+  if ( Number(minutes) < 10 ) {
+    minutes = `0${now.getMinutes()}`
+  }
+
+  let hours = String(now.getHours())
+  if (Number(hours) < 10) {
+    hours = `0${now.getHours()}`
+  }
+
+  const date = new Date(`${dateString}T${hours}:${minutes}`);
+
   return date
 }

@@ -12,9 +12,9 @@ import { useDispatchContext } from "src/context/DispatchContext/DispatchContext"
 import { v4 as uuidv4 } from 'uuid';
 import { getDate } from 'src/common/utils';
 
-
 const defaultValueDispatch: IDispatchList = {
   date: new Date(),
+  hour: '',
   transportId: '',
   clientId: '',
   invoice: '',
@@ -212,12 +212,14 @@ export const useDispatch = (props: UseDispatchProps) => {
 
   const onAddDispatch = (payload?: Partial<IDispatchList>) => {
     if (!dispatchResponse) return
+    const { dispatchHour, hour, minutes } = getDate()
     const data = dispatchResponse
-    const { month, monthDispatches } = getDispatchesPerMonth(defaultValueDispatch.date, listDispatch)
-    const nroVale = `${currentYear}${month}-${monthDispatches.length + 1}`
+    const { month, day } = getDispatchesPerMonth(defaultValueDispatch.date, listDispatch)
+    const nroVale = `${currentYear}${month}${day}-${hour}${minutes}`
   
     const newDefaultValueDispatch = {
       ...defaultValueDispatch,
+      hour: dispatchHour,
       nroVale
     }
     let newPayload = {
@@ -268,9 +270,13 @@ export const useDispatch = (props: UseDispatchProps) => {
   const onUpdateDispatch = (payload: IDispatchList, props?: optionsCallback) => {
     if (!dispatchResponse) return
     const data = dispatchResponse
-    const { month, monthDispatches } = getDispatchesPerMonth(payload.date, listDispatch)
-    const index = monthDispatches?.findIndex(disp => disp._id === payload._id)
-    const nroVale = `${currentYear}${month}-${index + 1}`
+    const newDate = new Date(payload.date)
+
+    const month = newDate.toISOString().substring(5,7)
+    const day = newDate.toISOString().substring(8,10)
+    const updatedHour = payload.hour?.substring(0,2)
+    const updatedMinutes = payload.hour?.substring(3,5)
+    const nroVale = `${currentYear}${month}${day}-${updatedHour}${updatedMinutes}`
 
     const newList = [ ...listDispatch ].map((x) => {
       if (x._id === payload._id) {

@@ -45,6 +45,7 @@ const orderViewColumns = [
   'igv',
   'total',
   '_id',
+  'hour',
 ];
 interface ColumnsProps {
   view?: TableView;
@@ -130,7 +131,7 @@ export const generateDispatchColumns = (props: ColumnsProps) => {
     {
       key: 'description',
       label: 'Description',
-      width: '5%',
+      width: '3%',
       render: (item, row) => {
         return (
           <Input
@@ -251,7 +252,7 @@ export const generateDispatchColumns = (props: ColumnsProps) => {
     {
       key: 'driverName',
       label: 'Chofer',
-      width: '10%',
+      width: '5%',
       render: (item, row) => {
         return (
           <Input
@@ -264,6 +265,29 @@ export const generateDispatchColumns = (props: ColumnsProps) => {
             onBlur={(e) => {
               if (e.target.value.toLowerCase() !== item.toLowerCase()) {
                 updateDispatch({ ...row, driverName: e.target.value });
+              }
+            }}
+          />
+        );
+      },
+    },
+    {
+      key: 'hour',
+      label: 'Hora',
+      width: '5%',
+      render: (item, row) => {
+        return (
+          <Input
+            px={{ base: '5px', md: '3px' }}
+            fontSize="inherit"
+            lineHeight="14px"
+            height="32px"
+            width="100%"
+            type='time'
+            defaultValue={item}
+            onBlur={(e) => {
+              if (e.target.value.toLowerCase() !== item?.toLowerCase()) {
+                updateDispatch({ ...row, hour: e.target.value });
               }
             }}
           />
@@ -559,6 +583,22 @@ export const generateDispatchColumns = (props: ColumnsProps) => {
             </GridItem>
             <GridItem>
               <Input
+                px={{ base: '5px', md: '3px' }}
+                fontSize="inherit"
+                lineHeight="14px"
+                height="32px"
+                width="100%"
+                type='time'
+                defaultValue={row.hour}
+                onBlur={(e) => {
+                  if (e.target.value.toLowerCase() !== row.hour?.toLowerCase()) {
+                    updateDispatch({ ...row, hour: e.target.value });
+                  }
+                }}
+              />
+            </GridItem>
+            <GridItem>
+              <Input
                 placeholder="Material"
                 px={{ base: '5px', md: '3px' }}
                 fontSize="inherit"
@@ -718,7 +758,7 @@ export const generateDispatchColumns = (props: ColumnsProps) => {
                 />
               </Flex>
             </GridItem>
-            <GridItem>
+            <GridItem colSpan={2}>
               <Input
                 placeholder="Notas"
                 fontSize="inherit"

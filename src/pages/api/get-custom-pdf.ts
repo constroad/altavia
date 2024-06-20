@@ -31,9 +31,9 @@ export default async (req: NextApiRequest, res: NextApiResponse) => {
     // const htmlTemplate = htmlCotizacionServicioPage1(base64bg, base64Logo)    //generate service quote page 1    
     // const htmlTemplate = htmlCotizacionServicioPage2(base64bg, base64Logo)    //generate service quote page 2 
     // const htmlTemplate = htmlCotizacionServicioPage2NoIGV(base64bg, base64Logo)    //generate service quote page 2
-    // const htmlTemplate = htmlDispatchNote(base64Logo)     //generate dispatch note
+    const htmlTemplate = htmlDispatchNote(base64Logo)     //generate dispatch note
 
-    const htmlTemplate = htmlDispatchReport(base64Logo)
+    // const htmlTemplate = htmlDispatchReport(base64Logo)
 
     
     // Lanza un navegador headless

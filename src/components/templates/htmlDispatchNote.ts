@@ -154,7 +154,7 @@ export const htmlDispatchNote = ( logoImg: any ): string => {
           <div class="date-container" style="flex: 1; display: flex; flex-direction: column; height: min-content">
             <div style="display: flex; flex-direction: column; border-radius: 14px; border: 2px solid; height: min-content">
               <div style="font-size: 24px; font-weight: 900; height: 30px; display: flex; align-items: center; justify-content: center; background: lightgray; border-radius: 13px 13px 0 0;">VALE</div>
-              <div style="color: red; font-size: 18px; font-weight: 900; height: 30px; border-top: 2px solid black; align-items: center; display: flex; padding-left: 52px;">No.</div>
+              <div style="color: red; font-size: 18px; font-weight: 900; height: 30px; border-top: 2px solid black; align-items: center; display: flex; padding-left: 20px;">No.</div>
             </div>
 
             <div style="margin-top: 32px; font-size: 14px; font-weight: 600; padding-left: 10px">

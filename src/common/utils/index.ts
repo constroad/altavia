@@ -22,6 +22,12 @@ export const getDate = (dateIsoString?: string) => {
   const peruDate = new Date(date.toLocaleString('en-US', { timeZone: 'America/Lima' }));
 
   let hour = peruDate.getHours();
+  let minutes = peruDate.getMinutes().toString();
+
+  if (+minutes < 10) {
+    minutes = `0${peruDate.getMinutes()}`
+  }
+
   if (hour === 0) {
     hour = 12;
   }
@@ -56,6 +62,9 @@ export const getDate = (dateIsoString?: string) => {
     day,
     month,
     peruvianTime: peruvianTimeFinal,
+    dispatchHour: `${hour}:${minutes}`,
+    hour: hour,
+    minutes: minutes,
   };
 };
 

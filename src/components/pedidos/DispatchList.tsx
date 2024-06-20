@@ -2,7 +2,7 @@ import { useDispatch, useScreenSize } from 'src/common/hooks';
 import { IOrderValidationSchema } from 'src/models/order';
 import { TableComponent } from '../Table';
 import { Summary } from '../dispatch/Summary';
-import { DispatchNotePDFType, PDFViewer, generateDispatchColumns, getDispatchesPerMonth } from '../dispatch';
+import { DispatchNotePDFType, PDFViewer, generateDispatchColumns, get12HoursFormat, getDispatchesPerMonth } from '../dispatch';
 import { Box, Button, Flex, FormLabel, Input, Text, Textarea, useDisclosure } from '@chakra-ui/react';
 import { CustomDivider, Modal } from 'src/components';
 import { IDispatchList } from 'src/models/dispatch';
@@ -86,21 +86,11 @@ export const DispatchList = (props: DispatchListProps) => {
 
   // Handlers
   const handlePreview = async(dispatch: any) => {
-    const { currentYear, peruvianTime, slashDate } = getDate(dispatch.date)
-
-    let dispatchNumber
-
-    if (dispatch.nroVale) {
-      dispatchNumber = dispatch.nroVale
-
-    } else {
-      const { month, monthDispatches } = getDispatchesPerMonth(dispatch.date, listDispatch)
-      const index = monthDispatches?.findIndex(disp => disp._id === dispatch._id)
-      dispatchNumber = `${currentYear}${month}-${index + 1}`
-    }
+    const { peruvianTime, slashDate } = getDate(dispatch.date)
+    const hourToSave = get12HoursFormat(dispatch?.hour ?? '')
 
     const pdfData: DispatchNotePDFType = {
-      nro: dispatchNumber,
+      nro: dispatch.nroVale ?? '',
       date: slashDate,
       clientName: dispatch?.client ?? '',
       proyect: dispatch?.obra ?? '',
@@ -109,7 +99,7 @@ export const DispatchList = (props: DispatchListProps) => {
       plate: dispatch?.plate ?? '',
       transportist:
       dispatch?.driverName || dispatch?.company || '',
-      hour: peruvianTime,
+      hour: hourToSave ?? peruvianTime,
       note: dispatch?.note || '',
     };
     

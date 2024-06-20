@@ -17,6 +17,7 @@ import {
   SearchDispatch,
   Summary,
   generateDispatchColumns,
+  get12HoursFormat,
   getDispatchesPerMonth,
 } from 'src/components/dispatch';
 import { DownloadIcon, WhatsAppIcon } from 'src/common/icons';
@@ -100,21 +101,11 @@ const DispatchPage = () => {
   };
 
   const handlePreview = async(dispatch: any) => {
-    const { currentYear, peruvianTime, slashDate } = getDate(dispatch.date)
-
-    let dispatchNumber
-
-    if (dispatch.nroVale) {
-      dispatchNumber = dispatch.nroVale
-
-    } else {
-      const { month, monthDispatches } = getDispatchesPerMonth(dispatch.date, listDispatch)
-      const index = monthDispatches?.findIndex(disp => disp._id === dispatch._id)
-      dispatchNumber = `${currentYear}${month}-${index + 1}`
-    }
+    const { peruvianTime, slashDate } = getDate(dispatch.date)
+    const hourToSave = get12HoursFormat(dispatch?.hour ?? '')
 
     const pdfData: DispatchNotePDFType = {
-      nro: dispatchNumber,
+      nro: dispatch.nroVale ?? '',
       date: slashDate,
       clientName: dispatch?.client ?? '',
       proyect: dispatch?.obra ?? '',
@@ -123,7 +114,7 @@ const DispatchPage = () => {
       plate: dispatch?.plate ?? '',
       transportist:
       dispatch?.driverName || dispatch?.company || '',
-      hour: peruvianTime,
+      hour: hourToSave ?? peruvianTime,
       note: dispatch?.note || '',
     };
     

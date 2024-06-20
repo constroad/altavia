@@ -38,13 +38,18 @@ export const getDispatchesPerMonth = (date: Date, listDispatch: IDispatchList[])
 }
 
 export const get12HoursFormat = (hour: string) => {
+  if ( hour === '' ) return;
+
   const numberHour = +hour.substring(0,2)
   const minuts = hour.substring(3,5)
   let hourToSave
+
   if (numberHour < 12) {
     hourToSave = `${hour} AM`
+
   } else if (numberHour === 12) {
-    hourToSave = `${12}:${minuts} PM`
+    hourToSave = `${hour} PM`
+    
   } else {
     hourToSave = `${numberHour - 12}:${minuts} PM`
   }

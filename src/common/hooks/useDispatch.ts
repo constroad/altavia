@@ -172,7 +172,7 @@ export const useDispatch = (props: UseDispatchProps) => {
       plate: dispatch.plate ?? '',
       transportist:
         dispatch.driverName || dispatch.company || '',
-      hour: peruvianTime,
+      hour: dispatch?.hour || peruvianTime,
       note: dispatch.note ?? '',
     };
 

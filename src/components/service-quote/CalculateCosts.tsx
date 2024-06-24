@@ -119,7 +119,7 @@ export const CalculateCosts = (props: CalculateCostsProps) => {
         <AccordionPanel py='4px' px='8px' h='100%' maxH='100%' overflow='scroll'>
           <CostsTable
             keyString='service'
-            columns={['Item', 'Cantidad', 'Precio', 'Total']}
+            columns={['Item', 'Cantidad', 'Precio', 'Total']} 
             rows={serviceRows}
             setter={serviceSetter}
             prodInfo={prodInfo}
@@ -139,7 +139,7 @@ export const CalculateCosts = (props: CalculateCostsProps) => {
         <AccordionPanel py='4px' px='8px' h='100%' maxH='100%' overflow='scroll'>
           <CostsTable
             keyString='imprimacion'
-            columns={['Item', 'Cantidad', 'Precio', 'Total']}
+            columns={['Item', 'Cantidad', 'Dosis', 'Precio', 'Total']}
             rows={imprimacionRows}
             setter={imprimacionSetter}
             prodInfo={prodInfo}

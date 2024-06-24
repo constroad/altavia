@@ -50,7 +50,8 @@ export const serviceQuoteValidationSchema = z.object({
     imprimacion: z.array(z.object({
       'Cantidad': z.number(),
       'Item': z.string(),
-      'Precio': z.number(),
+      'Dosis': z.number(),
+      'Precio': z.number(), 
       'Total': z.number(),
       'id': z.number()
     })),

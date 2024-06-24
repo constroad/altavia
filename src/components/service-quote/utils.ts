@@ -36,6 +36,7 @@ export type CostsType = {
   imprimacion: {
     'Cantidad': number;
     'Item': string;
+    'Dosis': number
     'Precio': number;
     'Total': number;
     'id': number;
@@ -247,7 +248,7 @@ export const initialServiceQuote: ServiceQuoteType = {
   costs: {
     prodInfo: initialProductionInfo,
     asphalt: asphaltRowsArr,
-    imprimacion: imprimacionRowsArr,
+    imprimacion: imprimacionRowsArr, 
     service: serviceRowsArr,
     priceM3: 48,
     priceM2: 41

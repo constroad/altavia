@@ -28,6 +28,7 @@ export const asphaltRowsArr = [
   { id: 7, 'Insumo': 'Gas', 'Dosis': 0.01, 'M3/GLS': 0, 'Precio': 5, 'Total': 0 },
   { id: 8, 'Insumo': 'Alq. Planta', 'Dosis': 1, 'M3/GLS': 0, 'Precio': 30, 'Total': 0 },
 ]
+
 export const serviceRowsArr = [
   { id: 1, 'Item': 'Camabaja', 'Cantidad': 1, 'Precio': 2000, 'Total': 0 },
   { id: 2, 'Item': 'Maquinaria', 'Cantidad': 1, 'Precio': 3400, 'Total': 0 },
@@ -42,12 +43,14 @@ export const serviceRowsArr = [
   { id: 11, 'Item': 'Samuel', 'Cantidad': 1, 'Precio': 0, 'Total': 0 },
   { id: 12, 'Item': 'Viaticos', 'Cantidad': 1, 'Precio': 0, 'Total': 0 },
 ]
+
 export const imprimacionRowsArr = [
-  { id: 1, 'Item': 'Imprimación', 'Cantidad': 0, 'Precio': 3, 'Total': 0 },
-  { id: 2, 'Item': '', 'Cantidad': 0, 'Precio': 0, 'Total': 0 },
-  { id: 3, 'Item': 'Ayudantes', 'Cantidad': 0, 'Precio': 0, 'Total': 0 },
-  { id: 4, 'Item': 'Compresora', 'Cantidad': 0, 'Precio': 0, 'Total': 0 },
+  { id: 1, 'Item': 'MC-30', 'Cantidad': 0, 'Dosis': 0.2, 'Precio': 15, 'Total': 0 },
+  { id: 2, 'Item': 'Camion Imprimador', 'Cantidad': 1, 'Dosis': 0, 'Precio': 1500, 'Total': 0 },
+  { id: 3, 'Item': 'Maestro', 'Cantidad': 1, 'Dosis': 0, 'Precio': 300, 'Total': 0 },
+  { id: 4, 'Item': 'Gas', 'Cantidad': 1, 'Dosis': 0, 'Precio': 42, 'Total': 0 },
 ]
+
 export const thicknessRows = [
   { id: 1, 'Pulgadas': 1, 'Centimetros': 0.035 },
   { id: 2, 'Pulgadas': 1.5, 'Centimetros': 0.048 },

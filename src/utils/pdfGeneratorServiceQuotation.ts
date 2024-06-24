@@ -156,10 +156,15 @@ export const generateServiceQuotationPDF = async (data: ServiceQuotePDFType) => 
   } else {
     firstPage.drawText(companyName, { x: 85, y: 717.8, size: 9.5, font: helveticaBoldFont})
   }
+  const largeText1 = `CREACIÓN DEL SERVICIO DE MOVILIDAD URBANA EN LA TRANSITABILIDAD VEHICULAR Y PEATONAL DE LAS CALLES INTERNAS EN LA ASOCIACIÓN`
+  const largeText2 = `DE VIVIENDA INTEGRACIÓN LOS OLIVOS, SECTOR C DEL DISTRITO DE LURIGANCHO DE LA PROVINCIA DE LIMA DEL DEPARTAMENTO DE LIMA`
   
   firstPage.drawText(currentDayMonthStr, { x: xDayMonth, y: 775, size: 14, font: helveticaBoldFont  })
   firstPage.drawText(currentYear, { x: xYear, y: 760, size: 14, font: helveticaBoldFont  })
   
+  firstPage.drawText(largeText1, { x: 52, y: 746, size: 6.6, font:  helveticaBoldFont})
+  firstPage.drawText(largeText2, { x: 52, y: 738, size: 6.6, font:  helveticaBoldFont})
+
   firstPage.drawText(`${nroCotizacion} - ${currentYear}`, { x: 305, y: 658, size: 10, font: helveticaBoldFont })
   firstPage.drawText(companyName, { x: 128, y: 640.3, size: 8, font: helveticaBoldFont })
   firstPage.drawText(rucCliente, { x: 128, y: 627.8, size: 8, font: helveticaBoldFont })

@@ -19,7 +19,7 @@ export const getDate = (dateIsoString?: string) => {
     date = new Date(dateIsoString);
   }
 
-  const peruDate = new Date(date.toLocaleString('en-US', { timeZone: 'America/Lima' }));
+  const peruDate = new Date(date.toLocaleString('en-US'));
 
   let hour = peruDate.getHours();
   let minutes = peruDate.getMinutes().toString();

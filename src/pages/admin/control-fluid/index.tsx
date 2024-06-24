@@ -86,8 +86,18 @@ export const ControlFluid = () => {
 
   const penToProduce = fluidList.reduce((accumulator, item) => {
     if (item.name === 'PEN #1') {
+      // 363gl no salen por la altura de la llave - 50gl por tubos de calentamiento
       accumulator += item.volumeInStock - (363 + 50)
-    } else if (item.name === 'PEN #2' || item.name === 'PEN #3') {
+
+    } else if (item.name === 'PEN #2') {
+      // 121gl no salen por la altura de la llave - 50gl no salen por tubos de calentamiento
+      if (item.volumeInStock > 683) accumulator += item.volumeInStock - (121)
+      else if (item.volumeInStock > 416) accumulator += item.volumeInStock  - (50 + 121)
+      else if (item.volumeInStock > 192) accumulator += item.volumeInStock - (30 + 121)
+      else if (item.volumeInStock > 33) accumulator += item.volumeInStock - (10 + 121)
+
+    } else if (item.name === 'PEN #3') {
+      // 121gl no salen por la altura de la llave - 106gl no salen por tubos de calentamiento
       if (item.volumeInStock > 683) accumulator += item.volumeInStock - (123)
       else if (item.volumeInStock > 416) accumulator += item.volumeInStock  - (106 + 123)
       else if (item.volumeInStock > 192) accumulator += item.volumeInStock - (60 + 123)

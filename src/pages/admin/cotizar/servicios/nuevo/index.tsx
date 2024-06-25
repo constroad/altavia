@@ -55,7 +55,7 @@ export const NewServiceQuotePage = () => {
 
   const { run: runGetClients } = useAsync({ onSuccess(data) { setClientsDB(data.data) } })
   const { run: runGetServices } = useAsync({ onSuccess(data) { setServicesDB(data.data) } })
-  const { run: runGetQuotes, isLoading, refetch: refetchQuotes } = useAsync({ onSuccess(data) { setQuotesDBList(data.data) } })
+  const { run: runGetQuotes, isLoading, refetch } = useAsync({ onSuccess(data) { setQuotesDBList(data.data) } })
   const { run: runAddQuote, isLoading: loadingAddQuote  } = useAsync()
   const { run: runAEditQuote, isLoading: loadingEditQuote  } = useAsync()
 
@@ -74,7 +74,8 @@ export const NewServiceQuotePage = () => {
       });
 
       const clientsPromise = runGetClients(fetcher(API_ROUTES.client), {
-        cacheKey: `${API_ROUTES.client}-service-quote`
+        refetch: () => runGetClients(fetcher(API_ROUTES.client)),
+        // cacheKey: `${API_ROUTES.client}-service-quote`
       });
 
       await Promise.all([quotePromise, servicesPromise, clientsPromise]);
@@ -83,6 +84,13 @@ export const NewServiceQuotePage = () => {
     fetchQuoteServicesClientData();
   }, []);
 
+  useEffect(() => {
+    runGetClients(fetcher(API_ROUTES.client), {
+      refetch: () => runGetClients(fetcher(API_ROUTES.client)),
+      cacheKey: `${API_ROUTES.client}-service-quote`
+    });
+  }, []);
+  
   useEffect(() => {
     if (serviceQuoteSelected) {
       const client = clientsDB.filter(cli => cli._id === serviceQuoteSelected.clientId)
@@ -128,8 +136,8 @@ export const NewServiceQuotePage = () => {
     event.preventDefault();
     const inputDate = new Date(customDate)
     const addQuoteDate = customDate.length > 0 ? inputDate : date
-    const editQuoteDate = customDate.length > 0 ? inputDate.toUTCString() : serviceQuoteSelected?.date
-    const { shortDate: quoteShortDate } = getDate(addQuoteDate.toUTCString())
+    const editQuoteDate = customDate.length > 0 ? inputDate.toISOString() : serviceQuoteSelected?.date
+    const { shortDate: quoteShortDate } = getDate(addQuoteDate.toISOString())
 
     if (!serviceQuoteSelected && clientSelected) {
       const {
@@ -159,9 +167,9 @@ export const NewServiceQuotePage = () => {
 
       runAddQuote(postQuote(API_ROUTES.serviceQuote, addQuote), {
         onSuccess: () => {
-          refetchQuotes()
           toast.success('Cotización generada con éxito.')
           generateAndDownloadPDF(editQuoteDate, addQuoteDate, quoteNumber, clientSelected, quoteShortDate)
+          refetch()
         },
         onError: (err) => {
           console.log(err)
@@ -197,9 +205,9 @@ export const NewServiceQuotePage = () => {
 
       runAEditQuote(updateQuote(`${API_ROUTES.serviceQuote}/${serviceQuoteSelected._id}`, editQuote), {
         onSuccess: () => {
-          refetchQuotes()
           toast.success('Cotización editada con éxito.')
           generateAndDownloadPDF(editQuoteDate, addQuoteDate, quoteNumber, clientSelected, quoteShortDate)
+          refetch()
         },
         onError: (err) => {
           console.log(err) 

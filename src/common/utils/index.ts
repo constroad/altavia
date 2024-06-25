@@ -14,43 +14,47 @@ export const capitalizeText = (text: string) => {
 }
 
 export const getDate = (dateIsoString?: string) => {
-  let date = new Date();
+  let date
+  let hours
+  let minutes
+  
   if (dateIsoString) {
-    date = new Date(dateIsoString);
+    const newDateToIsoString = dateIsoString?.slice(0, -1)
+    date = new Date(newDateToIsoString)
+    hours = date.getHours();
+    minutes = date.getMinutes().toString();
+
+  } else {
+    date = new Date()
+    hours = date.getHours();
+    minutes = date.getMinutes().toString();
   }
-
-  const peruDate = new Date(date.toLocaleString('en-US'));
-
-  let hour = peruDate.getHours();
-  let minutes = peruDate.getMinutes().toString();
 
   if (+minutes < 10) {
-    minutes = `0${peruDate.getMinutes()}`
+    minutes = `0${date.getMinutes()}`
   }
 
-  if (hour === 0) {
-    hour = 12;
+  if (hours === 0) {
+    hours = 12;
   }
 
-  const dayIndex = peruDate.getDay();
+  const dayIndex = date.getDay();
   const weekDays = ['domingo', 'lunes', 'martes', 'miércoles', 'jueves', 'viernes', 'sábado'];
   const currentDayName = weekDays[dayIndex];
 
-  const currentDayMonth = peruDate.toLocaleDateString('es-ES', { day: '2-digit', month: 'long' });
-  const currentYear = peruDate.toLocaleDateString('es-ES', { year: 'numeric' });
+  const currentDayMonth = date.toLocaleDateString('es-ES', { day: '2-digit', month: 'long' });
+  const currentYear = date.toLocaleDateString('es-ES', { year: 'numeric' });
 
-  const year = peruDate.getFullYear().toString().slice(-2);
-  const month = (peruDate.getMonth() + 1).toString().padStart(2, '0');
-  const day = peruDate.getDate().toString().padStart(2, '0');
+  const year = date.getFullYear().toString().slice(-2);
+  const month = (date.getMonth() + 1).toString().padStart(2, '0');
+  const day = date.getDate().toString().padStart(2, '0');
 
   const shortDate = `${day}-${month}-${year}`;
   const slashDate = `${day}/${month}/${year}`;
 
-  // Formatear la hora en formato de 12 horas con indicador de AM/PM
   const options = { hour: '2-digit' as const, minute: '2-digit' as const, hour12: true, timeZone: 'America/Lima' };
-  const peruvianTime = peruDate.toLocaleTimeString('en-US', options);
+  const peruvianTime = date.toLocaleTimeString('en-US', options);
 
-  // Construir la cadena de tiempo final
   const peruvianTimeFinal = `${peruvianTime}`;
 
   return {
@@ -62,8 +66,8 @@ export const getDate = (dateIsoString?: string) => {
     day,
     month,
     peruvianTime: peruvianTimeFinal,
-    dispatchHour: `${hour}:${minutes}`,
-    hour: hour,
+    dispatchHour: `${hours}:${minutes}`,
+    hour: hours,
     minutes: minutes,
   };
 };

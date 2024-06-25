@@ -41,7 +41,7 @@ export const ServiceQuotePage = () => {
       
       const quotePromise = runGetQuotes(fetcher(API_ROUTES.serviceQuote), {
         refetch: () => runGetQuotes(fetcher(API_ROUTES.serviceQuote)),
-        cacheKey: API_ROUTES.serviceQuote
+        // cacheKey: API_ROUTES.serviceQuote
       });
 
       const clientsPromise = runGetClients(fetcher(API_ROUTES.client), {
@@ -52,6 +52,13 @@ export const ServiceQuotePage = () => {
     };
   
     fetchQuoteServicesClientData();
+  }, []);
+
+  useEffect(() => {
+    runGetQuotes(fetcher(API_ROUTES.serviceQuote), {
+      refetch: () => runGetQuotes(fetcher(API_ROUTES.serviceQuote)),
+      cacheKey: API_ROUTES.serviceQuote
+    });
   }, []);
 
   const handleNewQuoteClick = () => {

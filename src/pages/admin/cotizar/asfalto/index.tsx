@@ -136,8 +136,8 @@ const AsphaltQuotePage = () => {
     event.preventDefault();
     const inputDate = new Date(customDate)
     const addQuoteDate = customDate.length > 0 ? inputDate : date
-    const editQuoteDate = customDate.length > 0 ? inputDate.toUTCString() : quoteSelected?.date
-    const { shortDate: quoteShortDate } = getDate(addQuoteDate.toUTCString())
+    const editQuoteDate = customDate.length > 0 ? inputDate.toISOString() : quoteSelected?.date
+    const { shortDate: quoteShortDate } = getDate(addQuoteDate.toISOString())
 
     if (!quoteSelected && clientSelected) {
       const {

@@ -52,6 +52,7 @@ export const Modal = (props: ModalProps) => {
           {...(showFooter ? {} : { paddingBottom: 6 })}
           maxH="80vh"
           overflow="auto"
+          px='20px'
         >
           {children}
         </ModalBody>

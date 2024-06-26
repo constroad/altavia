@@ -235,8 +235,6 @@ const Pedidos = () => {
               handleGoToOrder(item._id);
             }}
             onShare={(item) => {
-              console.log(item._id)
-              console.log(item)
               handleGenerateAndCopyURL(item.clienteId)
             }}
             isLoading={isLoading}

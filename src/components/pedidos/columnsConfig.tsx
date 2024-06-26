@@ -1,4 +1,4 @@
-import { Box, Flex } from '@chakra-ui/react';
+import { Box, Flex, Text, Tooltip } from '@chakra-ui/react';
 import { TableColumn } from '../Table';
 import { formatMoney } from 'src/utils/general';
 import { CONSTROAD_COLORS } from 'src/styles/shared';
@@ -10,7 +10,7 @@ const Summary = (value: number, bgColor?: string) => {
       alignItems="center"
       justifyContent="end"
       bgColor={bgColor ?? 'black'}
-      color={"white"}
+      color={'white'}
       fontWeight={600}
       fontSize={11}
       height={30}
@@ -27,7 +27,7 @@ const SummaryAmount = (value: number, bgColor?: string) => {
       alignItems="center"
       justifyContent="end"
       bgColor={bgColor ?? 'black'}
-      color={ bgColor? "inherit" : "white"}
+      color={bgColor ? 'inherit' : 'white'}
       fontWeight={600}
       fontSize={11}
       height={30}
@@ -43,11 +43,17 @@ export const generatePedidoColumns = () => {
       key: 'cliente',
       label: 'Cliente',
       width: '15%',
+      render: (item) => (
+        <Tooltip label={item}>
+          <Text noOfLines={1}>{item}</Text>
+        </Tooltip>
+      ),
     },
     {
       key: 'fechaProgramacion',
       label: 'Fecha',
       width: '5%',
+      tdStyles: { px: 0 },
       render: (item, row) => (
         <Flex flexDir="column">
           {new Date(item).toLocaleDateString('es-PE')}
@@ -58,6 +64,7 @@ export const generatePedidoColumns = () => {
       key: 'fechaVencimiento',
       label: 'Vence',
       width: '5%',
+      tdStyles: { px: 0 },
       render: (item, row) => {
         return (
           <Flex>{item && new Date(item).toLocaleDateString('es-PE')}</Flex>
@@ -68,9 +75,11 @@ export const generatePedidoColumns = () => {
       key: 'obra',
       label: 'Obra',
       width: '10%',
-      render: (item, row) => {
-        return <Flex>{item}</Flex>;
-      },
+      render: (item) => (
+        <Tooltip label={item}>
+          <Text noOfLines={1}>{item}</Text>
+        </Tooltip>
+      ),
     },
     {
       key: 'cantidadCubos',
@@ -126,10 +135,11 @@ export const generatePedidoColumns = () => {
       tdStyles: {
         px: 0,
       },
-      summary: (value) => Summary(value, "red"),
+      summary: (value) => Summary(value, 'red'),
       render: (item, row) => {
         return (
           <Box
+            height="100%"
             bgColor={row.isPaid ? '#d7ead4' : 'pink'}
             rounded={2}
             textAlign="right"

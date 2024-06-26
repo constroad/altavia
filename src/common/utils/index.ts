@@ -109,5 +109,17 @@ export function getEnumOptions(enumObj: any): { value: string, label: string }[]
   }));
 }
 
+export const getBaseUrl = (): string => {
+  if (process.env.NODE_ENV === 'development') {
+    return 'http://localhost:3000';
+  }
+
+  if (process.env.NODE_ENV === 'production') {
+    return `https://constroad.com`;
+  }
+
+  return '';
+};
+
 export * from './api'
 export * from './numberToWords'

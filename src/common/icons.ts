@@ -30,6 +30,9 @@ import { RiSubtractLine } from "react-icons/ri";
 import { GrUserWorker } from "react-icons/gr";
 import { LuContainer } from "react-icons/lu";
 import { GiBoxUnpacking } from "react-icons/gi";
+import { FaShareAlt } from "react-icons/fa";
+import { FaEye } from "react-icons/fa";
+
 
 export const ArrowBackIcon = IoArrowBackOutline
 export const DownloadIcon = FaCloudDownloadAlt
@@ -46,12 +49,14 @@ export const TrashIcon = FaRegTrashAlt
 export const NextIcon = MdNavigateNext
 export const CopyIcon = MdContentCopy
 export const EditIcon = BiSolidPencil
+export const ShareIcon = FaShareAlt
 export const SearchIcon = IoSearch
 export const CloseIcon = IoMdClose
 export const TruckIcon = FaTruck
 export const MailIcon = IoMdMail
 export const RoadIcon = FaRoad
 export const PlusIcon = FaPlus
+export const ViewIcon = FaEye
 
 // admin menu
 export const ProductionIcon = MdOutlinePrecisionManufacturing

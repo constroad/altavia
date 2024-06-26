@@ -318,7 +318,7 @@ export const generateDispatchColumns = () => {
     {
       key: 'date',
       label: 'Fecha',
-      width: '5%',
+      width: '3%',
       render: (item, row) => (
         <Flex flexDir="column" alignItems="center">
           {new Date(item).toLocaleDateString('es-PE')}
@@ -348,7 +348,7 @@ export const generateDispatchColumns = () => {
     {
       key: 'hour',
       label: 'Hora',
-      width: '5%',
+      width: '3%',
       render: (item, row) => (
         <Flex flexDir="column" alignItems="center">
           {item}
@@ -358,7 +358,7 @@ export const generateDispatchColumns = () => {
     {
       key: 'note',
       label: 'Nota',
-      width: '5%',
+      width: '15%',
       render: (item, row) => (
         <Flex flexDir='column' alignItems='center'>
           {item}
@@ -368,7 +368,7 @@ export const generateDispatchColumns = () => {
     {
       key: 'quantity',
       label: 'M3',
-      width: '5%',
+      width: '3%',
       render: (item, row) => (
         <Flex flexDir="column" alignItems="center">
           {item}

@@ -12,7 +12,7 @@ import {
 } from '@chakra-ui/react';
 import { TableColumn, TableData } from './TableTypes';
 import { CONSTROAD_COLORS } from 'src/styles/shared';
-import { EditIcon, TrashIcon } from 'src/common/icons';
+import { EditIcon, ShareIcon, TrashIcon } from 'src/common/icons';
 import { useEffect, useMemo, useState } from 'react';
 import { Pagination } from './Pagination';
 import { v4 as uuidv4 } from 'uuid';
@@ -28,6 +28,7 @@ interface Props {
   onDelete?: (item: any) => void;
   onSelectRow?: (item: any) => void;
   onEdit?: (item: any) => void;
+  onShare?: (item: any) => void;
   onChange?: (action: TableAction, pagination: TablePagination) => void;
   actions?: boolean;
   isLoading?: boolean;
@@ -42,7 +43,7 @@ interface Props {
 
 export const TableComponent = (props: Props) => {
   const [currentItems, setCurrentItems] = useState<TableData[]>([]);
-  const { data, columns, onDelete, onSelectRow, onEdit, isLoading } = props;
+  const { data, columns, onDelete, onSelectRow, onEdit, onShare, isLoading } = props;
   const [currentPage, setCurrentPage] = useState(props.currentPage ?? 1);
   const [itemsPerPage, setItemsPerPage] = useState(props.itemsPerPage ?? 20);
 
@@ -182,7 +183,7 @@ export const TableComponent = (props: Props) => {
                       : row[column.key]}
                   </Td>
                 ))}
-                {(onEdit || onDelete) && (
+                {(onEdit || onDelete || onShare) && (
                   <Td py={1} px={{ base: 1.5, md: 2 }} textAlign="center">
                     <Flex
                       width="100%"
@@ -212,6 +213,18 @@ export const TableComponent = (props: Props) => {
                           onClick={() => onDelete(row)}
                         >
                           <TrashIcon fontSize={12} />
+                        </Button>
+                      )}
+
+                      {onShare && (
+                        <Button
+                          minWidth="25px"
+                          height={{ base: '20px', md: '' }}
+                          fontSize={{ base: 12, md: 14 }}
+                          paddingX="5px"
+                          onClick={() => onShare(row)}
+                        >
+                          <ShareIcon fontSize={12} />
                         </Button>
                       )}
                     </Flex>

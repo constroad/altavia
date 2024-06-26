@@ -1,3 +1,5 @@
+import { TableCellProps } from "@chakra-ui/react";
+
 export interface TableColumn<T = any> {
   key: string;
   label: string | React.ReactNode;
@@ -5,7 +7,8 @@ export interface TableColumn<T = any> {
   bgColor?: string;
   color?: string;
   textAlign?: 'start' | 'center' | 'end';
-  summary?: boolean;
+  tdStyles?: TableCellProps;
+  summary?: (value: number, data: T[]) =>  React.ReactNode;
   render?: (item: any, row: T) => React.ReactNode; 
 }
 

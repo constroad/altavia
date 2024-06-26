@@ -1,8 +1,31 @@
-import { Box, Flex, IconButton, Menu, MenuButton, MenuItem, MenuList } from "@chakra-ui/react";
-import { TableColumn } from "../Table";
-import { CONSTROAD_COLORS } from "src/styles/shared";
-import { formatMoney } from "src/utils/general";
-import { DownloadIcon, MenuVerticalIcon, ViewIcon } from "src/common/icons";
+import {
+  Box,
+  Flex,
+  IconButton,
+  Menu,
+  MenuButton,
+  MenuItem,
+  MenuList,
+} from '@chakra-ui/react';
+import { TableColumn } from '../Table';
+import { CONSTROAD_COLORS } from 'src/styles/shared';
+import { formatMoney } from 'src/utils/general';
+import { DownloadIcon, MenuVerticalIcon, ViewIcon } from 'src/common/icons';
+
+const Summary = (value: number, symbol = 'S/.', bgColor?: string) => {
+  return (
+    <Box
+      bgColor={bgColor ?? 'black'}
+      color="white"
+      textAlign="right"
+      fontWeight={600}
+      fontSize={12}
+    >
+      {symbol}
+      {formatMoney(value)}
+    </Box>
+  );
+};
 
 export const generateReportClientColumns = (
   onViewDispatches: any,
@@ -15,7 +38,7 @@ export const generateReportClientColumns = (
       label: 'Fecha',
       width: '5%',
       render: (item, row) => (
-        <Flex flexDir="column" alignItems='center'>
+        <Flex flexDir="column" alignItems="center">
           {new Date(item).toLocaleDateString('es-PE')}
         </Flex>
       ),
@@ -26,20 +49,18 @@ export const generateReportClientColumns = (
       width: '5%',
       render: (item, row) => {
         return (
-          <Flex justifyContent='center'>{item && new Date(item).toLocaleDateString('es-PE')}</Flex>
+          <Flex justifyContent="center">
+            {item && new Date(item).toLocaleDateString('es-PE')}
+          </Flex>
         );
       },
     },
     {
       key: 'obra',
       label: 'Obra',
-      width: '10%',
+      width: '40%',
       render: (item, row) => {
-        return (
-          <Flex>
-            {item}         
-          </Flex>
-        );
+        return <Flex>{item}</Flex>;
       },
     },
     {
@@ -47,29 +68,29 @@ export const generateReportClientColumns = (
       bgColor: CONSTROAD_COLORS.yellow,
       color: CONSTROAD_COLORS.black,
       label: 'M3 Pedidos',
-      width: '5%',
-      summary: true,
+      width: '7%',
+      summary: (value) => Summary(value, ''),
       render: (item) => {
-        return <Box textAlign="center">{item}</Box>
-      }
+        return <Box textAlign="center">{item}</Box>;
+      },
     },
-    { 
-      key: 'montoAdelanto', 
+    {
+      key: 'montoAdelanto',
       bgColor: CONSTROAD_COLORS.yellow,
       color: CONSTROAD_COLORS.black,
-      label: 'Adelanto', 
-      width: '5%',
+      label: 'Adelanto',
+      width: '7%',
       render: (item) => {
-        return (<Box textAlign="right">S/.{formatMoney(item)}</Box>)
-      }
+        return <Box textAlign="right">S/.{formatMoney(item)}</Box>;
+      },
     },
     {
       key: 'totalPedido',
       bgColor: CONSTROAD_COLORS.yellow,
       color: CONSTROAD_COLORS.black,
       label: 'Total',
-      width: '5%',
-      summary: true,
+      width: '7%',
+      summary: (value) => Summary(value),
       render: (item) => {
         return <Box textAlign="right">S/.{formatMoney(item)}</Box>;
       },
@@ -79,22 +100,26 @@ export const generateReportClientColumns = (
       bgColor: CONSTROAD_COLORS.yellow,
       color: CONSTROAD_COLORS.black,
       label: 'Debe',
-      width: '5%',
-      summary: true,
+      width: '7%',
+      tdStyles: {
+        px: 0,
+      },
+      summary: (value) => Summary(value, 'S/.', 'red'),
       render: (item, row) => {
         return (
-          <Box bgColor={row.isPaid ? "#d7ead4" : "pink"} rounded={2} textAlign="right">
-            {!row.isPaid && <>
-              S/.{formatMoney(item)}
-            </>}
-            {row.isPaid && "Pagado"}
+          <Box
+            bgColor={row.isPaid ? '#d7ead4' : 'pink'}
+            rounded={2}
+            textAlign="right"
+          >
+            {!row.isPaid && <>S/.{formatMoney(item)}</>}
+            {row.isPaid && 'Pagado'}
           </Box>
         );
       },
     },
     {
       key: '_id',
-      // label: <>{props.isLoading && <Spinner size="xs" />}</>,
       label: '',
       width: '2%',
       render: (item, row) => {
@@ -111,7 +136,7 @@ export const generateReportClientColumns = (
                 minW="auto"
                 h="auto"
                 aria-label="Page details"
-                icon={( <MenuVerticalIcon /> )}
+                icon={<MenuVerticalIcon />}
                 rounded="full"
               />
 
@@ -160,7 +185,7 @@ export const generateDispatchColumns = () => {
       label: 'Fecha',
       width: '5%',
       render: (item, row) => (
-        <Flex flexDir="column" alignItems='center'>
+        <Flex flexDir="column" alignItems="center">
           {new Date(item).toLocaleDateString('es-PE')}
         </Flex>
       ),
@@ -170,7 +195,7 @@ export const generateDispatchColumns = () => {
       label: 'Placa',
       width: '5%',
       render: (item, row) => (
-        <Flex flexDir="column" alignItems='center'>
+        <Flex flexDir="column" alignItems="center">
           {item}
         </Flex>
       ),
@@ -180,7 +205,7 @@ export const generateDispatchColumns = () => {
       label: 'Chofer',
       width: '5%',
       render: (item, row) => (
-        <Flex flexDir="column" alignItems='center'>
+        <Flex flexDir="column" alignItems="center">
           {item}
         </Flex>
       ),
@@ -190,7 +215,7 @@ export const generateDispatchColumns = () => {
       label: 'Hora',
       width: '5%',
       render: (item, row) => (
-        <Flex flexDir="column" alignItems='center'>
+        <Flex flexDir="column" alignItems="center">
           {item}
         </Flex>
       ),
@@ -200,12 +225,12 @@ export const generateDispatchColumns = () => {
       label: 'M3',
       width: '5%',
       render: (item, row) => (
-        <Flex flexDir="column" alignItems='center'>
+        <Flex flexDir="column" alignItems="center">
           {item}
         </Flex>
       ),
     },
-  ]
+  ];
 
   return columns;
-}
+};

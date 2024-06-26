@@ -43,7 +43,8 @@ interface Props {
 
 export const TableComponent = (props: Props) => {
   const [currentItems, setCurrentItems] = useState<TableData[]>([]);
-  const { data, columns, onDelete, onSelectRow, onEdit, onShare, isLoading } = props;
+  const { data, columns, onDelete, onSelectRow, onEdit, onShare, isLoading } =
+    props;
   const [currentPage, setCurrentPage] = useState(props.currentPage ?? 1);
   const [itemsPerPage, setItemsPerPage] = useState(props.itemsPerPage ?? 20);
 
@@ -162,21 +163,26 @@ export const TableComponent = (props: Props) => {
                 // key={`row-${uuidv4()}`}
                 key={`row-${row?._id ? `${row?._id}-${row?.key}` : index}`}
                 onClick={() => handleSelectRow(row)}
-                h="38px"
-                maxH="38px"
-                minH="38px"
                 _hover={{
                   background: 'whitesmoke',
                 }}
+                height="fit-content"
+                p={0}
               >
                 {columns.map((column, idx) => (
                   <Td
+                    //@ts-ignore
                     key={`item-${column.key}-${idx}`}
                     width={column.width}
                     maxWidth={column.width}
-                    py={1}
+                    p={0}
+                    m={0}
                     px={{ base: 1.5, md: 2 }}
+                    py={0}
+                    lineHeight={7}
+                    height="max-content"
                     textAlign={column.textAlign ?? 'start'}
+                    {...column.tdStyles}
                   >
                     {column.render
                       ? column.render(row[column.key], row)
@@ -234,23 +240,18 @@ export const TableComponent = (props: Props) => {
             ))}
 
           {/* summaries */}
-          {columns.some((x) => x.summary) && columns.map((column, idx) => (
-            <Td key={`summary-${column.key}-${idx}`} padding={0} px={1}>
-              {column.summary && (
-                <Box
-                  bgColor="pink"
-                  textAlign="right"
-                  fontWeight={600}
-                  fontSize={12}
-                >
-                  {currentItems.reduce(
+          {columns.some((x) => x.summary) &&
+            columns.map((column, idx) => (
+              <Td key={`summary-${column.key}-${idx}`} padding={0}>
+                {column.summary?.(
+                  currentItems.reduce(
                     (prev, curr) => prev + (curr[column.key] ?? 0),
                     0
-                  )}
-                </Box>
-              )}
-            </Td>
-          ))}
+                  ),
+                  data
+                )}
+              </Td>
+            ))}
         </Tbody>
       </Table>
 

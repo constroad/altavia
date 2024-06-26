@@ -1,4 +1,4 @@
-import { Box, Flex, Tag } from '@chakra-ui/react';
+import { Box, Flex } from '@chakra-ui/react';
 import { TableColumn } from '../Table';
 import { formatMoney } from 'src/utils/general';
 import { CONSTROAD_COLORS } from 'src/styles/shared';

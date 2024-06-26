@@ -10,7 +10,7 @@ import axios from 'axios';
 import { useEffect, useMemo, useState } from 'react';
 import { useRouter } from 'next/router';
 
-import { ADMIN_ROUTES, API_ROUTES } from 'src/common/consts';
+import { ADMIN_ROUTES, API_ROUTES, APP_ROUTES } from 'src/common/consts';
 import { useAsync } from 'src/common/hooks';
 import {
   Modal,
@@ -24,6 +24,8 @@ import { generatePedidoColumns } from 'src/components/pedidos';
 import { IOrderGetAll, IOrderValidationSchema } from 'src/models/order';
 import { IClientValidationSchema } from 'src/models/client';
 import { SearchIcon } from 'src/common/icons';
+import { copyToClipboard } from '../../../common/utils/copyToClipboard';
+import { getBaseUrl } from 'src/common/utils';
 
 const fetcher = (path: string) => axios.get(path);
 const deleteOrder = (path: string) => axios.delete(path);
@@ -109,6 +111,13 @@ const Pedidos = () => {
       setItemsPerPage(pagination.itemsPerPage);
     }
   };
+
+  const handleGenerateAndCopyURL = (clientId: string) => {
+    const baseUrl = getBaseUrl()
+    const clientReportUrl = `${baseUrl}${APP_ROUTES.clientReport}?clientId=${clientId}`
+    const toastMessage = 'Url copiado con éxito'
+    copyToClipboard( clientReportUrl, toastMessage )
+  }
 
   // const generateDispatchReport = async() => {
   //   const mockData = {
@@ -224,6 +233,11 @@ const Pedidos = () => {
             }}
             onEdit={(item) => {
               handleGoToOrder(item._id);
+            }}
+            onShare={(item) => {
+              console.log(item._id)
+              console.log(item)
+              handleGenerateAndCopyURL(item.clienteId)
             }}
             isLoading={isLoading}
             // pagination

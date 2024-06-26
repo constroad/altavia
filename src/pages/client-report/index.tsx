@@ -11,11 +11,10 @@ const fetcher = (path: string) => axios.get(path);
 
 export const ClientReportPage = () => {
   const [client, setClient] = useState<ClientType>()
-  const [order, setOrder] = useState<any>()
-  const [proyectOrder, setProyectOrder] = useState('')
-  const [quantityOrder, setQuantityOrder] = useState('')
+  const [orders, setOrders] = useState<any>()
+  const [orderSelected, setOrderSelected] = useState<any>()
   const { isOpen, onOpen, onClose } = useDisclosure()
-  // const { isMobile } = useScreenSize()
+  const { isMobile } = useScreenSize()
 
   const router = useRouter()
   const clientId = router.query.clientId as string
@@ -25,9 +24,12 @@ export const ClientReportPage = () => {
       setClient(data?.data)
     },
   })
+
   const { run: runGetOrder } = useAsync({
     onSuccess(data) {
-      setOrder(data?.data.orders)
+      const response = data?.data.orders
+      const pendingOrders = response.filter((order: any) => order?.isPaid === false)
+      setOrders(pendingOrders)
     },
   })
 
@@ -39,8 +41,11 @@ export const ClientReportPage = () => {
       page: 1,
       limit: 20,
       clientId: clientId ?? '',
+      orderId: orderSelected?.orderId ?? ''
     },
   });
+
+  const listDispatchUpdated = listDispatch.filter(disp => disp.orderId === orderSelected?._id)
   
   useEffect(() => {
     if (clientId) {
@@ -54,50 +59,55 @@ export const ClientReportPage = () => {
     }
   }, [clientId])
 
-  const handleDispatchesView = (order: any) => {
+  const handleDispatchesView = () => {
     onOpen()
-    setProyectOrder(order.obra)
-    setQuantityOrder(order.m3dispatched)
   }
 
   const handleDownloadPDF = () => {
-
+    // descargar reporte como pdf
   }
 
   const handleDownloadCertificates = () => {
 
+  }
+
+  const handleClickMenuButton = (row: any) => {
+    setOrderSelected(row)
   }
   
   const dispatchColums = generateDispatchColumns()
   const columns = generateReportClientColumns(
     handleDispatchesView,
     handleDownloadPDF,
-    handleDownloadCertificates
+    handleDownloadCertificates,
+    handleClickMenuButton,
+    isMobile,
   );
+
 
   return (
     <PortalLayout>
-      <Flex w='100%' px={{base: '5px', md: '70px'}}>
+      <Flex w='100%' px={{base: '20px', md: '70px'}}>
         <Flex flexDir='column' w='100%' alignItems='center'>
           {client && (
             <Flex w='100%' justifyContent='start' fontWeight={600}>Cliente: {capitalizeText(client.name)}</Flex>
           )}
-          {order && (
+          {orders && (
             <Box w="100%">
               <TableComponent
-                data={order}
+                data={orders}
                 columns={columns}
               
                 actions
               />
             </Box>
           )}
-          {order && (
+          {orders && orderSelected && (
             <Modal isOpen={isOpen} onClose={onClose} heading='Despachos'>
-              <Flex fontWeight={600} fontSize={12}>Obra: {proyectOrder}</Flex>
-              <Flex fontWeight={600} fontSize={12} mb='4px'>M3: {quantityOrder}</Flex>
+              <Flex fontWeight={600} fontSize={12}>Obra: {orderSelected.obra}</Flex>
+              <Flex fontWeight={600} fontSize={12} mb='4px'>M3: {orderSelected.m3dispatched}</Flex>
               <TableComponent
-                data={listDispatch}
+                data={listDispatchUpdated}
                 columns={dispatchColums}
                 pagination
               />

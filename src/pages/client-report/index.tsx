@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react'
-import { Box, Flex, useDisclosure } from '@chakra-ui/react'
+import { Box, Flex, Text, useDisclosure } from '@chakra-ui/react'
 import { ClientType, Modal, PortalLayout, TableComponent, generateReportClientColumns, generateDispatchColumns } from 'src/components'
 import { useRouter } from 'next/router'
 import { useAsync, useDispatch, useScreenSize } from 'src/common/hooks'
@@ -87,13 +87,16 @@ export const ClientReportPage = () => {
 
   return (
     <PortalLayout>
-      <Flex w='100%' px={{base: '20px', md: '70px'}}>
-        <Flex flexDir='column' w='100%' alignItems='center'>
+      <Flex w='100%' px={{base: '20px', md: '70px'}} flexDir='column'>
+        <Flex w='100%' justifyContent='center'>
+          <Text fontWeight={900} fontSize='24px' >Reporte de Pedidos</Text>
+        </Flex>
+        <Flex flexDir='column' w='100%' alignItems='center' mt='8px'>
           {client && (
             <Flex w='100%' justifyContent='start' fontWeight={600}>Cliente: {capitalizeText(client.name)}</Flex>
           )}
           {orders && (
-            <Box w="100%">
+            <Box w="100%" mt='5px'>
               <TableComponent
                 data={orders}
                 columns={columns}

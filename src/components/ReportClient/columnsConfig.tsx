@@ -14,6 +14,7 @@ import { TableColumn } from "../Table";
 import { CONSTROAD_COLORS } from "src/styles/shared";
 import { formatMoney } from "src/utils/general";
 import { DownloadIcon, MenuVerticalIcon, ViewIcon } from "src/common/icons";
+import { getDate } from 'src/common/utils';
 
 const Summary = (value: number, symbol = 'S/.', bgColor?: string) => {
   return (
@@ -46,7 +47,7 @@ export const generateReportClientColumns = (
         width: '5%',
         render: (item, row) => (
           <Flex flexDir="column" alignItems="center">
-            {new Date(item).toLocaleDateString('es-PE')}
+            {getDate(item).slashDate}
           </Flex>
         ),
       },
@@ -57,7 +58,7 @@ export const generateReportClientColumns = (
         render: (item, row) => {
           return (
             <Flex justifyContent="center">
-              {item && new Date(item).toLocaleDateString('es-PE')}
+              {getDate(item).slashDate}
             </Flex>
           );
         },
@@ -189,9 +190,10 @@ export const generateReportClientColumns = (
   } else {
     const columns: TableColumn[] = [
       {
-        key: '_id',
+        key: 'montoPorCobrar',
         label: 'Item',
         width: '100%',
+        summary: (value, row) => Summary(value, 'S/.', 'red'),
         render: (item, row) => (
           <Grid templateColumns="repeat(2, 1fr)" gap={2} my={2} px='0px'>
             <GridItem px='0px'>
@@ -321,7 +323,7 @@ export const generateDispatchColumns = () => {
       width: '3%',
       render: (item, row) => (
         <Flex flexDir="column" alignItems="center">
-          {new Date(item).toLocaleDateString('es-PE')}
+          {getDate(item).slashDate}
         </Flex>
       ),
     },

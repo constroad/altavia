@@ -72,6 +72,32 @@ export const Navbar = (props: INavbar) => {
         </Flex>
 
         <Flex as='ul' gap={1} display={{ base: 'none', md: 'flex' }} alignItems='end' height='95px'>
+          {session && (
+            <Box
+              as='li'
+              fontWeight={500}
+              display='flex'
+              justifyContent='center'
+              alignItems='end'
+              paddingBottom='10px'
+              paddingX={5}
+              height='50px'
+              color='black'
+              position='relative'
+              roundedTop='4px'
+              _hover={{
+                background: '#feb100',
+                color: 'white',
+                cursor: 'pointer',
+              }}
+              onClick={handleGoToAdminClick}
+            >
+              <Text>
+                Intranet
+              </Text>
+            </Box>
+          )}
+
           {GenerateNavOptions().map(opt => (
             <Box
               as='li'
@@ -229,34 +255,6 @@ export const Navbar = (props: INavbar) => {
             >
               <Text>
                 Iniciar sesión
-              </Text>
-            </Box>
-          )}
-
-          {session && (
-            <Box
-              as='li'
-              fontWeight={500}
-              display='flex'
-              flexDir='column'
-              justifyContent='center'
-              alignItems='center'
-              paddingBottom='10px'
-              paddingX={5}
-              height='50px'
-              color='black'
-              position='relative'
-              roundedTop='4px'
-              _hover={{
-                background: '#feb100',
-                color: 'white',
-                cursor: 'pointer',
-              }}
-              onClick={handleGoToAdminClick}
-            >
-              <Text lineHeight='18px'>Ir a</Text>
-              <Text maxW='120px' textAlign='start' lineHeight='20px'>
-                Administración
               </Text>
             </Box>
           )}

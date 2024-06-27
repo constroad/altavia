@@ -2,6 +2,7 @@ import { Box, Flex, Text, Tooltip } from '@chakra-ui/react';
 import { TableColumn } from '../Table';
 import { formatMoney } from 'src/utils/general';
 import { CONSTROAD_COLORS } from 'src/styles/shared';
+import { getDate } from 'src/common/utils';
 
 const Summary = (value: number, bgColor?: string) => {
   return (
@@ -56,7 +57,7 @@ export const generatePedidoColumns = () => {
       tdStyles: { px: 0 },
       render: (item, row) => (
         <Flex flexDir="column">
-          {new Date(item).toLocaleDateString('es-PE')}
+          {getDate(item).slashDate}
         </Flex>
       ),
     },
@@ -67,7 +68,9 @@ export const generatePedidoColumns = () => {
       tdStyles: { px: 0 },
       render: (item, row) => {
         return (
-          <Flex>{item && new Date(item).toLocaleDateString('es-PE')}</Flex>
+          <Flex>
+            {getDate(item).slashDate}
+          </Flex>
         );
       },
     },

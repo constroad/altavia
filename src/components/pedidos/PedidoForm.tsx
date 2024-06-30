@@ -23,7 +23,7 @@ import { toast } from '../Toast';
 import { OrderStatus } from '../../models/order';
 import { IClientValidationSchema } from 'src/models/client';
 import { AutoComplete, IAutocompleteOptions } from '../autoComplete';
-import { formatISODate } from 'src/utils/general';
+import { formatISODate, parseLocalDate } from 'src/utils/general';
 import { AddClient } from './AddClient';
 
 interface PedidoFormProps {
@@ -40,7 +40,8 @@ export const PedidoForm = (props: PedidoFormProps) => {
   const [order, setOrder] = useState<IOrderValidationSchema>({
     cliente: '',
     tipoMAC: 'Mac 2',
-    fechaProgramacion: formatISODate(new Date().toDateString()),
+    // fechaProgramacion: formatISODate(new Date().toDateString()),
+    fechaProgramacion: new Date().toISOString(),
     notas: '',
     precioCubo: 480,
     cantidadCubos: 1,
@@ -96,7 +97,7 @@ export const PedidoForm = (props: PedidoFormProps) => {
     const { name, value } = e.target;
     let dateValue = order.fechaProgramacion;
     if (name === 'fechaProgramacion' && value) {
-      dateValue = value;
+      dateValue = parseLocalDate(value).toISOString();
     }
     setOrder({
       ...order,
@@ -212,10 +213,11 @@ export const PedidoForm = (props: PedidoFormProps) => {
         const pathUpdateDispatch = `${API_ROUTES.dispatch}/${item?._id ?? ''}`;
         return runUpdateDispatch(
           putDisptach(pathUpdateDispatch, {
-          ...item,
-          isPaid: true,
-          _id: undefined,
-        }));
+            ...item,
+            isPaid: true,
+            _id: undefined,
+          })
+        );
       })
     );
 
@@ -226,7 +228,7 @@ export const PedidoForm = (props: PedidoFormProps) => {
       }),
       {
         onSuccess: () => {
-          refetchDispatch()
+          refetchDispatch();
           toast.success('Deuda del pedido pagada con éxito!');
           props.onSuccess?.();
         },
@@ -308,7 +310,7 @@ export const PedidoForm = (props: PedidoFormProps) => {
                     size="xs"
                     type="date"
                     name="fechaProgramacion"
-                    value={order.fechaProgramacion}
+                    value={formatISODate(order.fechaProgramacion)}
                     onChange={handleChange}
                   />
                 </FormControl>
@@ -586,8 +588,13 @@ export const PedidoForm = (props: PedidoFormProps) => {
                   size="xs"
                   type="date"
                   name="fechaVencimiento"
-                  value={order.fechaVencimiento ?? ''}
-                  onChange={handleChange}
+                  value={formatISODate(order.fechaVencimiento ?? new Date())}
+                  onChange={(e) => {
+                    setOrder({
+                      ...order,
+                      fechaVencimiento: parseLocalDate(e.target.value).toISOString(),
+                    });
+                  }}
                 />
               </FormControl>
             </GridItem>

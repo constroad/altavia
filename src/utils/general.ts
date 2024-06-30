@@ -11,6 +11,11 @@ export function formatISODate(isoString: string | Date) {
   return `${year}-${month}-${day}`;
 }
 
+export function parseLocalDate(dateString: string): Date {
+  const [year, month, day] = dateString.split('-').map(Number);
+  return new Date(year, month - 1, day);
+}
+
 export function getDateStringRange(differenceInDays: number = 14): { dateTo: string, dateFrom: string } {
   const dateTo = new Date();
 

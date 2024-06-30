@@ -16,10 +16,10 @@ const getAll = async (req: NextApiRequest, res: NextApiResponse) => {
     if (startDate || endDate) {
       filter.fechaProgramacion = {};
       if (startDate) {
-        filter.fechaProgramacion.$gte = new Date(`${startDate as string}T00:00`);
+        filter.fechaProgramacion.$gte = new Date(`${startDate as string}`);
       }
       if (endDate) {
-        filter.fechaProgramacion.$lte = new Date(`${endDate as string}T23:00`);
+        filter.fechaProgramacion.$lte = new Date(`${endDate as string}`);
       }
     }
     if (clientId) {

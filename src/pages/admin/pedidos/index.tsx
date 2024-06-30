@@ -18,9 +18,7 @@ import {
   Modal,
   TableComponent,
   toast,
-  IntranetLayout,
-  TableAction,
-  TablePagination,
+  IntranetLayout,  
 } from 'src/components';
 import { generatePedidoColumns } from 'src/components/pedidos';
 import { IOrderGetAll, IOrderValidationSchema } from 'src/models/order';
@@ -28,7 +26,7 @@ import { IClientValidationSchema } from 'src/models/client';
 import { SearchIcon, ShareIcon } from 'src/common/icons';
 import { copyToClipboard } from '../../../common/utils/copyToClipboard';
 import { getBaseUrl } from 'src/common/utils';
-import { getDateStringRange } from 'src/utils/general';
+import { getDateStringRange, parseLocalDate } from 'src/utils/general';
 
 const fetcher = (path: string) => axios.get(path);
 const deleteOrder = (path: string) => axios.delete(path);
@@ -64,10 +62,7 @@ const Pedidos = () => {
   const { run: runDeleteOrder, isLoading: deletingOrder } = useAsync();
 
   useEffect(() => {
-    const path = API_ROUTES.order;
-    runGetOrders(fetcher(path), {
-      refetch: () => runGetOrders(fetcher(path)),
-    });
+    onSearch()
     runGetClients(fetcher(API_ROUTES.client), {
       cacheKey: API_ROUTES.client,
       refetch: () => runGetClients(fetcher(API_ROUTES.client)),
@@ -94,10 +89,10 @@ const Pedidos = () => {
       queryParams.append('clientId', clientId);
     }
     if (startDate) {
-      queryParams.append('startDate', startDate);
+      queryParams.append('startDate', parseLocalDate(startDate).toISOString());
     }
     if (endDate) {
-      queryParams.append('endDate', endDate);
+      queryParams.append('endDate', parseLocalDate(endDate).toISOString());
     }
     const path = `${API_ROUTES.order}?${queryParams.toString()}`;
     runGetOrders(fetcher(path), {

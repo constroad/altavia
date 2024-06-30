@@ -67,11 +67,11 @@ export const PedidoForm = (props: PedidoFormProps) => {
     if (props.order) {
       let fechaVencimiento = '';
       if (props.order.fechaVencimiento) {
-        fechaVencimiento = props.order.fechaVencimiento.split('T')[0];
+        fechaVencimiento = props.order.fechaVencimiento;
       }
       setOrder({
         ...props.order,
-        fechaProgramacion: props.order.fechaProgramacion.split('T')[0],
+        fechaProgramacion: props.order.fechaProgramacion,
         fechaVencimiento,
       });
     }

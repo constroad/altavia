@@ -32,6 +32,7 @@ import { LuContainer } from "react-icons/lu";
 import { GiBoxUnpacking } from "react-icons/gi";
 import { FaShareAlt } from "react-icons/fa";
 import { FaEye } from "react-icons/fa";
+import { TiArrowSortedUp, TiArrowSortedDown } from "react-icons/ti";
 
 
 export const ArrowBackIcon = IoArrowBackOutline
@@ -76,4 +77,6 @@ export const WhatsappIcon = FaWhatsapp
 export const RefreshIcon = IoMdRefresh
 export const SaveIcon = IoIosSave
 export const CircleIcon = FaCircle
+export const SortUpIcon = TiArrowSortedUp
+export const SortDownIcon = TiArrowSortedDown
 

@@ -96,7 +96,8 @@ const ConsumosSchema = new Schema<IConsumos>({
 export interface IOrderList extends IOrderValidationSchema {
   dispatches: IDispatchValidationSchema[],
   m3dispatched: number,
-  m3Pending: number
+  m3Pending: number,
+  m3Value: number
 }
 
 export interface IOrderGetAll {

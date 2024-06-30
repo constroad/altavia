@@ -10,9 +10,18 @@ const router = createRouter<NextApiRequest, NextApiResponse>();
 const getAll = async (req: NextApiRequest, res: NextApiResponse) => {
   const repo = new OrderRepository();
   try {
-    const { page, limit, clientId, isPaid } = req.query
+    const { page, limit, clientId, isPaid, startDate, endDate } = req.query
     const pagination = { page: page as string, limit: limit as string }
     const filter: any = {}
+    if (startDate || endDate) {
+      filter.fechaProgramacion = {};
+      if (startDate) {
+        filter.fechaProgramacion.$gte = new Date(`${startDate as string}T00:00`);
+      }
+      if (endDate) {
+        filter.fechaProgramacion.$lte = new Date(`${endDate as string}T23:00`);
+      }
+    }
     if (clientId) {
       filter.clienteId = clientId
     }

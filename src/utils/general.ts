@@ -11,11 +11,11 @@ export function formatISODate(isoString: string | Date) {
   return `${year}-${month}-${day}`;
 }
 
-export function getDateStringRange(): { dateTo: string, dateFrom: string } {
+export function getDateStringRange(differenceInDays: number = 14): { dateTo: string, dateFrom: string } {
   const dateTo = new Date();
 
   const dateFrom = new Date();
-  dateFrom.setDate(dateTo.getDate() - 14);
+  dateFrom.setDate(dateTo.getDate() - differenceInDays);
 
   return {
     dateTo: formatISODate(dateTo.toDateString()),

@@ -14,7 +14,6 @@ import {
   ServiceQuoteType,
   ServiceType,
   asphaltRowsArr,
-  comparePhase,
   getQuotePrices,
   imprimacionRowsArr,
   initialProductionInfo,
@@ -49,7 +48,7 @@ export const NewServiceQuotePage = () => {
   const [addIGV, setAddIGV] = useState(true)
   const [priceM3, setPriceM3] = useState( serviceQuoteSelected ? serviceQuoteSelected.costs.priceM3 : 480 )
   const [priceM2, setPriceM2] = useState( serviceQuoteSelected ? serviceQuoteSelected.costs.priceM2 : 43 )
-  const date = new Date()
+  // const date = new Date()
   const router = useRouter()
   const { isMobile } = useScreenSize()
 
@@ -75,7 +74,6 @@ export const NewServiceQuotePage = () => {
 
       const clientsPromise = runGetClients(fetcher(API_ROUTES.client), {
         refetch: () => runGetClients(fetcher(API_ROUTES.client)),
-        // cacheKey: `${API_ROUTES.client}-service-quote`
       });
 
       await Promise.all([quotePromise, servicesPromise, clientsPromise]);
@@ -104,22 +102,23 @@ export const NewServiceQuotePage = () => {
     setCustomDate(value)
   }
 
-  const generateAndDownloadPDF = async(editQuoteDate:string | undefined, addQuoteDate: Date, quoteNumber: number, clientSelected: any, quoteShortDate: string) => {     
+  const generateAndDownloadPDF = async(editQuoteDate:string | undefined, addQuoteDate: string | undefined, quoteNumber: number, clientSelected: any) => {     
+    const { shortDate: pdfAddDate, slashDate: pdfAddSlashDate } = getDate(addQuoteDate)
     const pdfData: ServiceQuotePDFType = {
       companyName: clientSelected?.name ?? '',
       contactPerson: clientSelected?.contactPerson ?? '',
       ruc: clientSelected?.ruc ?? '',
       nroQuote: quoteNumber.toString(),
       notes: serviceQuoteSelected?.notes ?? quote.notes,
-      date: serviceQuoteSelected?.date ? editQuoteDate as string : addQuoteDate.toUTCString(),
+      date: serviceQuoteSelected?.date ? editQuoteDate as string : addQuoteDate as string,
       services: serviceQuoteSelected?.items ?? quote.items,
       addIGV: addIGV,
     }
 
     const response = await axios.post( API_ROUTES.generateServiceQuotationPDF, { pdfData }, {responseType: 'arraybuffer'} )
     const blob = new Blob([response.data], { type: 'application/pdf' });
-    const { shortDate: pdfEditDate } = getDate(editQuoteDate)
-    const pdfdate = serviceQuoteSelected ? pdfEditDate : quoteShortDate
+    const pdfdate = serviceQuoteSelected ? '' : pdfAddDate
+    // console.log('pdfdate:', pdfdate)
     const pdfName = `Cotización_${quoteNumber}_${clientSelected?.name}_${pdfdate}.pdf`
 
     const pdfUrl = URL.createObjectURL(blob);
@@ -135,9 +134,9 @@ export const NewServiceQuotePage = () => {
   const handleSubmit = async (event: any) => {
     event.preventDefault();
     const inputDate = new Date(customDate)
-    const addQuoteDate = customDate.length > 0 ? inputDate : date
+    const addDate = new Date()
+    const addQuoteDate = customDate.length > 0 ? inputDate.toISOString() : addDate.toISOString()
     const editQuoteDate = customDate.length > 0 ? inputDate.toISOString() : serviceQuoteSelected?.date
-    const { shortDate: quoteShortDate } = getDate(addQuoteDate.toISOString())
 
     if (!serviceQuoteSelected && clientSelected) {
       const {
@@ -149,7 +148,7 @@ export const NewServiceQuotePage = () => {
       const addQuote: ServiceQuoteType = {
         clientId: clientSelected?._id as string ?? '',
         nro: quoteNumber,
-        date: addQuoteDate.toUTCString(),
+        date: addQuoteDate,
         items: quote.items,
         notes: quote.notes,
         subTotal: +formattedSubtotal,
@@ -168,7 +167,7 @@ export const NewServiceQuotePage = () => {
       runAddQuote(postQuote(API_ROUTES.serviceQuote, addQuote), {
         onSuccess: () => {
           toast.success('Cotización generada con éxito.')
-          generateAndDownloadPDF(editQuoteDate, addQuoteDate, quoteNumber, clientSelected, quoteShortDate)
+          generateAndDownloadPDF(editQuoteDate, addQuoteDate, quoteNumber, clientSelected)
           refetch()
         },
         onError: (err) => {
@@ -206,7 +205,7 @@ export const NewServiceQuotePage = () => {
       runAEditQuote(updateQuote(`${API_ROUTES.serviceQuote}/${serviceQuoteSelected._id}`, editQuote), {
         onSuccess: () => {
           toast.success('Cotización editada con éxito.')
-          generateAndDownloadPDF(editQuoteDate, addQuoteDate, quoteNumber, clientSelected, quoteShortDate)
+          generateAndDownloadPDF(editQuoteDate, addQuoteDate, quoteNumber, clientSelected)
           refetch()
         },
         onError: (err) => {
@@ -214,7 +213,6 @@ export const NewServiceQuotePage = () => {
           toast.error("Algo salio mal al editar la cotización, contacte al administrador")
         }
       })
-
     }
 
     setCustomDate('')

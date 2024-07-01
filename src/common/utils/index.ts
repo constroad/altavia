@@ -19,8 +19,7 @@ export const getDate = (dateIsoString?: string) => {
   let minutes
   
   if (dateIsoString) {
-    const newDateToIsoString = dateIsoString?.slice(0, -1)
-    date = new Date(newDateToIsoString)
+    date = new Date(dateIsoString)
     hours = date.getHours();
     minutes = date.getMinutes().toString();
 

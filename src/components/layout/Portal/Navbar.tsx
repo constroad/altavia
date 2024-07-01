@@ -7,6 +7,8 @@ import { APP_ROUTES } from 'src/common/consts';
 import { HideMenuMobileIcon, ShowMenuMobileIcon } from 'src/common/icons';
 
 import { GenerateNavOptions, nosotrosOptions, serviciosOptions } from './config'
+import { CONSTROAD_COLORS } from 'src/styles/shared';
+import { useEffect, useState } from 'react';
 
 interface INavbar {
   isHoverButton: boolean
@@ -18,9 +20,29 @@ interface INavbar {
 }
 
 export const Navbar = (props: INavbar) => {
+  const [isScrolledDown, setIsScrolledDown] = useState(false)
   const router = useRouter()
   const path = router.pathname
   const { data: session } = useSession()
+
+  useEffect(() => {
+    const handleScroll = () => {
+      const scrollTop = window.scrollY;
+      const nav = document.getElementById('navbar');
+      const navHeight = nav!.offsetHeight * 6;
+
+      if (scrollTop > navHeight) {
+        setIsScrolledDown(true);
+      } else {
+        setIsScrolledDown(false);
+      }
+    };
+
+    window.addEventListener('scroll', handleScroll);
+    return () => {
+      window.removeEventListener('scroll', handleScroll);
+    };
+  }, []);
 
   const handleSignOut = async() => {
     await signOut({redirect: false});
@@ -42,41 +64,85 @@ export const Navbar = (props: INavbar) => {
     router.push('/admin')
   }
 
+  const isNotHomePage = path !== '/'
+
   return (
-    <Flex width='100%' height={{ base: '65px', md: '95px' }}>
+    <Flex
+      id='navbar'
+      as='nav'
+      width='100%'
+      height={{ base: '65px', md: '90px' }}
+      position={'fixed'}
+      top={{ base: '', md: isScrolledDown ? '0px' : '0px'}}
+      zIndex={1000}
+      justifyContent='center'
+      rounded='6px'
+      boxShadow={ (isScrolledDown || isNotHomePage) ? 'lg' : 'lg'}
+    >
       <Flex
         as='header'
-        height={{ base: '65px', md: '95px' }}
-        paddingX={{ base: '30px', md: '70px' }}
+        height={{ base: '65px', md: '90px' }}
+        paddingX={{ base: '30px', md: isScrolledDown ? '70px' : '70px' }}
         alignItems='center'
         justifyContent='space-between'
-        backgroundColor='white'
-        position='fixed'
-        left='0'
-        top='0'
-        zIndex={1000}
-        width={{ base: '100vw', md: '100vw' }}
+        bg='white'
+        rounded={ isScrolledDown ? '0px' : '0px' }
+        width={{ base: '100vw', md: isScrolledDown ? '100vw' : '100vw' }}
         marginX='auto'
-        boxShadow="0px 2px 4px rgba(0, 0, 0, 0.1)"
       >
         <Flex
           as='h1'
           cursor='pointer'
-          width={{ base: '130px', md: '230px' }}
+          width={{ base: '130px', md: 'fit-content' }}
           alignItems='center'
           justifyContent='center'
         >
-          <Link href={APP_ROUTES.home} title='Constroad | Planta de asfalto'>
-            <Image src='/img/constroad-logo.svg' width='80%' alt='constroad-logo' rounded='4px' />
+          <Link href={APP_ROUTES.home} title='Constroad | Planta de asfalto' _hover={{ textDecoration: 'none' }}>
+            <Flex w='fit-content' h='90px' rounded='6px' justifyContent='center' alignItems='center' flexDir='column'>
+              <Image src='/constroad.jpeg' width='32px' h='32px' alt='constroad-logo' rounded='4px' />
+                <Text className='font-logo' fontWeight={650} fontSize='24px' lineHeight='24px' textAlign='end' pt='5px'>
+                  ConstRoad
+                </Text>
+                <Text className='font-logo' fontWeight={650} fontSize={14} lineHeight='14px' textAlign='center' textDecoration='none' color={CONSTROAD_COLORS.darkYellow} h='10p'>
+                  Planta de Asfalto
+                </Text>
+            </Flex>
           </Link>
+
         </Flex>
 
-        <Flex as='ul' gap={1} display={{ base: 'none', md: 'flex' }} alignItems='end' height='95px'>
+        <Flex as='ul' gap={1} display={{ base: 'none', md: 'flex' }} alignItems='end' height='90px' className='font-logo' fontWeight={600}>
+          {session && (
+            <Box
+              as='li'
+              fontWeight={600}
+              display='flex'
+              justifyContent='center'
+              alignItems='end'
+              paddingBottom='10px'
+              paddingX={5}
+              height='50px'
+              color='black'
+              position='relative'
+              roundedTop='4px'
+              _hover={{
+                background: '#feb100',
+                color: 'white',
+                cursor: 'pointer',
+              }}
+              onClick={handleGoToAdminClick}
+            >
+              <Text className='font-logo'>
+                Intranet
+              </Text>
+            </Box>
+          )}
+
           {GenerateNavOptions().map(opt => (
             <Box
               as='li'
               key={opt.label}
-              fontWeight={500}
+              fontWeight={600}
               display='flex'
               justifyContent='center'
               alignItems='end'
@@ -119,7 +185,7 @@ export const Navbar = (props: INavbar) => {
                   width='180px'
                   visibility={props.isHoverButton ? 'visible' : 'hidden'}
                   fontSize={13}
-                  fontWeight={500}
+                  fontWeight={600}
                   zIndex={1000}
                   border='1px solid #9CA3AF'
                   className={
@@ -167,7 +233,7 @@ export const Navbar = (props: INavbar) => {
                   width='180px'
                   visibility={props.isHoverButton ? 'visible' : 'hidden'}
                   fontSize={13}
-                  fontWeight={500}
+                  fontWeight={600}
                   zIndex={1000}
                   border='1px solid #9CA3AF'
                   className={
@@ -206,7 +272,7 @@ export const Navbar = (props: INavbar) => {
           {!session && (
             <Box
               as='li'
-              fontWeight={500}
+              fontWeight={600}
               display='flex'
               justifyContent='center'
               alignItems='end'
@@ -236,7 +302,7 @@ export const Navbar = (props: INavbar) => {
           {session && (
             <Box
               as='li'
-              fontWeight={500}
+              fontWeight={600}
               display='flex'
               flexDir='column'
               justifyContent='center'

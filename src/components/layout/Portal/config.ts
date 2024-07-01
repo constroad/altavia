@@ -35,8 +35,10 @@ export const serviciosOptions = [
 ]
 
 export const carouselImages = [
-  {label: 'image1', url: 'url(/img/carousel/constroad1.jpeg)'},
-  {label: 'image2', url: 'url(/img/carousel/constroad2.jpeg)'},
-  {label: 'image3', url: 'url(/img/carousel/constroad3.jpeg)'},
-  {label: 'image4', url: 'url(/img/carousel/constroad4.jpeg)'},
+  {label: 'image1', url: 'url(/img/carousel/1.jpeg)'},
+  {label: 'image2', url: 'url(/img/carousel/2.jpeg)'},
+  // {label: 'image2', url: 'url(/img/carousel/constroad1.jpeg)'},
+  // {label: 'image3', url: 'url(/img/carousel/constroad2.jpeg)'},
+  // {label: 'image4', url: 'url(/img/carousel/constroad3.jpeg)'},
+  // {label: 'image5', url: 'url(/img/carousel/constroad4.jpeg)'},
 ]

@@ -8,7 +8,8 @@ import { MobileMenu } from './MobileMenu';
 import { CustomHead } from './CustomHead';
 import { useScreenSize } from 'src/common/hooks';
 import { useSession } from 'next-auth/react';
-import { WhatsAppIcon } from 'src/common/icons';
+import { WhatsappIcon } from 'src/common/icons';
+import { CONSTROAD_COLORS } from 'src/styles/shared';
 
 interface IPortalLayout {
   children: React.ReactNode
@@ -74,6 +75,7 @@ export const PortalLayout = (props: IPortalLayout) => {
         handleMobileMenuClick={handleMobileMenuClick}
         showMobileOptions={showMobileOptions}
       />
+      <Flex h='90px' w='100%' />
 
       {isMobile && showMobileOptions && (
         <MobileMenu
@@ -88,7 +90,7 @@ export const PortalLayout = (props: IPortalLayout) => {
       <Box
         as='main'
         width='100%'
-        minHeight='calc(100vh - 306.5px)'
+        minHeight='calc(100vh - 301.5px)'
         paddingTop={{
           base: props.noPaddingTop ? '0px' : '40px',
           md: props.noPaddingTop ? '0px' : '50px'
@@ -104,19 +106,19 @@ export const PortalLayout = (props: IPortalLayout) => {
           position='fixed'
           right={ isMobile ? 2 : 5 }
           bottom={isMobile ? 14 : 12}
-          width={isMobile ? '130px' : '150px'}
-          rounded='10px'
-          background='white'
+          width={isMobile ? '130px' : 'auto'}
+          rounded='100%'
+          background='#25d366'
           zIndex={200}
-          shadow='md'
-          border='1px solid'
-          borderColor='lightgrey'
+          shadow='2lg'
+          // border='2px solid'
+          // borderColor='black'
         >
-          <Flex justifyContent='center' alignItems='center' padding='10px' gap='6px'>
-            <WhatsAppIcon fontSize={24} color='green' />
-            <Text color='GrayText' fontSize={isMobile ? '14px' : '16px'}>
+          <Flex justifyContent='center' alignItems='center' padding='5px' gap='6px'>
+            <WhatsappIcon fontSize={40} color='white' />
+            {/* <Text color='white' fontSize={isMobile ? '14px' : '16px'} fontWeight={900} className='font-logo' textAlign='end' lineHeight={{ base: '14px', md: '16px' }} mt='4px'>
               Contáctanos
-            </Text>
+            </Text> */}
           </Flex>
         </Link>
 

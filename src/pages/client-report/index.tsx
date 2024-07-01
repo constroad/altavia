@@ -95,16 +95,16 @@ export const ClientReportPage = () => {
           {client && (
             <Flex w='100%' justifyContent='start' fontWeight={600}>Cliente: {capitalizeText(client.name)}</Flex>
           )}
-          {orders && (
-            <Box w="100%" mt='5px'>
-              <TableComponent
-                data={orders}
-                columns={columns}
-              
-                actions
-              />
-            </Box>
-          )}
+
+          <Box w="100%" mt='5px'>
+            <TableComponent
+              data={orders ?? []}
+              columns={columns}
+              isLoading={!orders}
+              actions
+            />
+          </Box>
+          
           {orders && orderSelected && (
             <Modal isOpen={isOpen} onClose={onClose} heading='Despachos'>
               <Flex fontWeight={600} fontSize={12}>Obra: {orderSelected.obra}</Flex>

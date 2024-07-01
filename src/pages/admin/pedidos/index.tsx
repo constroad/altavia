@@ -5,6 +5,8 @@ import {
   Box,
   Text,
   Select,
+  FormLabel,
+  Input,
 } from '@chakra-ui/react';
 import axios from 'axios';
 import { useEffect, useMemo, useState } from 'react';
@@ -16,21 +18,21 @@ import {
   Modal,
   TableComponent,
   toast,
-  IntranetLayout,
-  TableAction,
-  TablePagination,
+  IntranetLayout,  
 } from 'src/components';
 import { generatePedidoColumns } from 'src/components/pedidos';
 import { IOrderGetAll, IOrderValidationSchema } from 'src/models/order';
 import { IClientValidationSchema } from 'src/models/client';
-import { SearchIcon } from 'src/common/icons';
+import { SearchIcon, ShareIcon } from 'src/common/icons';
 import { copyToClipboard } from '../../../common/utils/copyToClipboard';
 import { getBaseUrl } from 'src/common/utils';
+import { getDateStringRange, parseLocalDate } from 'src/utils/general';
 
 const fetcher = (path: string) => axios.get(path);
 const deleteOrder = (path: string) => axios.delete(path);
 
 const Pedidos = () => {
+  const { dateTo, dateFrom } = getDateStringRange(30);
   const [orderSelected, setOrderSelected] = useState<
     IOrderValidationSchema | undefined
   >();
@@ -38,6 +40,8 @@ const Pedidos = () => {
   const [itemsPerPage, setItemsPerPage] = useState(20);
   const [clientId, setClientId] = useState('');
   const [isPaid, setIsPaid] = useState('');
+  const [startDate, setStartDate] = useState(dateFrom);
+  const [endDate, setEndDate] = useState(dateTo);
 
   const {
     onClose: onCloseDelete,
@@ -58,10 +62,7 @@ const Pedidos = () => {
   const { run: runDeleteOrder, isLoading: deletingOrder } = useAsync();
 
   useEffect(() => {
-    const path = API_ROUTES.order;
-    runGetOrders(fetcher(path), {
-      refetch: () => runGetOrders(fetcher(path)),
-    });
+    onSearch()
     runGetClients(fetcher(API_ROUTES.client), {
       cacheKey: API_ROUTES.client,
       refetch: () => runGetClients(fetcher(API_ROUTES.client)),
@@ -87,6 +88,12 @@ const Pedidos = () => {
     if (clientId) {
       queryParams.append('clientId', clientId);
     }
+    if (startDate) {
+      queryParams.append('startDate', parseLocalDate(startDate).toISOString());
+    }
+    if (endDate) {
+      queryParams.append('endDate', parseLocalDate(endDate).toISOString());
+    }
     const path = `${API_ROUTES.order}?${queryParams.toString()}`;
     runGetOrders(fetcher(path), {
       refetch: () => runGetOrders(fetcher(path)),
@@ -96,57 +103,28 @@ const Pedidos = () => {
     router.push(`${ADMIN_ROUTES.orders}/${id}`);
   };
 
-  const columns = generatePedidoColumns();
+  const onTableActions = (action: string, row: IOrderValidationSchema) => {
+    if (action === 'delete') {
+      setOrderSelected(row);
+      onOpenDelete();
+    }
+    if (action === 'edit') {
+      handleGoToOrder(row?._id ?? '');
+    }
+  };
+  const columns = generatePedidoColumns({
+    onAction: onTableActions,
+  });
 
   const clientList = clientResponse?.data ?? [];
   const orderList = orderResponse?.data?.orders ?? [];
-  const pagination = orderResponse?.data?.pagination ?? {};
-
-  const handleOnTableChange = (
-    action: TableAction,
-    pagination: TablePagination
-  ) => {
-    if (action === 'paginate') {
-      setPage(pagination.page);
-      setItemsPerPage(pagination.itemsPerPage);
-    }
-  };
 
   const handleGenerateAndCopyURL = (clientId: string) => {
-    const baseUrl = getBaseUrl()
-    const clientReportUrl = `${baseUrl}${APP_ROUTES.clientReport}?clientId=${clientId}`
-    const toastMessage = 'Url copiado con éxito'
-    copyToClipboard( clientReportUrl, toastMessage )
-  }
-
-  // const generateDispatchReport = async() => {
-  //   const mockData = {
-  //     client: 'Renato',
-  //     proyect: 'Pampilla',
-  //     date: 'dd/mm/yy',
-  //     total: 235,
-  //     dispatchs: [
-  //       { driverName: 'conductor1', driverCard: 'abc-123', quantity: 200, hour: '08:55 AM'  },
-  //       { driverName: 'conductor2', driverCard: 'abc-124', quantity: 35, hour: '09:37 AM'  },
-  //     ]
-  //   }
-
-  //   const response = await axios.post(
-  //     API_ROUTES.generateDispatchReportPDF,
-  //     { mockData },
-  //     { responseType: 'arraybuffer' }
-  //   );
-  //   const blob = new Blob([response.data], { type: 'application/pdf' });
-  //   const pdfName = `Reporte_Despachos_${mockData.client}_${mockData.date}.pdf`;
-
-  //   const pdfUrl = URL.createObjectURL(blob);
-  //   const link = document.createElement('a');
-  //   link.href = pdfUrl;
-  //   link.setAttribute('download', pdfName);
-  //   document.body.appendChild(link);
-  //   link.click();
-  //   document.body.removeChild(link);
-  // }
+    const baseUrl = getBaseUrl();
+    const clientReportUrl = `${baseUrl}${APP_ROUTES.clientReport}?clientId=${clientId}`;
+    const toastMessage = 'Url copiado con éxito';
+    copyToClipboard(clientReportUrl, toastMessage);
+  };
 
   // Renders
   const deleteFooter = (
@@ -203,12 +181,39 @@ const Pedidos = () => {
                 <option value="false">Pendiente</option>
               </Select>
             </Flex>
-            <Button
-              autoFocus
-              onClick={onSearch}
-              size="sm"
-              isLoading={isLoading}
-            >
+            <Box>
+              <FormLabel mb="6px" fontSize={{ base: 12 }}>
+                Desde:
+              </FormLabel>
+              <Input
+                value={startDate}
+                onChange={(e) => {
+                  setStartDate(e.target.value);
+                }}
+                paddingInlineEnd={1}
+                paddingInlineStart={1}
+                fontSize={{ base: 12 }}
+                height="32px"
+                type="date"
+                width="100px"
+              />
+            </Box>
+            <Box>
+              <FormLabel mb="6px" fontSize={{ base: 12 }}>
+                Hasta
+              </FormLabel>
+              <Input
+                value={endDate}
+                onChange={(e) => setEndDate(e.target.value)}
+                paddingInlineEnd={1}
+                paddingInlineStart={1}
+                fontSize={{ base: 12 }}
+                height="32px"
+                type="date"
+                width="100px"
+              />
+            </Box>
+            <Button autoFocus onClick={onSearch} size="sm">
               <SearchIcon size="18px" />
             </Button>
           </Flex>
@@ -225,26 +230,34 @@ const Pedidos = () => {
 
         <Box w="100%">
           <TableComponent
+            toolbar={
+              <Flex
+                alignItems="center"
+                justifyContent="space-between"
+                fontSize="12px"
+                m={1}
+              >
+                <Box>
+                  {clientId && (
+                    <Button
+                      size="sm"
+                      fontSize={{ base: 12, md: 14 }}
+                      onClick={() => handleGenerateAndCopyURL(clientId)}
+                      gap={2}
+                    >
+                      <ShareIcon fontSize={12} />
+                      <Text>Compartir con cliente</Text>
+                    </Button>
+                  )}
+                </Box>
+                <Box>
+                  <Text fontWeight={600}>Pedidos: {orderList.length}</Text>
+                </Box>
+              </Flex>
+            }
             data={orderList}
             columns={columns}
-            onDelete={(item) => {
-              setOrderSelected(item);
-              onOpenDelete();
-            }}
-            onEdit={(item) => {
-              handleGoToOrder(item._id);
-            }}
-            onShare={(item) => {
-              handleGenerateAndCopyURL(item.clienteId)
-            }}
             isLoading={isLoading}
-            // pagination
-            // currentPage={page}
-            // onChange={handleOnTableChange}
-            // itemsPerPage={itemsPerPage}
-            // totalPages={pagination?.totalPages ?? 0}
-            // totalRecords={orderListSorted.length}
-            actions
           />
         </Box>
       </Flex>

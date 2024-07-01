@@ -474,8 +474,8 @@ export const generateDispatchColumns = (props: ColumnsProps) => {
     },
     {
       key: '_id',
-      label: <>{props.isLoading && <Spinner size="xs" />}</>,
-      width: '10%',
+      label: () => <>{props.isLoading && <Spinner size="xs" />}</>,
+      width: '2%',
       render: (item, row) => {
         return (
           <Flex
@@ -890,7 +890,7 @@ export const generateDispatchColumns = (props: ColumnsProps) => {
     },
     {
       key: '_id',
-      label: <>{props.isLoading && <Spinner size="xs" />}</>,
+      label: () => <>{props.isLoading && <Spinner size="xs" />}</>,
       width: '5%',
       render: (item, row) => {
         return (

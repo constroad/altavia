@@ -9,13 +9,15 @@ import {
   Flex,
   CircularProgress,
   Box,
+  Text,
 } from '@chakra-ui/react';
-import { TableColumn, TableData } from './TableTypes';
+import { SortColumnStatus, TableColumn, TableData } from './TableTypes';
 import { CONSTROAD_COLORS } from 'src/styles/shared';
 import { EditIcon, ShareIcon, TrashIcon } from 'src/common/icons';
 import { useEffect, useMemo, useState } from 'react';
 import { Pagination } from './Pagination';
 import { v4 as uuidv4 } from 'uuid';
+import { WithSort } from './WithSort';
 
 export type TableAction = 'paginate' | 'filter';
 export type TablePagination = {
@@ -42,11 +44,12 @@ interface Props {
 }
 
 export const TableComponent = (props: Props) => {
-  const [currentItems, setCurrentItems] = useState<TableData[]>([]);
+  const [rows, setRows] = useState<TableData[]>([]);
   const { data, columns, onDelete, onSelectRow, onEdit, onShare, isLoading } =
     props;
   const [currentPage, setCurrentPage] = useState(props.currentPage ?? 1);
   const [itemsPerPage, setItemsPerPage] = useState(props.itemsPerPage ?? 20);
+  const [sortColumn, setSortColumn] = useState('');
 
   const indexOfLastItem = useMemo(
     () => currentPage * itemsPerPage,
@@ -59,10 +62,10 @@ export const TableComponent = (props: Props) => {
 
   useEffect(() => {
     if (props.currentPage) {
-      setCurrentItems(data);
+      setRows(data);
       return;
     }
-    setCurrentItems([...data.slice(indexOfFirstItem, indexOfLastItem)]);
+    setRows([...data.slice(indexOfFirstItem, indexOfLastItem)]);
   }, [data, props.currentPage, indexOfLastItem, indexOfFirstItem]);
 
   const handleSelectRow = (item: any) => {
@@ -77,6 +80,20 @@ export const TableComponent = (props: Props) => {
       page: pageNumber,
       itemsPerPage: items,
     });
+  };
+  const onSort = (col: TableColumn) => (status: SortColumnStatus) => {
+    const { key } = col;
+    const newRows = rows.sort((a, b) => {
+      if (col.key === key) {
+        const evaluation = col.sorter?.(status, a, b);
+        return evaluation;
+      }
+      return false;
+    });
+
+    setRows([...newRows]);
+    setCurrentPage(1);
+    setSortColumn(key);
   };
 
   const totalPages = props.totalPages || Math.ceil(data.length / itemsPerPage);
@@ -101,14 +118,25 @@ export const TableComponent = (props: Props) => {
                 key={`header-${column.key}-${idx}`}
                 background={column.bgColor ?? CONSTROAD_COLORS.black}
                 color={column.color ?? 'white'}
-                textAlign="center"
                 padding={0}
+                py={1}
                 fontSize={{ base: 10, md: 12 }}
+                width={column.width}
+                maxWidth={column.width}
               >
-                {typeof column.label === 'string' && (
-                  <Box padding={{ base: 1, md: 2 }}>{column.label}</Box>
-                )}
-                {typeof column.label !== 'string' && column.label}
+                {/* @ts-ignore */}
+                <Flex width="100%" textAlign="center" justifyContent="center" {...column.thStyles}>
+                  {typeof column.label === 'string' && (
+                    <Text>{column.label}</Text>
+                  )}
+                  {typeof column.label !== 'string' && column.label?.(data)}
+                  <WithSort
+                    col={column}
+                    isLoading={isLoading}
+                    reset={sortColumn !== column.key}
+                    onClick={onSort(column)}
+                  />
+                </Flex>
               </Th>
             ))}
             {(onEdit || onDelete) && (
@@ -158,7 +186,7 @@ export const TableComponent = (props: Props) => {
           )}
           {data.length > 0 &&
             !isLoading &&
-            currentItems.map((row, index) => (
+            rows.map((row, index) => (
               <Tr
                 // key={`row-${uuidv4()}`}
                 key={`row-${row?._id ? `${row?._id}-${row?.key}` : index}`}
@@ -173,8 +201,8 @@ export const TableComponent = (props: Props) => {
                   <Td
                     //@ts-ignore
                     key={`item-${column.key}-${idx}`}
-                    width={column.width}
                     maxWidth={column.width}
+                    width={column.width}
                     p={0}
                     m={0}
                     px={{ base: 1.5, md: 2 }}
@@ -182,6 +210,8 @@ export const TableComponent = (props: Props) => {
                     lineHeight={7}
                     height="max-content"
                     textAlign={column.textAlign ?? 'start'}
+                    paddingInlineStart={0}
+                    paddingInlineEnd={0}
                     {...column.tdStyles}
                   >
                     {column.render
@@ -240,11 +270,12 @@ export const TableComponent = (props: Props) => {
             ))}
 
           {/* summaries */}
-          {columns.some((x) => x.summary) &&
+          {!isLoading &&
+            columns.some((x) => x.summary) &&
             columns.map((column, idx) => (
               <Td key={`summary-${column.key}-${idx}`} padding={0}>
                 {column.summary?.(
-                  currentItems.reduce(
+                  rows.reduce(
                     (prev, curr) => prev + (curr[column.key] ?? 0),
                     0
                   ),

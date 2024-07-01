@@ -42,7 +42,8 @@ export class OrderRepository {
             dispatches: dispatches as IDispatchValidationSchema[],
             m3dispatched,
             m3Pending: x.cantidadCubos - m3dispatched,
-            montoPorCobrar: x.isPaid ? 0 : x.montoPorCobrar
+            montoPorCobrar: x.isPaid ? 0 : x.montoPorCobrar,
+            m3Value: m3dispatched * x.precioCubo
           }
         }),
         pagination: {

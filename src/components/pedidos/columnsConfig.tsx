@@ -1,8 +1,20 @@
-import { Box, Flex, Text, Tooltip } from '@chakra-ui/react';
+import {
+  Box,
+  Flex,
+  IconButton,
+  Menu,
+  MenuButton,
+  MenuItem,
+  MenuList,
+  Text,
+  Tooltip,
+} from '@chakra-ui/react';
 import { TableColumn } from '../Table';
 import { formatMoney } from 'src/utils/general';
 import { CONSTROAD_COLORS } from 'src/styles/shared';
 import { getDate } from 'src/common/utils';
+import { EditIcon, MenuVerticalIcon, TrashIcon } from 'src/common/icons';
+import { IOrderValidationSchema } from 'src/models/order';
 
 const Summary = (value: number, bgColor?: string) => {
   return (
@@ -38,12 +50,33 @@ const SummaryAmount = (value: number, bgColor?: string) => {
   );
 };
 
-export const generatePedidoColumns = () => {
+const getMonthNames = (data: any[], locale = 'es-PE') => {
+  const monthNamesFormatter = new Intl.DateTimeFormat(locale, {
+    month: 'long',
+  });
+
+  const monthNamesSet = new Set();
+
+  data.forEach((item) => {
+    const date = new Date(item.fechaProgramacion);
+    const monthName = monthNamesFormatter.format(date);
+    monthNamesSet.add(monthName);
+  });
+
+  return Array.from(monthNamesSet);
+};
+
+interface ColumnProps {
+  onAction?: (action: string, order: IOrderValidationSchema) => void;
+}
+
+export const generatePedidoColumns = (props: ColumnProps) => {
   const columns: TableColumn[] = [
     {
       key: 'cliente',
       label: 'Cliente',
       width: '15%',
+      bgColor: CONSTROAD_COLORS.darkGray,
       render: (item) => (
         <Tooltip label={item}>
           <Text noOfLines={1}>{item}</Text>
@@ -53,31 +86,42 @@ export const generatePedidoColumns = () => {
     {
       key: 'fechaProgramacion',
       label: 'Fecha',
-      width: '5%',
-      tdStyles: { px: 0 },
-      render: (item, row) => (
-        <Flex flexDir="column">
-          {getDate(item).slashDate}
-        </Flex>
-      ),
+      width: '4%',
+      thStyles: { alignItems: 'center', justifyContent: 'center', gap: 1 },
+      tdStyles: { px: 0, textAlign: 'center' },
+      bgColor: CONSTROAD_COLORS.darkGray,
+      sorter: (status, a, b) => {
+        if (status === 'descending') {
+          return (
+            new Date(b.fechaProgramacion).getTime() -
+            new Date(a.fechaProgramacion).getTime()
+          );
+        }
+        if (status === 'ascending') {
+          return (
+            new Date(a.fechaProgramacion).getTime() -
+            new Date(b.fechaProgramacion).getTime()
+          );
+        }
+        return false;
+      },
+      render: (item) => <>{getDate(item).slashDate}</>,
     },
     {
       key: 'fechaVencimiento',
       label: 'Vence',
-      width: '5%',
-      tdStyles: { px: 0 },
+      width: '4%',
+      tdStyles: { px: 0, textAlign: 'center' },
+      bgColor: CONSTROAD_COLORS.darkGray,
       render: (item, row) => {
-        return (
-          <Flex>
-            {getDate(item).slashDate}
-          </Flex>
-        );
+        return <>{getDate(item).slashDate}</>;
       },
     },
     {
       key: 'obra',
       label: 'Obra',
-      width: '10%',
+      width: '15%',
+      bgColor: CONSTROAD_COLORS.darkGray,
       render: (item) => (
         <Tooltip label={item}>
           <Text noOfLines={1}>{item}</Text>
@@ -89,8 +133,8 @@ export const generatePedidoColumns = () => {
       bgColor: CONSTROAD_COLORS.yellow,
       color: CONSTROAD_COLORS.black,
       label: 'M3 Pedidos',
-      width: '5%',
-      summary: (value) => Summary(value),
+      width: '4%',
+      summary: (value) => SummaryAmount(value),
       render: (item) => {
         return <Box textAlign="center">{item}</Box>;
       },
@@ -113,10 +157,35 @@ export const generatePedidoColumns = () => {
       bgColor: CONSTROAD_COLORS.yellow,
       color: CONSTROAD_COLORS.black,
       label: 'Total',
-      width: '5%',
+      width: '4%',
       summary: (value) => Summary(value),
+      tdStyles: { bgColor: 'whitesmoke' },
       render: (item) => {
         return <Box textAlign="right">S/.{formatMoney(item)}</Box>;
+      },
+    },
+    {
+      key: 'm3dispatched',
+      label: 'M3 Prod',
+      width: '3%',
+      tdStyles: { textAlign: 'center' },
+      summary: (value) => SummaryAmount(value),
+    },
+    {
+      key: 'm3Pending',
+      label: 'M3 Pend',
+      width: '3%',
+      tdStyles: { textAlign: 'center' },
+      summary: (value) => SummaryAmount(value),
+    },
+    {
+      key: 'm3Value',
+      label: 'M3 Valor',
+      width: '4%',
+      tdStyles: { textAlign: 'right' },
+      summary: (value) => Summary(value),
+      render: (value, row) => {
+        return <>{formatMoney(value)}</>;
       },
     },
     {
@@ -124,7 +193,8 @@ export const generatePedidoColumns = () => {
       bgColor: CONSTROAD_COLORS.yellow,
       color: CONSTROAD_COLORS.black,
       label: 'Adelanto',
-      width: '5%',
+      width: '4%',
+      summary: (value) => Summary(value),
       render: (item) => {
         return <Box textAlign="right">S/.{formatMoney(item)}</Box>;
       },
@@ -134,7 +204,7 @@ export const generatePedidoColumns = () => {
       bgColor: CONSTROAD_COLORS.yellow,
       color: CONSTROAD_COLORS.black,
       label: 'Debe',
-      width: '5%',
+      width: '4%',
       tdStyles: {
         px: 0,
       },
@@ -154,22 +224,48 @@ export const generatePedidoColumns = () => {
       },
     },
     {
-      key: 'm3dispatched',
-      label: 'M3 Producidos',
-      width: '5%',
-      tdStyles: {
-        textAlign: 'right',
-      },
-      summary: (value) => SummaryAmount(value),
-    },
-    {
-      key: 'm3Pending',
-      label: 'M3 Pendientes',
-      width: '5%',
-      tdStyles: {
-        textAlign: 'right',
-      },
-      summary: (value) => SummaryAmount(value),
+      key: '_id',
+      label: '',
+      width: '2%',
+      render: (_, row) => (
+        <Flex
+          width="inherit"
+          alignItems="center"
+          justifyContent="space-between"
+        >
+          <Menu variant="brand">
+            <MenuButton
+              as={IconButton}
+              variant="unstyled"
+              minW="auto"
+              h="auto"
+              aria-label="Page details"
+              icon={<MenuVerticalIcon />}
+              rounded="full"
+            />
+
+            <MenuList maxW="170px">
+              <MenuItem
+                onClick={() => props.onAction?.('edit', row)}
+                as={Flex}
+                gap={2}
+              >
+                <EditIcon />
+                Editar
+              </MenuItem>
+              <MenuItem
+                onClick={() => props.onAction?.('delete', row)}
+                color="red"
+                as={Flex}
+                gap={2}
+              >
+                <TrashIcon />
+                Eliminar
+              </MenuItem>
+            </MenuList>
+          </Menu>
+        </Flex>
+      ),
     },
   ];
 

@@ -80,17 +80,17 @@ export const CarouselComponent = () => {
   }
 
   return (
-    <div className='w-full bg-black relative' style={{ height: isMobile ? '135px' : 'calc(100vh - 90px)' }}>
-      <Box className="font-logo" position='absolute' color='white' top='30px' right='60px' zIndex={200} fontSize={32} fontWeight={800} display={isDesktop ? 'block' : 'none'}>
+    <div className='w-full bg-black relative' style={{ height: isMobile ? '135px' : 'calc(100vh - 200px)' }}>
+      <Box className="font-logo" position='absolute' color='white' top='90px' right='120px' zIndex={200} fontSize={32} fontWeight={800} display={isDesktop ? 'block' : 'none'}>
         ConstRoad
       </Box>
 
       <Slider {...settings}>
         {carouselImages.map((img, idx) => (
-          <div key={idx} className='w-full flex justify-center' style={{ height: isMobile ? '135px' : 'calc(100vh - 90px)' }}>
+          <div key={idx} className='w-full flex justify-center' style={{ height: isMobile ? '135px' : 'calc(100vh - 200px)' }}>
             <div
               className='w-full bg-cover bg-center'
-              style={{ backgroundImage: img.url, height: isMobile ? '135px' : 'calc(100vh - 90px)' }}
+              style={{ backgroundImage: img.url, height: isMobile ? '135px' : 'calc(100vh - 200px)' }}
             />
           </div>
         ))} 
@@ -100,7 +100,7 @@ export const CarouselComponent = () => {
         className="font-logo"
         href={APP_ROUTES.contactanos}
         position='absolute'
-        left={{ base: '10px', md: '70px'}}
+        left={{ base: '10px', md: '120px'}}
         bottom={{ base: '-20px', md: '40px'}}
         bg='#feb100'
         width={{ base: '230px', md: '350px'}}

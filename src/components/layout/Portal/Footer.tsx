@@ -17,9 +17,10 @@ const Footer = () => {
     >
       <Flex
         flexDir={{ base: 'column' ,md: 'row' }}
-        width={{ base: '100%', md: '90%' }}
-        marginX='auto'
+        width='100%'
+        // marginX='auto'
         paddingTop='25px'
+        px={{ base: '', md: '120px' }}
         color='white'
         justifyContent={{ base: 'center', md: 'space-between' }}
         alignItems={{ base: 'center' }}

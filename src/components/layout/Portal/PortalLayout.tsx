@@ -92,10 +92,10 @@ export const PortalLayout = (props: IPortalLayout) => {
         width='100%'
         minHeight='calc(100vh - 301.5px)'
         paddingTop={{
-          base: props.noPaddingTop ? '0px' : '40px',
-          md: props.noPaddingTop ? '0px' : '50px'
+          base: props.noPaddingTop ? '0px' : '30px',
+          md: props.noPaddingTop ? '0px' : '40px'
         }}
-        paddingBottom={{ base: '40px', md: '50px'}}
+        paddingBottom={{ base: '30px', md: '40px'}}
         position='relative'
       >
         {children}
@@ -104,21 +104,17 @@ export const PortalLayout = (props: IPortalLayout) => {
           href="https://api.whatsapp.com/send?phone=51949376824"
           target="_blank"
           position='fixed'
-          right={ isMobile ? 2 : 5 }
-          bottom={isMobile ? 14 : 12}
+          right={ isMobile ? 2 : '60px' }
+          bottom={isMobile ? 14 : 4}
           width={isMobile ? '130px' : 'auto'}
           rounded='100%'
           background='#25d366'
+          _hover={{ bg: '#1FAA53' }}
           zIndex={200}
           shadow='2lg'
-          // border='2px solid'
-          // borderColor='black'
         >
           <Flex justifyContent='center' alignItems='center' padding='5px' gap='6px'>
             <WhatsappIcon fontSize={40} color='white' />
-            {/* <Text color='white' fontSize={isMobile ? '14px' : '16px'} fontWeight={900} className='font-logo' textAlign='end' lineHeight={{ base: '14px', md: '16px' }} mt='4px'>
-              Contáctanos
-            </Text> */}
           </Flex>
         </Link>
 

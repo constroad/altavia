@@ -4,7 +4,7 @@ import { signOut, useSession } from 'next-auth/react';
 import { Box, Button, Flex, Image, Link, Text } from '@chakra-ui/react'
 import { toast } from 'src/components/Toast';
 import { APP_ROUTES } from 'src/common/consts';
-import { HideMenuMobileIcon, ShowMenuMobileIcon } from 'src/common/icons';
+import { ArrowDown, HideMenuMobileIcon, ShowMenuMobileIcon } from 'src/common/icons';
 
 import { GenerateNavOptions, nosotrosOptions, serviciosOptions } from './config'
 import { CONSTROAD_COLORS } from 'src/styles/shared';
@@ -20,29 +20,9 @@ interface INavbar {
 }
 
 export const Navbar = (props: INavbar) => {
-  const [isScrolledDown, setIsScrolledDown] = useState(false)
   const router = useRouter()
   const path = router.pathname
   const { data: session } = useSession()
-
-  useEffect(() => {
-    const handleScroll = () => {
-      const scrollTop = window.scrollY;
-      const nav = document.getElementById('navbar');
-      const navHeight = nav!.offsetHeight * 6;
-
-      if (scrollTop > navHeight) {
-        setIsScrolledDown(true);
-      } else {
-        setIsScrolledDown(false);
-      }
-    };
-
-    window.addEventListener('scroll', handleScroll);
-    return () => {
-      window.removeEventListener('scroll', handleScroll);
-    };
-  }, []);
 
   const handleSignOut = async() => {
     await signOut({redirect: false});
@@ -73,21 +53,20 @@ export const Navbar = (props: INavbar) => {
       width='100%'
       height={{ base: '65px', md: '90px' }}
       position={'fixed'}
-      top={{ base: '', md: isScrolledDown ? '0px' : '0px'}}
+      top={{ base: '', md: '0px'}}
       zIndex={1000}
       justifyContent='center'
       rounded='6px'
-      boxShadow={ (isScrolledDown || isNotHomePage) ? 'lg' : 'lg'}
+      boxShadow='lg'
     >
       <Flex
         as='header'
         height={{ base: '65px', md: '90px' }}
-        paddingX={{ base: '30px', md: isScrolledDown ? '70px' : '70px' }}
+        paddingX={{ base: '30px', md: '120px' }}
         alignItems='center'
         justifyContent='space-between'
         bg='white'
-        rounded={ isScrolledDown ? '0px' : '0px' }
-        width={{ base: '100vw', md: isScrolledDown ? '100vw' : '100vw' }}
+        width={{ base: '100vw', md: '100vw' }}
         marginX='auto'
       >
         <Flex
@@ -100,10 +79,10 @@ export const Navbar = (props: INavbar) => {
           <Link href={APP_ROUTES.home} title='Constroad | Planta de asfalto' _hover={{ textDecoration: 'none' }}>
             <Flex w='fit-content' h='90px' rounded='6px' justifyContent='center' alignItems='center' flexDir='column'>
               <Image src='/constroad.jpeg' width='32px' h='32px' alt='constroad-logo' rounded='4px' />
-                <Text className='font-logo' fontWeight={650} fontSize='24px' lineHeight='24px' textAlign='end' pt='5px'>
+                <Text className='font-logo' fontWeight={650} fontSize='30px' lineHeight='30px' textAlign='end' pt='5px'>
                   ConstRoad
                 </Text>
-                <Text className='font-logo' fontWeight={650} fontSize={14} lineHeight='14px' textAlign='center' textDecoration='none' color={CONSTROAD_COLORS.darkYellow} h='10p'>
+                <Text className='font-logo' fontWeight={650} fontSize={16} lineHeight='16px' textAlign='center' textDecoration='none' color={CONSTROAD_COLORS.darkYellow} h='10p'>
                   Planta de Asfalto
                 </Text>
             </Flex>
@@ -167,9 +146,21 @@ export const Navbar = (props: INavbar) => {
               onMouseLeave={props.handleLeaveMouse}
               onClick={() => menuItemClick(opt)}
             >
-              <Text>
-                {opt.label}
-              </Text>
+              <Flex alignItems='center' gap='2px'>
+                <Text>
+                  {opt.label}
+                </Text>
+                {opt.label === 'Nosotros' && (
+                  <Flex mb='4px'>
+                    <ArrowDown />
+                  </Flex>
+                )}
+                {opt.label === 'Servicios' && (
+                  <Flex mb='4px'>
+                    <ArrowDown />
+                  </Flex>
+                )}
+              </Flex>
 
               {/* NOSOTROS */}
               {props.buttonHovered === 'Nosotros' && opt.label === 'Nosotros' && (

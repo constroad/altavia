@@ -223,6 +223,7 @@ export const generateDispatchColumns = (props: ColumnsProps) => {
                 );
                 updateDispatch({
                   ...row,
+                  quantity: transport?.m3 ?? 0,
                   plate: transport?.plate ?? '',
                   transportId,
                   driverName: transport?.driverName ?? '',

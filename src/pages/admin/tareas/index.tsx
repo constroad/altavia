@@ -208,7 +208,7 @@ export const TasksPage = () => {
       - Encargado: ${reporter}
       - Mensaje:
 
-      ${message}
+${message}
       `, 
       to: GROUP_TRABAJADORES_CONSTROAD, 
       // to: GROUP_PLANTA_PRODUCCION, 

@@ -4,7 +4,7 @@ import { AdministrationLayout, DayCard, Modal, NoteModal, NoteType, Status, Task
 import { addDays, format, startOfWeek } from 'date-fns';
 import { es } from 'date-fns/locale/es';
 import { useAsync, useScreenSize } from 'src/common/hooks';
-import { ADMIN_ROUTES, API_ROUTES, GROUP_PLANTA_PRODUCCION, GROUP_SOCIOS_DE_LA_CONSTRUCCION, GROUP_TRABAJADORES_CONSTROAD, PHONE_CARIN, PHONE_CONSTROAD, WtspMessageType } from 'src/common/consts';
+import { ADMIN_ROUTES, API_ROUTES, GROUP_PLANTA_PRODUCCION, GROUP_SOCIOS_DE_LA_CONSTRUCCION, GROUP_TRABAJADORES_CONSTROAD, PHONE_CARIN, PHONE_CONSTROAD, PHONE_JZ, WtspMessageType } from 'src/common/consts';
 import { CONSTROAD_COLORS } from 'src/styles/shared';
 import { useRouter } from 'next/router';
 import { useSidebar } from 'src/context';
@@ -209,11 +209,11 @@ export const TasksPage = () => {
       - Mensaje:
 
 ${message}
+cc: @${PHONE_JZ}, @${PHONE_CARIN}
       `, 
       to: GROUP_TRABAJADORES_CONSTROAD, 
-      // to: GROUP_PLANTA_PRODUCCION, 
-      // to: GROUP_SOCIOS_DE_LA_CONSTRUCCION,
       mentions: [
+        PHONE_JZ,
         PHONE_CONSTROAD,
         PHONE_CARIN
       ]

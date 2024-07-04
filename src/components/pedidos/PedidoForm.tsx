@@ -161,6 +161,7 @@ export const PedidoForm = (props: PedidoFormProps) => {
           cantidadCubos: parseFloat(payload.cantidadCubos.toString()),
           precioCubo: parseFloat(payload.precioCubo.toString()),
           montoAdelanto: parseFloat(payload.montoAdelanto?.toString() ?? '0'),
+          totalPedido: parseFloat(payload.totalPedido?.toString() ?? '0'),
         }),
         {
           onSuccess: () => {
@@ -182,6 +183,7 @@ export const PedidoForm = (props: PedidoFormProps) => {
         cantidadCubos: parseFloat(payload.cantidadCubos.toString()),
         precioCubo: parseFloat(payload.precioCubo.toString()),
         montoAdelanto: parseFloat(payload.montoAdelanto?.toString() ?? '0'),
+        totalPedido: parseFloat(payload.totalPedido?.toString() ?? '0'),
       }),
       {
         onSuccess: () => {

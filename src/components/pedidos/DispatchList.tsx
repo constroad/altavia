@@ -142,6 +142,7 @@ export const DispatchList = (props: DispatchListProps) => {
     clientId: props.order?.clienteId,
     client: props.order?.cliente ?? '',
     obra: props.order?.obra ?? '',
+    price: props.order?.precioCubo ?? 480
   };
 
   return (

@@ -205,8 +205,9 @@ export const TasksPage = () => {
     runSendMessage(postMessage(API_ROUTES.notificationWhatsApp, {
       type: WtspMessageType.SendText, 
       body: `🤖 Constroad Bot! *${title}*     
-      - Encargado: ${reporter}
-      - Mensaje:
+Encargado: ${reporter}
+Mensaje:
+------------
 
 ${message}
 cc: @${PHONE_JZ}, @${PHONE_CARIN}

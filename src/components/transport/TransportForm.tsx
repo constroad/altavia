@@ -5,7 +5,10 @@ import {
   FormControl,
   FormLabel,
   Input,
+  NumberInput,
+  NumberInputField,
   Text,
+  Textarea,
 } from '@chakra-ui/react';
 import axios from 'axios';
 import { useState } from 'react';
@@ -103,7 +106,7 @@ export const TransportForm = (props: TransportFormProps) => {
         <FormControl as={Flex} flexDir="column">
           <Text fontSize="inherit">Conductor</Text>
           <Input
-          fontSize="inherit"
+            fontSize="inherit"
             size="xs"
             value={transport.driverName}
             onChange={(e) =>
@@ -114,7 +117,7 @@ export const TransportForm = (props: TransportFormProps) => {
         <FormControl as={Flex} flexDir="column">
           <Text fontSize="inherit">Licencia</Text>
           <Input
-          fontSize="inherit"
+            fontSize="inherit"
             size="xs"
             value={transport.driverCard}
             onChange={(e) =>
@@ -130,6 +133,34 @@ export const TransportForm = (props: TransportFormProps) => {
             value={transport.phone}
             onChange={(e) =>
               setTransport({ ...transport, phone: e.target.value })
+            }
+          />
+        </FormControl>
+
+        <FormControl>
+          <FormLabel fontSize="inherit" width="100px">
+            M3
+          </FormLabel>
+          <NumberInput
+            size="xs"
+            name="m3"
+            value={transport.m3}
+            onChange={(value) => {
+              setTransport({ ...transport, m3: parseFloat(value) });
+            }}
+          >
+            <NumberInputField />
+          </NumberInput>
+        </FormControl>
+
+        <FormControl>
+          <FormLabel fontSize="inherit">Notas</FormLabel>
+          <Textarea
+            size="sm"
+            name="notas"
+            value={transport.notes}
+            onChange={(e) =>
+              setTransport({ ...transport, notes: e.target.value })
             }
           />
         </FormControl>

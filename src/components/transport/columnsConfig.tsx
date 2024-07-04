@@ -20,6 +20,8 @@ export const generateTransportColumns = (
       width: '10%',
     },
     { key: 'phone', label: 'Celular', width: '5%' },
+    { key: 'm3', label: 'Cubos', width: '5%', textAlign: 'center' },
+    { key: 'notes', label: 'Notas', width: '25%' },
   ];
 
   return columns;

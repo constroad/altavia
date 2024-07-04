@@ -9,6 +9,8 @@ export const transportValidationSchema = z.object({
   driverName: z.string().optional(),
   driverCard: z.string().optional(),
   phone: z.string().optional(),
+  m3: z.number().optional(),
+  notes: z.string().optional(),
   createdAt: z.string().optional(),
   updatedAt: z.string().optional()
 });
@@ -35,6 +37,8 @@ try {
     driverName: { type: String, optional: true },
     driverCard: { type: String, optional: true },
     phone: { type: String, optional: true },
+    m3: { type: Number, optional: true },
+    notes: { type: String, optional: true },
   }, {
     timestamps: true, // this will add both createdAt y updatedAt automatically
   });

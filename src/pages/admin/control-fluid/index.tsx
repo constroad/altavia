@@ -5,6 +5,7 @@ import {
   IntranetLayout,
   Modal,
   PenCalculator,
+  getPenAvailable,
   toast,
 } from 'src/components';
 import {
@@ -66,7 +67,6 @@ export const ControlFluid = () => {
     setFluidList(response.data);
   }
 
-
   const penToProduce = fluidList.reduce((accumulator, item) => {
     if (item.name === 'PEN #1') {
       // 363gl no salen por la altura de la llave - 50gl por tubos de calentamiento
@@ -102,7 +102,6 @@ export const ControlFluid = () => {
     return accumulator;
   }, 0);
 
-
   // handlers
   const handleSelectFluid = (fluid: IFluidValidationSchema) => {
     setFluidSelected(fluid);
@@ -115,7 +114,7 @@ export const ControlFluid = () => {
       const path = `${API_ROUTES.fluid}/${fluidSelected._id}`;
       runEditFluid(axios.put(path, fluid), {
         onSuccess: () => {
-          sendWhatsAppMessage(fluid)
+          sendWhatsAppMessage(fluid);
           toast.success('Tanque actualizado');
           refetch();
           onClose();
@@ -126,7 +125,7 @@ export const ControlFluid = () => {
 
     runAddFluid(postFluid(API_ROUTES.fluid, fluid), {
       onSuccess: () => {
-        sendWhatsAppMessage(fluid)
+        sendWhatsAppMessage(fluid);
         toast.success('Tanque agregado');
         refetch();
         onClose();
@@ -134,9 +133,8 @@ export const ControlFluid = () => {
     });
   };
 
-  const sendWhatsAppMessage = (
-    fluid: IFluidValidationSchema
-  ) => {
+  const sendWhatsAppMessage = (fluid: IFluidValidationSchema) => {
+    const { toProduce, cubes } = getPenAvailable(fluid);
     runSendMessage(
       postMessage(API_ROUTES.notificationWhatsApp, {
         type: WtspMessageType.SendText,
@@ -145,8 +143,8 @@ Mensaje:
 ------------
 Tanque (${fluid.name}) se actualizo!
 * CM: ${fluid.levelCentimeter}
-* Stock: ${penInStock} gls
-* Para Producir: ${penToProduce} gls
+* Stock: ${cubes} gls
+* Para Producir: ${toProduce.toFixed(2)} gls
 
 cc: @${PHONE_JZ}, @${PHONE_CARIN}
       `,
@@ -200,7 +198,7 @@ cc: @${PHONE_JZ}, @${PHONE_CARIN}
           </Button>
         </Flex>
         <Grid
-          templateColumns={{ base: 'repeat(1, 1fr)', md: 'repeat(4, 1fr)' }}
+          templateColumns={{ base: 'repeat(2, 1fr)', md: 'repeat(4, 1fr)' }}
           gap={6}
           alignItems="flex-end"
           as={Flex}

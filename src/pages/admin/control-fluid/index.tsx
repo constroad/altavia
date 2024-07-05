@@ -198,7 +198,7 @@ cc: @${PHONE_JZ}, @${PHONE_CARIN}
           </Button>
         </Flex>
         <Grid
-          templateColumns={{ base: 'repeat(2, 1fr)', md: 'repeat(4, 1fr)' }}
+          templateColumns={{ base: 'repeat(2, 1fr)', md: 'repeat(5, 1fr)' }}
           gap={6}
           alignItems="flex-end"
           as={Flex}

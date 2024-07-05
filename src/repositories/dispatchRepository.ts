@@ -34,7 +34,7 @@ export class DispatchRepository {
       const limitNumber = limit ? parseInt(limit, 10) : total;
 
       const dispatchs = await Dispatch.find({ ...filters })
-        .sort({ date: -1 })
+        .sort({ createdAt: -1 })
         .skip((pageNumber - 1) * limitNumber)
         .limit(limitNumber);
 

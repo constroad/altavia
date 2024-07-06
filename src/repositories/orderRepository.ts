@@ -38,6 +38,13 @@ export class OrderRepository {
               return prev + curr.quantity
             }, 0)
           const m3RealTotal = m3dispatched * x.precioCubo
+          let montoPorCobrar = m3RealTotal - payments
+          if (m3RealTotal === 0) {
+            montoPorCobrar = x.totalPedido - payments
+          }
+          if (x.isPaid) {
+            montoPorCobrar = 0
+          }
           return {
             ...x.toObject(),
             __v: undefined,
@@ -45,7 +52,7 @@ export class OrderRepository {
             m3dispatched,
             montoAdelanto: payments,
             m3Pending: x.cantidadCubos - m3dispatched,
-            montoPorCobrar: x.isPaid ? 0 : (m3RealTotal - payments),
+            montoPorCobrar,
             m3Value: m3RealTotal
           }
         }),

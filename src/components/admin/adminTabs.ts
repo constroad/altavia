@@ -11,7 +11,8 @@ import {
   PurchaseIcon,
   QuoteIcon,
   TaskIcon,
-  ServiceIcon
+  ServiceIcon,
+  MaterialIcon
 } from "src/common/icons";
 import { CONSTROAD_COLORS } from "src/styles/shared";
 
@@ -57,6 +58,13 @@ export const adminTabs = [
     bgColor: CONSTROAD_COLORS.black,
     textColor: 'white',
     icon: HighwayIcon
+  },
+  {
+    name: 'Control Agregados',
+    path: ADMIN_ROUTES.controlMaterial,
+    bgColor: CONSTROAD_COLORS.yellow,
+    textColor: 'black',
+    icon: MaterialIcon
   },
 ]
 

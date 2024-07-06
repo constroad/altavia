@@ -19,6 +19,7 @@ import {
   MenuButton,
   MenuItem,
   MenuList,
+  Spinner,
 } from '@chakra-ui/react';
 import { IOrderValidationSchema } from 'src/models/order';
 import { useEffect, useState } from 'react';
@@ -226,7 +227,7 @@ export const PedidoForm = (props: PedidoFormProps) => {
     const currentPayments = [...order.payments];
     currentPayments.push({
       _id: new Date().toISOString(),
-      date: new Date(),
+      date: new Date().toISOString(),
       amount: 0,
       notes: '',
     });
@@ -254,9 +255,11 @@ export const PedidoForm = (props: PedidoFormProps) => {
 
   const currentPayments =
     order?.payments?.reduce(
-      (prev: number, curr: any) => prev + curr.amount,
+      (prev: number, curr: any) => prev + parseFloat(curr.amount),
       0
     ) ?? 0;
+
+  const pendingPayment = order.totalPedido - currentPayments;
 
   const handleGenerateAndCopyURL = () => {
     const baseUrl = getBaseUrl();
@@ -264,6 +267,7 @@ export const PedidoForm = (props: PedidoFormProps) => {
     const toastMessage = 'Url copiado con éxito';
     copyToClipboard(clientReportUrl, toastMessage);
   };
+
   // Renders
   return (
     <Box as="form" onSubmit={handleSubmit} mt={5} fontSize="12px">
@@ -570,7 +574,7 @@ export const PedidoForm = (props: PedidoFormProps) => {
                 <NumberInput
                   isDisabled
                   size="xs"
-                  value={order.totalPedido - currentPayments}
+                  value={pendingPayment.toFixed(2)}
                 >
                   <NumberInputField />
                 </NumberInput>
@@ -606,7 +610,9 @@ export const PedidoForm = (props: PedidoFormProps) => {
 
             <Flex flexDir="column" fontSize="inherit" flex={1} gap={2}>
               <Flex justifyContent="space-between">
-                <Text fontWeight={600}>Pagos: S/.({currentPayments})</Text>
+                <Text fontWeight={600}>
+                  Pagos: S/.({currentPayments.toFixed(2)})
+                </Text>
                 <Button size="xs" onClick={onAddPayments}>
                   +
                 </Button>
@@ -628,7 +634,7 @@ export const PedidoForm = (props: PedidoFormProps) => {
                         onChange={(e) =>
                           onUpdatePayment(x._id!, {
                             key: 'date',
-                            value: parseLocalDate(e.target.value),
+                            value: parseLocalDate(e.target.value).toISOString(),
                           })
                         }
                       />
@@ -704,12 +710,14 @@ export const PedidoForm = (props: PedidoFormProps) => {
             minW="auto"
             h="auto"
             aria-label="Page details"
-            icon={<MenuVerticalIcon />}
+            icon={
+              addingOrder || updatingOrder ? <Spinner /> : <MenuVerticalIcon />
+            }
             rounded="full"
           />
 
           <MenuList maxW="170px">
-            <MenuItem>        
+            <MenuItem>
               <Button
                 size="xs"
                 type="submit"

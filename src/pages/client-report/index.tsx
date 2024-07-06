@@ -39,7 +39,7 @@ export const ClientReportPage = () => {
   } = useDispatch({
     query: {
       page: 1,
-      limit: 20,
+      limit: 50,
       clientId: clientId ?? '',
       orderId: orderSelected?.orderId ?? ''
     },

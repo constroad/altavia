@@ -30,7 +30,7 @@ import { BiSolidPencil, BiTask } from "react-icons/bi";
 import { RiSubtractLine } from "react-icons/ri";
 import { GrUserWorker } from "react-icons/gr";
 import { LuContainer } from "react-icons/lu";
-import { GiBoxUnpacking } from "react-icons/gi";
+import { GiBoxUnpacking, GiFallingRocks } from "react-icons/gi";
 import { FaShareAlt } from "react-icons/fa";
 import { FaEye } from "react-icons/fa";
 import { TiArrowSortedUp, TiArrowSortedDown } from "react-icons/ti";
@@ -81,4 +81,5 @@ export const CircleIcon = FaCircle
 export const SortUpIcon = TiArrowSortedUp
 export const SortDownIcon = TiArrowSortedDown
 export const MoneyIcon = MdAttachMoney
+export const MaterialIcon = GiFallingRocks
 

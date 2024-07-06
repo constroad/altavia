@@ -33,7 +33,7 @@ export const orderValidationSchema = z.object({
   invoice: z.string().optional(),
   payments: z.array(z.object({
     _id: z.string().optional(),
-    date: z.date(),
+    date: z.string(),
     amount: z.number(),
     notes: z.string()
   })),

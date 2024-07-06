@@ -5,6 +5,7 @@ import {
   MdNavigateBefore,
   MdOutlineLocalGroceryStore,
   MdOutlinePrecisionManufacturing,
+  MdAttachMoney,
 } from "react-icons/md";
 import {
   FaPlus,
@@ -79,4 +80,5 @@ export const SaveIcon = IoIosSave
 export const CircleIcon = FaCircle
 export const SortUpIcon = TiArrowSortedUp
 export const SortDownIcon = TiArrowSortedDown
+export const MoneyIcon = MdAttachMoney
 

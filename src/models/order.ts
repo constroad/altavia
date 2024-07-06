@@ -1,12 +1,12 @@
 import { z } from 'zod';
 import mongoose, { Document, Schema, Model } from 'mongoose';
-import { IDispatchList, IDispatchValidationSchema } from './dispatch';
+import { IDispatchValidationSchema } from './dispatch';
 
 export enum OrderStatus {
-   pending= 'pendiente',
-   dispatched= 'despachado',
-   deleted= 'eliminado',
-   rejected= 'rechazado'
+  pending = 'pendiente',
+  dispatched = 'despachado',
+  deleted = 'eliminado',
+  rejected = 'rechazado'
 }
 
 // Schema validation
@@ -26,11 +26,17 @@ export const orderValidationSchema = z.object({
   cantidadCubos: z.number(),
   subTotal: z.number(),
   totalPedido: z.number(),
-  montoAdelanto: z.number(),
   montoPorCobrar: z.number(),
   status: z.nativeEnum(OrderStatus).optional(),
   isCredit: z.boolean().default(false),
   isPaid: z.boolean().default(false),
+  invoice: z.string().optional(),
+  payments: z.array(z.object({
+    _id: z.string().optional(),
+    date: z.date(),
+    amount: z.number(),
+    notes: z.string()
+  })),
   createdAt: z.string().optional(),
   updatedAt: z.string().optional()
 })
@@ -68,13 +74,17 @@ export interface OrderModel extends Document {
   precioCubo: number;
   subTotal: number;
   totalPedido: number;
-  montoAdelanto: number;
-  montoPorCobrar: number;
   status?: string;
   isCredit: boolean;
   isPaid: boolean;
   igv: number;
-  igvCheck?: boolean
+  igvCheck?: boolean;
+  invoice?: string;
+  payments: {
+    date: Date
+    amount: number
+    notes: string
+  }[]
 }
 
 const CertificadoSchema = new Schema<ICertificado>({
@@ -113,7 +123,7 @@ let Order: Model<OrderModel>;
 try {
   Order = mongoose.model('Order') as Model<OrderModel>;
 } catch (e) {
-  
+
   const orderDBSchema = new Schema<OrderModel>({
     clienteId: { type: String, required: false },
     cliente: { type: String, required: false },
@@ -123,17 +133,23 @@ try {
     fechaVencimiento: { type: Date, required: false },
     notas: { type: String, required: false },
     obra: { type: String, required: false },
+    invoice: { type: String, required: false },
     precioCubo: { type: Number, required: true },
     totalPedido: { type: Number, required: true },
     subTotal: { type: Number, optional: false },
     cantidadCubos: { type: Number, required: true },
-    montoAdelanto: { type: Number, required: true },
-    montoPorCobrar: { type: Number, required: true },
     igvCheck: { type: Boolean, optional: true },
     igv: { type: Number, optional: true },
     isCredit: { type: Boolean, required: true },
     isPaid: { type: Boolean, required: true },
     status: { type: String, required: false, default: OrderStatus.pending },
+    payments: [
+      {
+        date: Date,
+        amount: Number,
+        notes: String
+      }
+    ]
   }, {
     timestamps: true, // this will add both createdAt y updatedAt automatically
   });

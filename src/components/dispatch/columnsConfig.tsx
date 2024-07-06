@@ -84,7 +84,6 @@ export const generateDispatchColumns = (props: ColumnsProps) => {
                 clientId: order?.clienteId ?? '',
                 client: order?.cliente ?? '',
                 obra: order?.obra ?? '',
-                price: order?.precioCubo ?? 0
               });
             }}
             options={orderList.map((order) => ({
@@ -253,7 +252,7 @@ export const generateDispatchColumns = (props: ColumnsProps) => {
     {
       key: 'driverName',
       label: 'Chofer',
-      width: '5%',
+      width: '10%',
       render: (item, row) => {
         return (
           <Input
@@ -284,7 +283,7 @@ export const generateDispatchColumns = (props: ColumnsProps) => {
             lineHeight="14px"
             height="32px"
             width="100%"
-            type='time'
+            type="time"
             defaultValue={item}
             onBlur={(e) => {
               if (e.target.value.toLowerCase() !== item?.toLowerCase()) {
@@ -297,8 +296,8 @@ export const generateDispatchColumns = (props: ColumnsProps) => {
     },
     {
       key: 'guia',
-      label: 'Guia - Factura',
-      width: '10%',
+      label: 'Guia',
+      width: '5%',
       render: (item, row) => {
         return (
           <Flex gap={2}>
@@ -308,27 +307,11 @@ export const generateDispatchColumns = (props: ColumnsProps) => {
               fontSize="inherit"
               lineHeight="14px"
               height="32px"
-              width="50px"
+              width="80px"
               defaultValue={item}
               onBlur={(e) => {
                 if (e.target.value.toLowerCase() !== item.toLowerCase()) {
                   updateDispatch({ ...row, guia: e.target.value });
-                }
-              }}
-            />
-            <Input
-              px={{ base: '5px', md: '3px' }}
-              placeholder="Factura"
-              fontSize="inherit"
-              lineHeight="14px"
-              height="32px"
-              width="50px"
-              defaultValue={row.invoice}
-              onBlur={(e) => {
-                if (
-                  e.target.value.toLowerCase() !== row.invoice?.toLowerCase()
-                ) {
-                  updateDispatch({ ...row, invoice: e.target.value });
                 }
               }}
             />
@@ -346,7 +329,6 @@ export const generateDispatchColumns = (props: ColumnsProps) => {
             fontSize="inherit"
             name="notas"
             height="32px"
-            // multiple
             defaultValue={item}
             onBlur={(e) => {
               if (e.target.value.toLowerCase() !== item.toLowerCase()) {
@@ -370,102 +352,13 @@ export const generateDispatchColumns = (props: ColumnsProps) => {
             onBlur={(e) => {
               if (e.target.value === item.toString()) return;
               let quantity = 0;
-              let igv = 0;
               if (e.target.value) {
                 quantity = Number(e.target.value);
               }
-              const subTotal = row.price * quantity;
-              if (row.igvCheck) {
-                igv = subTotal * 0.18;
-              }
-              const total = subTotal + igv;
-              updateDispatch({ ...row, quantity, subTotal, total, igv });
-            }}
-          >
-            <NumberInputField fontSize="inherit" paddingInlineEnd={0} />
-          </NumberInput>
-        );
-      },
-    },
-    {
-      key: 'price',
-      bgColor: CONSTROAD_COLORS.yellow,
-      label: 'Precio',
-      width: '4%',
-      render: (item, row) => {
-        return (
-          <NumberInput
-            size="xs"
-            defaultValue={item?.toFixed(2)}
-            onBlur={(e) => {
-              if (e.target.value === item.toString()) return;
-              let price = 0;
-              let igv = 0;
-              if (e.target.value) {
-                price = Number(e.target.value);
-              }
-              const subTotal = row.quantity * price;
-              if (row.igvCheck) {
-                igv = subTotal * 0.18;
-              }
-              const total = subTotal + igv;
-              updateDispatch({ ...row, price, subTotal, total, igv });
-            }}
-          >
-            <NumberInputField fontSize="inherit" paddingInlineEnd={0} />
-          </NumberInput>
-        );
-      },
-    },
-    {
-      key: 'igv',
-      bgColor: CONSTROAD_COLORS.yellow,
-      label: 'IGV',
-      width: '7%',
-      render: (item, row) => {
-        return (
-          <Flex alignItems="center" gap={1}>
-            <Switch
-              size="sm"
-              id="isChecked"
-              defaultValue={(row.igvCheck ?? false).toString()}
-              isChecked={row.igvCheck ?? false}
-              onChange={(value) => {
-                const igvCheck = value.target.checked;
-                let igvValue = 0;
-                if (igvCheck) {
-                  igvValue = row.subTotal * 0.18;
-                }
-                const total = row.subTotal + igvValue;
-                updateDispatch({ ...row, igvCheck, igv: igvValue, total });
-              }}
-            />
-            <NumberInput isDisabled size="xs" defaultValue={item?.toFixed(2)}>
-              <NumberInputField fontSize="inherit" paddingInlineEnd={0} />
-            </NumberInput>
-          </Flex>
-        );
-      },
-    },
-    {
-      key: 'total',
-      bgColor: CONSTROAD_COLORS.yellow,
-      label: 'Total',
-      width: '5%',
-      render: (item, row) => {
-        return (
-          <NumberInput
-            size="xs"
-            defaultValue={item?.toFixed(2)}
-            onBlur={(e) => {
-              if (e.target.value === item.toString()) return;
-              const value = e.target.value;
-              const total = isNaN(parseFloat(value)) ? 0 : parseFloat(value);
-              const igvCheck = row.igvCheck;
-              const igv = igvCheck ? total - total / 1.18 : 0;
-              const subTotal = total - igv;
-              const price = subTotal / row.quantity;
-              updateDispatch({ ...row, price, subTotal, total, igv });
+              updateDispatch({
+                ...row,
+                quantity,
+              });
             }}
           >
             <NumberInputField fontSize="inherit" paddingInlineEnd={0} />
@@ -589,10 +482,12 @@ export const generateDispatchColumns = (props: ColumnsProps) => {
                 lineHeight="14px"
                 height="32px"
                 width="100%"
-                type='time'
+                type="time"
                 defaultValue={row.hour}
                 onBlur={(e) => {
-                  if (e.target.value.toLowerCase() !== row.hour?.toLowerCase()) {
+                  if (
+                    e.target.value.toLowerCase() !== row.hour?.toLowerCase()
+                  ) {
                     updateDispatch({ ...row, hour: e.target.value });
                   }
                 }}
@@ -723,7 +618,7 @@ export const generateDispatchColumns = (props: ColumnsProps) => {
               />
             </GridItem>
             <GridItem>
-              <Flex gap={2}>
+              <Flex gap={2} alignItems="center">
                 <Input
                   placeholder="Guia"
                   px={{ base: '5px', md: '3px' }}
@@ -740,23 +635,27 @@ export const generateDispatchColumns = (props: ColumnsProps) => {
                     }
                   }}
                 />
-                <Input
-                  px={{ base: '5px', md: '3px' }}
-                  placeholder="Factura"
-                  fontSize="inherit"
-                  lineHeight="14px"
-                  height="32px"
-                  width="49%"
-                  defaultValue={row.invoice}
-                  onBlur={(e) => {
-                    if (
-                      e.target.value.toLowerCase() !==
-                      row.invoice?.toLowerCase()
-                    ) {
-                      updateDispatch({ ...row, invoice: e.target.value });
-                    }
-                  }}
-                />
+                <Flex>
+                  M3:
+                  <NumberInput
+                    size="sm"
+                    defaultValue={row.quantity}
+                    onBlur={(e) => {
+                      if (e.target.value === row.quantity.toString()) return;
+                      let quantity = 0;
+
+                      if (e.target.value) {
+                        quantity = Number(e.target.value);
+                      }
+                      updateDispatch({
+                        ...row,
+                        quantity,
+                      });
+                    }}
+                  >
+                    <NumberInputField fontSize="inherit" paddingInlineEnd={0} />
+                  </NumberInput>
+                </Flex>
               </Flex>
             </GridItem>
             <GridItem colSpan={2}>
@@ -774,116 +673,6 @@ export const generateDispatchColumns = (props: ColumnsProps) => {
                   }
                 }}
               />
-            </GridItem>
-            <GridItem as={Flex} gap={2} bgColor={CONSTROAD_COLORS.yellow}>
-              <Box width="49%">
-                <Text>M3:</Text>
-                <NumberInput
-                  size="xs"
-                  defaultValue={row.quantity}
-                  onBlur={(e) => {
-                    if (e.target.value === row.quantity.toString()) return;
-                    let quantity = 0;
-                    let igv = 0;
-
-                    if (e.target.value) {
-                      quantity = Number(e.target.value);
-                    }
-                    const subTotal = row.price * quantity;
-                    if (row.igvCheck) {
-                      igv = subTotal * 0.18;
-                    }
-                    const total = subTotal + igv;
-                    updateDispatch({
-                      ...row,
-                      quantity,
-                      subTotal,
-                      total,
-                      igv,
-                    });
-                  }}
-                >
-                  <NumberInputField fontSize="inherit" paddingInlineEnd={0} />
-                </NumberInput>
-              </Box>
-              <Box>
-                <Text>Precio:</Text>
-                <NumberInput
-                  size="xs"
-                  defaultValue={row.price?.toFixed(2)}
-                  onBlur={(e) => {
-                    if (e.target.value === row.price.toString()) return;
-                    let price = 0;
-                    let igv = 0;
-                    if (e.target.value) {
-                      price = Number(e.target.value);
-                    }
-                    const subTotal = row.quantity * price;
-                    if (row.igvCheck) {
-                      igv = subTotal * 0.18;
-                    }
-                    const total = subTotal + igv;
-                    updateDispatch({ ...row, price, subTotal, total, igv });
-                  }}
-                >
-                  <NumberInputField fontSize="inherit" paddingInlineEnd={0} />
-                </NumberInput>
-              </Box>
-            </GridItem>
-            <GridItem as={Flex} gap={2} bgColor={CONSTROAD_COLORS.yellow}>
-              <Box width="49%">
-                <Text>Igv:</Text>
-                <Flex gap={2} alignItems="center">
-                  <Switch
-                    size="sm"
-                    id="isChecked"
-                    defaultValue={(row.igvCheck ?? false).toString()}
-                    isChecked={row.igvCheck ?? false}
-                    onChange={(value) => {
-                      const igvCheck = value.target.checked;
-                      let igvValue = 0;
-                      if (igvCheck) {
-                        igvValue = row.subTotal * 0.18;
-                      }
-                      const total = row.subTotal + igvValue;
-                      updateDispatch({
-                        ...row,
-                        igvCheck,
-                        igv: igvValue,
-                        total,
-                      });
-                    }}
-                  />
-                  <NumberInput
-                    isDisabled
-                    size="xs"
-                    defaultValue={row.igv?.toFixed(2)}
-                  >
-                    <NumberInputField fontSize="inherit" paddingInlineEnd={0} />
-                  </NumberInput>
-                </Flex>
-              </Box>
-              <Flex flexDir="column" flex={1}>
-                <Text>Total:</Text>
-                <NumberInput
-                  size="xs"
-                  defaultValue={row.total?.toFixed(2)}
-                  onBlur={(e) => {
-                    if (e.target.value === item.toString()) return;
-                    const value = e.target.value;
-                    const total = isNaN(parseFloat(value))
-                      ? 0
-                      : parseFloat(value);
-                    const igvCheck = row.igvCheck;
-                    const igv = igvCheck ? total - total / 1.18 : 0;
-                    const subTotal = total - igv;
-                    const price = subTotal / row.quantity;
-                    updateDispatch({ ...row, price, subTotal, total, igv });
-                  }}
-                >
-                  <NumberInputField fontSize="inherit" paddingInlineEnd={0} />
-                </NumberInput>
-              </Flex>
             </GridItem>
           </Grid>
         );

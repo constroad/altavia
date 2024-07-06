@@ -142,7 +142,6 @@ export const DispatchList = (props: DispatchListProps) => {
     clientId: props.order?.clienteId,
     client: props.order?.cliente ?? '',
     obra: props.order?.obra ?? '',
-    price: props.order?.precioCubo ?? 480
   };
 
   return (
@@ -155,6 +154,7 @@ export const DispatchList = (props: DispatchListProps) => {
             onAddDispatch={() => onAddDispatch(OrderData)}
             addindDispatch={addingDispatch}
             totalRecords={dispatchSummary?.nroRecords ?? 0}
+            total={dispatchSummary?.total ?? 0}
             onSaveDispatch={onSaveAllDispatch}
           />
         }

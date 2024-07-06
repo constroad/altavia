@@ -28,7 +28,6 @@ export const initialDispatch: Dispatch = {
   date: '',
   material: 'MEZCLA ASFALTICA',
   plate: '',
-  invoice: '',
   guide: '',
   m3: '1',
   client: '',

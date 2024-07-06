@@ -1,5 +1,4 @@
 import Order, { IOrderGetAll, OrderModel } from '../models/order';
-import mongoose from 'mongoose';
 import { DispatchRepository } from './dispatchRepository';
 import { DispatchModel, IDispatchValidationSchema } from 'src/models/dispatch';
 interface IPagination {
@@ -29,21 +28,25 @@ export class OrderRepository {
         dispatches.map((x) => [ x.orderId, dispatches.filter((y) => y.orderId === x.orderId) ])
       )
 
+      
       return {
         orders: orders.map((x) => {
+          const payments = x.payments.reduce((prev, curr) => prev + curr.amount, 0)
           const list: DispatchModel[] = dispatchMap[ x._id ] ?? []
           const m3dispatched = list
             .reduce((prev, curr) => {
               return prev + curr.quantity
             }, 0)
+          const m3RealTotal = m3dispatched * x.precioCubo
           return {
             ...x.toObject(),
             __v: undefined,
             dispatches: dispatches as IDispatchValidationSchema[],
             m3dispatched,
+            montoAdelanto: payments,
             m3Pending: x.cantidadCubos - m3dispatched,
-            montoPorCobrar: x.isPaid ? 0 : x.montoPorCobrar,
-            m3Value: m3dispatched * x.precioCubo
+            montoPorCobrar: x.isPaid ? 0 : (m3RealTotal - payments),
+            m3Value: m3RealTotal
           }
         }),
         pagination: {

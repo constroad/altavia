@@ -180,7 +180,7 @@ export const generatePedidoColumns = (props: ColumnProps) => {
     },
     {
       key: 'm3Value',
-      label: 'M3 Valor',
+      label: 'Total Real',
       width: '4%',
       tdStyles: { textAlign: 'right' },
       summary: (value) => Summary(value),

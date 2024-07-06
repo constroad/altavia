@@ -17,18 +17,12 @@ const defaultValueDispatch: IDispatchList = {
   hour: '',
   transportId: '',
   clientId: '',
-  invoice: '',
   description: 'Mezcla asfaltica',
   guia: '',
   obra: '',
-  igvCheck: true,
   driverName: '',
   driverCard: '',
   quantity: 0,
-  price: 480,
-  subTotal: 0,
-  igv: 0,
-  total: 0,
   note: '',
   order: '',
   client: '',
@@ -36,7 +30,6 @@ const defaultValueDispatch: IDispatchList = {
   company: '',
   plate: '',
   key: new Date().toISOString(),
-  isPaid: false
 };
 
 const fetcher = (path: string) => axios.get(path);

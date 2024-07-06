@@ -197,10 +197,10 @@ const DispatchPage = () => {
               onAddDispatch={() => onAddDispatch()}
               addindDispatch={addingDispatch}
               totalRecords={dispatchSummary?.nroRecords ?? 0}
+              total={dispatchSummary?.total ?? 0}
               onSaveDispatch={onSaveAllDispatch}
             />
           }
-          // isLoading={isLoading || loadingOrders || updatingDispatch}
           data={listDispatch}
           columns={columns}
           pagination

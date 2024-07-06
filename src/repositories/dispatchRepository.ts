@@ -66,9 +66,13 @@ export class DispatchRepository {
       );
 
       const totals = dispatchs.reduce((prev, curr) => {
+        let total = 0
+        if (curr.orderId) {
+          total = (ordersMap[curr.orderId].precioCubo || 0) * curr.quantity
+        }
         return {
           m3: prev.m3 + curr.quantity,
-          total: prev.total + curr.total,
+          total: prev.total + total,
         }
       }, { m3: 0, total: 0 })
 
@@ -96,7 +100,7 @@ export class DispatchRepository {
         summary: {
           nroRecords: total,
           m3: totals.m3,
-          total: totals.total
+          total: Number(totals.total.toFixed(2))
         },
         pagination: {
           page: pageNumber,

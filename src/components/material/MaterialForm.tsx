@@ -1,4 +1,4 @@
-import { Button, Flex } from '@chakra-ui/react';
+import { Button, Flex, Text } from '@chakra-ui/react';
 import { useEffect, useState } from 'react';
 import { IMaterialSchema } from 'src/models/material';
 import axios from 'axios';
@@ -62,11 +62,12 @@ export const MaterialForm = (props: MaterialFormProps) => {
 
   return (
     <form onSubmit={handleSubmit}>
-      <Flex flexDir="column">
-        <label>
-          Numbre:
+      <Flex flexDir="column" gap={1} fontSize={12}>
+        <Flex flexDir="column">
+          <Text>Nombre:</Text>
+
           <input
-            className="border"
+            className="border p-1"
             value={material?.name ?? ''}
             onChange={(e) =>
               setMaterial({
@@ -75,11 +76,11 @@ export const MaterialForm = (props: MaterialFormProps) => {
               })
             }
           />
-        </label>
-        <label>
-          Unidad:
+        </Flex>
+        <Flex flexDir="column">
+          <Text>Unidad:</Text>
           <input
-            className="border"
+            className="border w-[80px] p-1"
             value={material?.unit ?? ''}
             onChange={(e) =>
               setMaterial({
@@ -88,11 +89,11 @@ export const MaterialForm = (props: MaterialFormProps) => {
               })
             }
           />
-        </label>
-        <label>
-          Cantidad:
+        </Flex>
+        <Flex flexDir="column">
+          <Text>Cantidad:</Text>
           <input
-            className="border"
+            className="border w-[80px] p-1"
             type="number"
             value={material?.quantity ?? 0}
             onChange={(e) =>
@@ -102,9 +103,11 @@ export const MaterialForm = (props: MaterialFormProps) => {
               })
             }
           />
-        </label>
+        </Flex>
       </Flex>
+
       <Button
+        mt={5}
         size="sm"
         type="submit"
         colorScheme="blue"

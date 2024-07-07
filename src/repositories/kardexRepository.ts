@@ -5,7 +5,7 @@ import Material from 'src/models/material';
 export class KardexRepository {
   async getAll(filters: object, params?: any): Promise<GETAllKardex> {
     try {
-      const { month, year, startDate, } = params ?? {}
+      const { month, year, startDate, } = params ?? {}      
       const kardex = await Kardex.find({ ...filters })
         .sort({ date: 1 })
 
@@ -17,6 +17,8 @@ export class KardexRepository {
         const prevEndDate = new Date(previousMonth.getFullYear(), previousMonth.getMonth() + 1, 0);
 
         const prevKardex = await Kardex.find({
+          //@ts-ignore
+          materialId: filters.materialId,
           date: {
             $gte: prevStartDate,
             $lt: prevEndDate

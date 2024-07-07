@@ -10,9 +10,9 @@ const router = createRouter<NextApiRequest, NextApiResponse>();
 
 const getAll = async (req: NextApiRequest, res: NextApiResponse) => {
   const repo = new KardexRepository();
-  const { month, year } = req.query;
+  const { month, year, materialId } = req.query;
   try {
-    let filter = {};
+    let filter: any = {};
     let params
     if (month && year) {
       const startDate = new Date(`${year}-${month}-01`);
@@ -29,6 +29,10 @@ const getAll = async (req: NextApiRequest, res: NextApiResponse) => {
       params = {
         month, year, startDate, endDate
       }
+    }
+
+    if (materialId) {
+      filter.materialId = materialId
     }
 
     const result = await repo.getAll(filter, params);

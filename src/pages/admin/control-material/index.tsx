@@ -1,24 +1,28 @@
-// pages/stock.tsx
-import { Button, Flex, useDisclosure, Text } from '@chakra-ui/react';
-import axios from 'axios';
-import { useEffect, useState } from 'react';
-import { API_ROUTES } from 'src/common/consts';
-import { useAsync } from 'src/common/hooks';
-import { IntranetLayout, Modal, toast } from 'src/components';
+import {
+  Button,
+  Flex,
+  useDisclosure,
+  Grid,
+  GridItem,
+  Spinner,
+  Select,
+  Text
+} from '@chakra-ui/react';
+import { useState } from 'react';
+import { useKardex } from 'src/common/hooks/useKardex';
+import { useMaterials } from 'src/common/hooks/useMaterials';
+import { SearchIcon } from 'src/common/icons';
+import { IntranetLayout, Modal, TableComponent } from 'src/components';
 import { KardexForm } from 'src/components/kardex/KardexForm';
-import { MaterialForm } from 'src/components/material/MaterialForm';
-import { GETAllKardex, IKardexSchema } from 'src/models/kardex';
+import { generateMaterialsColumns } from 'src/components/material/columnsConfig';
+import { IKardexSchema } from 'src/models/kardex';
 import { IMaterialSchema } from 'src/models/material';
-
-const fetcher = (path: string) => axios.get(path);
-const deleter = (path: string) => axios.delete(path);
 
 const StockPage = () => {
   const [materialSelected, setMaterialSelected] = useState<IMaterialSchema>();
   const [kardexSelected, setKardexSelected] = useState<IKardexSchema>();
   const [month, setMonth] = useState(new Date().getMonth() + 1);
   const [year, setYear] = useState(new Date().getFullYear());
-  const [initialValues, setInitialValues] = useState({ quantity: 0, value: 0 });
 
   const { onClose, isOpen, onOpen } = useDisclosure();
   const {
@@ -27,163 +31,196 @@ const StockPage = () => {
     onOpen: onOpenDelete,
   } = useDisclosure();
   // API
+  const { materials, isLoading, refetch, materialsMap } = useMaterials();
   const {
-    run: runGetMaterials,
-    data: materialResponse,
-    isLoading,
-    refetch,
-  } = useAsync<IMaterialSchema[]>();
-  const {
-    run: runGetKardex,
-    data: kardexResponse,
+    kardexWithBalance,
+    onDeleteKardex,
+    initialValues,
+    refetchKardex,
+    deletingKardex,
+    onSearch,
     isLoading: isLoadingKardex,
-    refetch: refetchKardex,
-  } = useAsync<GETAllKardex>();
-  const { run: runDeleteMaterial, isLoading: deletingMaterial } = useAsync();
-  const { run: runDeleteKardex, isLoading: deletingKardex } = useAsync();
+    monthList,
+    yearList,
+  } = useKardex({
+    month,
+    year,
+    materialId: materialSelected?._id,
+  });
 
-  useEffect(() => {
-    runGetMaterials(fetcher(API_ROUTES.material), {
-      refetch: () => runGetMaterials(fetcher(API_ROUTES.material)),
-      cacheKey: API_ROUTES.material,
-    });
-  }, []);
+  const columnsMaterial = generateMaterialsColumns();
 
-  useEffect(() => {
-    const path = `${API_ROUTES.kardex}?month=${month}&year=${year}`;
-    runGetKardex(fetcher(path), {
-      refetch: () => runGetKardex(fetcher(path)),
-      cacheKey: API_ROUTES.kardex,
-      onSuccess: (response) => {
-        const { quantity, value } = response.data.initialValues ?? {};
-        setInitialValues({ quantity: quantity ?? 0, value: value ?? 0 });
-      },
-    });
-  }, [month, year]);
-
-  // handlers
-  const handleCloseMaterialModal = () => {
+  //handlers
+  const handleCloseKardexModal = () => {
     onClose();
-    setMaterialSelected(undefined);
-  };
-  const handleDeleteTransport = () => {
-    runDeleteMaterial(
-      deleter(`${API_ROUTES.material}/${materialSelected?._id}`),
-      {
-        onSuccess: () => {
-          toast.success(`Eliminaste el pedido ${materialSelected?.name}`);
-          setMaterialSelected(undefined);
-          onCloseDelete();
-          refetch();
-        },
-      }
-    );
+    setKardexSelected(undefined);
   };
 
-  const handleDelete = async () => {
-    runDeleteKardex(deleter(`${API_ROUTES.material}/${kardexSelected?._id}`), {
-      onSuccess: () => {
-        toast.success(`Eliminaste el kardex ${kardexSelected?._id}`);
-        setKardexSelected(undefined);
-        // onCloseDelete();
-        refetch();
-        refetchKardex();
-      },
-    });
-  };
-
-  const computeBalance = (kardex: IKardexSchema[]) => {
-    let balanceQuantity = initialValues.quantity;
-    let balanceValue = initialValues.value;
-
-    return kardex.map((entry) => {
-      if (entry.type === 'Ingreso') {
-        balanceQuantity += entry.quantity;
-        balanceValue += entry.value ?? 0;
-      } else if (entry.type === 'Salida') {
-        balanceQuantity -= entry.quantity;
-        balanceValue -= entry.value ?? 0;
-      }
-
-      return {
-        ...entry,
-        balanceQuantity,
-        balanceValue,
-        unitCost: balanceQuantity !== 0 ? balanceValue / balanceQuantity : 0,
-      };
-    });
-  };
-
-  const materialsMap = Object.fromEntries(
-    (materialResponse?.data ?? []).map((x) => [x._id, x])
-  );
-
-  const kardexWithBalance = computeBalance(kardexResponse?.data?.kardex ?? []);
-
-  if (isLoading) return <div>Cargando...</div>;
+  if (isLoading || isLoadingKardex) return <Spinner />;
 
   const deleteFooter = (
     <Button
-      isLoading={deletingMaterial}
+      isLoading={deletingKardex}
       variant="ghost"
       autoFocus
       colorScheme="red"
-      onClick={handleDeleteTransport}
+      onClick={() =>
+        onDeleteKardex(kardexSelected?._id!, () => {
+          onCloseDelete();
+          setKardexSelected(undefined);
+          refetch();
+          refetchKardex();
+        })
+      }
     >
       Confirm
     </Button>
   );
 
   return (
-    <IntranetLayout>
-      <Flex flexDir="column" width="100%" gap={2} mt={5}>
-        <Flex width="100%" justifyContent="space-between">
-          <Text fontSize={{ base: 25, md: 36 }} fontWeight={700} color="black">
-            Kardex & Materiales
-          </Text>
+    <IntranetLayout title="Kardex & Materiales">
+      <Flex gap={3} flexDir="column" fontSize={12}>
+        <Grid
+          templateColumns={{ base: 'repeat(1, 1fr)', md: 'repeat(3, 1fr)' }}
+          gap={6}
+        >
+          <GridItem w="100%">
+            <TableComponent
+              itemsPerPage={100}
+              data={materials}
+              columns={columnsMaterial}
+              isLoading={isLoading}
+              tableProps={{
+                mb: 0,
+              }}
+            />
+          </GridItem>
+          <GridItem w="100%" colSpan={2}>
+            <h1>Calcular</h1>
+          </GridItem>
+        </Grid>
 
-          <Button autoFocus onClick={onOpen} size="sm" colorScheme="yellow">
-            Agregar Material
-          </Button>
-        </Flex>
-      </Flex>
-
-      <Flex gap={50}>
         <Flex flexDir="column">
-          <h1>Stock de Agregados</h1>
-          <table>
+          <h1 className="font-bold text-[15px]">Gestión de Kardex</h1>
+          <Flex alignItems="center" justifyContent="space-between">
+            <Flex alignItems="center" gap={2} justifyContent="center">
+              <label>
+                Mes:
+                <select
+                  value={month}
+                  onChange={(e) => setMonth(Number(e.target.value))}
+                >
+                  {monthList.map((x) => (
+                    <option key={x.value} value={x.value}>
+                      {x.name}
+                    </option>
+                  ))}
+                </select>
+              </label>
+              <label>
+                Año:
+                <select
+                  value={year}
+                  onChange={(e) => setYear(Number(e.target.value))}
+                >
+                  {yearList.map((x) => (
+                    <option key={x} value={x}>
+                      {x}
+                    </option>
+                  ))}
+                </select>
+              </label>
+              <Flex alignItems="center">
+                <Text fontSize={{ base: 12 }}>Material:</Text>
+                <Select
+                  defaultValue=""
+                  size="sm"
+                  width={{ base: '90px', md: '200px' }}
+                  onChange={(e) => setMaterialSelected(materialsMap[e.target.value])}
+                  fontSize={12}
+                  value={materialSelected?._id ?? ''}
+                >
+                  <option value="">Todos</option>
+                  {materials.map((x) => (
+                    <option key={`filter-${x._id}`} value={x._id}>
+                      {x.name}
+                    </option>
+                  ))}
+                </Select>
+                {/* <select
+                  value={year}
+                  onChange={(e) => setYear(Number(e.target.value))}
+                >
+                  {yearList.map((x) => (
+                    <option key={x} value={x}>
+                      {x}
+                    </option>
+                  ))}
+                </select> */}
+              </Flex>
+              <Button autoFocus onClick={onSearch} size="sm">
+                <SearchIcon size="18px" />
+              </Button>
+            </Flex>
+            <Button autoFocus onClick={onOpen} size="sm" colorScheme="yellow">
+              + Agregar
+            </Button>
+          </Flex>
+          <table className="border">
             <thead>
-              <tr>
-                <th>Nombre</th>
-                <th>Cantidad</th>
-                <th>Unidad</th>
-                <th>actions</th>
+              <tr className="border bg-black text-white">
+                <th className="py-2">Fecha</th>
+                <th>Concepto</th>
+                <th>Entradas</th>
+                <th>Salidas</th>
+                <th className="bg-[#FFC718] !text-black">Saldo</th>
+                <th>Entradas ($)</th>
+                <th>Salidas ($)</th>
+                <th className="bg-[#FFC718] !text-black">Saldo ($)</th>
+                <th>Costo Unitario</th>
+                <th>Acciones</th>
               </tr>
             </thead>
             <tbody>
-              {materialResponse?.data?.map((material) => (
-                <tr key={material._id}>
-                  <td>{material.name}</td>
-                  <td>{material.quantity}</td>
-                  <td>{material.unit}</td>
+              <tr className="font-bold bg-[whitesmoke]">
+                <td colSpan={4} className="font-bold py-2">
+                  Saldo Inicial
+                </td>
+                <td className="text-center">{initialValues.quantity}</td>
+                <td colSpan={2}></td>
+                <td className="text-center">{initialValues.value}</td>
+                <td colSpan={2}></td>
+              </tr>
+              {kardexWithBalance.map((entry) => (
+                <tr key={entry._id} className="border">
+                  <td className="text-center">
+                    {new Date(entry.date).toLocaleDateString()}
+                  </td>
                   <td>
+                    {materialsMap[entry.materialId].name}-{entry.type}
+                  </td>
+                  <td className="text-center">
+                    {entry.type === 'Ingreso' ? entry.quantity : ''}
+                  </td>
+                  <td className="text-center text-red-500">
+                    {entry.type === 'Salida' ? `-${entry.quantity}` : ''}
+                  </td>
+                  <td className="text-center">{entry?.balanceQuantity}</td>
+                  <td className="text-center">
+                    {entry.type === 'Ingreso' ? entry.value : ''}
+                  </td>
+                  <td className="text-center text-red-500">
+                    {entry.type === 'Salida' ? `-${entry.value}` : ''}
+                  </td>
+                  <td className="text-center">{entry?.balanceValue}</td>
+                  <td className="text-center">{entry.unitCost.toFixed(2)}</td>
+                  <td className="text-center">
                     <Button
-                      autoFocus
-                      onClick={() => {
-                        onOpen();
-                        setMaterialSelected(material);
-                      }}
                       size="xs"
-                    >
-                      Editar
-                    </Button>
-                    <Button
-                      autoFocus
                       onClick={() => {
+                        setKardexSelected(entry);
                         onOpenDelete();
-                        setMaterialSelected(material);
                       }}
-                      size="xs"
                     >
                       x
                     </Button>
@@ -192,121 +229,33 @@ const StockPage = () => {
               ))}
             </tbody>
           </table>
-        </Flex>
-        <Flex flexDir="column">
-          <h1>Actualizar Kardex</h1>
-          <KardexForm
-            materials={materialResponse?.data ?? []}
-            onSuccess={() => {
-              refetch();
-              refetchKardex();
-            }}
+
+          {/* transport form modal */}
+          <Modal
+            hideCancelButton
+            isOpen={isOpen}
+            onClose={handleCloseKardexModal}
+            heading={kardexSelected ? 'Editar Kardex' : 'Añadir Kardex'}
+          >
+            <KardexForm
+              materials={materials}
+              onSuccess={() => {
+                onClose();
+                refetch();
+                refetchKardex();
+              }}
+            />
+          </Modal>
+
+          {/* delete transport modal */}
+          <Modal
+            isOpen={isOpenDelete}
+            onClose={onCloseDelete}
+            heading={`¿Estás seguro de eliminar este material ${kardexSelected?.quantity}?`}
+            footer={deleteFooter}
           />
         </Flex>
       </Flex>
-
-      <Flex flexDir="column">
-        <h1>Gestión de Kardex</h1>
-        <h2>Historial</h2>
-        <div>
-          <label>
-            Mes:
-            <select
-              value={month}
-              onChange={(e) => setMonth(Number(e.target.value))}
-            >
-              {Array.from({ length: 12 }, (_, i) => i + 1).map((mes) => (
-                <option key={mes} value={mes}>
-                  {mes}
-                </option>
-              ))}
-            </select>
-          </label>
-          <label>
-            Año:
-            <input
-              type="number"
-              value={year}
-              onChange={(e) => setYear(Number(e.target.value))}
-            />
-          </label>
-        </div>
-        <table>
-          <thead>
-            <tr>
-              <th>Fecha</th>
-              <th>Concepto</th>
-              <th>Entradas</th>
-              <th>Salidas</th>
-              <th>Saldo</th>
-              <th>Entradas ($)</th>
-              <th>Salidas ($)</th>
-              <th>Saldo ($)</th>
-              <th>Costo Unitario</th>
-              <th>Acciones</th>
-            </tr>
-          </thead>
-          <tbody>
-            <tr>
-              <td colSpan={4}>Saldo Inicial</td>
-              <td>{initialValues.quantity}</td>
-              <td colSpan={2}></td>
-              <td>{initialValues.value}</td>
-              <td colSpan={2}></td>
-            </tr>
-            {kardexWithBalance.map((entry) => (
-              <tr key={entry._id}>
-                {/* <td>{entry.materialId}</td>
-                <td>{entry.type}</td>
-                <td>{entry.quantity}</td>
-                <td>{new Date(entry.date).toLocaleString()}</td> */}
-
-                <td>{new Date(entry.date).toLocaleDateString()}</td>
-                <td>
-                  {materialsMap[entry.materialId].name}-{entry.type}
-                </td>
-                <td>{entry.type === 'Ingreso' ? entry.quantity : ''}</td>
-                <td>{entry.type === 'Salida' ? entry.quantity : ''}</td>
-                <td>{entry?.balanceQuantity}</td>
-                <td>{entry.type === 'Ingreso' ? entry.value : ''}</td>
-                <td>{entry.type === 'Salida' ? entry.value : ''}</td>
-                <td>{entry?.balanceValue}</td>
-                <td>{entry.unitCost}</td>
-                <td>
-                  <Button size="xs" onClick={() => setKardexSelected(entry)}>
-                    Editar
-                  </Button>
-                  <Button size="xs" onClick={() => setKardexSelected(entry)}>
-                    x
-                  </Button>
-                </td>
-              </tr>
-            ))}
-          </tbody>
-        </table>
-      </Flex>
-
-      {/* transport form modal */}
-      <Modal
-        hideCancelButton
-        isOpen={isOpen}
-        onClose={handleCloseMaterialModal}
-        heading={materialSelected ? 'Editar Material' : 'Añadir Material'}
-      >
-        <MaterialForm
-          material={materialSelected}
-          onClose={handleCloseMaterialModal}
-          onSuccess={refetch}
-        />
-      </Modal>
-
-      {/* delete transport modal */}
-      <Modal
-        isOpen={isOpenDelete}
-        onClose={onCloseDelete}
-        heading={`¿Estás seguro de eliminar este material ${materialSelected?.name}?`}
-        footer={deleteFooter}
-      />
     </IntranetLayout>
   );
 };

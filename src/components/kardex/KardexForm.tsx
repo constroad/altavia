@@ -1,4 +1,3 @@
-// components/KardexForm.tsx
 import { useState, useEffect } from 'react';
 import axios from 'axios';
 import { IKardexSchema } from 'src/models/kardex';
@@ -87,10 +86,9 @@ export const KardexForm = (props: KardexFormProps) => {
     });
   };
 
-  console.log('kardex', kardex);
   return (
     <form onSubmit={handleSubmit}>
-      <Flex flexDir="column">
+      <Flex flexDir="column" fontSize={12}>
         <FormControl>
           <FormLabel fontSize="inherit">Material:</FormLabel>
           <Select
@@ -111,25 +109,6 @@ export const KardexForm = (props: KardexFormProps) => {
             ))}
           </Select>
         </FormControl>
-        {/* <label>
-          Agregado:
-          <select
-            className="border"
-            value={kardex?.materialId ?? ''}
-            onChange={(e) =>
-              setKardex({
-                ...kardex,
-                materialId: e.target.value,
-              })
-            }
-          >
-            {props.materials?.map((material) => (
-              <option key={material._id} value={material._id}>
-                {material.name}
-              </option>
-            ))}
-          </select>
-        </label> */}
         <FormControl>
           <FormLabel fontSize="inherit">Tipo:</FormLabel>
           <Select
@@ -147,8 +126,8 @@ export const KardexForm = (props: KardexFormProps) => {
             <option value="Salida">Salida</option>
           </Select>
         </FormControl>
-        <label>
-          Cantidad:
+        <FormControl>
+          <FormLabel fontSize="inherit">Cantidad:</FormLabel>
           <input
             className="border"
             type="number"
@@ -160,9 +139,9 @@ export const KardexForm = (props: KardexFormProps) => {
               })
             }
           />
-        </label>
-        <label>
-          valor:
+        </FormControl>
+        <FormControl>
+          <FormLabel fontSize="inherit">Valor:</FormLabel>
           <input
             className="border"
             type="number"
@@ -174,9 +153,9 @@ export const KardexForm = (props: KardexFormProps) => {
               })
             }
           />
-        </label>
-        <label>
-          costo unitario:
+        </FormControl>
+        <FormControl>
+          <FormLabel fontSize="inherit">costo unitario:</FormLabel>
           <input
             className="border"
             type="number"
@@ -188,9 +167,9 @@ export const KardexForm = (props: KardexFormProps) => {
               })
             }
           />
-        </label>
-        <label>
-          fecha:
+        </FormControl>
+        <FormControl>
+          <FormLabel fontSize="inherit">Fecha:</FormLabel>
           <Input
             size="xs"
             type="date"
@@ -203,12 +182,13 @@ export const KardexForm = (props: KardexFormProps) => {
               })
             }
           />
-        </label>
+        </FormControl>
       </Flex>
       <Button
         size="sm"
         type="submit"
         colorScheme="blue"
+        mt={5}
         isLoading={addingKardex || updatingKardex}
       >
         {props.kardex ? 'Actualizar' : 'Crear'}

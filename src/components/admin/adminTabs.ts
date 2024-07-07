@@ -60,7 +60,7 @@ export const adminTabs = [
     icon: HighwayIcon
   },
   {
-    name: 'Control Agregados',
+    name: 'Kardex',
     path: ADMIN_ROUTES.controlMaterial,
     bgColor: CONSTROAD_COLORS.yellow,
     textColor: 'black',
@@ -83,13 +83,13 @@ export const administrationTabs = [
     textColor: 'white',
     icon: ProvidersIcon
   },
-  {
-    name: 'Productos',
-    path: ADMIN_ROUTES.products,
-    bgColor: CONSTROAD_COLORS.darkGray,
-    textColor: 'white',
-    icon: ProductsIcon
-  },
+  // {
+  //   name: 'Productos',
+  //   path: ADMIN_ROUTES.products,
+  //   bgColor: CONSTROAD_COLORS.darkGray,
+  //   textColor: 'white',
+  //   icon: ProductsIcon
+  // },
   {
     name: 'Pedidos',
     path: ADMIN_ROUTES.orders,
@@ -110,5 +110,12 @@ export const administrationTabs = [
     bgColor: CONSTROAD_COLORS.lightGray,
     textColor: 'black',
     icon: DispatchIcon
+  },
+  {
+    name: 'Agregados',
+    path: ADMIN_ROUTES.materials,
+    bgColor: CONSTROAD_COLORS.lightGray,
+    textColor: 'black',
+    icon: MaterialIcon
   },
 ]

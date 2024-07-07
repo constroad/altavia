@@ -10,6 +10,7 @@ import {
   CircularProgress,
   Box,
   Text,
+  TableProps,
 } from '@chakra-ui/react';
 import { SortColumnStatus, TableColumn, TableData } from './TableTypes';
 import { CONSTROAD_COLORS } from 'src/styles/shared';
@@ -41,6 +42,7 @@ interface Props {
   totalRecords?: number;
   // Renders
   toolbar?: React.ReactNode;
+  tableProps?: TableProps
 }
 
 export const TableComponent = (props: Props) => {
@@ -110,7 +112,8 @@ export const TableComponent = (props: Props) => {
       fontSize="inherit"
     >
       <Box>{props.toolbar}</Box>
-      <Table border="collapse" mb={10}>
+      {/* @ts-ignore */}
+      <Table border="collapse" mb={10} {...props.tableProps}>
         <Thead h={{ base: '32px', md: 'auto' }}>
           <Tr fontSize={10}>
             {columns.map((column, idx) => (

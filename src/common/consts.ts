@@ -32,6 +32,7 @@ export const ADMIN_ROUTES = {
   dispatch: '/admin/despacho',
   controlFluid: '/admin/control-fluid',
   controlMaterial: '/admin/control-material',
+  materials: '/admin/materials',
   production: '/admin/produccion',
   tasks: '/admin/tareas',
   orders: '/admin/pedidos',

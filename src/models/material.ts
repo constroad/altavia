@@ -24,11 +24,13 @@ export type IMaterialSchema = z.infer<typeof materialValidationSchema>
 
 export interface MaterialModel extends Document {
   name: string;
+  description?: string;
   quantity: number;
   unit: string;
 }
 const MaterialSchema: Schema = new Schema({
   name: { type: String, required: true },
+  description: { type: String, required: false },
   quantity: { type: Number, required: true },
   unit: { type: String, required: true },
 }, {

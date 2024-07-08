@@ -29,6 +29,7 @@ export type GETAllKardex = {
 
 export interface KardexModel extends Document {
   materialId: string;
+  description?: string;
   type: KardexType;
   quantity: number;
   value: number;
@@ -42,6 +43,7 @@ const KardexSchema: Schema = new Schema({
   quantity: { type: Number, required: true },
   value: { type: Number, required: true },
   unitCost: { type: Number, required: true },
+  description: { type: String, required: true },
   date: { type: Date, default: Date.now }
 },
   {

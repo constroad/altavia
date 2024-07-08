@@ -21,6 +21,7 @@ const getById = async (req: NextApiRequest, res: NextApiResponse) => {
 const updateRecord = async (req: NextApiRequest, res: NextApiResponse) => {
   const repo = new MaterialRepository();
   const { id } = req.query as Record<string, string>;
+  console.log('update material:', req.body)
   try {
     const response = await repo.update(id, req.body);
     res.status(200).json(response);

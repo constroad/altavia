@@ -47,17 +47,10 @@ const Materials = () => {
   return (
     <IntranetLayout title='Materiales'>
       <Flex flexDir="column" width="100%" gap={2} mt={5}>
-        <Flex width="100%" justifyContent="space-between">
-          <Text
-            fontSize={{ base: 25, md: 36 }}
-            fontWeight={700}
-            color="black"
-            lineHeight={{ base: '28px', md: '39px' }}
-          >
-            Materiales
-          </Text>
+        <Flex width="100%" justifyContent="end">
 
-          <Button autoFocus onClick={onOpen}>
+
+          <Button size="sm" autoFocus onClick={onOpen}>
             Agregar
           </Button>
         </Flex>

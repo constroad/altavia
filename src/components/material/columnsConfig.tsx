@@ -40,6 +40,11 @@ export const generateMaterialsColumns = (props?: IMeterialColumns) => {
       width: '20%',
     },
     {
+      key: 'description',
+      label: 'Descripcion',
+      width: '20%',
+    },
+    {
       key: 'unit',
       label: 'Unidad',
       width: '10%',

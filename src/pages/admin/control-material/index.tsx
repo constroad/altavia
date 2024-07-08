@@ -250,7 +250,7 @@ const StockPage = () => {
               </tr>
             </thead>
             <tbody className="text-[10px]">
-              <tr className="font-bold bg-[whitesmoke]">
+              <tr className="font-bold bg-[whitesmoke] text-[14px]">
                 <td colSpan={4} className="font-bold py-2">
                   Saldo Inicial
                 </td>
@@ -260,7 +260,7 @@ const StockPage = () => {
                 <td colSpan={2}></td>
               </tr>
               {kardexWithBalance.map((entry) => (
-                <tr key={entry._id} className="border">
+                <tr key={entry._id} className="border hover:bg-[whitesmoke]">
                   <td className="text-center">
                     {new Date(entry.date).toLocaleDateString()}
                   </td>

@@ -48,7 +48,7 @@ export const IntranetLayout = (props: IIntranetLayout) => {
           <Flex alignItems="center" justifyContent="space-between">
             <Box>
               <Text
-                fontSize={{ base: 20, md: 30 }}
+                fontSize={{ base: 20, md: 25 }}
                 fontWeight={700}
                 color="black"
                 lineHeight={{ base: '28px', md: '39px' }}

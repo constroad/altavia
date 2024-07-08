@@ -1,4 +1,3 @@
-import mongoose from 'mongoose';
 import Kardex, { GETAllKardex, KardexModel } from 'src/models/kardex';
 import Material from 'src/models/material';
 
@@ -16,14 +15,18 @@ export class KardexRepository {
         const prevStartDate = new Date(previousMonth.getFullYear(), previousMonth.getMonth(), 1);
         const prevEndDate = new Date(previousMonth.getFullYear(), previousMonth.getMonth() + 1, 0);
 
-        const prevKardex = await Kardex.find({
-          //@ts-ignore
-          materialId: filters.materialId,
+        const prevMonthFilter: any = {
           date: {
             $gte: prevStartDate,
             $lt: prevEndDate
           }
-        }).sort({ date: 1 });
+        }
+        //@ts-ignore
+        const {materialId} = filters ?? {}
+        if (materialId) {
+          prevMonthFilter.materialId = materialId
+        }
+        const prevKardex = await Kardex.find({...prevMonthFilter}).sort({ date: 1 });
 
         if (prevKardex.length > 0) {
           initialValues = {

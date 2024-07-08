@@ -14,7 +14,7 @@ import {
 import { useState } from 'react';
 import { useKardex } from 'src/common/hooks/useKardex';
 import { useMaterials } from 'src/common/hooks/useMaterials';
-import { SearchIcon } from 'src/common/icons';
+import { SearchIcon, TrashIcon } from 'src/common/icons';
 import { IntranetLayout, Modal, TableComponent } from 'src/components';
 import { KardexForm } from 'src/components/kardex/KardexForm';
 import { MacReferences } from 'src/components/kardex/MacReferences';
@@ -265,7 +265,10 @@ const StockPage = () => {
                     {new Date(entry.date).toLocaleDateString()}
                   </td>
                   <td>
-                    {entry.type}-{materialsMap[entry.materialId]?.name} ({materialsMap[entry.materialId]?.description})
+                    {entry.type}-{materialsMap[entry.materialId]?.name}
+                    {materialsMap[entry.materialId]?.description && (
+                      <>({materialsMap[entry.materialId]?.description})</>
+                    )}
                     <Text color="gray" fontSize={9}>
                       {entry.description}
                     </Text>
@@ -293,7 +296,7 @@ const StockPage = () => {
                         onOpenDelete();
                       }}
                     >
-                      x
+                      <TrashIcon />
                     </Button>
                   </td>
                 </tr>

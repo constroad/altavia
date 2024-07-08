@@ -12,8 +12,6 @@ import {
   NumberInput,
   NumberInputField,
   Spinner,
-  Switch,
-  Text,
   Tooltip,
 } from '@chakra-ui/react';
 import { TableColumn } from '../Table';

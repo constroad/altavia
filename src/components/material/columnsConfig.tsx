@@ -4,6 +4,7 @@ import {
   NumberInput,
   NumberInputField,
   Text,
+  Tooltip,
 } from '@chakra-ui/react';
 import { TableColumn } from 'src/components';
 import { IMaterialSchema } from 'src/models/material';
@@ -38,23 +39,32 @@ export const generateMaterialsColumns = (props?: IMeterialColumns) => {
       key: 'name',
       label: 'Material',
       width: '25%',
+      bgColor: CONSTROAD_COLORS.darkGray,
       render: (item, row) => {
-        return <>{item} ({row.description})</>
-      }
+        return (
+          <Tooltip label={`${item} ${row.description ? row.description : ''}`}>
+            <Text noOfLines={1}>
+              {item}
+              {row.description && `(${row.description})`}
+            </Text>
+          </Tooltip>
+        );
+      },
     },
     {
       key: 'unit',
       label: 'Unidad',
       width: '10%',
       textAlign: 'center',
+      bgColor: CONSTROAD_COLORS.darkGray,
     },
     {
       key: 'quantity',
       textAlign: 'center',
       label: 'Stock',
       width: '10%',
-      bgColor: CONSTROAD_COLORS.yellow,
-      color: CONSTROAD_COLORS.black,
+      bgColor: CONSTROAD_COLORS.darkGray,
+      
       summary: (value) => SummaryAmount(value),
     },
   ];
@@ -64,6 +74,8 @@ export const generateMaterialsColumns = (props?: IMeterialColumns) => {
       key: 'percent',
       label: 'Dosis',
       width: '10%',
+      bgColor: CONSTROAD_COLORS.yellow,
+      color: CONSTROAD_COLORS.black,
       textAlign: 'center',
       render: (item, row) => {
         return (
@@ -95,8 +107,6 @@ export const generateMaterialsColumns = (props?: IMeterialColumns) => {
       label: 'Necesitas',
       width: '10%',
       textAlign: 'center',
-      bgColor: CONSTROAD_COLORS.yellow,
-      color: CONSTROAD_COLORS.black,
       render: (item) => <>{item > 0 && item}</>,
     });
     columns.push({
@@ -104,8 +114,6 @@ export const generateMaterialsColumns = (props?: IMeterialColumns) => {
       label: 'Tengo',
       width: '10%',
       textAlign: 'center',
-      bgColor: CONSTROAD_COLORS.yellow,
-      color: CONSTROAD_COLORS.black,
       render: (item) => <>{item > 0 && item}</>,
       summary: (value) => SummaryAmount(value),
     });
@@ -114,8 +122,6 @@ export const generateMaterialsColumns = (props?: IMeterialColumns) => {
       label: 'Comprar',
       width: '10%',
       textAlign: 'center',
-      bgColor: CONSTROAD_COLORS.yellow,
-      color: CONSTROAD_COLORS.black,
       render: (item) => <>{item > 0 && item}</>,
       summary: (value) => SummaryAmount(value),
     });

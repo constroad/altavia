@@ -210,7 +210,6 @@ export const TableComponent = (props: Props) => {
                     m={0}
                     px={{ base: 1.5, md: 2 }}
                     py={0}
-                    lineHeight={7}
                     height="max-content"
                     textAlign={column.textAlign ?? 'start'}
                     paddingInlineStart={0}

@@ -1,7 +1,7 @@
 export function formatISODate(isoString: string | Date) {
   let date: Date;
   if (typeof isoString === "string") {
-    date = new Date(isoString);    
+    date = new Date(isoString);
   } else {
     date = isoString
   }
@@ -12,8 +12,11 @@ export function formatISODate(isoString: string | Date) {
 }
 
 export function parseLocalDate(dateString: string): Date {
-  const [year, month, day] = dateString.split('-').map(Number);
-  return new Date(year, month - 1, day);
+  const now = new Date();
+  const hour = now.getHours();
+  const min = now.getMinutes();
+  const [ year, month, day ] = dateString.split('-').map(Number);
+  return new Date(year, month - 1, day, hour, min);
 }
 
 export function getDateStringRange(differenceInDays: number = 14): { dateTo: string, dateFrom: string } {
@@ -36,7 +39,7 @@ export const parseStringDateWithTime = (dateString: string | Date) => {
   const now = new Date();
 
   let minutes = String(now.getMinutes())
-  if ( Number(minutes) < 10 ) {
+  if (Number(minutes) < 10) {
     minutes = `0${now.getMinutes()}`
   }
 

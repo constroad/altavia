@@ -22,7 +22,13 @@ export const useMaterials = () => {
 
   useEffect(() => {
     runGetMaterials(fetcher(API_ROUTES.material), {
-      refetch: () => runGetMaterials(fetcher(API_ROUTES.material)),
+      refetch: () => runGetMaterials(fetcher(API_ROUTES.material), {
+        onSuccess: (response) => {
+          if (JSON.stringify(controlledMaterials) !== JSON.stringify(response.data)) {          
+            setControlledMaterials(response.data)
+          }  
+        }
+      }),
       cacheKey: API_ROUTES.material,
       onSuccess: (response) => {
         if (JSON.stringify(controlledMaterials) !== JSON.stringify(response.data)) {          

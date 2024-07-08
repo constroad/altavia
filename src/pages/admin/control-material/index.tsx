@@ -88,12 +88,12 @@ const StockPage = () => {
       let toProduce = 0;
 
       if (wantToProduce && percent) {
-        needed = wantToProduce * percent;
-        toBuy = needed - (toProduce ?? 0);
+        needed = Number((wantToProduce * percent).toFixed(2));
         toProduce = Number((quantity * (percent ?? 0)).toFixed(1));
+        toBuy = Number((quantity - needed).toFixed(2));
       }
 
-      return { ...material, toProduce, needed, toBuy };
+      return { ...material, toProduce, needed, toBuy: toBuy > 0 ? 0 : toBuy };
     });
     onUpdateControlledMaterials(metarialsUpdated);
   };
@@ -221,7 +221,7 @@ const StockPage = () => {
                   <option value="">Todos</option>
                   {controlledMaterials.map((x) => (
                     <option key={`filter-${x._id}`} value={x._id}>
-                      {x.name}
+                      {x.name}-{x.description}
                     </option>
                   ))}
                 </Select>
@@ -279,14 +279,14 @@ const StockPage = () => {
                   <td className="text-center text-red-500">
                     {entry.type === 'Salida' ? `-${entry.quantity}` : ''}
                   </td>
-                  <td className="text-center">{entry?.balanceQuantity}</td>
+                  <td className="text-center">{entry?.balanceQuantity.toFixed(2)}</td>
                   <td className="text-center">
                     {entry.type === 'Ingreso' ? entry.value : ''}
                   </td>
                   <td className="text-center text-red-500">
                     {entry.type === 'Salida' ? `-${entry.value}` : ''}
                   </td>
-                  <td className="text-center">{entry?.balanceValue}</td>
+                  <td className="text-center">{entry?.balanceValue.toFixed(2)}</td>
                   <td className="text-center">{entry.unitCost.toFixed(2)}</td>
                   <td className="text-center">
                     <Button

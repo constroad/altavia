@@ -64,7 +64,7 @@ export const generateMaterialsColumns = (props?: IMeterialColumns) => {
       label: 'Stock',
       width: '10%',
       bgColor: CONSTROAD_COLORS.darkGray,
-      
+      render: (item) => <>{(item ?? 0).toFixed(2)}</>,
       summary: (value) => SummaryAmount(value),
     },
   ];
@@ -122,7 +122,7 @@ export const generateMaterialsColumns = (props?: IMeterialColumns) => {
       label: 'Comprar',
       width: '10%',
       textAlign: 'center',
-      render: (item) => <>{item > 0 && item}</>,
+      render: (item) => <>{item === 0 ? '-' : item}</>,
       summary: (value) => SummaryAmount(value),
     });
   }

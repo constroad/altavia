@@ -103,7 +103,7 @@ export const KardexForm = (props: KardexFormProps) => {
           >
             {props.materials?.map((material) => (
               <option key={material._id} value={material._id}>
-                {material.name}
+                {material.name}-{material.description}
               </option>
             ))}
           </Select>

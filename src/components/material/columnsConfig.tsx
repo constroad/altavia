@@ -37,12 +37,10 @@ export const generateMaterialsColumns = (props?: IMeterialColumns) => {
     {
       key: 'name',
       label: 'Material',
-      width: '20%',
-    },
-    {
-      key: 'description',
-      label: 'Descripcion',
-      width: '20%',
+      width: '25%',
+      render: (item, row) => {
+        return <>{item} ({row.description})</>
+      }
     },
     {
       key: 'unit',
@@ -79,14 +77,10 @@ export const generateMaterialsColumns = (props?: IMeterialColumns) => {
               if (e.target.value) {
                 percent = Number(e.target.value);
               }
-              // const toProduce = Number((row.quantity * (percent ?? 0)).toFixed(1))
-              // let toBuy = row.quantity - toProduce
-   
+
               props?.onUpdateRow?.({
                 ...row,
                 percent,
-                // toProduce,
-                // toBuy: toBuy > 0 ? 0 : toBuy
               });
             }}
           >

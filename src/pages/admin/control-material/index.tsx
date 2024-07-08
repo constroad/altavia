@@ -147,7 +147,7 @@ const StockPage = () => {
                         onBlur={(e) => {
                           if (e.target.value === wantToProduce?.toString())
                             return;
-                          setWantToProduce(Number(e.target.value ?? "0"));
+                          setWantToProduce(Number(e.target.value ?? '0'));
                         }}
                       >
                         <NumberInputField
@@ -249,7 +249,7 @@ const StockPage = () => {
                 <th>Acciones</th>
               </tr>
             </thead>
-            <tbody>
+            <tbody className="text-[10px]">
               <tr className="font-bold bg-[whitesmoke]">
                 <td colSpan={4} className="font-bold py-2">
                   Saldo Inicial
@@ -265,7 +265,10 @@ const StockPage = () => {
                     {new Date(entry.date).toLocaleDateString()}
                   </td>
                   <td>
-                    {materialsMap[entry.materialId].name}-{entry.type}
+                    {entry.type}-{materialsMap[entry.materialId]?.name} ({materialsMap[entry.materialId]?.description})
+                    <Text color="gray" fontSize={9}>
+                      {entry.description}
+                    </Text>
                   </td>
                   <td className="text-center">
                     {entry.type === 'Ingreso' ? entry.quantity : ''}

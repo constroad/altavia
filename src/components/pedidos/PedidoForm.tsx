@@ -263,7 +263,7 @@ export const PedidoForm = (props: PedidoFormProps) => {
 
   const handleGenerateAndCopyURL = () => {
     const baseUrl = getBaseUrl();
-    const clientReportUrl = `${baseUrl}${APP_ROUTES.clientReport}?clientId=${order._id}`;
+    const clientReportUrl = `${baseUrl}${APP_ROUTES.clientReport}?clientId=${order.clienteId}`;
     const toastMessage = 'Url copiado con éxito';
     copyToClipboard(clientReportUrl, toastMessage);
   };

@@ -6,7 +6,10 @@ import {
   GridItem,
   Spinner,
   Select,
-  Text
+  Text,
+  NumberInput,
+  NumberInputField,
+  Box,
 } from '@chakra-ui/react';
 import { useState } from 'react';
 import { useKardex } from 'src/common/hooks/useKardex';
@@ -14,15 +17,18 @@ import { useMaterials } from 'src/common/hooks/useMaterials';
 import { SearchIcon } from 'src/common/icons';
 import { IntranetLayout, Modal, TableComponent } from 'src/components';
 import { KardexForm } from 'src/components/kardex/KardexForm';
+import { MacReferences } from 'src/components/kardex/MacReferences';
 import { generateMaterialsColumns } from 'src/components/material/columnsConfig';
 import { IKardexSchema } from 'src/models/kardex';
 import { IMaterialSchema } from 'src/models/material';
+import { CONSTROAD_COLORS } from 'src/styles/shared';
 
 const StockPage = () => {
   const [materialSelected, setMaterialSelected] = useState<IMaterialSchema>();
   const [kardexSelected, setKardexSelected] = useState<IKardexSchema>();
   const [month, setMonth] = useState(new Date().getMonth() + 1);
   const [year, setYear] = useState(new Date().getFullYear());
+  const [wantToProduce, setWantToProduce] = useState(0);
 
   const { onClose, isOpen, onOpen } = useDisclosure();
   const {
@@ -31,7 +37,13 @@ const StockPage = () => {
     onOpen: onOpenDelete,
   } = useDisclosure();
   // API
-  const { materials, isLoading, refetch, materialsMap } = useMaterials();
+  const {
+    controlledMaterials,
+    isLoading,
+    refetch,
+    materialsMap,
+    onUpdateControlledMaterials,
+  } = useMaterials();
   const {
     kardexWithBalance,
     onDeleteKardex,
@@ -48,12 +60,42 @@ const StockPage = () => {
     materialId: materialSelected?._id,
   });
 
-  const columnsMaterial = generateMaterialsColumns();
+  const columnsMaterial = generateMaterialsColumns({
+    isKardex: true,
+    onUpdateRow: (data) => {
+      const updatedData = controlledMaterials.map((x) => {
+        if (x._id === data._id) {
+          return { ...x, ...data };
+        }
+        return x;
+      });
+      onUpdateControlledMaterials(updatedData);
+    },
+  });
 
   //handlers
   const handleCloseKardexModal = () => {
     onClose();
     setKardexSelected(undefined);
+  };
+
+  const handleComputeDose = () => {
+    if (wantToProduce === 0) return;
+    const metarialsUpdated = controlledMaterials.map((material) => {
+      const { percent, quantity } = material;
+      let needed = 0;
+      let toBuy = 0;
+      let toProduce = 0;
+
+      if (wantToProduce && percent) {
+        needed = wantToProduce * percent;
+        toBuy = needed - (toProduce ?? 0);
+        toProduce = Number((quantity * (percent ?? 0)).toFixed(1));
+      }
+
+      return { ...material, toProduce, needed, toBuy };
+    });
+    onUpdateControlledMaterials(metarialsUpdated);
   };
 
   if (isLoading || isLoadingKardex) return <Spinner />;
@@ -81,13 +123,47 @@ const StockPage = () => {
     <IntranetLayout title="Kardex & Materiales">
       <Flex gap={3} flexDir="column" fontSize={12}>
         <Grid
-          templateColumns={{ base: 'repeat(1, 1fr)', md: 'repeat(3, 1fr)' }}
+          templateColumns={{ base: 'repeat(1, 1fr)', md: 'repeat(2, 1fr)' }}
           gap={6}
         >
           <GridItem w="100%">
             <TableComponent
-              itemsPerPage={100}
-              data={materials}
+              toolbar={
+                <Flex alignItems="center" justifyContent="space-between">
+                  <Flex alignItems="center" gap={2}>
+                    <Box
+                      p={2}
+                      bgColor={CONSTROAD_COLORS.yellow}
+                      fontWeight={600}
+                    >
+                      Quiero producir:
+                    </Box>
+                    <Flex alignItems="center">
+                      <NumberInput
+                        textAlign="center"
+                        size="xs"
+                        defaultValue={0}
+                        width="50px"
+                        onBlur={(e) => {
+                          if (e.target.value === wantToProduce?.toString())
+                            return;
+                          setWantToProduce(Number(e.target.value) ?? 0);
+                        }}
+                      >
+                        <NumberInputField
+                          fontSize="inherit"
+                          paddingInlineEnd={0}
+                        />
+                      </NumberInput>
+                      m3
+                    </Flex>
+                  </Flex>
+                  <Button size="xs" p={2} onClick={handleComputeDose}>
+                    Calcular
+                  </Button>
+                </Flex>
+              }
+              data={controlledMaterials}
               columns={columnsMaterial}
               isLoading={isLoading}
               tableProps={{
@@ -95,8 +171,8 @@ const StockPage = () => {
               }}
             />
           </GridItem>
-          <GridItem w="100%" colSpan={2}>
-            <h1>Calcular</h1>
+          <GridItem w="100%">
+            <MacReferences />
           </GridItem>
         </Grid>
 
@@ -136,27 +212,19 @@ const StockPage = () => {
                   defaultValue=""
                   size="sm"
                   width={{ base: '90px', md: '200px' }}
-                  onChange={(e) => setMaterialSelected(materialsMap[e.target.value])}
+                  onChange={(e) =>
+                    setMaterialSelected(materialsMap[e.target.value])
+                  }
                   fontSize={12}
                   value={materialSelected?._id ?? ''}
                 >
                   <option value="">Todos</option>
-                  {materials.map((x) => (
+                  {controlledMaterials.map((x) => (
                     <option key={`filter-${x._id}`} value={x._id}>
                       {x.name}
                     </option>
                   ))}
                 </Select>
-                {/* <select
-                  value={year}
-                  onChange={(e) => setYear(Number(e.target.value))}
-                >
-                  {yearList.map((x) => (
-                    <option key={x} value={x}>
-                      {x}
-                    </option>
-                  ))}
-                </select> */}
               </Flex>
               <Button autoFocus onClick={onSearch} size="sm">
                 <SearchIcon size="18px" />
@@ -238,7 +306,7 @@ const StockPage = () => {
             heading={kardexSelected ? 'Editar Kardex' : 'Añadir Kardex'}
           >
             <KardexForm
-              materials={materials}
+              materials={controlledMaterials}
               onSuccess={() => {
                 onClose();
                 refetch();

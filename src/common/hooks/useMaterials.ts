@@ -1,4 +1,4 @@
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { IMaterialSchema } from "src/models/material";
 import { API_ROUTES } from "../consts";
 import { useAsync } from "./useAsync";
@@ -16,12 +16,19 @@ export const useMaterials = () => {
     refetch,
   } = useAsync<IMaterialSchema[]>();
 
+  const [controlledMaterials, setControlledMaterials] = useState<IMaterialSchema[]>([])
+
   const { run: runDeleteMaterial, isLoading: deletingMaterial } = useAsync();
 
   useEffect(() => {
     runGetMaterials(fetcher(API_ROUTES.material), {
       refetch: () => runGetMaterials(fetcher(API_ROUTES.material)),
       cacheKey: API_ROUTES.material,
+      onSuccess: (response) => {
+        if (JSON.stringify(controlledMaterials) !== JSON.stringify(response.data)) {          
+          setControlledMaterials(response.data)
+        }
+      }
     });
   }, []);
 
@@ -46,6 +53,8 @@ export const useMaterials = () => {
 
   return {
     materials,
+    controlledMaterials,
+    onUpdateControlledMaterials: setControlledMaterials,
     isLoading,
     refetch,
     onDeleteMaterial,

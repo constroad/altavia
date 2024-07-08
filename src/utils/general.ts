@@ -28,8 +28,8 @@ export function getDateStringRange(differenceInDays: number = 14): { dateTo: str
   };
 }
 
-export function formatMoney(amount: number) {
-  return (amount).toFixed(2).replace(/\d(?=(\d{3})+\.)/g, '$&,');
+export function formatMoney(amount: number, decimals?: number) {
+  return (amount).toFixed(decimals ?? 2).replace(/\d(?=(\d{3})+\.)/g, '$&,');
 };
 
 export const parseStringDateWithTime = (dateString: string | Date) => {

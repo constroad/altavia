@@ -28,6 +28,14 @@ export const MaterialForm = (props: MaterialFormProps) => {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    if (!material?.name) {
+      toast.warning("Ingrese el nombre")
+      return
+    }
+    if (!material?.unit) {
+      toast.warning("Ingrese unidad de medida")
+      return
+    }
 
     // EDIT
     if (props.material && material) {
@@ -48,16 +56,22 @@ export const MaterialForm = (props: MaterialFormProps) => {
     }
 
     // Create
-    runAddMaterial(postMaterial(API_ROUTES.material, material), {
-      onSuccess: () => {
-        toast.success('Material agregado con éxito!');
-        props.onSuccess?.();
-        props.onClose?.();
-      },
-      onError: () => {
-        toast.error('ocurrio un error actualizando un material');
-      },
-    });
+    runAddMaterial(
+      postMaterial(API_ROUTES.material, {
+        ...material,
+        quantity: material?.quantity ?? 0,
+      }),
+      {
+        onSuccess: () => {
+          toast.success('Material agregado con éxito!');
+          props.onSuccess?.();
+          props.onClose?.();
+        },
+        onError: () => {
+          toast.error('ocurrio un error actualizando un material');
+        },
+      }
+    );
   };
 
   return (
@@ -73,6 +87,20 @@ export const MaterialForm = (props: MaterialFormProps) => {
               setMaterial({
                 ...material,
                 name: e.target.value,
+              })
+            }
+          />
+        </Flex>
+        <Flex flexDir="column">
+          <Text>Desciption:</Text>
+
+          <input
+            className="border p-1"
+            value={material?.description ?? ''}
+            onChange={(e) =>
+              setMaterial({
+                ...material,
+                description: e.target.value,
               })
             }
           />

@@ -7,6 +7,13 @@ export const materialValidationSchema = z.object({
   name: z.string(),
   quantity: z.number(),
   unit: z.string(),
+  description: z.string().optional(),
+  //compute kardex only
+  percent: z.number().optional(),
+  toProduce: z.number().optional(),
+  toBuy: z.number().optional(),
+  needed: z.number().optional(),
+  //audit
   createdAt: z.string().optional(),
   updatedAt: z.string().optional()
 })

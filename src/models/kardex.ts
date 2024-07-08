@@ -11,6 +11,7 @@ export const kardexValidationSchema = z.object({
   quantity: z.number(),
   value: z.number(),
   date: z.string(),
+  description: z.string().optional(),
   unitCost: z.number(),
   createdAt: z.string().optional(),
   updatedAt: z.string().optional()

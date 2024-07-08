@@ -1,6 +1,6 @@
 import { Box, Button, Flex, Text, useDisclosure } from '@chakra-ui/react';
 import { useState } from 'react';
-import { IntranetLayout, Modal, TableComponent, toast } from 'src/components';
+import { IntranetLayout, Modal, TableComponent } from 'src/components';
 import { MaterialForm } from 'src/components/material/MaterialForm';
 import { IMaterialSchema } from 'src/models/material';
 import { generateMaterialsColumns } from '../../../components/material/columnsConfig';

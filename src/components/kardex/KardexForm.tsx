@@ -14,7 +14,6 @@ import {
   Select,
 } from '@chakra-ui/react';
 import { formatISODate, parseLocalDate } from 'src/utils/general';
-import order from 'src/models/order';
 
 const postKardex = (path: string, data: any) => axios.post(path, { data });
 const putKardex = (path: string, data: any) => axios.put(path, data);
@@ -179,6 +178,19 @@ export const KardexForm = (props: KardexFormProps) => {
               setKardex({
                 ...kardex,
                 date: parseLocalDate(e.target.value).toISOString(),
+              })
+            }
+          />
+        </FormControl>
+        <FormControl>
+          <FormLabel fontSize="inherit">Description:</FormLabel>
+          <input
+            className="border p-1"
+            value={kardex?.description ?? ''}
+            onChange={(e) =>
+              setKardex({
+                ...kardex,
+                description: e.target.value,
               })
             }
           />

@@ -147,7 +147,7 @@ const StockPage = () => {
                         onBlur={(e) => {
                           if (e.target.value === wantToProduce?.toString())
                             return;
-                          setWantToProduce(Number(e.target.value) ?? 0);
+                          setWantToProduce(Number(e.target.value ?? "0"));
                         }}
                       >
                         <NumberInputField

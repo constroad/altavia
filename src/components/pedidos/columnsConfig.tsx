@@ -177,6 +177,7 @@ export const generatePedidoColumns = (props: ColumnProps) => {
       width: '3%',
       tdStyles: { textAlign: 'center' },
       summary: (value) => SummaryAmount(value),
+      render: (item) => <Text color={`${item <0 ? 'red' : 'black' }`}>{item}</Text>
     },
     {
       key: 'm3Value',

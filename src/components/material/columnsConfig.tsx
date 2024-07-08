@@ -122,7 +122,9 @@ export const generateMaterialsColumns = (props?: IMeterialColumns) => {
       label: 'Comprar',
       width: '10%',
       textAlign: 'center',
-      render: (item) => <>{item === 0 ? '-' : item}</>,
+      render: (item) => <>{item === 0 ? '-' : 
+      <Text color="red" fontWeight={600}>{item}</Text> 
+      }</>,
       summary: (value) => SummaryAmount(value),
     });
   }

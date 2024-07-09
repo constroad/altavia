@@ -22,7 +22,7 @@ const Cubicar = () => {
         gap={5}
       >
         <Flex flexDir="column" gap={5} width={{ base: '100%', md: '25%' }}>
-          <Text fontSize={25} fontWeight={600} textAlign="start">
+          <Text fontSize={25} fontWeight={600} textAlign="center">
             Cubica tu Volquete
           </Text>
           <Flex

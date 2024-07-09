@@ -119,7 +119,6 @@ export const ClientReportPage = () => {
                 M3: {orderSelected.m3dispatched}
               </Flex>
               <TableComponent
-                isLoading={isLoading || isLoadingClient}
                 data={listDispatchUpdated}
                 columns={dispatchColums}
                 pagination

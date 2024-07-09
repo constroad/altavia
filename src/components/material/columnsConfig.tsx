@@ -18,7 +18,7 @@ const SummaryAmount = (value: number, bgColor?: string) => {
       alignItems="center"
       justifyContent="center"
       bgColor={bgColor ?? 'black'}
-      color={bgColor ? 'inherit' : 'white'}
+      color={'white'}
       fontWeight={600}
       fontSize={11}
       height={30}
@@ -125,7 +125,7 @@ export const generateMaterialsColumns = (props?: IMeterialColumns) => {
       render: (item) => <>{item === 0 ? '-' : 
       <Text color="red" fontWeight={600}>{item}</Text> 
       }</>,
-      summary: (value) => SummaryAmount(value),
+      summary: (value) => SummaryAmount(value, 'red'),
     });
   }
 

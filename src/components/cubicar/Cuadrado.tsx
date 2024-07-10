@@ -28,39 +28,28 @@ export const Cuadrado = () => {
   });
 
   const handleComputeResult = () => {
-    const { a1, a2, a3 } = values
+    const { a1, a2, a3 } = values;
     const volumen = Number(a1) * Number(a2) * Number(a3);
-    setTotalVolume(volumen)
-  }
+    setTotalVolume(volumen);
+  };
 
-  const handleComputeWantTo =() => {
-    if (!totalVolume) return
+  const handleComputeWantTo = () => {
+    if (!totalVolume) return;
     const { a1, a3 } = values;
     const altura = (Number(wantVolume) / totalVolume) * Number(a1);
     setHeightDispatch(altura.toFixed(2));
     setHeightDispatchFromTop((Number(a1) - altura).toFixed(2));
-  }
+  };
 
   return (
     <>
-      <Flex alignItems="center">
+      <Flex alignItems="center" justifyContent="center">
         <Image
           src="/img/cubicar/volquete-cuadrado.png"
           width={{ base: '70%', md: '50%' }}
           alt="volquete-logo"
           rounded="4px"
         />
-        <Flex flexDir="column" fontSize={13}>
-          <Flex gap={1}>
-            <Text fontWeight={600}>A1</Text> Ancho
-          </Flex>
-          <Flex gap={1}>
-            <Text fontWeight={600}>A2</Text> Largo
-          </Flex>
-          <Flex gap={1}>
-            <Text fontWeight={600}>A3</Text> Alto Total
-          </Flex>
-        </Flex>
       </Flex>
       <Flex flexDir="column" fontSize={12} gap={2} flex={1}>
         <Text fontWeight={600} fontSize={15}>
@@ -68,7 +57,7 @@ export const Cuadrado = () => {
         </Text>
         <Grid templateColumns="repeat(3, 1fr)" gap={3}>
           <GridItem>
-            <Flex flexDir="column" gap={0}>
+            <Flex flexDir="column" gap={0} >
               <FormControl as={Flex} alignItems="center">
                 <FormLabel fontSize="inherit" width="20px">
                   A1
@@ -129,7 +118,20 @@ export const Cuadrado = () => {
               Cubicar
             </Button>
           </GridItem>
-          <GridItem colSpan={2}>
+          <GridItem>
+            <Flex flexDir="column" fontSize={13}>
+              <Flex gap={1}>
+                <Text fontWeight={600}>A1</Text> Ancho
+              </Flex>
+              <Flex gap={1}>
+                <Text fontWeight={600}>A2</Text> Largo
+              </Flex>
+              <Flex gap={1}>
+                <Text fontWeight={600}>A3</Text> Alto Total
+              </Flex>
+            </Flex>
+          </GridItem>
+          <GridItem colSpan={{ base: 2, md: 1 }}>
             <Flex
               alignItems="center"
               justifyContent="space-between"
@@ -162,7 +164,7 @@ export const Cuadrado = () => {
                       lineHeight={1}
                     >
                       {heightDispatchFromTop}cm
-                      <Text>---------------</Text>
+                      <Text>------------------</Text>
                       {heightDispatch}cm
                     </Flex>
                   </Box>

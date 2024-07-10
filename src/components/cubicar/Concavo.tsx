@@ -62,45 +62,19 @@ export const Concavo = () => {
   };
   return (
     <>
-      <Flex alignItems="center">
+      <Flex alignItems="center" justifyContent="center">
         <Image
           src="/img/cubicar/volquete-concavo.png"
-          width={{ base: '70%', md: '50%' }}
+          width={{ base: '70%', md: '80%' }}
           alt="volquete-logo"
           rounded="4px"
         />
-        <Flex flexDir="column" fontSize={13}>
-          <Flex gap={1}>
-            <Text fontWeight={600}>A1</Text> Ancho
-          </Flex>
-          <Flex gap={1}>
-            <Text fontWeight={600}>A2</Text> Largo
-          </Flex>
-          <Flex gap={1}>
-            <Text fontWeight={600}>A3</Text> Alto Total
-          </Flex>
-          <Flex gap={1}>
-            <Text fontWeight={600}>A4</Text> Alto Concavo
-          </Flex>
-          <Flex gap={1}>
-            <Text fontWeight={600}>A5</Text> Alto Cuadrado
-          </Flex>
-          <Flex gap={1}>
-            <Text fontWeight={600}>B1</Text> Ancho 1 concavo
-          </Flex>
-          <Flex gap={1}>
-            <Text fontWeight={600}>B2</Text> Ancho 2 concavo
-          </Flex>
-          <Flex gap={1}>
-            <Text fontWeight={600}>B3</Text> Ancho 3 concavo
-          </Flex>
-        </Flex>
       </Flex>
       <Flex flexDir="column" fontSize={12} gap={2} flex={1}>
         <Text fontWeight={600} fontSize={15}>
           Ingresar valores
         </Text>
-        <Grid templateColumns="repeat(3, 1fr)" gap={3}>
+        <Grid templateColumns={{base: "repeat(2, 1fr)", md: "repeat(3, 1fr)"}} gap={3}>
           <GridItem>
             <Flex flexDir="column" gap={0}>
               <FormControl as={Flex} alignItems="center">
@@ -254,7 +228,35 @@ export const Concavo = () => {
               Cubicar
             </Button>
           </GridItem>
-          <GridItem colSpan={2}>
+          <GridItem>
+            <Flex flexDir="column" fontSize={13}>
+              <Flex gap={1}>
+                <Text fontWeight={600}>A1</Text> Ancho
+              </Flex>
+              <Flex gap={1}>
+                <Text fontWeight={600}>A2</Text> Largo
+              </Flex>
+              <Flex gap={1}>
+                <Text fontWeight={600}>A3</Text> Alto Total
+              </Flex>
+              <Flex gap={1}>
+                <Text fontWeight={600}>A4</Text> Alto Concavo
+              </Flex>
+              <Flex gap={1}>
+                <Text fontWeight={600}>A5</Text> Alto Cuadrado
+              </Flex>
+              <Flex gap={1}>
+                <Text fontWeight={600}>B1</Text> Ancho 1 concavo
+              </Flex>
+              <Flex gap={1}>
+                <Text fontWeight={600}>B2</Text> Ancho 2 concavo
+              </Flex>
+              <Flex gap={1}>
+                <Text fontWeight={600}>B3</Text> Ancho 3 concavo
+              </Flex>
+            </Flex>
+          </GridItem>
+          <GridItem colSpan={{base: 2, md: 1}}>
             <Flex
               alignItems="center"
               justifyContent="space-between"
@@ -264,11 +266,11 @@ export const Concavo = () => {
               {totalVolume && (
                 <Flex
                   fontWeight={600}
-                  fontSize={16}
+                  fontSize={23}
                   alignItems="center"
                   justifyContent="center"
                   textAlign="center"
-                  width="60%"
+                  width="80%"
                   color="red"
                 >
                   Volquete cubica {totalVolume?.toFixed(1)} m3
@@ -276,7 +278,7 @@ export const Concavo = () => {
               )}
               {heightDispatch && (
                 <Box position="relative" width="100%" textAlign="center">
-                  <Box position="absolute" top="20px" width="100%">
+                  <Box position="absolute" top="25px" width="100%">
                     <Flex
                       fontWeight={600}
                       fontSize={15}
@@ -287,7 +289,7 @@ export const Concavo = () => {
                       lineHeight={1}
                     >
                       {heightDispatchFromTop}cm
-                      <Text>---------------</Text>
+                      <Text>------------------------</Text>
                       {heightDispatch}cm
                     </Flex>
                   </Box>
@@ -311,7 +313,7 @@ export const Concavo = () => {
                     name="cantidadCubos"
                     defaultValue={0}
                     width="50%"
-                    value={wantVolume ?? "0"}
+                    value={wantVolume ?? '0'}
                     onChange={(value) => setWantVolume(value)}
                   >
                     <NumberInputField />

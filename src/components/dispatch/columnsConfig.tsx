@@ -39,6 +39,7 @@ const orderViewColumns = [
   'guia',
   'note',
   'quantity',
+  'planedQuantity',
   'price',
   'igv',
   'total',
@@ -338,9 +339,35 @@ export const generateDispatchColumns = (props: ColumnsProps) => {
       },
     },
     {
+      key: 'planedQuantity',
+      label: 'M3 planeado',
+      width: '4%',
+      render: (item, row) => {
+        return (
+          <NumberInput
+            size="xs"
+            defaultValue={item}
+            onBlur={(e) => {
+              if (e.target.value === item?.toString()) return;
+              let planedQuantity = 0;
+              if (e.target.value) {
+                planedQuantity = Number(e.target.value);
+              }
+              updateDispatch({
+                ...row,
+                planedQuantity,
+              });
+            }}
+          >
+            <NumberInputField fontSize="inherit" paddingInlineEnd={0} />
+          </NumberInput>
+        );
+      },
+    },
+    {
       key: 'quantity',
       bgColor: CONSTROAD_COLORS.yellow,
-      label: 'M3',
+      label: 'M3 despachado',
       width: '4%',
       render: (item, row) => {
         return (

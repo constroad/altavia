@@ -15,6 +15,7 @@ export const dispatchValidationSchema = z.object({
   driverName: z.string().optional(),
   driverCard: z.string().optional(),
   quantity: z.number(),
+  planedQuantity: z.number().optional(),
   note: z.string().optional(),
   nroVale: z.string().optional(),
   phoneNumber: z.string().optional(),
@@ -46,6 +47,7 @@ export interface DispatchModel extends Document {
   driverName: string;
   driverCard: string;
   quantity: number;
+  planedQuantity?: number;
   note?: string;
   nroVale?: string;
   phoneNumber?: string;
@@ -82,6 +84,7 @@ try {
     driverName: { type: String, optional: false },
     driverCard: { type: String, optional: false },
     quantity: { type: Number, optional: false },
+    planedQuantity: { type: Number, optional: true },
     note: { type: String, optional: true },
     nroVale: { type: String, optional: true },
     phoneNumber: { type: String, optional: true },

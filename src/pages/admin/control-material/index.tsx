@@ -80,7 +80,7 @@ const StockPage = () => {
   };
 
   const handleComputeDose = () => {
-    if (wantToProduce === 0) return;
+    // if (wantToProduce === 0) return;
     const metarialsUpdated = controlledMaterials.map((material) => {
       const { percent, quantity } = material;
       let needed = 0;
@@ -89,8 +89,10 @@ const StockPage = () => {
 
       if (wantToProduce && percent) {
         needed = Number((wantToProduce * percent).toFixed(2));
-        toProduce = Number((quantity * (percent ?? 0)).toFixed(1));
         toBuy = Number((quantity - needed).toFixed(2));
+      }
+      if (percent) {        
+        toProduce = Number((quantity / (percent ?? 0)).toFixed(1));
       }
 
       return { ...material, toProduce, needed, toBuy: toBuy > 0 ? 0 : toBuy };

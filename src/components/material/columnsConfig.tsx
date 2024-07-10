@@ -53,7 +53,7 @@ export const generateMaterialsColumns = (props?: IMeterialColumns) => {
     },
     {
       key: 'unit',
-      label: 'Unidad',
+      label: 'Unid',
       width: '10%',
       textAlign: 'center',
       bgColor: CONSTROAD_COLORS.darkGray,

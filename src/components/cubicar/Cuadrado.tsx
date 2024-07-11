@@ -22,23 +22,23 @@ export const Cuadrado = () => {
   const [heightDispatch, setHeightDispatch] = useState<string>();
   const [heightDispatchFromTop, setHeightDispatchFromTop] = useState<string>();
   const [values, setValues] = useState({
-    a1: '0',
-    a2: '0',
-    a3: '0',
+    width: '0',
+    length: '0',
+    height: '0',
   });
 
   const handleComputeResult = () => {
-    const { a1, a2, a3 } = values;
-    const volumen = Number(a1) * Number(a2) * Number(a3);
+    const { width, length, height } = values;
+    const volumen = Number(width) * Number(length) * Number(height);
     setTotalVolume(volumen);
   };
 
   const handleComputeWantTo = () => {
     if (!totalVolume) return;
-    const { a1, a3 } = values;
-    const altura = (Number(wantVolume) / totalVolume) * Number(a1);
+    const { height } = values;
+    const altura = (Number(wantVolume) * Number(height)) / totalVolume;
     setHeightDispatch(altura.toFixed(2));
-    setHeightDispatchFromTop((Number(a1) - altura).toFixed(2));
+    setHeightDispatchFromTop((Number(height) - altura).toFixed(2));
   };
 
   return (
@@ -55,21 +55,24 @@ export const Cuadrado = () => {
         <Text fontWeight={600} fontSize={15}>
           Ingresar valores
         </Text>
-        <Grid templateColumns="repeat(3, 1fr)" gap={3}>
+        <Grid
+          templateColumns={{ base: 'repeat(2, 1fr)', md: 'repeat(3, 1fr)' }}
+          gap={3}
+        >
           <GridItem>
-            <Flex flexDir="column" gap={0} >
+            <Flex flexDir="column" gap={0}>
               <FormControl as={Flex} alignItems="center">
-                <FormLabel fontSize="inherit" width="20px">
-                  A1
+                <FormLabel fontSize="inherit" width="120px">
+                  A1 (Ancho)
                 </FormLabel>
                 <NumberInput
                   size="xs"
                   name="cantidadCubos"
-                  value={values.a1}
+                  value={values.width}
                   onChange={(value) =>
                     setValues({
                       ...values,
-                      a1: value ?? '0',
+                      width: value ?? '0',
                     })
                   }
                 >
@@ -77,17 +80,17 @@ export const Cuadrado = () => {
                 </NumberInput>
               </FormControl>
               <FormControl as={Flex} alignItems="center">
-                <FormLabel fontSize="inherit" width="20px">
-                  A2
+                <FormLabel fontSize="inherit" width="120px">
+                  A2 (Largo)
                 </FormLabel>
                 <NumberInput
                   size="xs"
                   name="cantidadCubos"
-                  value={values.a2}
+                  value={values.length}
                   onChange={(value) =>
                     setValues({
                       ...values,
-                      a2: value ?? '0',
+                      length: value ?? '0',
                     })
                   }
                 >
@@ -95,17 +98,17 @@ export const Cuadrado = () => {
                 </NumberInput>
               </FormControl>
               <FormControl as={Flex} alignItems="center">
-                <FormLabel fontSize="inherit" width="20px">
-                  A3
+                <FormLabel fontSize="inherit" width="120px">
+                  A3 (alto)
                 </FormLabel>
                 <NumberInput
                   size="xs"
                   name="cantidadCubos"
-                  value={values.a3}
+                  value={values.height}
                   onChange={(value) =>
                     setValues({
                       ...values,
-                      a3: value ?? '0',
+                      height: value ?? '0',
                     })
                   }
                 >
@@ -119,85 +122,77 @@ export const Cuadrado = () => {
             </Button>
           </GridItem>
           <GridItem>
-            <Flex flexDir="column" fontSize={13}>
-              <Flex gap={1}>
-                <Text fontWeight={600}>A1</Text> Ancho
+            {totalVolume && (
+              <Flex
+                fontWeight={600}
+                fontSize={15}
+                alignItems="center"
+                justifyContent="center"
+                textAlign="center"
+                color="red"
+              >
+                Volquete cubica {totalVolume?.toFixed(2)} m3
               </Flex>
-              <Flex gap={1}>
-                <Text fontWeight={600}>A2</Text> Largo
-              </Flex>
-              <Flex gap={1}>
-                <Text fontWeight={600}>A3</Text> Alto Total
-              </Flex>
-            </Flex>
+            )}
           </GridItem>
           <GridItem colSpan={{ base: 2, md: 1 }}>
-            <Flex
-              alignItems="center"
-              justifyContent="space-between"
-              height="100%"
-              flexDir="column"
-            >
+            <Flex alignItems="center" height="100%" flexDir="column" gap={1}>
               {totalVolume && (
-                <Flex
-                  fontWeight={600}
-                  fontSize={16}
-                  alignItems="center"
-                  justifyContent="center"
-                  textAlign="center"
-                  width="60%"
-                  color="red"
-                >
-                  Volquete cubica {totalVolume?.toFixed(1)} m3
-                </Flex>
-              )}
-              {heightDispatch && (
-                <Box position="relative" width="100%" textAlign="center">
-                  <Box position="absolute" top="20px" width="100%">
-                    <Flex
-                      fontWeight={600}
-                      fontSize={15}
-                      alignItems="center"
-                      justifyContent="center"
-                      width="100%"
-                      flexDir="column"
-                      lineHeight={1}
-                    >
-                      {heightDispatchFromTop}cm
-                      <Text>------------------</Text>
-                      {heightDispatch}cm
-                    </Flex>
-                  </Box>
-                </Box>
-              )}
-              <Image
-                src="/img/cubicar/volquete-cuadrado-result.png"
-                width="70%"
-                alt="volquete-logo"
-              />
-              {totalVolume && (
-                <Flex
-                  width="100%"
-                  alignItems="center"
-                  justifyContent="end"
-                  gap={2}
-                >
-                  <Text>Quiero</Text>
-                  <NumberInput
-                    size="xs"
-                    name="cantidadCubos"
-                    defaultValue={0}
-                    width="50%"
-                    value={wantVolume ?? '0'}
-                    onChange={(value) => setWantVolume(value)}
+                <>
+                  <Flex
+                    bgColor="whitesmoke"
+                    width="100%"
+                    alignItems="center"
+                    justifyContent="center"
+                    gap={2}
+                    py={1}
                   >
-                    <NumberInputField />
-                  </NumberInput>
-                  <Text>m3</Text>
-                  <Button size="sm" onClick={handleComputeWantTo}>
-                    Calcular
-                  </Button>
-                </Flex>
+                    <Text fontWeight={600}>Quiero</Text>
+                    <NumberInput
+                      size="xs"
+                      name="cantidadCubos"
+                      defaultValue={0}
+                      width="60px"
+                      value={wantVolume ?? '0'}
+                      onChange={(value) => setWantVolume(value)}
+                    >
+                      <NumberInputField />
+                    </NumberInput>
+                    <Text>m3</Text>
+                    <Button
+                      colorScheme="yellow"
+                      size="sm"
+                      onClick={handleComputeWantTo}
+                    >
+                      Calcular
+                    </Button>
+                  </Flex>
+
+                  {heightDispatch && (
+                    <Box position="relative" width="100%" textAlign="center">
+                      <Box position="absolute" top="30px" width="100%">
+                        <Flex
+                          fontWeight={600}
+                          fontSize={15}
+                          alignItems="center"
+                          justifyContent="center"
+                          width="100%"
+                          flexDir="column"
+                          lineHeight={1}
+                        >
+                          {heightDispatchFromTop}cm
+                          <Text>-------------------------</Text>
+                          {heightDispatch}cm
+                        </Flex>
+                      </Box>
+                    </Box>
+                  )}
+                  <Image
+                    src="/img/cubicar/volquete-cuadrado-result.png"
+                    width="70%"
+                    alt="volquete-logo"
+                  />
+                </>
               )}
             </Flex>
           </GridItem>

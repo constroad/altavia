@@ -13,9 +13,18 @@ import {
 } from '@chakra-ui/react';
 import { useState } from 'react';
 
-interface ConcavoProps {}
+type Metadata = {
+  plate: string;
+  totalWidth: string;
+  totalLength: string;
+  totalHeight: string;
+};
 
-export const Concavo = () => {
+interface ConcavoProps {
+  onSave?: (metadata: Metadata) => void;
+}
+
+export const Concavo = (props: ConcavoProps) => {
   const [totalVolume, setTotalVolume] = useState<number>();
   const [wantVolume, setWantVolume] = useState<string>();
   const [heightDispatch, setHeightDispatch] = useState<string>();

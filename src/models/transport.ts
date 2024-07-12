@@ -1,16 +1,20 @@
 import { z } from 'zod';
 import mongoose, { Document, Schema, Model } from 'mongoose';
 
+type TransportShape = 'Square' | 'Concave'
+
 // Schema validation
 export const transportValidationSchema = z.object({
   _id: z.string().optional(),
-  company: z.string().min(1),
+  company: z.string().optional(),
   plate: z.string().min(1),
   driverName: z.string().optional(),
   driverCard: z.string().optional(),
   phone: z.string().optional(),
   m3: z.number().optional(),
   notes: z.string().optional(),
+  shape: z.string().optional(),
+  metadata: z.record(z.any()).optional(),
   createdAt: z.string().optional(),
   updatedAt: z.string().optional()
 });
@@ -24,6 +28,8 @@ export interface TransportModel extends Document {
   driverName?: string;
   driverCard?: string;
   phone?: string;
+  shape?: string;
+  metadata?: Record<string, any>;
 }
 
 let Transport: Model<TransportModel>;
@@ -37,6 +43,11 @@ try {
     driverName: { type: String, optional: true },
     driverCard: { type: String, optional: true },
     phone: { type: String, optional: true },
+    shape: { type: String, optional: true },
+    metadata: {
+      type: Schema.Types.Mixed,
+      required: false
+    },
     m3: { type: Number, optional: true },
     notes: { type: String, optional: true },
   }, {

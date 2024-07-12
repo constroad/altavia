@@ -32,7 +32,7 @@ const fetcher = (path: string) => axios.get(path);
 const deleteOrder = (path: string) => axios.delete(path);
 
 const Pedidos = () => {
-  const { dateTo, dateFrom } = getDateStringRange(30);
+  const { dateTo, dateFrom } = getDateStringRange(90);
   const [orderSelected, setOrderSelected] = useState<
     IOrderValidationSchema | undefined
   >();

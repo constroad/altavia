@@ -1,64 +1,142 @@
-import { Flex, Text } from '@chakra-ui/react';
+import {
+  Button,
+  Flex,
+  Grid,
+  GridItem,
+  Input,
+  Spinner,
+  Text,
+  useDisclosure,
+} from '@chakra-ui/react';
 import { PortalLayout } from 'src/components';
-import { Concavo } from 'src/components/cubicar/Concavo';
-import { Cuadrado } from 'src/components/cubicar/Cuadrado';
-import { useState } from 'react';
+import { useMemo, useState } from 'react';
+import { useFetch } from 'src/common/hooks/useFetch';
+import { API_ROUTES } from 'src/common/consts';
+import { ITransportValidationSchema } from 'src/models/transport';
+import { TruckIcon } from 'src/common/icons';
+import CubicaForm from 'src/components/cubica/CubicaForm';
 
 interface CubicarProps {}
-type TruckType = 'Concavo' | 'Cuadrado' | 'None';
-const TruckComponent: Record<TruckType, JSX.Element> = {
-  None: <Flex alignItems="center" justifyContent="center">Seleccione Tipo de volquete</Flex>,
-  Concavo: <Concavo />,
-  Cuadrado: <Cuadrado />,
-};
+
 const Cubicar = () => {
-  const [truckType, setTruckType] = useState<TruckType>('None');
+  const [transport, setTransport] = useState<ITransportValidationSchema>();
+  const { isLoading, data, refetch } = useFetch<ITransportValidationSchema[]>(
+    API_ROUTES.transport
+  );
+  const [plate, setPlate] = useState('');
+  const { isOpen, onOpen, onClose } = useDisclosure();
+
+  const transportList = useMemo(() => {
+    return (
+      data?.filter((x) =>
+        x.plate.toLowerCase().includes(plate.toLowerCase())
+      ) ?? []
+    );
+  }, [plate, data]);
+
+  const renderBody = () => {
+    if (isOpen) {
+      return (
+        <CubicaForm
+          transport={transport}
+          onSave={() => {
+            onClose();
+            refetch();
+          }}
+        />
+      );
+    }
+
+    return (
+      <>
+        <Flex
+          bgColor="white"
+          alignItems="end"
+          justifyContent="start"
+          px={2}
+          py={3}
+          gap={1}
+          rounded={4}
+          flexDir="column"
+        >
+          <Input
+            value={plate}
+            onChange={(e) => setPlate(e.target.value)}
+            placeholder="Buscar por placa"
+          />
+          <Button colorScheme="yellow" size="sm" onClick={onOpen}>
+            + Agregar
+          </Button>
+        </Flex>
+        <Text fontWeight={600} fontSize={15}>
+          Listado
+        </Text>
+        {isLoading && <Spinner />}
+        {!isLoading && transportList.length === 0 && (
+          <Flex flexDir="column" alignItems="center" gap={4}>
+            <Text fontWeight={400} fontSize={12}>
+              No encontramos un transporte con esa placa
+            </Text>
+          </Flex>
+        )}
+        <Grid
+          templateColumns={{ base: 'repeat(2, 1fr)', md: 'repeat(6, 1fr)' }}
+          gap={6}
+        >
+          {transportList.map((t) => (
+            <GridItem key={t._id}>
+              <Flex
+                border="solid 1px white"
+                px={10}
+                py={2}
+                rounded={10}
+                bgColor="white"
+                flexDir="column"
+                alignItems="center"
+                onClick={() => {
+                  setTransport(t);
+                  onOpen();
+                }}
+              >
+                <TruckIcon fontSize={50} color="gray" />
+                {t.plate}
+              </Flex>
+            </GridItem>
+          ))}
+        </Grid>
+      </>
+    );
+  };
+
   return (
     <PortalLayout>
       <Flex
         w="100%"
+        py={10}
         px={{ base: '20px', md: '100px' }}
-        flexDir={{ base: 'column', md: 'row' }}
+        flexDir="column"
         gap={5}
+        bgColor="whitesmoke"
+        fontSize={12}
       >
-        <Flex flexDir="column" gap={5} width={{ base: '100%', md: '25%' }}>
-          <Text fontSize={25} fontWeight={600} textAlign="center">
-            Cubica tu Volquete
+        <Flex alignItems="center" justifyContent="space-between">
+          <Text fontWeight={600} fontSize={18}>
+            Gestion de transporte
           </Text>
-          <Flex
-            gap={1}
-            flexDir={{ base: 'row', md: 'column' }}
-            justifyContent="space-between"
-          >
-            <Flex
-              cursor="pointer"
-              px={5}
-              border={1}
-              bgColor="whitesmoke"
-              height={50}
-              alignItems="center"
-              justifyContent="center"
-              fontWeight={600}
-              onClick={() => setTruckType('Cuadrado')}
+          {isOpen && (
+            <Button
+              onClick={() => {
+                onClose();
+                setPlate('');
+              }}
+              colorScheme="yellow"
+              size="sm"
             >
-              Cuadrado
-            </Flex>
-            <Flex
-              cursor="pointer"
-              fontWeight={600}
-              px={5}
-              border={1}
-              bgColor="whitesmoke"
-              height={50}
-              alignItems="center"
-              justifyContent="center"
-              onClick={() => setTruckType('Concavo')}
-            >
-              Concavo
-            </Flex>
-          </Flex>
+              Regresar
+            </Button>
+          )}
         </Flex>
-        {TruckComponent[truckType]}
+        {renderBody()}
       </Flex>
     </PortalLayout>
   );

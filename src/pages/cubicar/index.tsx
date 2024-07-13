@@ -13,8 +13,9 @@ import { useMemo, useState } from 'react';
 import { useFetch } from 'src/common/hooks/useFetch';
 import { API_ROUTES } from 'src/common/consts';
 import { ITransportValidationSchema } from 'src/models/transport';
-import { TruckIcon } from 'src/common/icons';
+import { ArrowBackIcon, TruckIcon } from 'src/common/icons';
 import CubicaForm from 'src/components/cubica/CubicaForm';
+import { CONSTROAD_COLORS } from 'src/styles/shared';
 
 interface CubicarProps {}
 
@@ -89,16 +90,17 @@ const Cubicar = () => {
                 border="solid 1px white"
                 px={10}
                 py={2}
-                rounded={10}
+                rounded={20}
                 bgColor="white"
                 flexDir="column"
                 alignItems="center"
+                cursor="pointer"
                 onClick={() => {
                   setTransport(t);
                   onOpen();
                 }}
               >
-                <TruckIcon fontSize={50} color="gray" />
+                <TruckIcon fontSize={50} color="#20a760" />
                 {t.plate}
               </Flex>
             </GridItem>
@@ -132,7 +134,7 @@ const Cubicar = () => {
               colorScheme="yellow"
               size="sm"
             >
-              Regresar
+              <ArrowBackIcon/> Regresar
             </Button>
           )}
         </Flex>

@@ -1,5 +1,5 @@
-import { Flex, Text } from '@chakra-ui/react';
-import { Concavo } from '../cubicar/Concavo';
+import { Flex } from '@chakra-ui/react';
+import { ConcaveMetadata, Concavo } from '../cubicar/Concavo';
 import { Cuadrado, SquareMetadata } from '../cubicar/Cuadrado';
 import { useState } from 'react';
 import { ITransportValidationSchema } from 'src/models/transport';
@@ -21,8 +21,12 @@ const CubicaForm = (props: CubicaFormProps) => {
     `${API_ROUTES.transport}/${props.transport?._id}`
   );
 
-  const onSave = (metadata: SquareMetadata) => {
+  const onSave = (metadata: SquareMetadata | ConcaveMetadata) => {
     const { plate, m3, ...rest } = metadata;
+    if (plate ==="") {
+      toast.warning("Ingresa la placa")
+      return
+    }
     const payload = {
       plate,
       m3,
@@ -85,7 +89,7 @@ const CubicaForm = (props: CubicaFormProps) => {
       {truckType === 'Cuadrado' && (
         <Cuadrado onSave={onSave} transport={props.transport} />
       )}
-      {truckType === 'Concavo' && <Concavo />}
+      {truckType === 'Concavo' && <Concavo onSave={onSave}  transport={props.transport} />}
     </>
   );
 };

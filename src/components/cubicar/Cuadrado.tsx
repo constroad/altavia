@@ -97,7 +97,7 @@ export const Cuadrado = (props: CuadradoProps) => {
                   onChange={(e) =>
                     setValues({
                       ...values,
-                      plate: e.target.value.toLowerCase(),
+                      plate: e.target.value.toUpperCase(),
                     })
                   }
                 />
@@ -153,30 +153,31 @@ export const Cuadrado = (props: CuadradoProps) => {
               </FormControl>
             </GridItem>
           </Grid>
-          <Button size="sm" width="100%" onClick={handleComputeResult}>
-            Cubicar
-          </Button>
+
+          <Flex alignItems="center" justifyContent="center" gap={2}>
+            <Button size="sm" width="100%" onClick={handleComputeResult}>
+              Cubicar
+            </Button>
+            <Button
+              size="sm"
+              width="100%"
+              onClick={() => props.onSave?.(values)}
+              colorScheme="yellow"
+            >
+              Guardar transporte
+            </Button>
+          </Flex>
           {totalVolume && (
-            <>
-              <Flex
-                fontWeight={600}
-                fontSize={15}
-                alignItems="center"
-                justifyContent="center"
-                textAlign="center"
-                color="red"
-              >
-                Volquete cubica {totalVolume?.toFixed(2)} m3
-              </Flex>
-              <Button
-                size="sm"
-                width="100%"
-                onClick={() => props.onSave?.(values)}
-                colorScheme="yellow"
-              >
-                Guardar transporte
-              </Button>
-            </>
+            <Flex
+              fontWeight={600}
+              fontSize={15}
+              alignItems="center"
+              justifyContent="center"
+              textAlign="center"
+              color="red"
+            >
+              Volquete cubica {totalVolume?.toFixed(2)} m3
+            </Flex>
           )}
         </Flex>
       </Flex>

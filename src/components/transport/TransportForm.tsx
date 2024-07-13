@@ -30,7 +30,7 @@ const defaultValue = {
   driverCard: '',
   phone: '',
 };
-const postTransport = (path: string, data: any) => axios.post(path, { data });
+const postTransport = (path: string, data: any) => axios.post(path, data );
 const putTransport = (path: string, data: any) => axios.put(path, data);
 
 export const TransportForm = (props: TransportFormProps) => {

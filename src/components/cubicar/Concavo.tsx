@@ -10,18 +10,28 @@ import {
   Grid,
   GridItem,
   Box,
+  Input,
 } from '@chakra-ui/react';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
+import { ITransportValidationSchema } from 'src/models/transport';
 
-type Metadata = {
+export type ConcaveMetadata = {
   plate: string;
+  m3: number;
   totalWidth: string;
   totalLength: string;
   totalHeight: string;
+  //concave
+  concaveHight: string;
+  squareHeight: string;
+  leftConcaveWidth: string;
+  centralConcaveWidth: string;
+  rightConcaveWidth: string;
 };
 
 interface ConcavoProps {
-  onSave?: (metadata: Metadata) => void;
+  onSave?: (metadata: ConcaveMetadata) => void;
+  transport?: ITransportValidationSchema;
 }
 
 export const Concavo = (props: ConcavoProps) => {
@@ -29,7 +39,9 @@ export const Concavo = (props: ConcavoProps) => {
   const [wantVolume, setWantVolume] = useState<string>();
   const [heightDispatch, setHeightDispatch] = useState<string>();
   const [heightDispatchFromTop, setHeightDispatchFromTop] = useState<string>();
-  const [values, setValues] = useState({
+  const [values, setValues] = useState<ConcaveMetadata>({
+    plate: '',
+    m3: 0,
     totalWidth: '0',
     totalLength: '0',
     totalHeight: '0',
@@ -40,12 +52,50 @@ export const Concavo = (props: ConcavoProps) => {
     rightConcaveWidth: '0',
   });
 
+  useEffect(() => {
+    const { plate, m3, metadata } = props.transport ?? {};
+    const {
+      totalWidth,
+      totalLength,
+      totalHeight,
+      concaveHight,
+      squareHeight,
+      leftConcaveWidth,
+      centralConcaveWidth,
+      rightConcaveWidth,
+    } = metadata ?? {};
+    if (props.transport) {
+      setValues({
+        totalWidth,
+        totalLength,
+        totalHeight,
+        concaveHight,
+        squareHeight,
+        leftConcaveWidth,
+        centralConcaveWidth,
+        rightConcaveWidth,
+        plate: plate ?? '',
+        m3: m3 ?? 0,
+      });
+    }
+  }, [props.transport]);
+
   const getVolumes = () => {
-    const { totalWidth, totalLength, concaveHight, squareHeight, leftConcaveWidth, centralConcaveWidth } = values;
-    const squareVolume = Number(totalWidth) * Number(totalLength) * Number(squareHeight);
-    const semiSquareVolume = Number(concaveHight) * Number(centralConcaveWidth) * Number(totalLength);
+    const {
+      totalWidth,
+      totalLength,
+      concaveHight,
+      squareHeight,
+      leftConcaveWidth,
+      centralConcaveWidth,
+    } = values;
+    const squareVolume =
+      Number(totalWidth) * Number(totalLength) * Number(squareHeight);
+    const semiSquareVolume =
+      Number(concaveHight) * Number(centralConcaveWidth) * Number(totalLength);
     const semiCircleVolume =
-      ((Number(concaveHight) * Number(leftConcaveWidth) * 3.1416) / 2) * Number(totalLength);
+      ((Number(concaveHight) * Number(leftConcaveWidth) * 3.1416) / 2) *
+      Number(totalLength);
 
     return {
       squareVolume,
@@ -66,36 +116,50 @@ export const Concavo = (props: ConcavoProps) => {
 
     const pendingVolume =
       dispatchVolume - (semiCircleVolume + semiSquareVolume);
-    const heightToDispatch = ((pendingVolume * Number(squareHeight)) / squareVolume) + Number(concaveHight)
+    const heightToDispatch =
+      (pendingVolume * Number(squareHeight)) / squareVolume +
+      Number(concaveHight);
     setHeightDispatch(heightToDispatch.toFixed(2));
-    setHeightDispatchFromTop((Number(totalHeight) - heightToDispatch).toFixed(2));
+    setHeightDispatchFromTop(
+      (Number(totalHeight) - heightToDispatch).toFixed(2)
+    );
   };
   return (
-    <>
-      <Flex alignItems="center" justifyContent="center">
-        <Image
-          src="/img/cubicar/volquete-concavo.png"
-          width={{ base: '70%', md: '80%' }}
-          alt="volquete-logo"
-          rounded="4px"
-        />
-      </Flex>
-      <Flex flexDir="column" fontSize={12} gap={2} flex={1}>
-        <Text fontWeight={600} fontSize={15}>
-          Ingresar valores
-        </Text>
-        <Grid
-          templateColumns={{ base: 'repeat(1, 1fr)', md: 'repeat(3, 1fr)' }}
-          gap={3}
-        >
-          <GridItem>
-            <Flex flexDir="column" gap={0}>
-              <FormControl as={Flex} alignItems="center">
-                <FormLabel fontSize="inherit" width="200px">
-                  A1 (Ancho)
-                </FormLabel>
+    <Flex flexDir={{ base: 'column', md: 'row' }} gap={5}>
+      <Flex flexDir="column" bgColor="white" rounded={10} px={2} py={5}>
+        <Flex alignItems="center" justifyContent="center">
+          <Image
+            src="/img/cubicar/volquete-concavo.png"
+            width={{ base: '70%', md: '30%' }}
+            alt="volquete-logo"
+            rounded="4px"
+          />
+        </Flex>
+
+        <Flex flexDir="column" fontSize={12} gap={2} flex={1}>
+          <Text fontWeight={600} fontSize={15}>
+            Ingresar valores
+          </Text>
+
+          <Grid templateColumns="repeat(3, 1fr)" gap={3}>
+            <GridItem colSpan={3}>
+              <FormControl as={Flex} flexDir="column" alignItems="start">
+                <Input
+                  placeholder="Placa"
+                  value={values.plate}
+                  onChange={(e) =>
+                    setValues({
+                      ...values,
+                      plate: e.target.value.toUpperCase(),
+                    })
+                  }
+                />
+              </FormControl>
+            </GridItem>
+            <GridItem>
+              <FormControl as={Flex} flexDir="column" alignItems="start">
+                <FormLabel fontSize="inherit">A1 (Ancho)</FormLabel>
                 <NumberInput
-                  size="xs"
                   name="cantidadCubos"
                   value={values.totalWidth}
                   onChange={(value) =>
@@ -108,12 +172,11 @@ export const Concavo = (props: ConcavoProps) => {
                   <NumberInputField />
                 </NumberInput>
               </FormControl>
-              <FormControl as={Flex} alignItems="center">
-                <FormLabel fontSize="inherit" width="200px">
-                  A2 (Largo)
-                </FormLabel>
+            </GridItem>
+            <GridItem>
+              <FormControl as={Flex} flexDir="column" alignItems="start">
+                <FormLabel fontSize="inherit">A2 (Largo)</FormLabel>
                 <NumberInput
-                  size="xs"
                   name="cantidadCubos"
                   value={values.totalLength}
                   onChange={(value) =>
@@ -126,12 +189,11 @@ export const Concavo = (props: ConcavoProps) => {
                   <NumberInputField />
                 </NumberInput>
               </FormControl>
-              <FormControl as={Flex} alignItems="center">
-                <FormLabel fontSize="inherit" width="200px">
-                  A3 (Alto total)
-                </FormLabel>
+            </GridItem>
+            <GridItem>
+              <FormControl as={Flex} flexDir="column" alignItems="start">
+                <FormLabel fontSize="inherit">A3 (Alto)</FormLabel>
                 <NumberInput
-                  size="xs"
                   name="cantidadCubos"
                   value={values.totalHeight}
                   onChange={(value) =>
@@ -144,12 +206,11 @@ export const Concavo = (props: ConcavoProps) => {
                   <NumberInputField />
                 </NumberInput>
               </FormControl>
-              <FormControl as={Flex} alignItems="center">
-                <FormLabel fontSize="inherit" width="200px">
-                  A4 (Alto concavo)
-                </FormLabel>
+            </GridItem>
+            <GridItem>
+              <FormControl as={Flex} flexDir="column" alignItems="start">
+                <FormLabel fontSize="inherit">A4 (Alto concavo)</FormLabel>
                 <NumberInput
-                  size="xs"
                   name="cantidadCubos"
                   value={values.concaveHight}
                   onChange={(value) =>
@@ -162,12 +223,11 @@ export const Concavo = (props: ConcavoProps) => {
                   <NumberInputField />
                 </NumberInput>
               </FormControl>
-              <FormControl as={Flex} alignItems="center">
-                <FormLabel fontSize="inherit" width="200px">
-                  A5 (Alto cuadrado)
-                </FormLabel>
+            </GridItem>
+            <GridItem>
+              <FormControl as={Flex} flexDir="column" alignItems="start">
+                <FormLabel fontSize="inherit">A5 (Alto cuadrado)</FormLabel>
                 <NumberInput
-                  size="xs"
                   name="cantidadCubos"
                   value={values.squareHeight}
                   onChange={(value) =>
@@ -180,12 +240,11 @@ export const Concavo = (props: ConcavoProps) => {
                   <NumberInputField />
                 </NumberInput>
               </FormControl>
-              <FormControl as={Flex} alignItems="center">
-                <FormLabel fontSize="inherit" width="200px">
-                  B1 (Ancho 1 concavo)
-                </FormLabel>
+            </GridItem>
+            <GridItem>
+              <FormControl as={Flex} flexDir="column" alignItems="start">
+                <FormLabel fontSize="inherit">B1 (Ancho 1 concavo)</FormLabel>
                 <NumberInput
-                  size="xs"
                   name="cantidadCubos"
                   value={values.leftConcaveWidth}
                   onChange={(value) =>
@@ -198,12 +257,11 @@ export const Concavo = (props: ConcavoProps) => {
                   <NumberInputField />
                 </NumberInput>
               </FormControl>
-              <FormControl as={Flex} alignItems="center">
-                <FormLabel fontSize="inherit" width="200px">
-                  B2 (Ancho 2 concavo)
-                </FormLabel>
+            </GridItem>
+            <GridItem>
+              <FormControl as={Flex} flexDir="column" alignItems="start">
+                <FormLabel fontSize="inherit">B2 (Ancho 2 concavo)</FormLabel>
                 <NumberInput
-                  size="xs"
                   name="cantidadCubos"
                   value={values.centralConcaveWidth}
                   onChange={(value) =>
@@ -216,12 +274,11 @@ export const Concavo = (props: ConcavoProps) => {
                   <NumberInputField />
                 </NumberInput>
               </FormControl>
-              <FormControl as={Flex} alignItems="center">
-                <FormLabel fontSize="inherit" width="200px">
-                  B3 (Ancho 3 concavo)
-                </FormLabel>
+            </GridItem>
+            <GridItem>
+              <FormControl as={Flex} flexDir="column" alignItems="start">
+                <FormLabel fontSize="inherit">B3 (Ancho 3 concavo)</FormLabel>
                 <NumberInput
-                  size="xs"
                   name="cantidadCubos"
                   value={values.rightConcaveWidth}
                   onChange={(value) =>
@@ -234,91 +291,105 @@ export const Concavo = (props: ConcavoProps) => {
                   <NumberInputField />
                 </NumberInput>
               </FormControl>
-            </Flex>
+            </GridItem>
+          </Grid>
 
+          <Flex alignItems="center" justifyContent="center" gap={2}>
             <Button size="sm" width="100%" onClick={handleComputeResult}>
               Cubicar
             </Button>
-          </GridItem>
-          <GridItem>
-            {totalVolume && (
-              <Flex
-                fontWeight={600}
-                fontSize={15}
-                alignItems="center"
-                justifyContent="center"
-                textAlign="center"
-                color="red"
-              >
-                Volquete cubica {totalVolume?.toFixed(1)} m3
-              </Flex>
-            )}
-          </GridItem>
-          <GridItem>
-            <Flex
-              alignItems="center"
-              justifyContent="space-between"
-              height="100%"
-              flexDir="column"
+            <Button
+              size="sm"
+              width="100%"
+              onClick={() => props.onSave?.(values)}
+              colorScheme="yellow"
             >
-              {totalVolume && (
-                <Flex
-                  bgColor="whitesmoke"
-                  width="100%"
-                  alignItems="center"
-                  justifyContent="center"
-                  gap={2}
-                  py={1}
-                >
-                  <Text fontWeight={600}>Quiero</Text>
-                  <NumberInput
-                    size="xs"
-                    name="cantidadCubos"
-                    defaultValue={0}
-                    width="60px"
-                    value={wantVolume ?? '0'}
-                    onChange={(value) => setWantVolume(value)}
+              Guardar transporte
+            </Button>
+          </Flex>
+
+          {totalVolume && (
+            <Flex
+              fontWeight={600}
+              fontSize={15}
+              alignItems="center"
+              justifyContent="center"
+              textAlign="center"
+              color="red"
+            >
+              Volquete cubica {totalVolume?.toFixed(1)} m3
+            </Flex>
+          )}
+        </Flex>
+      </Flex>
+
+      <Flex
+        flexDir="column"
+        bgColor="white"
+        rounded={10}
+        px={2}
+        py={3}
+        alignItems="start"
+        gap={4}
+      >
+        {totalVolume && (
+          <>
+            <Flex
+              bgColor="whitesmoke"
+              width="100%"
+              alignItems="center"
+              justifyContent="center"
+              gap={2}
+              py={1}
+            >
+              <Text fontWeight={600}>Quiero</Text>
+              <NumberInput
+                name="cantidadCubos"
+                defaultValue={0}
+                width="60px"
+                value={wantVolume ?? '0'}
+                onChange={(value) => setWantVolume(value)}
+              >
+                <NumberInputField />
+              </NumberInput>
+              <Text>m3</Text>
+              <Button
+                size="sm"
+                colorScheme="yellow"
+                onClick={handleComputeWantTo}
+              >
+                Calcular
+              </Button>
+            </Flex>
+            {heightDispatch && (
+              <Box position="relative" width="100%" textAlign="center">
+                <Box position="absolute" top="50px" width="100%">
+                  <Flex
+                    fontWeight={600}
+                    fontSize={15}
+                    alignItems="center"
+                    justifyContent="center"
+                    width="100%"
+                    flexDir="column"
+                    lineHeight={1}
                   >
-                    <NumberInputField />
-                  </NumberInput>
-                  <Text>m3</Text>
-                  <Button
-                    size="sm"
-                    colorScheme="yellow"
-                    onClick={handleComputeWantTo}
-                  >
-                    Calcular
-                  </Button>
-                </Flex>
-              )}
-              {heightDispatch && (
-                <Box position="relative" width="100%" textAlign="center">
-                  <Box position="absolute" top="30px" width="100%">
-                    <Flex
-                      fontWeight={600}
-                      fontSize={15}
-                      alignItems="center"
-                      justifyContent="center"
-                      width="100%"
-                      flexDir="column"
-                      lineHeight={1}
-                    >
-                      {heightDispatchFromTop}cm
-                      <Text>----------------------</Text>
-                      {heightDispatch}cm
-                    </Flex>
-                  </Box>
+                    {heightDispatchFromTop}cm
+                    <Text>----------------------</Text>
+                    {heightDispatch}cm
+                  </Flex>
                 </Box>
-              )}
+              </Box>
+            )}
+            <Flex width="100%" justifyContent="center" alignItems="center">
               <Image
                 src="/img/cubicar/volquete-concavo-result.png"
                 width="70%"
                 alt="volquete-logo"
               />
             </Flex>
-          </GridItem>
-        </Grid>
+          </>
+        )}
       </Flex>
-    </>
+    </Flex>
   );
 };

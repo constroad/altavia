@@ -1,6 +1,6 @@
 // pages/attendance.tsx
 import { useEffect, useRef, useState } from 'react';
-import { Button, Flex, Spinner } from '@chakra-ui/react';
+import { Avatar, Box, Button, Flex, Spinner, Text } from '@chakra-ui/react';
 import dynamic from 'next/dynamic';
 import { useMutate } from 'src/common/hooks/useMutate';
 import { API_ROUTES } from 'src/common/consts';
@@ -43,7 +43,7 @@ const AttendancePage = () => {
         videoRef.current.play();
       }
     } catch (err) {
-      toast.error("Error accediendo a la camara")
+      toast.error('Error accediendo a la camara');
     }
   };
   const handleCapture = async () => {
@@ -142,78 +142,77 @@ const AttendancePage = () => {
     <PortalLayout>
       <Flex
         w="100%"
-        py={10}
         px={{ base: '20px', md: '100px' }}
-        flexDir="column"
+        flexDir={{ base: 'column', md: 'row' }}
         gap={5}
-        fontSize={12}
+        // fontSize={12}
       >
-        <div
-          style={{
-            // position: 'relative',
-            width: '200px',
-            height: '200px',
-            overflow: 'hidden',
-            borderRadius: '50%',
-          }}
-        >
-          <video
-            ref={videoRef}
-            style={{ width: '100%', height: '100%', objectFit: 'cover' }}
-          />
-        </div>
-        <canvas ref={canvasRef} style={{ display: 'none' }} />
-        <Button onClick={handleCapture}>Capturar Foto</Button>
-        {photo && (
-          <Flex alignItems="center" justifyContent="center">
-
-            <img
-              src={photo}
-              alt="Foto"
-              style={{ width: '50%', height: '150px', objectFit: 'cover' , borderRadius: '50%' }}
+        <Flex gap={2} flexDir="column">
+          <Flex alignItems="center" justifyContent="space-between">
+            <Text fontSize={20}>Hola Jose!</Text>
+            <Avatar
+              fontWeight="bold"
+              size="sm"
+              name="Jose"
+              // src={addVersionToUrl(user.avatarUrl!, user.lastModifiedTimestamp)}
             />
           </Flex>
-        )}
-        <Clock />
-        <h1>Register Attendance</h1>
-        <form onSubmit={handleSubmit}>
-          <div>
-            <label>Nombre:</label>
-            <input
-              type="text"
-              value={name}
-              onChange={(e) => setName(e.target.value)}
-              required
-            />
-          </div>
-          <div>
-            <label>Hora de ingreso:</label>
-            <input
-              type="time"
-              value={startTime}
-              onChange={(e) => setStartTime(e.target.value)}
-              required
-            />
-          </div>
-          <div>
-            <label>Hora de salida:</label>
-            <input
-              type="time"
-              value={startTime}
-              onChange={(e) => setStartTime(e.target.value)}
-              required
-            />
-          </div>
-          <div>
-            <Button onClick={handleCapture}>Capturar Foto</Button>
-            <Button onClick={handleGeolocation}>Obtener ubicacion</Button>
-            <Button onClick={handleSend}>Enviar</Button>
-            {JSON.stringify(location)}
-          </div>
-          <div>
-            <button type="submit">Submit</button>
-          </div>
-        </form>
+          <Flex flexDir="column" lineHeight={1.2}>
+            <Text fontSize={15} color="gray">
+              Asistencia del personal
+            </Text>
+            <Text fontWeight={600} fontSize={20}>
+              Registro de asistencia
+            </Text>
+          </Flex>
+
+          <Clock>
+            <>
+              {photo ? (
+                <Flex alignItems="center" justifyContent="center" mt={2}>
+                  <img
+                    src={photo}
+                    alt="Foto"
+                    style={{
+                      width: '50%',
+                      height: '150px',
+                      objectFit: 'cover',
+                      borderRadius: '50%',
+                    }}
+                  />
+                </Flex>
+              ) : (
+                <>
+                  <div
+                    style={{
+                      // position: 'relative',
+                      width: '150px',
+                      height: '150px',
+                      overflow: 'hidden',
+                      borderRadius: '50%',
+                      marginTop: '10px',
+                    }}
+                  >
+                    <video
+                      ref={videoRef}
+                      style={{
+                        width: '100%',
+                        height: '100%',
+                        objectFit: 'cover',
+                      }}
+                    />
+                  </div>
+                  <canvas ref={canvasRef} style={{ display: 'none' }} />
+                </>
+              )}
+            </>
+          </Clock>
+          {/* <Button onClick={handleCapture}>Capturar Foto</Button> */}
+          <Flex alignItems="center" justifyContent="space-between" gap={5}>
+            <Button onClick={handleSend}>Registrar entrada</Button>
+            <Button onClick={handleSend}>Registrar Salida</Button>
+          </Flex>
+        </Flex>
 
         {loading && <Spinner />}
         {location.latitude !== 0 && location.longitude !== 0 && (

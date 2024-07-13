@@ -15,7 +15,6 @@ import { API_ROUTES } from 'src/common/consts';
 import { ITransportValidationSchema } from 'src/models/transport';
 import { ArrowBackIcon, TruckIcon } from 'src/common/icons';
 import CubicaForm from 'src/components/cubica/CubicaForm';
-import { CONSTROAD_COLORS } from 'src/styles/shared';
 
 interface CubicarProps {}
 

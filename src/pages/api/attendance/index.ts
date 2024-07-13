@@ -2,27 +2,27 @@ import { NextApiRequest, NextApiResponse } from 'next';
 import { connectToMongoDB } from 'src/config/mongoose';
 import { NextHandler, createRouter } from "next-connect";
 import { ApiTimeTracker, onApiError, onApiNoMatch } from 'src/common/utils';
-import { TransportModel, transportValidationSchema } from 'src/models/transport';
-import { TransportRepository } from 'src/repositories/transportRepository';
+import { AttendanceRepository } from 'src/repositories/attendanceRepository';
+import { AttendanceModel, attendanceValidationSchema } from 'src/models/attendance';
 
 const router = createRouter<NextApiRequest, NextApiResponse>();
 
 const getAll = async (req: NextApiRequest, res: NextApiResponse) => {
-  const repo = new TransportRepository();
+  const repo = new AttendanceRepository();
   try {
     const result = await repo.getAll({});
     res.status(200).json(result);
   } catch (error: any) {
     console.error(error.message);
-    res.status(500).json({ message: 'Error getting transports' });
+    res.status(500).json({ message: 'Error getting attendances' });
   }
 }
 
 const addRecord = async (req: NextApiRequest, res: NextApiResponse) => {
-  const newRecord = req.body as TransportModel
-  const repo = new TransportRepository();
+  const newRecord = req.body as AttendanceModel
+  const repo = new AttendanceRepository();
   try {
-    const result = transportValidationSchema.safeParse(newRecord);
+    const result = attendanceValidationSchema.safeParse(newRecord);
 
     if (!result.success) {
       console.log(result.error)
@@ -35,7 +35,7 @@ const addRecord = async (req: NextApiRequest, res: NextApiResponse) => {
 
   } catch (error: any) {
     console.error(error);
-    res.status(500).json({ message: 'Error when saving transport'  });
+    res.status(500).json({ message: 'Error when saving attendance'  });
   }
 }
 
@@ -51,6 +51,6 @@ router
 
 
 export default router.handler({
-  onError: onApiError('transport / index'),
+  onError: onApiError('attendance / index'),
   onNoMatch: onApiNoMatch
 });

@@ -1,0 +1,230 @@
+// pages/attendance.tsx
+import { useEffect, useRef, useState } from 'react';
+import { Button, Flex, Spinner } from '@chakra-ui/react';
+import dynamic from 'next/dynamic';
+import { useMutate } from 'src/common/hooks/useMutate';
+import { API_ROUTES } from 'src/common/consts';
+import { IAttendanceValidationSchema } from 'src/models/attendance';
+import { PortalLayout, toast } from 'src/components';
+import { Clock } from 'src/components/clock';
+
+const DynamicMap = dynamic(() => import('src/components/map/Map'), {
+  ssr: false,
+  loading: () => <Spinner />,
+});
+
+const TELEGRAM_TOKEN = '7278967592:AAHLnzjx3L-uYl3a96JhvIWbQ-YpBtF1kz8';
+// curl -s "https://api.telegram.org/bot7278967592:AAHLnzjx3L-uYl3a96JhvIWbQ-YpBtF1kz8/getUpdates"
+const TELEGRAM_GROUP_ID_ATTENDANCE = '-1002154744862';
+
+const AttendancePage = () => {
+  const [photo, setPhoto] = useState<string | null>(null);
+  const [name, setName] = useState('');
+  const [location, setLocation] = useState({ latitude: 0, longitude: 0 });
+  const [startTime, setStartTime] = useState('');
+  const [endTime, setEndTime] = useState('');
+  const [loading, setLoading] = useState(false);
+
+  const videoRef = useRef<HTMLVideoElement>(null);
+  const canvasRef = useRef<HTMLCanvasElement>(null);
+
+  //API
+  const { mutate, isMutating } = useMutate<IAttendanceValidationSchema>(
+    API_ROUTES.attendance
+  );
+
+  //Handlers
+  // Iniciar el stream de video
+  const startVideo = async () => {
+    try {
+      const stream = await navigator.mediaDevices.getUserMedia({ video: true });
+      if (videoRef.current) {
+        videoRef.current.srcObject = stream;
+        videoRef.current.play();
+      }
+    } catch (err) {
+      toast.error("Error accediendo a la camara")
+    }
+  };
+  const handleCapture = async () => {
+    if (videoRef.current && canvasRef.current) {
+      const context = canvasRef.current.getContext('2d');
+      if (context) {
+        canvasRef.current.width = videoRef.current.videoWidth;
+        canvasRef.current.height = videoRef.current.videoHeight;
+        context.drawImage(
+          videoRef.current,
+          0,
+          0,
+          canvasRef.current.width,
+          canvasRef.current.height
+        );
+        setPhoto(canvasRef.current.toDataURL('image/png'));
+      }
+    }
+  };
+  const handleGeolocation = () => {
+    setLoading(true);
+    if (navigator.geolocation) {
+      navigator.geolocation.getCurrentPosition(
+        (position) => {
+          const lat = position.coords.latitude;
+          const lng = position.coords.longitude;
+          setLocation({ latitude: lat, longitude: lng });
+          setLoading(false);
+        },
+        (error) => {
+          console.error('Error getting geolocation:', error);
+          setLoading(false);
+        }
+      );
+      return;
+    }
+    setLoading(false);
+    toast.error('Geolocation is not supported by this browser.');
+  };
+
+  const handleSend = async () => {
+    if (photo && location) {
+      // const url = `https://api.telegram.org/bot${TELEGRAM_TOKEN}/sendMessage`;
+      const url = `https://api.telegram.org/bot${TELEGRAM_TOKEN}/sendPhoto`;
+      const formData = new FormData();
+
+      // Convert base64 to Blob
+      const response = await fetch(photo);
+      const blob = await response.blob();
+      formData.append('photo', blob, 'photo.png');
+
+      const message = `
+      Asistencia registrada:
+      - Hora: ${new Date().toLocaleString()}
+      - Ubicación: [Google Maps](https://maps.google.com/?q=${
+        location.latitude
+      },${location.longitude})
+    `.replace(/([_*\[\]()~`>#+\-=|{}.!])/g, '\\$1'); // Escapando caracteres especiales
+
+      try {
+        formData.append('chat_id', TELEGRAM_GROUP_ID_ATTENDANCE);
+        formData.append('caption', message);
+        formData.append('parse_mode', 'MarkdownV2');
+
+        await fetch(url, {
+          method: 'POST',
+          body: formData,
+        });
+      } catch (err) {
+        console.log('error', err);
+      }
+      return;
+    }
+    toast.warning('active su ubicacion y tomese la foto');
+  };
+
+  const handleSubmit = async (event: React.FormEvent) => {
+    event.preventDefault();
+    const date = new Date();
+    mutate('POST', {
+      employeeId: '',
+      name: '',
+      date: date.toISOString(),
+      startTime,
+      endTime,
+      location,
+    });
+  };
+
+  // Iniciar el video cuando el componente se monta
+  useEffect(() => {
+    startVideo();
+  }, []);
+
+  return (
+    <PortalLayout>
+      <Flex
+        w="100%"
+        py={10}
+        px={{ base: '20px', md: '100px' }}
+        flexDir="column"
+        gap={5}
+        fontSize={12}
+      >
+        <div
+          style={{
+            // position: 'relative',
+            width: '200px',
+            height: '200px',
+            overflow: 'hidden',
+            borderRadius: '50%',
+          }}
+        >
+          <video
+            ref={videoRef}
+            style={{ width: '100%', height: '100%', objectFit: 'cover' }}
+          />
+        </div>
+        <canvas ref={canvasRef} style={{ display: 'none' }} />
+        <Button onClick={handleCapture}>Capturar Foto</Button>
+        {photo && (
+          <Flex alignItems="center" justifyContent="center">
+
+            <img
+              src={photo}
+              alt="Foto"
+              style={{ width: '50%', height: '150px', objectFit: 'cover' , borderRadius: '50%' }}
+            />
+          </Flex>
+        )}
+        <Clock />
+        <h1>Register Attendance</h1>
+        <form onSubmit={handleSubmit}>
+          <div>
+            <label>Nombre:</label>
+            <input
+              type="text"
+              value={name}
+              onChange={(e) => setName(e.target.value)}
+              required
+            />
+          </div>
+          <div>
+            <label>Hora de ingreso:</label>
+            <input
+              type="time"
+              value={startTime}
+              onChange={(e) => setStartTime(e.target.value)}
+              required
+            />
+          </div>
+          <div>
+            <label>Hora de salida:</label>
+            <input
+              type="time"
+              value={startTime}
+              onChange={(e) => setStartTime(e.target.value)}
+              required
+            />
+          </div>
+          <div>
+            <Button onClick={handleCapture}>Capturar Foto</Button>
+            <Button onClick={handleGeolocation}>Obtener ubicacion</Button>
+            <Button onClick={handleSend}>Enviar</Button>
+            {JSON.stringify(location)}
+          </div>
+          <div>
+            <button type="submit">Submit</button>
+          </div>
+        </form>
+
+        {loading && <Spinner />}
+        {location.latitude !== 0 && location.longitude !== 0 && (
+          <DynamicMap
+            latitude={location.latitude}
+            longitude={location.longitude}
+          />
+        )}
+      </Flex>
+    </PortalLayout>
+  );
+};
+
+export default AttendancePage;

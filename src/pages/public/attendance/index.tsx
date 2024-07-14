@@ -221,10 +221,17 @@ const AttendancePage = () => {
 
         {loading && <Spinner />}
         {location.latitude !== 0 && location.longitude !== 0 && (
-          <DynamicMap
-            latitude={location.latitude}
-            longitude={location.longitude}
-          />
+          // <DynamicMap
+          //   latitude={location.latitude}
+          //   longitude={location.longitude}
+          // />
+          <iframe
+          className='w-full'
+          src={`https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3902.784458000577!2d${location.longitude}!3d${location.latitude}!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x9105c300705538cf%3A0xdb0d06d91ffcf2a3!2sconstroad!5e0!3m2!1ses-419!2spe!4v1709245188866!5m2!1ses-419!2spe`}
+          width="600"
+          height="450"
+          loading="lazy"
+        />
         )}
       </Flex>
     </PortalLayout>

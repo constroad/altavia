@@ -48,8 +48,6 @@ export const RegisterAttendance = (props: RegisterAttendanceProps) => {
       `${API_ROUTES.attendance}/${attendance?._id ?? ''}`
     );
 
-  console.log('data:', data);
-
   //Handlers
   const startVideo = async () => {
     try {
@@ -268,16 +266,18 @@ export const RegisterAttendance = (props: RegisterAttendanceProps) => {
         </Clock>
         <Flex alignItems="center" justifyContent="space-between" gap={5}>
           <Button
-            isDisabled={!!attendance?.startTime}
+            isDisabled={isLoading || !!attendance?.startTime}
             colorScheme="green"
             onClick={handleSubmit}
+            isLoading={isMutating}
           >
             Firmar entrada
           </Button>
           <Button
-            isDisabled={!!attendance?.endTime}
+            isDisabled={isLoading || !!attendance?.endTime}
             colorScheme="red"
             onClick={handleSubmit}
+            isLoading={isUpdating}
           >
             Firmar Salida
           </Button>

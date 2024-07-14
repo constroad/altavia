@@ -27,7 +27,7 @@ interface RegisterAttendanceProps {
 export const RegisterAttendance = (props: RegisterAttendanceProps) => {
   const [photo, setPhoto] = useState<string | null>(null);
   const [location, setLocation] = useState({ latitude: 0, longitude: 0 });
-  const [loading, setLoading] = useState(false);
+  const [loadingLocation, setLoadingLocation] = useState(false);
 
   const videoRef = useRef<HTMLVideoElement>(null);
   const canvasRef = useRef<HTMLCanvasElement>(null);
@@ -87,7 +87,7 @@ export const RegisterAttendance = (props: RegisterAttendanceProps) => {
     });
   };
   const handleGeolocation = () => {
-    setLoading(true);
+    setLoadingLocation(true);
     if (navigator.geolocation) {
       navigator.geolocation.getCurrentPosition(
         (position) => {
@@ -95,16 +95,16 @@ export const RegisterAttendance = (props: RegisterAttendanceProps) => {
           const lng = position.coords.longitude;
           toast.info(`localizacion: ${lat}-${lng}`);
           setLocation({ latitude: lat, longitude: lng });
-          setLoading(false);
+          setLoadingLocation(false);
         },
         (error) => {
           console.error('Error getting geolocation:', error);
-          setLoading(false);
+          setLoadingLocation(false);
         }
       );
       return;
     }
-    setLoading(false);
+    setLoadingLocation(false);
     toast.error('Geolocation is not supported by this browser.');
   };
 
@@ -266,7 +266,7 @@ export const RegisterAttendance = (props: RegisterAttendanceProps) => {
         </Clock>
         <Flex alignItems="center" justifyContent="space-between" gap={5}>
           <Button
-            isDisabled={isLoading || !!attendance?.startTime}
+            isDisabled={loadingLocation || isLoading || !!attendance?.startTime}
             colorScheme="green"
             onClick={handleSubmit}
             isLoading={isMutating}
@@ -274,7 +274,7 @@ export const RegisterAttendance = (props: RegisterAttendanceProps) => {
             Firmar entrada
           </Button>
           <Button
-            isDisabled={isLoading || !!attendance?.endTime}
+            isDisabled={loadingLocation || isLoading || !!attendance?.endTime}
             colorScheme="red"
             onClick={handleSubmit}
             isLoading={isUpdating}
@@ -284,7 +284,7 @@ export const RegisterAttendance = (props: RegisterAttendanceProps) => {
         </Flex>
       </Flex>
 
-      {loading && <Spinner />}
+      {loadingLocation && <Spinner />}
       {location.latitude !== 0 && location.longitude !== 0 && (
         <DynamicMap
           latitude={location.latitude}

@@ -143,8 +143,10 @@ const AttendancePage = () => {
       <Flex
         w="100%"
         px={{ base: '20px', md: '100px' }}
-        flexDir={{ base: 'column', md: 'row' }}
+        flexDir={{ base: 'column', lg: 'row' }}
         gap={5}
+        alignItems="center"
+        justifyContent="center"
         // fontSize={12}
       >
         <Flex gap={2} flexDir="column">

@@ -52,3 +52,28 @@ export const parseStringDateWithTime = (dateString: string | Date) => {
 
   return date
 }
+
+
+// Util function to format date
+export function formatDate(date?: Date): string {
+  // If no date is provided, use the current date
+  const currentDate = date ? new Date(date) : new Date();
+
+  // Arrays for day and month names
+  const daysOfWeek = [
+    'Domingo', 'Lunes', 'Martes', 'Miércoles', 'Jueves', 'Viernes', 'Sábado'
+  ];
+  const months = [
+    'enero', 'febrero', 'marzo', 'abril', 'mayo', 'junio', 'julio', 'agosto',
+    'septiembre', 'octubre', 'noviembre', 'diciembre'
+  ];
+
+  // Get day, month, and year
+  const dayOfWeek = daysOfWeek[currentDate.getDay()];
+  const dayOfMonth = currentDate.getDate();
+  const month = months[currentDate.getMonth()];
+  const year = currentDate.getFullYear();
+
+  // Format the date string
+  return `Hoy es ${dayOfWeek} ${dayOfMonth} de ${month} del ${year}`;
+}

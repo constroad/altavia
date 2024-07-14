@@ -7,6 +7,7 @@ import { API_ROUTES } from 'src/common/consts';
 import { IAttendanceValidationSchema } from 'src/models/attendance';
 import { PortalLayout, toast } from 'src/components';
 import { Clock } from 'src/components/clock';
+import { formatDate } from 'src/utils/general';
 
 const DynamicMap = dynamic(() => import('src/components/map/Map'), {
   ssr: false,
@@ -157,8 +158,9 @@ const AttendancePage = () => {
             />
           </Flex>
           <Flex flexDir="column" lineHeight={1.2}>
-            <Text fontSize={15} color="gray">
-              Asistencia del personal
+            <Text fontSize={14} color="gray">
+              {/* Asistencia del personal */}
+              {formatDate()}
             </Text>
             <Text fontWeight={600} fontSize={20}>
               Registro de asistencia

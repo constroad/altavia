@@ -1,8 +1,7 @@
 // pages/attendance.tsx
-import { useEffect, useRef, useState } from 'react';
+import { useState } from 'react';
 import {
   Avatar,
-  Button,
   Flex,
   Grid,
   GridItem,
@@ -11,16 +10,12 @@ import {
   useDisclosure,
 } from '@chakra-ui/react';
 import { API_ROUTES } from 'src/common/consts';
-import { IAttendanceValidationSchema } from 'src/models/attendance';
-import { PortalLayout, toast } from 'src/components';
+import { PortalLayout } from 'src/components';
 
 import { useFetch } from 'src/common/hooks/useFetch';
 import { IEmployeeValidationSchema } from 'src/models/employee';
 import { ArrowRightIcon } from 'src/common/icons';
 import { RegisterAttendance } from 'src/components/attendance/register';
-
-const TELEGRAM_TOKEN = '7278967592:AAHLnzjx3L-uYl3a96JhvIWbQ-YpBtF1kz8';
-const TELEGRAM_GROUP_ID_ATTENDANCE = '-1002154744862';
 
 const AttendancePage = () => {
   const [employeeSelected, setEmployeeSelected] =
@@ -98,6 +93,7 @@ const AttendancePage = () => {
                     <ArrowRightIcon fontSize={15} />
                   </Text>
                   <Flex
+                    width="100%"
                     border="4px solid #ff6346"
                     height="80px"
                     rounded={15}

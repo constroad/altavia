@@ -82,4 +82,4 @@ export const SortUpIcon = TiArrowSortedUp
 export const SortDownIcon = TiArrowSortedDown
 export const MoneyIcon = MdAttachMoney
 export const MaterialIcon = GiFallingRocks
-
+export const WorkerIcon = GrUserWorker

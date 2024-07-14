@@ -12,7 +12,8 @@ import {
   QuoteIcon,
   TaskIcon,
   ServiceIcon,
-  MaterialIcon
+  MaterialIcon,
+  WorkerIcon
 } from "src/common/icons";
 import { CONSTROAD_COLORS } from "src/styles/shared";
 
@@ -76,6 +77,13 @@ export const administrationTabs = [
     textColor: 'black',
     icon: ClientsIcon
   },
+   {
+    name: 'Empleados',
+    path: ADMIN_ROUTES.employees,
+    bgColor: CONSTROAD_COLORS.yellow,
+    textColor: 'black',
+    icon: WorkerIcon
+  },
   {
     name: 'Proveedores',
     path: ADMIN_ROUTES.providers,
@@ -83,13 +91,6 @@ export const administrationTabs = [
     textColor: 'white',
     icon: ProvidersIcon
   },
-  // {
-  //   name: 'Productos',
-  //   path: ADMIN_ROUTES.products,
-  //   bgColor: CONSTROAD_COLORS.darkGray,
-  //   textColor: 'white',
-  //   icon: ProductsIcon
-  // },
   {
     name: 'Pedidos',
     path: ADMIN_ROUTES.orders,

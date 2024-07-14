@@ -14,7 +14,6 @@ const DynamicMap = dynamic(() => import('src/components/map/Map'), {
 });
 
 const TELEGRAM_TOKEN = '7278967592:AAHLnzjx3L-uYl3a96JhvIWbQ-YpBtF1kz8';
-// curl -s "https://api.telegram.org/bot7278967592:AAHLnzjx3L-uYl3a96JhvIWbQ-YpBtF1kz8/getUpdates"
 const TELEGRAM_GROUP_ID_ATTENDANCE = '-1002154744862';
 
 const AttendancePage = () => {
@@ -34,7 +33,7 @@ const AttendancePage = () => {
   );
 
   //Handlers
-  // Iniciar el stream de video
+  // starting video stream
   const startVideo = async () => {
     try {
       const stream = await navigator.mediaDevices.getUserMedia({ video: true });
@@ -86,7 +85,6 @@ const AttendancePage = () => {
 
   const handleSend = async () => {
     if (photo && location) {
-      // const url = `https://api.telegram.org/bot${TELEGRAM_TOKEN}/sendMessage`;
       const url = `https://api.telegram.org/bot${TELEGRAM_TOKEN}/sendPhoto`;
       const formData = new FormData();
 
@@ -98,10 +96,10 @@ const AttendancePage = () => {
       const message = `
       Asistencia registrada:
       - Hora: ${new Date().toLocaleString()}
-      - Ubicación: [Google Maps](https://maps.google.com/?q=${
-        location.latitude
-      },${location.longitude})
-    `.replace(/([_*\[\]()~`>#+\-=|{}.!])/g, '\\$1'); // Escapando caracteres especiales
+      - Ubicación: https://maps.google.com/?q=${location.latitude},${
+        location.longitude
+      }
+    `.replace(/([_*\[\]()~`>#+\-=|{}.!])/g, '\\$1'); // space special characters
 
       try {
         formData.append('chat_id', TELEGRAM_GROUP_ID_ATTENDANCE);
@@ -136,6 +134,7 @@ const AttendancePage = () => {
   // Iniciar el video cuando el componente se monta
   useEffect(() => {
     startVideo();
+    handleGeolocation();
   }, []);
 
   return (

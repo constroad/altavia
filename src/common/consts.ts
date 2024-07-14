@@ -20,7 +20,7 @@ export const APP_ROUTES = {
 
 export const ADMIN_ROUTES = {
   clients: '/admin/clientes',
-  employees: '/admin/empleados',
+  employees: '/admin/employee',
   providers: '/admin/proveedores',
   products: '/admin/productos',
   services: '/admin/servicios',
@@ -44,6 +44,7 @@ export const API_ROUTES = {
   sendEmail: '/api/sendEmail',
   generatePDF: '/api/generate-pdf',
   client: '/api/client',
+  employee: '/api/employee',
   order: '/api/order',
   transport: '/api/transport',
   dispatch: '/api/dispatch',

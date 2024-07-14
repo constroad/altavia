@@ -2,44 +2,27 @@ import { NextApiRequest, NextApiResponse } from 'next';
 import { connectToMongoDB } from 'src/config/mongoose';
 import { NextHandler, createRouter } from "next-connect";
 import { ApiTimeTracker, onApiError, onApiNoMatch } from 'src/common/utils';
-import { AttendanceRepository } from 'src/repositories/attendanceRepository';
-import { AttendanceModel, attendanceValidationSchema } from 'src/models/attendance';
+import { EmployeeRepository } from 'src/repositories/employeeRepository';
+import { EmployeeModel, employeeValidationSchema } from 'src/models/employee';
 
 const router = createRouter<NextApiRequest, NextApiResponse>();
 
 const getAll = async (req: NextApiRequest, res: NextApiResponse) => {
-  const repo = new AttendanceRepository();
+  const repo = new EmployeeRepository();
   try {
-    const { employeeId, date } = req.query
-    let filter: any = {}
-    if (employeeId) {
-      filter.employeeId = employeeId
-    }
-    if (date) {
-      const dateFilter = new Date(date as string);
-      const startOfDay = new Date(dateFilter.setHours(0, 0, 0, 0));
-      const endOfDay = new Date(dateFilter.setHours(23, 59, 59, 999));
-      filter = {
-        ...filter,
-        date: {
-          $gte: startOfDay,
-          $lt: endOfDay
-        }
-      };
-    }
-    const result = await repo.getAll(filter);
+    const result = await repo.getAll({});
     res.status(200).json(result);
   } catch (error: any) {
     console.error(error.message);
-    res.status(500).json({ message: 'Error getting attendances' });
+    res.status(500).json({ message: 'Error getting employees' });
   }
 }
 
 const addRecord = async (req: NextApiRequest, res: NextApiResponse) => {
-  const newRecord = req.body as AttendanceModel
-  const repo = new AttendanceRepository();
+  const newRecord = req.body as EmployeeModel
+  const repo = new EmployeeRepository();
   try {
-    const result = attendanceValidationSchema.safeParse(newRecord);
+    const result = employeeValidationSchema.safeParse(newRecord);
 
     if (!result.success) {
       console.log(result.error)
@@ -52,10 +35,9 @@ const addRecord = async (req: NextApiRequest, res: NextApiResponse) => {
 
   } catch (error: any) {
     console.error(error);
-    res.status(500).json({ message: 'Error when saving attendance'  });
+    res.status(500).json({ message: 'Error when saving employee'  });
   }
 }
-
 
 router
   .use(ApiTimeTracker)
@@ -68,6 +50,6 @@ router
 
 
 export default router.handler({
-  onError: onApiError('attendance / index'),
+  onError: onApiError('employee / index'),
   onNoMatch: onApiNoMatch
 });

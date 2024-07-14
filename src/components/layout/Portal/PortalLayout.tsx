@@ -13,6 +13,7 @@ import { WhatsAppIcon } from 'src/common/icons';
 interface IPortalLayout {
   children: React.ReactNode
   noPaddingTop?: boolean
+  bgColor?: string
 }
 
 export const PortalLayout = (props: IPortalLayout) => {
@@ -95,6 +96,7 @@ export const PortalLayout = (props: IPortalLayout) => {
         }}
         paddingBottom={{ base: '40px', md: '50px'}}
         position='relative'
+        bgColor={props.bgColor ?? ''}
       >
         {children}
 

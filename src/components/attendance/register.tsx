@@ -146,7 +146,7 @@ export const RegisterAttendance = (props: RegisterAttendanceProps) => {
       toast.error('Seleccione un empleado');
       return;
     }
-    if (!location) {
+    if (location.latitude === 0) {
       toast.error('Active su ubicacion');
       return;
     }

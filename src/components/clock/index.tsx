@@ -5,6 +5,7 @@ import React, { PropsWithChildren, useEffect, useState } from 'react';
 type ClockProps = PropsWithChildren & {
   width?: number | string;
   height?: number | string;
+  indicator?: boolean;
 };
 export const Clock = (props: ClockProps) => {
   const [time, setTime] = useState(new Date());
@@ -45,13 +46,20 @@ export const Clock = (props: ClockProps) => {
           // rounded="10px"
           // boxShadow="0 4px 8px rgba(0, 0, 0, 0.1)"
         >
-          <Flex flexDir="column" justifyContent="center" alignItems="center"   width="100%">
+          <Flex
+            flexDir="column"
+            justifyContent="center"
+            alignItems="center"
+            width="100%"
+          >
             <Box fontSize="3em" color="#ffcc00">
               {hours}:{minutes}:{seconds}
             </Box>
-            <Box mt="2px" fontSize="1em" color="#666">
-              <span>GMT</span>
-            </Box>
+            {props.indicator && (
+              <Box mt="2px" fontSize="1em" color="#666">
+                <span>GMT</span>
+              </Box>
+            )}
           </Flex>
           {props.children}
         </Flex>

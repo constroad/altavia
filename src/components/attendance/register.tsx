@@ -1,5 +1,5 @@
 // pages/attendance.tsx
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useMemo, useRef, useState } from 'react';
 import { Avatar, Button, Flex, Spinner, Text } from '@chakra-ui/react';
 import dynamic from 'next/dynamic';
 import { useMutate } from 'src/common/hooks/useMutate';
@@ -9,6 +9,8 @@ import { toast } from 'src/components';
 import { Clock } from 'src/components/clock';
 import { formatDate } from 'src/utils/general';
 import { IEmployeeValidationSchema } from 'src/models/employee';
+import { useFetch } from 'src/common/hooks/useFetch';
+import { ArrowLeftIcon } from 'src/common/icons';
 
 const DynamicMap = dynamic(() => import('src/components/map/Map'), {
   ssr: false,
@@ -20,26 +22,35 @@ const TELEGRAM_GROUP_ID_ATTENDANCE = '-1002154744862';
 
 interface RegisterAttendanceProps {
   employee?: IEmployeeValidationSchema;
-  onGoBack?: () => void
+  onGoBack?: () => void;
 }
 export const RegisterAttendance = (props: RegisterAttendanceProps) => {
   const [photo, setPhoto] = useState<string | null>(null);
-  const [name, setName] = useState('');
   const [location, setLocation] = useState({ latitude: 0, longitude: 0 });
-  const [startTime, setStartTime] = useState('');
-  const [endTime, setEndTime] = useState('');
   const [loading, setLoading] = useState(false);
 
   const videoRef = useRef<HTMLVideoElement>(null);
   const canvasRef = useRef<HTMLCanvasElement>(null);
+  const currentDate = useMemo(() => new Date(), []);
 
   //API
+  const { data, isLoading, refetch } = useFetch<IAttendanceValidationSchema[]>(
+    `${API_ROUTES.attendance}?employeeId=${
+      props.employee?._id
+    }&date=${currentDate.toISOString()}`
+  );
+  const [attendance] = data ?? [];
   const { mutate, isMutating } = useMutate<IAttendanceValidationSchema>(
     API_ROUTES.attendance
   );
+  const { mutate: update, isMutating: isUpdating } =
+    useMutate<IAttendanceValidationSchema>(
+      `${API_ROUTES.attendance}/${attendance?._id ?? ''}`
+    );
+
+  console.log('data:', data);
 
   //Handlers
-  // starting video stream
   const startVideo = async () => {
     try {
       const stream = await navigator.mediaDevices.getUserMedia({ video: true });
@@ -51,22 +62,31 @@ export const RegisterAttendance = (props: RegisterAttendanceProps) => {
       toast.error('Error accediendo a la camara');
     }
   };
-  const handleCapture = async () => {
-    if (videoRef.current && canvasRef.current) {
-      const context = canvasRef.current.getContext('2d');
-      if (context) {
-        canvasRef.current.width = videoRef.current.videoWidth;
-        canvasRef.current.height = videoRef.current.videoHeight;
-        context.drawImage(
-          videoRef.current,
-          0,
-          0,
-          canvasRef.current.width,
-          canvasRef.current.height
-        );
-        setPhoto(canvasRef.current.toDataURL('image/png'));
+
+  const handleCapture = (): Promise<string> => {
+    return new Promise((resolve, reject) => {
+      if (videoRef.current && canvasRef.current) {
+        const context = canvasRef.current.getContext('2d');
+        if (context) {
+          canvasRef.current.width = videoRef.current.videoWidth;
+          canvasRef.current.height = videoRef.current.videoHeight;
+          context.drawImage(
+            videoRef.current,
+            0,
+            0,
+            canvasRef.current.width,
+            canvasRef.current.height
+          );
+          const capturePhoto = canvasRef.current.toDataURL('image/png');
+          setPhoto(capturePhoto);
+          resolve(capturePhoto);
+        } else {
+          reject('Error: Unable to get canvas context');
+        }
+      } else {
+        reject('Error: Video or canvas reference is missing');
       }
-    }
+    });
   };
   const handleGeolocation = () => {
     setLoading(true);
@@ -90,51 +110,91 @@ export const RegisterAttendance = (props: RegisterAttendanceProps) => {
     toast.error('Geolocation is not supported by this browser.');
   };
 
-  const handleSend = async () => {
-    if (photo && location) {
-      const url = `https://api.telegram.org/bot${TELEGRAM_TOKEN}/sendPhoto`;
-      const formData = new FormData();
+  const handleSend = async (employeePhoto: string) => {
+    const url = `https://api.telegram.org/bot${TELEGRAM_TOKEN}/sendPhoto`;
+    const formData = new FormData();
 
-      // Convert base64 to Blob
-      const response = await fetch(photo);
-      const blob = await response.blob();
-      formData.append('photo', blob, 'photo.png');
+    // Convert base64 to Blob
+    const response = await fetch(employeePhoto!);
+    const blob = await response.blob();
+    formData.append('photo', blob, 'photo.png');
 
-      const message = `
+    const message = `
       Asistencia registrada:
+      - Empleado: ${props.employee?.name}
       - Hora: ${new Date().toLocaleString()}
       - Ubicación: https://maps.google.com/?q=${location.latitude},${
-        location.longitude
-      }
+      location.longitude
+    }
     `.replace(/([_*\[\]()~`>#+\-=|{}.!])/g, '\\$1'); // space special characters
 
-      try {
-        formData.append('chat_id', TELEGRAM_GROUP_ID_ATTENDANCE);
-        formData.append('caption', message);
-        formData.append('parse_mode', 'MarkdownV2');
+    try {
+      formData.append('chat_id', TELEGRAM_GROUP_ID_ATTENDANCE);
+      formData.append('caption', message);
+      formData.append('parse_mode', 'MarkdownV2');
 
-        await fetch(url, {
-          method: 'POST',
-          body: formData,
-        });
-      } catch (err) {
-        console.log('error', err);
-      }
-      return;
+      await fetch(url, {
+        method: 'POST',
+        body: formData,
+      });
+    } catch (err) {
+      console.log('error', err);
     }
-    toast.warning('active su ubicacion y tomese la foto');
+    return;
   };
 
-  const handleSubmit = async (event: React.FormEvent) => {
-    event.preventDefault();
-    const date = new Date();
-    mutate('POST', {
-      employeeId: '',
-      name: '',
-      date: date.toISOString(),
-      startTime,
-      endTime,
+  const handleSubmit = async () => {
+    if (!props.employee?._id) {
+      toast.error('Seleccione un empleado');
+      return;
+    }
+    if (!location) {
+      toast.error('Active su ubicacion');
+      return;
+    }
+    const employeePhoto = await handleCapture();
+    if (!employeePhoto || employeePhoto === '') {
+      toast.error('Error tomando la foto, vuelve a intentarlo');
+      return;
+    }
+
+    const now = new Date();
+    let hour = now.getHours();
+    let minute = now.getMinutes();
+
+    const { _id, ...rest } = attendance ?? {};
+    if (_id) {
+      update(
+        'PUT',
+        { ...rest, endTime: `${hour}:${minute}` },
+        {
+          onSuccess: () => {
+            refetch();
+            handleSend(employeePhoto);
+            props.onGoBack?.();
+            toast.success('Firmaste tu salida con exito!!');
+          },
+          onError: () => {},
+        }
+      );
+      return;
+    }
+    const payload = {
+      employeeId: props.employee._id,
+      name: props.employee.name,
+      date: now.toISOString(),
+      startTime: `${hour}:${minute}`,
+      endTime: '',
       location,
+    };
+    mutate('POST', payload, {
+      onSuccess: () => {
+        refetch();
+        handleSend(employeePhoto);
+        props.onGoBack?.();
+        toast.success('Firmaste tu ingreso con exito!!');
+      },
+      onError: () => {},
     });
   };
 
@@ -147,19 +207,21 @@ export const RegisterAttendance = (props: RegisterAttendanceProps) => {
   return (
     <>
       <Flex gap={2} flexDir="column">
+        <Flex alignItems="center" justifyContent="end">
+          <Button size="xs" gap={1} onClick={props.onGoBack}>
+            <ArrowLeftIcon />
+            Regresar
+          </Button>
+        </Flex>
         <Flex alignItems="center" justifyContent="space-between">
           <Text fontSize={20}>Hola {props.employee?.name}!</Text>
-          <Avatar
-            fontWeight="bold"
-            size="sm"
-            name="Jose"            
-          />
+          <Avatar fontWeight="bold" size="sm" name={props.employee?.name} />
         </Flex>
-        <Flex flexDir="column" lineHeight={1.2}>
-          <Text fontSize={14} color="gray">
+        <Flex flexDir="column" lineHeight={1.3}>
+          <Text fontSize={13} color="gray">
             {formatDate()}
           </Text>
-          <Text fontWeight={600} fontSize={20}>
+          <Text fontWeight={600} fontSize={18}>
             Registro de asistencia
           </Text>
         </Flex>
@@ -183,7 +245,6 @@ export const RegisterAttendance = (props: RegisterAttendanceProps) => {
               <>
                 <div
                   style={{
-                    // position: 'relative',
                     width: '150px',
                     height: '150px',
                     overflow: 'hidden',
@@ -204,10 +265,22 @@ export const RegisterAttendance = (props: RegisterAttendanceProps) => {
               </>
             )}
           </>
-        </Clock>        
+        </Clock>
         <Flex alignItems="center" justifyContent="space-between" gap={5}>
-          <Button onClick={handleSend}>Registrar entrada</Button>
-          <Button onClick={handleSend}>Registrar Salida</Button>
+          <Button
+            isDisabled={!!attendance?.startTime}
+            colorScheme="green"
+            onClick={handleSubmit}
+          >
+            Firmar entrada
+          </Button>
+          <Button
+            isDisabled={!!attendance?.endTime}
+            colorScheme="red"
+            onClick={handleSubmit}
+          >
+            Firmar Salida
+          </Button>
         </Flex>
       </Flex>
 

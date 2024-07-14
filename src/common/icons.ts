@@ -22,7 +22,7 @@ import {
 import { FiMoreVertical } from 'react-icons/fi'
 import { FaUserTie, FaUserShield, FaTruckFast, FaRoadBarrier } from "react-icons/fa6";
 import { IoLogoWhatsapp, IoMdMail, IoMdClose, IoMdRefresh, IoIosSave } from "react-icons/io";
-import { BsArrowRight, BsCalculatorFill } from "react-icons/bs";
+import { BsArrowLeft, BsArrowRight, BsCalculatorFill } from "react-icons/bs";
 import { IoArrowBackOutline, IoSearch } from "react-icons/io5";
 import { ImMenu3, ImMenu4 } from "react-icons/im";
 import { HiClipboardDocumentList } from "react-icons/hi2";
@@ -84,3 +84,4 @@ export const MoneyIcon = MdAttachMoney
 export const MaterialIcon = GiFallingRocks
 export const WorkerIcon = GrUserWorker
 export const ArrowRightIcon = BsArrowRight
+export const ArrowLeftIcon = BsArrowLeft

@@ -51,7 +51,7 @@ const AttendancePage = () => {
               <Text
                 textAlign="left"
                 width="100%"
-                fontSize={20}
+                fontSize={25}
                 fontWeight={600}
               >
                 Personal Planta
@@ -79,6 +79,7 @@ const AttendancePage = () => {
                   px={3}
                   rounded={40}
                   height="150px"
+                  cursor="pointer"
                   boxShadow="0 4px 8px rgba(0, 0, 0, 0.1)"
                   onClick={() => {
                     setEmployeeSelected(e);
@@ -118,7 +119,7 @@ const AttendancePage = () => {
           <RegisterAttendance
             onGoBack={() => {
               setEmployeeSelected(undefined);
-              onClose()
+              onClose();
             }}
             employee={employeeSelected}
           />

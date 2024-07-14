@@ -64,24 +64,29 @@ const AttendancePage = () => {
     }
   };
   const handleGeolocation = () => {
-    setLoading(true);
-    if (navigator.geolocation) {
-      navigator.geolocation.getCurrentPosition(
-        (position) => {
-          const lat = position.coords.latitude;
-          const lng = position.coords.longitude;
-          setLocation({ latitude: lat, longitude: lng });
-          setLoading(false);
-        },
-        (error) => {
-          console.error('Error getting geolocation:', error);
-          setLoading(false);
-        }
-      );
-      return;
+    try {
+      
+      setLoading(true);
+      if (navigator.geolocation) {
+        navigator.geolocation.getCurrentPosition(
+          (position) => {
+            const lat = position.coords.latitude;
+            const lng = position.coords.longitude;
+            setLocation({ latitude: lat, longitude: lng });
+            setLoading(false);
+          },
+          (error) => {
+            console.error('Error getting geolocation:', error);
+            setLoading(false);
+          }
+        );
+        return;
+      }
+    } catch (error) {      
+      toast.error(`Geolocation is not supported by this browser. ${JSON.stringify(error)}`);
+    } finally {
+      setLoading(false);
     }
-    setLoading(false);
-    toast.error('Geolocation is not supported by this browser.');
   };
 
   const handleSend = async () => {

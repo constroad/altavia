@@ -265,7 +265,7 @@ export const RegisterAttendance = (props: RegisterAttendanceProps) => {
           </>
         </Clock>
         {attendance && (
-          <Text textAlign="center" fontWeight="600" color="red">
+          <Text textAlign="center" fontWeight="600" color="red" fontSize={20}>
             Tu salida es a la:{addHoursAndFormat(attendance.date, 9)}
           </Text>
         )}

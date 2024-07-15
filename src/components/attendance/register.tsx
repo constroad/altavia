@@ -1,6 +1,6 @@
 // pages/attendance.tsx
 import { useEffect, useMemo, useRef, useState } from 'react';
-import { Avatar, Button, Flex, Spinner, Text } from '@chakra-ui/react';
+import { Avatar, Box, Button, Flex, Spinner, Text } from '@chakra-ui/react';
 import dynamic from 'next/dynamic';
 import { useMutate } from 'src/common/hooks/useMutate';
 import { API_ROUTES } from 'src/common/consts';
@@ -113,7 +113,7 @@ export const RegisterAttendance = (props: RegisterAttendanceProps) => {
     const formData = new FormData();
 
     // Convert base64 to Blob
-    const response = await fetch(employeePhoto!);
+    const response = await fetch(employeePhoto);
     const blob = await response.blob();
     formData.append('photo', blob, 'photo.png');
 
@@ -265,9 +265,19 @@ export const RegisterAttendance = (props: RegisterAttendanceProps) => {
           </>
         </Clock>
         {attendance && (
-          <Text textAlign="center" fontWeight="600" color="red" fontSize={20}>
-            Tu salida es a la:{addHoursAndFormat(attendance.date, 9)}
-          </Text>
+          <Box lineHeight={1.2}>
+            <Text
+              textAlign="center"
+              fontWeight="600"
+              color="gray"
+              fontSize={15}
+            >
+              Ingresaste a la: {addHoursAndFormat(attendance.date, 0)}
+            </Text>
+            <Text textAlign="center" fontWeight="600" color="red" fontSize={20}>
+              Tu salida es a la: {addHoursAndFormat(attendance.date, 9)}
+            </Text>
+          </Box>
         )}
         <Flex alignItems="center" justifyContent="space-between" gap={5}>
           <Button

@@ -77,6 +77,9 @@ export const generatePedidoColumns = (props: ColumnProps) => {
       label: 'Cliente',
       width: '15%',
       bgColor: CONSTROAD_COLORS.darkGray,
+      // tdStyles: {
+      //   paddingY: "5px"
+      // },
       render: (item) => (
         <Tooltip label={item}>
           <Text noOfLines={1}>{item}</Text>
@@ -217,6 +220,7 @@ export const generatePedidoColumns = (props: ColumnProps) => {
             bgColor={row.isPaid ? '#d7ead4' : 'pink'}
             rounded={2}
             textAlign="right"
+            py="5px"
           >
             {!row.isPaid && <>S/.{formatMoney(item)}</>}
             {row.isPaid && 'Pagado'}

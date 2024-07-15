@@ -13,7 +13,7 @@ import {
   Grid,
   GridItem,
 } from '@chakra-ui/react';
-import { PortalLayout } from 'src/components';
+import { PortalLayout, toast } from 'src/components';
 import { DownloadIcon } from 'src/common/icons';
 
 const GenerateImage = () => {
@@ -22,6 +22,10 @@ const GenerateImage = () => {
   const imageRef = useRef<HTMLDivElement>(null);
 
   const handleGenerateImage = async () => {
+    if (time === '') {
+      toast.error("Ingrese la hora")
+      return
+    }
     if (imageRef.current) {
       const dataUrl = await htmlToImage.toPng(imageRef.current);
       saveAs(
@@ -49,7 +53,7 @@ const GenerateImage = () => {
       <Flex flexDir="column" px={5} gap={5}>
         <Box>
           <Text fontWeight={600} textAlign="center" fontSize={18}>
-            Generador de Flyer - Prouccion
+            Generador de Flyer - Producción
           </Text>
         </Box>
         <Flex

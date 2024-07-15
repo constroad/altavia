@@ -14,6 +14,7 @@ import {
 } from '@chakra-ui/react';
 import { useState, useEffect } from 'react';
 import { ITransportValidationSchema } from 'src/models/transport';
+import { toast } from '../Toast';
 
 export type SquareMetadata = {
   plate: string;
@@ -23,6 +24,7 @@ export type SquareMetadata = {
   totalHeight: string;
 };
 interface CuadradoProps {
+  isLoading?: boolean;
   onSave?: (metadata: SquareMetadata) => void;
   transport?: ITransportValidationSchema;
 }
@@ -51,6 +53,9 @@ export const Cuadrado = (props: CuadradoProps) => {
         totalLength,
         totalHeight,
       });
+      if (m3 && m3 > 0) {
+        setTotalVolume(m3);
+      }
     }
   }, [props.transport]);
 
@@ -159,9 +164,16 @@ export const Cuadrado = (props: CuadradoProps) => {
               Cubicar
             </Button>
             <Button
+              isLoading={props.isLoading}
               size="sm"
               width="100%"
-              onClick={() => props.onSave?.(values)}
+              onClick={() => {
+                if (!totalVolume) {
+                  toast.error('No has cubicado aun la unidad');
+                  return;
+                }
+                props.onSave?.({ ...values, m3: totalVolume });
+              }}
               colorScheme="yellow"
             >
               Guardar transporte

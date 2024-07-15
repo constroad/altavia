@@ -17,15 +17,16 @@ const CubicaForm = (props: CubicaFormProps) => {
   const { mutate } = useMutate<ITransportValidationSchema>(
     API_ROUTES.transport
   );
-  const { mutate: triggerUpdate } = useMutate<ITransportValidationSchema>(
-    `${API_ROUTES.transport}/${props.transport?._id}`
-  );
+  const { mutate: triggerUpdate, isMutating } =
+    useMutate<ITransportValidationSchema>(
+      `${API_ROUTES.transport}/${props.transport?._id}`
+    );
 
   const onSave = (metadata: SquareMetadata | ConcaveMetadata) => {
     const { plate, m3, ...rest } = metadata;
-    if (plate ==="") {
-      toast.warning("Ingresa la placa")
-      return
+    if (plate === '') {
+      toast.warning('Ingresa la placa');
+      return;
     }
     const payload = {
       plate,
@@ -87,9 +88,19 @@ const CubicaForm = (props: CubicaFormProps) => {
         </Flex>
       </Flex>
       {truckType === 'Cuadrado' && (
-        <Cuadrado onSave={onSave} transport={props.transport} />
+        <Cuadrado
+          isLoading={isMutating}
+          onSave={onSave}
+          transport={props.transport}
+        />
       )}
-      {truckType === 'Concavo' && <Concavo onSave={onSave}  transport={props.transport} />}
+      {truckType === 'Concavo' && (
+        <Concavo
+          isLoading={isMutating}
+          onSave={onSave}
+          transport={props.transport}
+        />
+      )}
     </>
   );
 };

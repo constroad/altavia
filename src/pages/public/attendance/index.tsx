@@ -82,7 +82,7 @@ const AttendancePage = () => {
                   }}
                 >
                   <Text
-                    fontSize={10}
+                    fontSize={12}
                     as={Flex}
                     justifyContent="space-between"
                     gap={2}

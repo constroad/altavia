@@ -14,6 +14,7 @@ import {
 } from '@chakra-ui/react';
 import { useState, useEffect } from 'react';
 import { ITransportValidationSchema } from 'src/models/transport';
+import { toast } from '../Toast';
 
 export type ConcaveMetadata = {
   plate: string;
@@ -30,6 +31,7 @@ export type ConcaveMetadata = {
 };
 
 interface ConcavoProps {
+  isLoading?: boolean;
   onSave?: (metadata: ConcaveMetadata) => void;
   transport?: ITransportValidationSchema;
 }
@@ -299,9 +301,16 @@ export const Concavo = (props: ConcavoProps) => {
               Cubicar
             </Button>
             <Button
+              isLoading={props.isLoading}
               size="sm"
               width="100%"
-              onClick={() => props.onSave?.(values)}
+              onClick={() => {
+                if (!totalVolume) {
+                  toast.error('No has cubicado aun la unidad');
+                  return;
+                }
+                props.onSave?.({ ...values, m3: totalVolume });
+              }}
               colorScheme="yellow"
             >
               Guardar transporte

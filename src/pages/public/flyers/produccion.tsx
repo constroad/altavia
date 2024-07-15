@@ -10,9 +10,11 @@ import {
   FormLabel,
   Text,
   Flex,
+  Grid,
+  GridItem,
 } from '@chakra-ui/react';
 import { PortalLayout } from 'src/components';
-import { DownloadIcon, ShareIcon } from 'src/common/icons';
+import { DownloadIcon } from 'src/common/icons';
 
 const GenerateImage = () => {
   const [date, setDate] = useState(new Date().toISOString().slice(0, 10));
@@ -22,18 +24,10 @@ const GenerateImage = () => {
   const handleGenerateImage = async () => {
     if (imageRef.current) {
       const dataUrl = await htmlToImage.toPng(imageRef.current);
-      saveAs(dataUrl, 'produccion.png');
-    }
-  };
-
-  const handleShareWhatsApp = () => {
-    if (imageRef.current) {
-      htmlToImage.toPng(imageRef.current).then((dataUrl) => {
-        const whatsappUrl = `https://api.whatsapp.com/send?text=${encodeURIComponent(
-          'Check out this production schedule!'
-        )}%20${dataUrl}`;
-        window.open(whatsappUrl, '_blank');
-      });
+      saveAs(
+        dataUrl,
+        `produccion-${new Date(date).toLocaleDateString('es-ES')}.png`
+      );
     }
   };
 
@@ -54,37 +48,45 @@ const GenerateImage = () => {
     <PortalLayout>
       <Flex flexDir="column" px={5} gap={5}>
         <Box>
-          <Text fontWeight={600} textAlign="center" fontSize={18}>Generador de Flyer - Prouccion</Text>
+          <Text fontWeight={600} textAlign="center" fontSize={18}>
+            Generador de Flyer - Prouccion
+          </Text>
         </Box>
-        <Flex flexDir={{ base: 'column', md: 'row' }} gap={2}>
-          <Flex flexDir="column" gap={3}>
-            <Box>
-              <FormControl id="fecha">
-                <FormLabel>Fecha</FormLabel>
-                <Input
-                  type="date"
-                  value={date}
-                  onChange={(e) => setDate(e.target.value)}
-                />
-              </FormControl>
-              <FormControl id="hora" mt={4}>
-                <FormLabel>Hora</FormLabel>
-                <Input
-                  type="time"
-                  value={time}
-                  onChange={(e) => setTime(e.target.value)}
-                />
-              </FormControl>
-            </Box>
-            <Flex alignItems="center" justifyContent="center" gap={2}>
-              <Button onClick={handleGenerateImage} gap={1}>
-                <DownloadIcon /> Descargar
-              </Button>
-              <Button onClick={handleShareWhatsApp} gap={1}>
-                <ShareIcon /> Compartir
-              </Button>
-            </Flex>
-          </Flex>
+        <Flex
+          flexDir={{ base: 'column', md: 'row' }}
+          gap={2}
+          alignItems="center"
+          justifyContent="center"
+        >
+          
+            <Grid templateColumns="repeat(2, 1fr)" gap={6}>
+              <GridItem>
+                <FormControl id="fecha">
+                  <FormLabel>Fecha</FormLabel>
+                  <Input
+                    type="date"
+                    value={date}
+                    onChange={(e) => setDate(e.target.value)}
+                  />
+                </FormControl>
+              </GridItem>
+              <GridItem>
+                <FormControl id="hora">
+                  <FormLabel>Hora</FormLabel>
+                  <Input
+                    type="time"
+                    value={time}
+                    onChange={(e) => setTime(e.target.value)}
+                  />
+                </FormControl>
+              </GridItem>
+              <GridItem>
+                <Button onClick={handleGenerateImage} gap={1}>
+                  <DownloadIcon /> Descargar
+                </Button>
+              </GridItem>
+            </Grid>
+        
           <Box
             ref={imageRef}
             position="relative"

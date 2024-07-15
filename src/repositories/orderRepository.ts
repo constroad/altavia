@@ -38,7 +38,7 @@ export class OrderRepository {
               return prev + curr.quantity
             }, 0)
           let m3RealTotal = m3dispatched * x.precioCubo
-          if (x.igv && x.igv > 0) {
+          if (x.igv && x.igv > 0 && m3dispatched > 0) {
             m3RealTotal = m3RealTotal + x.igv
           }
           let montoPorCobrar = m3RealTotal - payments

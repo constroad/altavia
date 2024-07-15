@@ -37,7 +37,10 @@ export class OrderRepository {
             .reduce((prev, curr) => {
               return prev + curr.quantity
             }, 0)
-          const m3RealTotal = m3dispatched * x.precioCubo
+          let m3RealTotal = m3dispatched * x.precioCubo
+          if (x.igv && x.igv > 0) {
+            m3RealTotal = m3RealTotal + x.igv
+          }
           let montoPorCobrar = m3RealTotal - payments
           if (m3RealTotal === 0) {
             montoPorCobrar = x.totalPedido - payments

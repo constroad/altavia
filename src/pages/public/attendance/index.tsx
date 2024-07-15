@@ -101,7 +101,7 @@ const AttendancePage = () => {
                     alignItems="center"
                     justifyContent="space-between"
                   >
-                    <Text fontSize={10} color="gray">
+                    <Text fontSize={15} color="gray">
                       {e.name}
                     </Text>
                     <Avatar fontWeight="bold" size="xs" name={e.name} />

@@ -77,3 +77,16 @@ export function formatDate(date?: Date): string {
   // Format the date string
   return `Hoy es ${dayOfWeek} ${dayOfMonth} de ${month} del ${year}`;
 }
+
+export function addHoursAndFormat(dateString: string, hoursToAdd: number): string {
+  const date = new Date(dateString);
+  date.setHours(date.getHours() + hoursToAdd);
+
+  const options: Intl.DateTimeFormatOptions = {
+    hour: 'numeric',
+    minute: 'numeric',
+    hour12: true
+  };
+
+  return date.toLocaleTimeString('en-US', options);
+}

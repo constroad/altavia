@@ -7,7 +7,7 @@ import { API_ROUTES } from 'src/common/consts';
 import { IAttendanceValidationSchema } from 'src/models/attendance';
 import { toast } from 'src/components';
 import { Clock } from 'src/components/clock';
-import { formatDate } from 'src/utils/general';
+import { addHoursAndFormat, formatDate } from 'src/utils/general';
 import { IEmployeeValidationSchema } from 'src/models/employee';
 import { useFetch } from 'src/common/hooks/useFetch';
 import { ArrowLeftIcon } from 'src/common/icons';
@@ -264,6 +264,11 @@ export const RegisterAttendance = (props: RegisterAttendanceProps) => {
             )}
           </>
         </Clock>
+        {attendance && (
+          <Text textAlign="center" fontWeight="600" color="red">
+            Tu salida es a la:{addHoursAndFormat(attendance.date, 9)}
+          </Text>
+        )}
         <Flex alignItems="center" justifyContent="space-between" gap={5}>
           <Button
             isDisabled={loadingLocation || isLoading || !!attendance?.startTime}

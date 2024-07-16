@@ -80,7 +80,6 @@ const StockPage = () => {
   };
 
   const handleComputeDose = () => {
-    // if (wantToProduce === 0) return;
     const metarialsUpdated = controlledMaterials.map((material) => {
       const { percent, quantity } = material;
       let needed = 0;

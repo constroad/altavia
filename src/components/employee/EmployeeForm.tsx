@@ -31,12 +31,11 @@ export const EmployeeForm = (props: EmployeeFormProps) => {
   });
 
   // API
-  const { mutate: create, isMutating: isCreating } = useMutate(
-    `${API_ROUTES.employee}`
-  );
-  const { mutate: update, isMutating: isUpdating } = useMutate(
-    `${API_ROUTES.employee}/${employee?._id}`
-  );
+  const { mutate, isMutating } = useMutate(`${API_ROUTES.employee}/:id`, {
+    urlParams: {
+      id: employee?._id,
+    },
+  });
 
   useEffect(() => {
     if (employee) {
@@ -47,26 +46,26 @@ export const EmployeeForm = (props: EmployeeFormProps) => {
   const onSubmit = (data: IEmployeeValidationSchema) => {
     if (props.employee?._id) {
       //edit
-      update('PUT', data, {
+      mutate('PUT', data, {
         onSuccess: () => {
           toast.success('El empleado se actualizo correctamente');
           props.onSuccess();
         },
         onError: (err) => {
-          toast.success('Error al actualizar el nuevo empleado');
+          toast.error('Error al actualizar el nuevo empleado');
           console.log(err);
         },
       });
       return;
     }
     // create
-    create('POST', data, {
+    mutate('POST', data, {
       onSuccess: () => {
         toast.success('El empleado se registro correctamente');
         props.onSuccess();
       },
       onError: (err) => {
-        toast.success('Error al registrar el nuevo empleado');
+        toast.error('Error al registrar el nuevo empleado');
         console.log(err);
       },
     });
@@ -112,11 +111,7 @@ export const EmployeeForm = (props: EmployeeFormProps) => {
 
           <TextAreaField name="place" label="Place" />
 
-          <Button
-            colorScheme="blue"
-            type="submit"
-            isLoading={isCreating || isUpdating}
-          >
+          <Button colorScheme="blue" type="submit" isLoading={isMutating}>
             Guardar
           </Button>
         </VStack>

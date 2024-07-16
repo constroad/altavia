@@ -2,6 +2,8 @@ import { useState, useCallback } from 'react';
 
 interface UseMutateOptions extends RequestInit {
   headers?: Record<string, string>;
+  urlParams?: Record<string, string | undefined>;
+  queryParams?: Record<string, string | undefined>;
 }
 
 interface MutateParams<T> {
@@ -16,15 +18,49 @@ interface UseMutateResult<T> {
   mutateData: T | null;
 }
 
+const buildUrl = (url: string, pathParameters?: UseMutateOptions["urlParams"], queryParameters?: UseMutateOptions["queryParams"]): string => {
+  let builtUrl = url;
+
+  if (pathParameters) {
+    Object.keys(pathParameters).forEach(key => {
+      if (pathParameters[ key ] !== undefined) {
+        builtUrl = builtUrl.replace(`:${key}`, pathParameters[ key ]!);
+      } else {
+        builtUrl = builtUrl.replace(`:${key}`, '');
+      }
+    });
+  }
+
+  if (queryParameters) {
+    const validQueryParams = Object.keys(queryParameters)
+      .filter(key => queryParameters[ key ] !== undefined)
+      .reduce((acc, key) => {
+        acc[ key ] = queryParameters[ key ]!;
+        return acc;
+      }, {} as Record<string, string>);
+
+    const queryParams = new URLSearchParams(validQueryParams).toString();
+    if (queryParams) {
+      builtUrl += `?${queryParams}`;
+    }
+  }
+
+  builtUrl = builtUrl.endsWith('/') ? builtUrl.slice(0, -1) : builtUrl;
+
+  return builtUrl;
+};
+
 
 export const useMutate = <T = any>(
-  url: string,
-  options?: UseMutateOptions,
+  baseUrl: string,
+  params?: UseMutateOptions,
   updateCache?: (updateFn: (data: T[]) => T[]) => T[] | undefined
 ): UseMutateResult<T> => {
   const [ mutateLoading, setMutateLoading ] = useState<boolean>(false);
   const [ mutateError, setMutateError ] = useState<any>(null);
   const [ mutateData, setMutateData ] = useState<T | null>(null);
+  const { urlParams, queryParams, ...options } = params ?? {}
+  const url = buildUrl(baseUrl, urlParams, queryParams);
 
   const mutate = useCallback(async (method: string, body: T, params?: MutateParams<T>) => {
     setMutateLoading(true);

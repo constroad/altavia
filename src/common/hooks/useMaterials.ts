@@ -1,46 +1,25 @@
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { IMaterialSchema } from "src/models/material";
 import { API_ROUTES } from "../consts";
 import { useAsync } from "./useAsync";
 import axios from "axios";
 import { toast } from "src/components";
+import { useFetch } from "./useFetch";
 
-const fetcher = (path: string) => axios.get(path);
 const deleter = (path: string) => axios.delete(path);
 
 export const useMaterials = () => {
-  const {
-    run: runGetMaterials,
-    data: materialResponse,
-    isLoading,
-    refetch,
-  } = useAsync<IMaterialSchema[]>();
-
-  const [controlledMaterials, setControlledMaterials] = useState<IMaterialSchema[]>([])
+  const [ controlledMaterials, setControlledMaterials ] = useState<IMaterialSchema[]>([])
 
   const { run: runDeleteMaterial, isLoading: deletingMaterial } = useAsync();
-
-  useEffect(() => {
-    runGetMaterials(fetcher(API_ROUTES.material), {
-      refetch: () => runGetMaterials(fetcher(API_ROUTES.material), {
-        onSuccess: (response) => {
-          if (JSON.stringify(controlledMaterials) !== JSON.stringify(response.data)) {          
-            setControlledMaterials(response.data)
-          }  
-        }
-      }),
-      cacheKey: API_ROUTES.material,
-      onSuccess: (response) => {
-        if (JSON.stringify(controlledMaterials) !== JSON.stringify(response.data)) {          
-          setControlledMaterials(response.data)
-        }
-      }
-    });
-  }, []);
-
+  const { data: materialResponse, isLoading, refetch } = useFetch<IMaterialSchema[]>(API_ROUTES.material, {
+    onSuccess:(response) => {
+      setControlledMaterials(response)
+    }
+  })
 
   const onDeleteMaterial = (id: string, callbask?: () => void) => {
-    const material = materialResponse?.data?.find((x) => x._id === id)
+    const material = materialResponse?.find((x) => x._id === id)
     runDeleteMaterial(
       deleter(`${API_ROUTES.material}/${id}`),
       {
@@ -53,8 +32,8 @@ export const useMaterials = () => {
     );
   };
 
-  const materials = materialResponse?.data ?? []
-  const materialsMap = Object.fromEntries(materials.map((x) => [x._id, x]));
+  const materials = materialResponse ?? []
+  const materialsMap = Object.fromEntries(materials.map((x) => [ x._id, x ]));
 
 
   return {

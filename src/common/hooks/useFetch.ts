@@ -13,7 +13,7 @@ const deepEqual = (a: any, b: any): boolean => {
   if (keysA.length !== keysB.length) return false;
 
   for (let key of keysA) {
-    if (!keysB.includes(key) || !deepEqual(a[key], b[key])) {
+    if (!keysB.includes(key) || !deepEqual(a[ key ], b[ key ])) {
       return false;
     }
   }
@@ -29,35 +29,83 @@ const useDeepCompareMemo = <T>(value: T): T => {
   return ref.current as T;
 };
 
-interface FetchParams extends RequestInit {
-  onSuccess?: (data: any) => void;
+interface FetchParams<T> extends RequestInit {
+  onSuccess?: (data: T) => void;
   onError?: (error: any) => void;
   revalidateOnFocus?: boolean;
   body?: any;
-  refreshInterval?: number
+  refreshInterval?: number;
+  urlParams?: Record<string, string | undefined>;
+  queryParams?: Record<string, string | undefined>;
 }
 
 interface FetchResult<T> {
   data: T | null;
   isLoading: boolean;
   error: any;
-  refetch: () => void;
+  refetch: () => Promise<void>;
   updateCache: (updateFn: (prevData: T | null) => T) => void;
 }
 
 const cache: Record<string, any> = {};
 const cacheExpiry: Record<string, number> = {};
 
-export const useFetch = <T = any>(url: string, params?: FetchParams, cacheTime: number = 900000): FetchResult<T> => {
-  const { refreshInterval, onSuccess, onError, revalidateOnFocus = true, ...options } = params ?? {};
+const buildUrl = (
+  url: string, 
+  pathParameters?: Record<string, string | undefined>, 
+  queryParameters?: Record<string, string | undefined>
+  ): string => {
+  let builtUrl = url;
+
+  if (pathParameters) {
+    Object.keys(pathParameters).forEach(key => {
+      if (pathParameters[ key ] !== undefined) {
+        builtUrl = builtUrl.replace(`:${key}`, pathParameters[ key ]!);
+      } else {
+        builtUrl = builtUrl.replace(`:${key}`, '');
+      }
+    });
+  }
+
+  if (queryParameters) {
+    const validQueryParams = Object.keys(queryParameters)
+      .filter(key => queryParameters[ key ] !== undefined)
+      .reduce((acc, key) => {
+        acc[ key ] = queryParameters[ key ]!;
+        return acc;
+      }, {} as Record<string, string>);
+
+    const queryParams = new URLSearchParams(validQueryParams).toString();
+    if (queryParams) {
+      builtUrl += `?${queryParams}`;
+    }
+  }
+  builtUrl = builtUrl.endsWith('/') ? builtUrl.slice(0, -1) : builtUrl;
+
+  return builtUrl;
+};
+
+
+export const useFetch = <T = any>(baseUrl: string, params?: FetchParams<T>, cacheTime: number = 900000): FetchResult<T> => {
+  const {
+    urlParams,
+    queryParams,
+    refreshInterval,
+    onSuccess,
+    onError,
+    revalidateOnFocus = true,
+    ...options
+  } = params ?? {};
+
+  const url = buildUrl(baseUrl, urlParams, queryParams);
   let keyCache = url;
   if (options?.body) {
     keyCache = `${keyCache}, ${JSON.stringify(options.body)}`;
   }
 
-  const [data, setData] = useState<T | null>(cache[keyCache] || null);
-  const [loading, setLoading] = useState<boolean>(!cache[keyCache]);
-  const [error, setError] = useState<any>(null);
+  const [ data, setData ] = useState<T | null>(cache[ keyCache ] || null);
+  const [ loading, setLoading ] = useState<boolean>(!cache[ keyCache ]);
+  const [ error, setError ] = useState<any>(null);
   const abortControllerRef = useRef<AbortController | null>(null);
 
   const memoizedOptions = useDeepCompareMemo(options);
@@ -67,8 +115,8 @@ export const useFetch = <T = any>(url: string, params?: FetchParams, cacheTime: 
       abortControllerRef.current.abort();
     }
     const now = new Date().getTime();
-    if (!ignoreCache && cache[keyCache] && cacheExpiry[keyCache] > now) {
-      setData(cache[keyCache]);
+    if (!ignoreCache && cache[ keyCache ] && cacheExpiry[ keyCache ] > now) {
+      setData(cache[ keyCache ]);
       setLoading(false);
       return;
     }
@@ -91,13 +139,13 @@ export const useFetch = <T = any>(url: string, params?: FetchParams, cacheTime: 
       }
       const result = await response.json();
 
-      const currentData = cache[keyCache];
+      const currentData = cache[ keyCache ];
       if (JSON.stringify(currentData) !== JSON.stringify(result)) {
-        cache[keyCache] = result;
+        cache[ keyCache ] = result;
         setData(result);
         onSuccess?.(result);
       }
-      cacheExpiry[keyCache] = now + cacheTime;
+      cacheExpiry[ keyCache ] = now + cacheTime;
     } catch (error: any) {
       if (error.name !== 'AbortError') {
         setError(error);
@@ -109,12 +157,12 @@ export const useFetch = <T = any>(url: string, params?: FetchParams, cacheTime: 
       }
       abortControllerRef.current = null;
     }
-  }, [url, memoizedOptions, cacheTime]);
+  }, [ url, memoizedOptions, cacheTime ]);
 
   const updateCache = (updateFn: (prevData: T | null) => T) => {
     setData(prevData => {
       const updatedData = updateFn(prevData);
-      cache[keyCache] = updatedData;
+      cache[ keyCache ] = updatedData;
       return updatedData;
     });
   };
@@ -130,7 +178,7 @@ export const useFetch = <T = any>(url: string, params?: FetchParams, cacheTime: 
     return () => {
       if (revalidateOnFocus) window.removeEventListener('focus', handleFocus);
     };
-  }, [fetchData]);
+  }, [ fetchData ]);
 
   useEffect(() => {
     if (refreshInterval) {
@@ -140,7 +188,7 @@ export const useFetch = <T = any>(url: string, params?: FetchParams, cacheTime: 
 
       return () => clearInterval(intervalId);
     }
-  }, [refreshInterval, fetchData]);
+  }, [ refreshInterval, fetchData ]);
 
   return { data, isLoading: loading, error, refetch: () => fetchData(true), updateCache };
 };

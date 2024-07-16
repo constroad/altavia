@@ -35,18 +35,22 @@ export const RegisterAttendance = (props: RegisterAttendanceProps) => {
 
   //API
   const { data, isLoading, refetch } = useFetch<IAttendanceValidationSchema[]>(
-    `${API_ROUTES.attendance}?employeeId=${
-      props.employee?._id
-    }&date=${currentDate.toISOString()}`
+    API_ROUTES.attendance,
+    {
+      queryParams: {
+        employeeId: props.employee?._id,
+        date: currentDate.toISOString(),
+      },
+    }
   );
   const [attendance] = data ?? [];
-  const { mutate, isMutating } = useMutate<IAttendanceValidationSchema>(
-    API_ROUTES.attendance
-  );
-  const { mutate: update, isMutating: isUpdating } =
-    useMutate<IAttendanceValidationSchema>(
-      `${API_ROUTES.attendance}/${attendance?._id ?? ''}`
-    );
+
+  const { mutate, isMutating } =
+    useMutate<IAttendanceValidationSchema>(`${API_ROUTES.attendance}/:id`, {
+      urlParams: {
+        id: attendance?._id,
+      },
+    });
 
   //Handlers
   const startVideo = async () => {
@@ -142,6 +146,7 @@ export const RegisterAttendance = (props: RegisterAttendanceProps) => {
   };
 
   const handleSubmit = async () => {
+    if (isMutating || isLoading) return
     if (!props.employee?._id) {
       toast.error('Seleccione un empleado');
       return;
@@ -162,7 +167,7 @@ export const RegisterAttendance = (props: RegisterAttendanceProps) => {
 
     const { _id, ...rest } = attendance ?? {};
     if (_id) {
-      update(
+      mutate(
         'PUT',
         { ...rest, endTime: `${hour}:${minute}` },
         {
@@ -292,7 +297,7 @@ export const RegisterAttendance = (props: RegisterAttendanceProps) => {
             isDisabled={loadingLocation || isLoading || !!attendance?.endTime}
             colorScheme="red"
             onClick={handleSubmit}
-            isLoading={isUpdating}
+            isLoading={isMutating}
           >
             Firmar Salida
           </Button>

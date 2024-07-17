@@ -1,18 +1,29 @@
-import { Flex, Text } from "@chakra-ui/react";
+import { Flex, IconButton, Text } from "@chakra-ui/react";
 import { APP_ROUTES } from "src/common/consts";
-import { LocationIcon, MailIcon, RoadIcon, TruckIcon, WhatsAppIcon } from "src/common/icons";
+import { LocationIcon, MailIcon, RoadIcon, WhatsAppIcon } from "src/common/icons";
 import { FooterLink } from './FooterLink';
 import { SiNintendogamecube } from "react-icons/si";
 import { LuPaintbrush } from "react-icons/lu";
 import { MdFactory } from "react-icons/md";
 import { useRouter } from "next/router";
 import { useScreenSize } from "src/common/hooks";
+import { SiFacebook } from "react-icons/si";
+import { AiFillInstagram } from "react-icons/ai";
+import { HiHome } from "react-icons/hi2";
+import { FaPeopleGroup } from "react-icons/fa6";
+import { BsMailbox2 } from "react-icons/bs";
+import { TbLogin2 } from "react-icons/tb";
 
 const Footer = () => {
+  const { isMobile } = useScreenSize()
+  const router = useRouter()
   const currentDate = new Date()
   const currentYear = currentDate.getFullYear();
-  const router = useRouter()
-  const { isMobile } = useScreenSize()
+
+  const openNewPage = (url: string) => {
+    window.open(url, '_blank');
+  };
+
   return (
     <Flex
       as='footer'
@@ -26,7 +37,7 @@ const Footer = () => {
         <Flex
           width={{ base: '100%', md: '100%' }}
           justifyContent={{ base: 'center', md: 'center' }}
-          marginTop={{ base: '20px', md: '5px' }}
+          marginTop={{ base: '5px', md: '5px' }}
           alignItems='center'
         >
           <iframe
@@ -57,9 +68,9 @@ const Footer = () => {
       >
         <Flex bg='gray.800' w='100%' h='100%' opacity={0.8} zIndex={10} position='absolute' top='0' left='0'></Flex>
 
-        <Flex flexDir={{ base: 'column', md: 'row' }} w='100%' justifyContent='space-around' pb='40px'>
-          <Flex flexDir='column' width={{ base: '100%', md: '420px' }} paddingX={{ base: '30px', md: '0px' }} zIndex={20}>
-            <Text borderBottom='2px solid #feb100' width='min-content' marginX={{ base: 'auto', md: '0px' }} marginBottom='5px' className="font-logo" fontWeight={900} fontSize={{ base: 18, md: 20 }}>
+        <Flex flexDir={{ base: 'column', md: 'row' }} w='100%' justifyContent={{ base: 'start', md: 'space-between' }} pb='40px' h={{ base: 'calc(100vh - 105px)', md: '263px' }}>
+          <Flex flexDir='column' width={{ base: '100%', md: 'fit-content' }} paddingX={{ base: '30px', md: '0px' }} zIndex={20}>
+            <Text borderBottom='2px solid #feb100' width='min-content' marginX={{ base: '0px', md: '0px' }} marginBottom='5px' className="font-logo" fontWeight={900} fontSize={{ base: 18, md: 20 }}>
               SERVICIOS
             </Text>
             <FooterLink
@@ -84,14 +95,40 @@ const Footer = () => {
             />
           </Flex>
 
+          <Flex flexDir='column' width={{ base: '100%', md: 'fit-content' }} paddingX={{ base: '30px', md: '0px' }} zIndex={20} marginTop={{ base: '30px', md: '0px' }}>
+            <Text borderBottom='2px solid #feb100' width='min-content' marginX={{ base: '0px', md: '0px' }} marginBottom='0px' className="font-logo" fontWeight={900} fontSize={{ base: 18, md: 20 }}>
+              MENÚ
+            </Text>
+            <FooterLink
+              href={APP_ROUTES.home}
+              label="Inicio"
+              icon={<HiHome fontSize={ isMobile ? 20 : 22} />}
+            />
+            <FooterLink
+              href={APP_ROUTES.nosotros}
+              label="Nosotros"
+              icon={<FaPeopleGroup fontSize={ isMobile ? 20 : 22} />}
+            />
+            <FooterLink
+              href={APP_ROUTES.contactanos}
+              label="Contáctanos"
+              icon={<BsMailbox2 fontSize={ isMobile ? 20 : 22} />}
+            />
+            <FooterLink
+              href={APP_ROUTES.login}
+              label="Iniciar sesión"
+              icon={<TbLogin2 fontSize={ isMobile ? 20 : 22} />}
+            />
+          </Flex>
+
           <Flex
             flexDir='column'
-            width={{ base: '100%', md: '420px' }}
+            width={{ base: '100%', md: 'fit-content' }}
             paddingX={{ base: '30px', md: '0px' }}
             marginTop={{ base: '20px', md: '0px' }}
             zIndex={20}
           >
-            <Text borderBottom='2px solid #feb100' width='min-content' marginX={{ base: 'auto', md: '0px' }} className="font-logo" fontWeight={900} fontSize={{ base: 18, md: 20 }}>
+            <Text borderBottom='2px solid #feb100' width='min-content' marginX={{ base: '0px', md: '0px' }} className="font-logo" fontWeight={900} fontSize={{ base: 18, md: 20 }}>
               CONTÁCTANOS
             </Text>
             
@@ -99,7 +136,7 @@ const Footer = () => {
               <LocationIcon fontSize={ isMobile ? 20 : 22} className="mt-[8px]"/>
               <Flex flexDir='column'>
                 <Text width='100%' fontSize={{ base: 14, md: 16 }} fontWeight={600} className="font-logo">
-                  Carapongo S/N Urbanización El Portillo
+                  Carapongo S/N Urb. El Portillo
                 </Text>
                 <Text width='100%' fontSize={{ base: 14, md: 16 }} fontWeight={600} className="font-logo">
                   Lurigancho - Chosica - Lima
@@ -120,9 +157,37 @@ const Footer = () => {
               icon={<WhatsAppIcon fontSize={ isMobile ? 20 : 22 } />}
               target="_blank"
             />
+
           </Flex>
         </Flex>
 
+        <Flex w='100%' gap={{ base: '5px', md: '15px' }} zIndex={30} h='30px' position='absolute' bottom={{ base: '50px', md: '45px' }} justifyContent='start' alignItems='center' px={{ base: '20px', md: '105px' }}>
+          <IconButton
+            display='flex'
+            justifyContent='center'
+            w={{ base: '30px', md: '40px' }}
+            aria-label="Ir a nuestra página de Facebook"
+            icon={<SiFacebook fontSize={ isMobile ? 20 : 24 } />}
+            onClick={() => openNewPage('https://facebook.com/constroad/')}
+            variant='unstyled'
+          />
+          <IconButton
+            display='flex'
+            justifyContent='center'
+            aria-label="Ir a nuestra página de Instagram"
+            icon={<AiFillInstagram fontSize={ isMobile ? 26 : 30 } color="gray.900" />}
+            onClick={() => openNewPage('https://instagram.com/asfaltoconstroad/')}
+            variant='unstyled'
+          />
+          <IconButton
+            display='flex'
+            justifyContent='center'
+            aria-label="Ir a nuestra página de Instagram"
+            icon={<WhatsAppIcon fontSize={ isMobile ? 22 : 26 } color="gray.900" />}
+            onClick={() => openNewPage('https://api.whatsapp.com/send?phone=51949376824')}
+            variant='unstyled'
+          />
+        </Flex>
 
         <Flex
           position='absolute'

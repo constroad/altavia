@@ -29,13 +29,15 @@ export const MobileMenu = (props: IMobileMenu) => {
 
   const handleOptionClick = async(e: MouseEvent<HTMLDivElement>, option: any) => {
     e.preventDefault()
-    if (option.label === 'Nosotros') {
-      props.toggleNosotrosMenu(option.label)
-    } else if (option.label === 'Servicios') {
+    if (option.label === 'Servicios') {
       props.toggleServiciossMenu(option.label)
     } else {
       router.push(option.path)
     }
+  }
+
+  const handleGoToAdminClick = () => {
+    router.push('/admin')
   }
 
   return (
@@ -55,6 +57,24 @@ export const MobileMenu = (props: IMobileMenu) => {
       borderColor='lightgray'
       className={`${props.display ? 'opacity-100 unfold' : 'opacity-0'}`}
     >
+      {session && (
+        <Flex
+          flexDir='row'
+          fontSize={14}
+          fontWeight={700}
+          height={'70px'}
+          color={path === APP_ROUTES.login ? '#feb100' : '#004d89'}
+          paddingX='20px'
+          paddingY='30px'
+          width='100%'
+          cursor='pointer'
+          _hover={{shadow: 'md'}}
+          onClick={handleGoToAdminClick}
+          borderBottom="1px solid rgba(0, 0, 0, 0.1)"
+        >
+          Intranet
+        </Flex>
+      )}
       {GenerateNavOptions().map(opt => (
         <Flex
           flexDir='column'
@@ -81,10 +101,6 @@ export const MobileMenu = (props: IMobileMenu) => {
             {opt.label === 'Nosotros' && (
               <Flex width='full' justifyContent='space-between'>
                 {opt.label}
-                {props.nosotrosMenu ?
-                  <HideOptionIcon color='#004d89' fontSize={19} /> :
-                  <DisplayOptionIcon color='#004d89' fontSize={19} />
-                }
               </Flex>
             )}
             {opt.label === 'Servicios' && (
@@ -100,55 +116,6 @@ export const MobileMenu = (props: IMobileMenu) => {
               opt.label
             )}
           </Flex>
-
-          {/* NOSOTROS */}
-          {props.nosotrosMenu === 'Nosotros' && opt.label === 'Nosotros' && (
-            <Flex
-              flexDir='column'
-              height='auto'
-              width='100%'
-              overflow='hidden'
-              className={
-                props.nosotrosMenu === 'Nosotros' && opt.label === 'Nosotros' ?
-                'opacity-100 unfold' :
-                'opacity-0'
-              }
-            >
-              {nosotrosOptions.map(nopt => (
-              <Flex
-                flexDir='column'
-                justifyContent='center'
-                width='full'
-                height='51px'
-                paddingY='10px'
-                paddingX='20px'
-                key={nopt.label}
-                borderTop="1px solid rgba(0, 0, 0, 0.1)"
-                cursor='pointer'
-                _hover={{shadow: 'md'}}
-                onClick={(e) => {
-                  e.stopPropagation()
-                  router.push(`${opt.path}${nopt.path}`)
-                }}
-              >
-                <Text
-                  width='100%'
-                  fontSize={12}
-                  fontWeight={700}
-                  paddingX='20px'
-                  color={
-                    path === `${opt.path}${nopt.path}` ?
-                    '#feb100' :
-                    '#004d89'
-                  }
-                >
-                  - {nopt.label}
-                </Text>
-              </Flex>
-            ))}
-            </Flex>
-            
-          )}
 
           {/* SERVICIOS */}
           {props.serviciosMenu === 'Servicios' && opt.label === 'Servicios' && (
@@ -210,26 +177,26 @@ export const MobileMenu = (props: IMobileMenu) => {
           _hover={{shadow: 'md'}}
           onClick={() => router.push(APP_ROUTES.login)}
         >
-          Login
+          Inicia sesión
         </Flex>
       )}
 
       {session && (
         <Flex
-        flexDir='row'
-        fontSize={14}
-        fontWeight={700}
-        height={'70px'}
-        color={path === APP_ROUTES.login ? '#feb100' : '#004d89'}
-        paddingX='20px'
-        paddingY='30px'
-        width='100%'
-        cursor='pointer'
-        _hover={{shadow: 'md'}}
-        onClick={handleSignOut}
-      >
-        Logout
-      </Flex>
+          flexDir='row'
+          fontSize={14}
+          fontWeight={700}
+          height={'70px'}
+          color={path === APP_ROUTES.login ? '#feb100' : '#004d89'}
+          paddingX='20px'
+          paddingY='30px'
+          width='100%'
+          cursor='pointer'
+          _hover={{shadow: 'md'}}
+          onClick={handleSignOut}
+        >
+          Cerrar sesión
+        </Flex>
       )}
     </Flex>
   )

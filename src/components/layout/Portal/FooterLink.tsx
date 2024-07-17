@@ -19,7 +19,7 @@ export const FooterLink = (props: FooterProps) => {
       target={ props.target ?? undefined }
     >
       {props.icon}
-      <Text width='100%' textAlign='justify' fontSize={14} fontWeight={400}>
+      <Text width='100%' textAlign='justify' fontSize={{ base: 14, md: 16 }} fontWeight={600} className='font-logo' mt='4px'>
         {props.label}
       </Text>
     </Link>

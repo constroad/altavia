@@ -9,6 +9,7 @@ import { ArrowDown, HideMenuMobileIcon, ShowMenuMobileIcon } from 'src/common/ic
 import { GenerateNavOptions, nosotrosOptions, serviciosOptions } from './config'
 import { CONSTROAD_COLORS } from 'src/styles/shared';
 import { useEffect, useState } from 'react';
+import { useScreenSize } from 'src/common/hooks';
 
 interface INavbar {
   isHoverButton: boolean
@@ -21,6 +22,7 @@ interface INavbar {
 
 export const Navbar = (props: INavbar) => {
   const router = useRouter()
+  const { isMobile, isDesktop } = useScreenSize()
   const path = router.pathname
   const { data: session } = useSession()
 
@@ -32,7 +34,7 @@ export const Navbar = (props: INavbar) => {
 
   const menuItemClick = (option: any) => {
     if (option.label === 'Nosotros') {
-      router.push(`${APP_ROUTES.nosotros}` + APP_ROUTES.mision)
+      router.push(`${APP_ROUTES.nosotros}`)
     } else if (option.label === 'Servicios') {
       router.push(`${APP_ROUTES.servicios + APP_ROUTES.mezclaAsfaltica}`)
     } else {
@@ -49,6 +51,7 @@ export const Navbar = (props: INavbar) => {
   return (
     <Flex
       id='navbar'
+      bg='white'
       as='nav'
       width='100%'
       height={{ base: '65px', md: '90px' }}
@@ -56,7 +59,6 @@ export const Navbar = (props: INavbar) => {
       top={{ base: '', md: '0px'}}
       zIndex={1000}
       justifyContent='center'
-      rounded='6px'
       boxShadow='lg'
     >
       <Flex
@@ -67,30 +69,32 @@ export const Navbar = (props: INavbar) => {
         justifyContent='space-between'
         bg='white'
         width={{ base: '100vw', md: '100vw' }}
-        marginX='auto'
+        marginX={{ base: '', md: 'auto' }}
       >
         <Flex
           as='h1'
           cursor='pointer'
-          width={{ base: '130px', md: 'fit-content' }}
+          width={{ base: '160px', md: 'fit-content' }}
           alignItems='center'
           justifyContent='center'
         >
           <Link href={APP_ROUTES.home} title='Constroad | Planta de asfalto' _hover={{ textDecoration: 'none' }}>
-            <Flex w='fit-content' h='90px' rounded='6px' justifyContent='center' alignItems='center' flexDir='column'>
-              <Image src='/constroad.jpeg' width='32px' h='32px' alt='constroad-logo' rounded='4px' />
-                <Text className='font-logo' fontWeight={650} fontSize='30px' lineHeight='30px' textAlign='end' pt='5px'>
-                  ConstRoad
-                </Text>
+            <Flex w='fit-content' h={{base: '65px', md:'90px'}} rounded='6px' justifyContent='center' alignItems='center' flexDir={{ base: 'row', md: 'column'}} gap={{ base: '6px', md: '0px' }}>
+              <Image src='/constroad.jpeg' width={{ base: '26px', md: '32px' }} h={{ base: '26px', md: '32px' }} alt='constroad-logo' rounded='4px' />
+              <Text className='font-logo' fontWeight={650} fontSize={{ base: 25, md: 30 }} lineHeight={{ base: '25px', md: '30px' }} textAlign='end' pt={{base: '8px', md: '5px'}}>
+                ConstRoad
+              </Text>
+              {isDesktop && (
                 <Text className='font-logo' fontWeight={650} fontSize={16} lineHeight='16px' textAlign='center' textDecoration='none' color={CONSTROAD_COLORS.darkYellow} h='10p'>
                   Planta de Asfalto
                 </Text>
+              )}
             </Flex>
           </Link>
 
         </Flex>
 
-        <Flex as='ul' gap={1} display={{ base: 'none', md: 'flex' }} alignItems='end' height='90px' className='font-logo' fontWeight={600}>
+        <Flex as='ul' gap={1} display={{ base: 'none', md: 'flex' }} alignItems='end' height={{base: '65px', md: '90px'}} className='font-logo' fontWeight={600}>
           {session && (
             <Box
               as='li'
@@ -150,65 +154,12 @@ export const Navbar = (props: INavbar) => {
                 <Text>
                   {opt.label}
                 </Text>
-                {opt.label === 'Nosotros' && (
-                  <Flex mb='4px'>
-                    <ArrowDown />
-                  </Flex>
-                )}
                 {opt.label === 'Servicios' && (
                   <Flex mb='4px'>
                     <ArrowDown />
                   </Flex>
                 )}
               </Flex>
-
-              {/* NOSOTROS */}
-              {props.buttonHovered === 'Nosotros' && opt.label === 'Nosotros' && (
-                <Flex
-                  as='ul'
-                  position='absolute'
-                  top='100%'
-                  left='0px'
-                  flexDir='column'
-                  gap='1px'
-                  paddingY='1px'
-                  background='white'
-                  width='180px'
-                  visibility={props.isHoverButton ? 'visible' : 'hidden'}
-                  fontSize={13}
-                  fontWeight={600}
-                  zIndex={1000}
-                  border='1px solid #9CA3AF'
-                  className={
-                    props.buttonHovered === 'Nosotros' && opt.label === 'Nosotros' ?
-                    'opacity-100 unfold-03' :
-                    'opacity-0'
-                  }
-                >
-                  {nosotrosOptions.map(nopt => (
-                    <Flex
-                      as='li'
-                      key={nopt.label}
-                      color='black'
-                      paddingX={5}
-                      paddingY={2}
-                      cursor='pointer'
-                      alignItems='center'
-                      className={ path.includes(nopt.path) ? 'bg-[#feb100]' : 'text-black' }
-                      _hover={{
-                        background: '#feb100',
-                        color: 'white',
-                      }}
-                      onClick={(e) => {
-                        e.stopPropagation()
-                        router.push(`${opt.path}${nopt.path}`)
-                      }}
-                    >
-                      {nopt.label}
-                    </Flex>
-                  ))}
-                </Flex>
-              )}
 
               {/* SERVICIOS */}
               {props.buttonHovered === 'Servicios' && opt.label === 'Servicios' && (

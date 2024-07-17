@@ -75,7 +75,7 @@ export const PortalLayout = (props: IPortalLayout) => {
         handleMobileMenuClick={handleMobileMenuClick}
         showMobileOptions={showMobileOptions}
       />
-      <Flex h='90px' w='100%' />
+      <Flex h={{base: '65px', md: '90px'}} w='100%' bg='white' />
 
       {isMobile && showMobileOptions && (
         <MobileMenu
@@ -90,12 +90,12 @@ export const PortalLayout = (props: IPortalLayout) => {
       <Box
         as='main'
         width='100%'
-        minHeight='calc(100vh - 301.5px)'
+        minHeight='calc(100vh - 339px)'
         paddingTop={{
           base: props.noPaddingTop ? '0px' : '30px',
           md: props.noPaddingTop ? '0px' : '40px'
         }}
-        paddingBottom={{ base: '30px', md: '40px'}}
+        paddingBottom={{ base: '10px', md: '40px'}}
         position='relative'
       >
         {children}
@@ -106,7 +106,7 @@ export const PortalLayout = (props: IPortalLayout) => {
           position='fixed'
           right={ isMobile ? 2 : '60px' }
           bottom={isMobile ? 14 : 4}
-          width={isMobile ? '130px' : 'auto'}
+          width={isMobile ? 'auto' : 'auto'}
           rounded='100%'
           background='#25d366'
           _hover={{ bg: '#1FAA53' }}

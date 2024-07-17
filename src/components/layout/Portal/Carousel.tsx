@@ -9,6 +9,10 @@ import { carouselImages } from './config';
 import "slick-carousel/slick/slick.css";
 import "slick-carousel/slick/slick-theme.css";
 
+interface CarouselProps {
+  images: any[]
+}
+
 function SampleNextArrow(props: any) {
   const { onClick, isMobile } = props;
   return (
@@ -63,7 +67,7 @@ function SamplePrevArrow(props: any) {
   );
 }
 
-export const CarouselComponent = () => {
+export const CarouselComponent = (props: CarouselProps) => {
   const { isMobile, isDesktop } = useScreenSize()
 
   const settings = {
@@ -80,17 +84,17 @@ export const CarouselComponent = () => {
   }
 
   return (
-    <div className='w-full bg-black relative' style={{ height: isMobile ? '135px' : 'calc(100vh - 200px)' }}>
+    <div className='w-full bg-black relative' style={{ height: isMobile ? '180px' : 'calc(100vh - 90px)' }}>
       <Box className="font-logo" position='absolute' color='white' top='90px' right='120px' zIndex={200} fontSize={32} fontWeight={800} display={isDesktop ? 'block' : 'none'}>
         ConstRoad
       </Box>
 
       <Slider {...settings}>
-        {carouselImages.map((img, idx) => (
-          <div key={idx} className='w-full flex justify-center' style={{ height: isMobile ? '135px' : 'calc(100vh - 200px)' }}>
+        {props.images.map((img, idx) => (
+          <div key={idx} className='w-full flex justify-center' style={{ height: isMobile ? '180px' : 'calc(100vh - 90px)' }}>
             <div
               className='w-full bg-cover bg-center'
-              style={{ backgroundImage: img.url, height: isMobile ? '135px' : 'calc(100vh - 200px)' }}
+              style={{ backgroundImage: img.url, height: isMobile ? '180px' : 'calc(100vh - 90px)' }}
             />
           </div>
         ))} 
@@ -100,14 +104,14 @@ export const CarouselComponent = () => {
         className="font-logo"
         href={APP_ROUTES.contactanos}
         position='absolute'
-        left={{ base: '10px', md: '120px'}}
+        left={{ base: '30px', md: '120px'}}
         bottom={{ base: '-20px', md: '40px'}}
         bg='#feb100'
-        width={{ base: '230px', md: '350px'}}
-        fontSize={{ base: 16, md: 22}}
+        width={{ base: '210px', md: '350px'}}
+        fontSize={{ base: 14, md: 22}}
         lineHeight='26px'
         fontWeight={600}
-        height={{ base: '45px', md: '64px'}}
+        height={{ base: '40px', md: '64px'}}
         rounded='6px'
         display='flex'
         justifyContent='center'
@@ -119,7 +123,7 @@ export const CarouselComponent = () => {
         gap={2}
       >
         <CalculatorIcon />
-        <Text height='17px' alignSelf='center'>SOLICITA UNA COTIZACIÓN!</Text>
+        <Text height={{ base: '20px', md: '18px' }} alignSelf='center'>SOLICITA UNA COTIZACIÓN!</Text>
       </Link>
       {/* <Box className="triangle" position='absolute' bottom={{ base: '-20px', md: '-28px' }} right={{ base: '240px', md: '445px'}} /> */}
     </div>

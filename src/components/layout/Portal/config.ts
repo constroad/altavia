@@ -31,7 +31,8 @@ export const nosotrosOptions = [
 export const serviciosOptions = [
   {label: 'Mezcla asfáltica en caliente', path: APP_ROUTES.mezclaAsfaltica},
   {label: 'Colocación de mezcla asfáltica', path: APP_ROUTES.colocacionAsfaltica},
-  {label: 'Transporte de carga por carretera', path: APP_ROUTES.transporte},
+  {label: 'Señalización vial', path: APP_ROUTES.senalizacionVial},
+  {label: 'Alquiler de planta de asfalto', path: APP_ROUTES.alquilerPlanta},
 ]
 
 export const carouselImages = [
@@ -39,6 +40,20 @@ export const carouselImages = [
   {label: 'produccion-asfalto-dia', url: 'url(/img/carousel/produccion-dia.png)'},
   {label: 'produccion-asfalto-madrugada', url: 'url(/img/carousel/produccion-madrugada.png)'},
   {label: 'produccion-asfalto-noche', url: 'url(/img/carousel/produccion-noche.png)'},
-  // {label: 'image1', url: 'url(/img/carousel/1.png)'},
-  // {label: 'image3', url: 'url(/img/carousel/3.png)'},
+]
+
+export const clientsImages = [
+  {label: 'falcob-logo', url: '/img/clients/logo1.png'},
+  {label: '2-logo', url: '/img/clients/logo2.png'},
+  {label: '3-logo', url: '/img/clients/logo3.png'},
+  {label: '4-logo', url: '/img/clients/logo4.png'},
+  {label: '5-logo', url: '/img/clients/logo5.png'},
+  {label: '6-logo', url: '/img/clients/logo6.png'},
+]
+
+export const proyectsImages = [
+  {label: 'proyecto-la-campigna', url: '/img/proyects/la-campigna-cajamarquilla.png'},
+  {label: 'proyecto-los-plateros', url: '/img/proyects/los-plateros-ate.jpeg'},
+  {label: 'proyecto-los-tulipanes', url: '/img/proyects/los-tulipanes-carapongo.jpeg'},
+  {label: 'proyecto-surco', url: '/img/proyects/surco.jpg'},
 ]

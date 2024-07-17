@@ -86,3 +86,27 @@ body {
 .notistack-SnackbarContainer {
   z-index: 10000000000 !important;
 }
+
+@keyframes bounce {
+  0% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(20px);
+  }
+  95% {
+    transform: translateY(0);
+  }
+  100% {
+    transform: translateY(0);
+  }
+}
+
+.scroll-down-arrow {
+  animation: bounce 0.50s infinite;
+}
+
+.slick-slide > * > * > * {
+  display: flex !important;
+  justify-content: center !important;
+}

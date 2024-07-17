@@ -15,5 +15,5 @@ export const initialContactForm: ContactFormType = {
   ruc: '',
   message: '',
   phone: '',
-  nroCubos: '1',
+  nroCubos: '',
 }

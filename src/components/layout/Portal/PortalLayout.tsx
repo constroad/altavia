@@ -8,7 +8,8 @@ import { MobileMenu } from './MobileMenu';
 import { CustomHead } from './CustomHead';
 import { useScreenSize } from 'src/common/hooks';
 import { useSession } from 'next-auth/react';
-import { WhatsAppIcon } from 'src/common/icons';
+import { WhatsappIcon } from 'src/common/icons';
+import { CONSTROAD_COLORS } from 'src/styles/shared';
 
 interface IPortalLayout {
   children: React.ReactNode
@@ -75,6 +76,7 @@ export const PortalLayout = (props: IPortalLayout) => {
         handleMobileMenuClick={handleMobileMenuClick}
         showMobileOptions={showMobileOptions}
       />
+      <Flex h={{base: '65px', md: '90px'}} w='100%' bg='white' />
 
       {isMobile && showMobileOptions && (
         <MobileMenu
@@ -89,12 +91,12 @@ export const PortalLayout = (props: IPortalLayout) => {
       <Box
         as='main'
         width='100%'
-        minHeight='calc(100vh - 306.5px)'
+        minHeight='calc(100vh - 339px)'
         paddingTop={{
           base: props.noPaddingTop ? '0px' : '20px',
           md: props.noPaddingTop ? '0px' : '50px'
         }}
-        paddingBottom={{ base: '40px', md: '50px'}}
+        paddingBottom={{ base: '10px', md: '40px'}}
         position='relative'
         bgColor={props.bgColor ?? ''}
       >
@@ -104,21 +106,17 @@ export const PortalLayout = (props: IPortalLayout) => {
           href="https://api.whatsapp.com/send?phone=51949376824"
           target="_blank"
           position='fixed'
-          right={ isMobile ? 2 : 5 }
-          bottom={isMobile ? 14 : 12}
-          width={isMobile ? '130px' : '150px'}
-          rounded='10px'
-          background='white'
+          right={ isMobile ? 2 : '60px' }
+          bottom={isMobile ? 14 : 4}
+          width={isMobile ? 'auto' : 'auto'}
+          rounded='100%'
+          background='#25d366'
+          _hover={{ bg: '#1FAA53' }}
           zIndex={200}
-          shadow='md'
-          border='1px solid'
-          borderColor='lightgrey'
+          shadow='2lg'
         >
-          <Flex justifyContent='center' alignItems='center' padding='10px' gap='6px'>
-            <WhatsAppIcon fontSize={24} color='green' />
-            <Text color='GrayText' fontSize={isMobile ? '14px' : '16px'}>
-              Contáctanos
-            </Text>
+          <Flex justifyContent='center' alignItems='center' padding='5px' gap='6px'>
+            <WhatsappIcon fontSize={40} color='white' />
           </Flex>
         </Link>
 

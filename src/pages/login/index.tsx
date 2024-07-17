@@ -2,7 +2,7 @@ import { KeyboardEvent, useState } from 'react';
 import { signIn } from 'next-auth/react';
 import { FormControl, FormLabel, Input, Button, Flex, Box } from '@chakra-ui/react';
 import { useRouter } from 'next/router';
-import { PortalLayout, toast } from 'src/components';
+import { PortalLayout, SubtitleComponent, toast } from 'src/components';
 import { APP_ROUTES } from 'src/common/consts';
 
 const LoginPage = () => {
@@ -34,18 +34,18 @@ const LoginPage = () => {
   return (
     <PortalLayout>
       <Flex flexDir='column' alignItems='center'>
-        <Box as='h1' fontWeight={600} fontSize={26}>Inicia sesion</Box>
+        <SubtitleComponent text='INICIA SESIÓN' />
 
         <Box width='400px' paddingX='30px' marginTop={{ base: '30px', md: '60px' }} textAlign='center'>
           <FormControl id="username">
-            <FormLabel>Usuario</FormLabel>
+            <FormLabel className='font-logo' mb='0px'>USUARIO</FormLabel>
             <Input type="text" value={username} onChange={(e) => setUsername(e.target.value.toLowerCase())} />
           </FormControl>
           <FormControl id="password" marginTop='15px'>
-            <FormLabel>Contraseña</FormLabel>
+            <FormLabel className='font-logo' mb='0px'>CONTRASEÑA</FormLabel>
             <Input type="password" value={password} onChange={(e) => setPassword(e.target.value)} onKeyDown={handleKeyDown}/>
           </FormControl>
-          <Button onClick={handleSignIn} marginTop='40px' marginX='auto'>Ingresar</Button>
+          <Button onClick={handleSignIn} marginTop='40px' marginX='auto' className='font-logo' colorScheme='orange' border='1px solid black'>Ingresar</Button>
         </Box>
       </Flex>
     </PortalLayout>

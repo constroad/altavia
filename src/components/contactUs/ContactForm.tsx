@@ -1,6 +1,7 @@
 import React, { ChangeEvent } from 'react'
 import { Button, Flex, FormControl, FormLabel, Input, Text, Textarea, VStack } from '@chakra-ui/react'
 import { ContactFormType } from './utils';
+import { CONSTROAD_COLORS } from 'src/styles/shared';
 
 type ContactFormProps = {
   user: ContactFormType;
@@ -20,48 +21,40 @@ export const ContactForm = (props: ContactFormProps) => {
   }
 
   return (
-    <VStack as="form" onSubmit={handleSubmit} spacing={2.5} mt='10px'>
+    <VStack as="form" onSubmit={handleSubmit} spacing={2.5} mt='10px' className='font-logo'>
       <FormControl id="contact-name" >
-        <FormLabel mb='6px' fontSize={{ base: 12, md: 14 }}>
-          Nombre <Text color='gray' display='inline-flex'>(opcional)</Text>
-        </FormLabel>
-        <Input
-          fontSize={{ base: 12, md: 14 }}
-          lineHeight='14px'
-          height='32px'
-          type="text"
-          value={user.name}
-          onChange={(e) => handleChangeValue(e, 'name')}
-          placeholder="Nombre"
-        />
+        <Flex alignItems='center' gap='5px'>
+          <Input
+            fontSize={{ base: 12, md: 14 }}
+            lineHeight={{ base: '12px', md: '14px' }}
+            height='32px'
+            type="text"
+            value={user.name}
+            onChange={(e) => handleChangeValue(e, 'name')}
+            placeholder="Nombre"
+          />
+          <Text fontSize={{ base: 12, md: 18 }} fontWeight={600} mt='4px' color='red' w='8px' />
+        </Flex>
       </FormControl>
 
-      <FormControl id="contact-email">
-        <FormLabel mb='6px' fontSize={{ base: 12, md: 14 }}>
-          Correo electrónico <Text color='red' display='inline-flex'>*</Text>
-        </FormLabel>
-        <Input
-          fontSize={{ base: 12, md: 14 }}
-          lineHeight='14px'
-          height='32px'
-          type="email"
-          value={user.email}
-          onChange={(e) => handleChangeValue(e, 'email')}
-          placeholder="Correo electrónico"
-          required
-        />
+      <FormControl id="contact-email" mt='5px'>
+        <Flex alignItems='center' gap='5px'>
+          <Input
+            fontSize={{ base: 12, md: 14 }}
+            lineHeight='14px'
+            height='32px'
+            type="email"
+            value={user.email}
+            onChange={(e) => handleChangeValue(e, 'email')}
+            placeholder="Correo electrónico"
+            required
+          />
+          <Text fontSize={{ base: 12, md: 18 }} fontWeight={600} mt='4px' color='red' w='8px'>*</Text>
+        </Flex>
       </FormControl>
 
-      <Flex
-        flexDir={{base: 'column', md: 'row'}}
-        width='100%'
-        gap={{base: '16px', md: '8px'}}
-        justifyContent={{base: '', md: 'space-between'}}
-      >
-        <FormControl id="contact-company-name">
-          <FormLabel mb='6px' fontSize={{ base: 12, md: 14 }}>
-            Razón social <Text color='red' display='inline-flex'>*</Text>
-          </FormLabel>
+      <FormControl id="contact-company-name">
+        <Flex alignItems='center' gap='5px'>
           <Input
             fontSize={{ base: 12, md: 14 }}
             lineHeight='14px'
@@ -72,12 +65,12 @@ export const ContactForm = (props: ContactFormProps) => {
             placeholder="Razón social"
             required
           />
-        </FormControl>
+          <Text fontSize={{ base: 12, md: 18 }} fontWeight={600} mt='4px' color='red' w='8px'>*</Text>
+        </Flex>
+      </FormControl>
 
-        <FormControl id="contact-ruc">
-          <FormLabel mb='6px' fontSize={{ base: 12, md: 14 }}>
-            RUC <Text color='red' fontSize={12} display='inline-flex'>*</Text>
-          </FormLabel>
+      <FormControl id="contact-ruc">
+        <Flex alignItems='center' gap='5px'>  
           <Input
             fontSize={{ base: 12, md: 14 }}
             lineHeight='14px'
@@ -88,57 +81,61 @@ export const ContactForm = (props: ContactFormProps) => {
             placeholder="RUC"
             required
           />
-        </FormControl>
-      </Flex>
+          <Text fontSize={{ base: 12, md: 18 }} fontWeight={600} mt='4px' color='red' w='8px'>*</Text>
+        </Flex>
+      </FormControl>
 
       <FormControl id="contact-message">
-        <FormLabel mb='6px' fontSize={{ base: 12, md: 14 }}>
-          Mensaje <Text color='gray' display='inline-flex'>(opcional)</Text>
-        </FormLabel>
-        <Textarea
-          fontSize={{ base: 12, md: 14 }}
-          lineHeight='14px'
-          value={user.message}
-          onChange={(e: any) => handleChangeValue(e, 'message')}
-          placeholder="Escribe detalles sobre tu pedido: fecha, lugar, etc"
-        />
+        <Flex alignItems='center' gap='5px'>
+          <Textarea
+            fontSize={{ base: 12, md: 14 }}
+            lineHeight='14px'
+            value={user.message}
+            onChange={(e: any) => handleChangeValue(e, 'message')}
+            placeholder="Escribe detalles sobre tu pedido: fecha, lugar, etc"
+          />
+          <Text fontSize={{ base: 12, md: 18 }} fontWeight={600} mt='4px' color='red' w='8px' />
+        </Flex>
       </FormControl>
 
       <FormControl id="contact-phone" >
-        <FormLabel mb='6px' fontSize={{ base: 12, md: 14 }}>
-          Teléfono <Text color='gray' fontSize={12} display='inline-flex'>(opcional)</Text>
-        </FormLabel>
-        <Input
-          fontSize={{ base: 12, md: 14 }}
-          lineHeight='14px'
-          height='32px'
-          type="number"
-          value={user.phone}
-          onChange={(e) => handleChangeValue(e, 'phone')}
-          placeholder="Celular"
-        />
+        <Flex alignItems='center' gap='5px'>
+          <Input
+            fontSize={{ base: 12, md: 14 }}
+            lineHeight='14px'
+            height='32px'
+            type="number"
+            value={user.phone}
+            onChange={(e) => handleChangeValue(e, 'phone')}
+            placeholder="Celular 987654321"
+          />
+          <Text fontSize={{ base: 12, md: 18 }} fontWeight={600} mt='4px' color='red' w='8px' />
+        </Flex>
       </FormControl>
 
       <FormControl id="nro-cubos">
-        <FormLabel mb='6px' fontSize={{ base: 12, md: 14 }}>
-          Número de cubos <Text color='gray' fontSize={12} display='inline-flex'>(opcional)</Text>
-        </FormLabel>
-        <Input
-          fontSize={{ base: 12, md: 14 }}
-          lineHeight='14px'
-          height='32px'
-          type='number'
-          value={user.nroCubos}
-          defaultValue={1}
-          onChange={(e) => handleChangeValue(e, 'quantity')}
-        />
+        <Flex alignItems='center' gap='5px'>
+          <Input
+            fontSize={{ base: 12, md: 14 }}
+            lineHeight='14px'
+            height='32px'
+            type='number'
+            value={user.nroCubos}
+            onChange={(e) => handleChangeValue(e, 'nroCubos')}
+            placeholder="Número de cubos (M3)"
+          />
+          <Text fontSize={{ base: 12, md: 18 }} fontWeight={600} mt='4px' color='red' w='8px' />
+        </Flex>
       </FormControl>
 
       <Button
         type="submit"
         isLoading={isLoading}
         loadingText="Enviando"
-        colorScheme="blue"
+        colorScheme='orange'
+        size='sm'
+        border='1px solid black'
+        className='font-logo'
       >
         Solicitar cotización
       </Button>

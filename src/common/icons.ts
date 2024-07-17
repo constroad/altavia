@@ -34,7 +34,10 @@ import { GiBoxUnpacking, GiFallingRocks } from "react-icons/gi";
 import { FaShareAlt } from "react-icons/fa";
 import { FaEye } from "react-icons/fa";
 import { TiArrowSortedUp, TiArrowSortedDown } from "react-icons/ti";
-
+import { FaAngleDown } from "react-icons/fa";
+import { HiLightBulb } from "react-icons/hi";
+import { GoGoal } from "react-icons/go";
+import { MdBusinessCenter } from "react-icons/md";
 
 export const ArrowBackIcon = IoArrowBackOutline
 export const DownloadIcon = FaCloudDownloadAlt
@@ -51,6 +54,7 @@ export const TrashIcon = FaRegTrashAlt
 export const NextIcon = MdNavigateNext
 export const CopyIcon = MdContentCopy
 export const EditIcon = BiSolidPencil
+export const ArrowDown = FaAngleDown
 export const ShareIcon = FaShareAlt
 export const SearchIcon = IoSearch
 export const CloseIcon = IoMdClose
@@ -59,6 +63,9 @@ export const MailIcon = IoMdMail
 export const RoadIcon = FaRoad
 export const PlusIcon = FaPlus
 export const ViewIcon = FaEye
+export const IdeaIcon = HiLightBulb
+export const GoalIcon = GoGoal
+export const BusinessIcon = MdBusinessCenter
 
 // admin menu
 export const ProductionIcon = MdOutlinePrecisionManufacturing

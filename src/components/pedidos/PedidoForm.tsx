@@ -13,18 +13,33 @@ import {
   Tag,
   Grid,
   GridItem,
+  Text,
+  IconButton,
+  Menu,
+  MenuButton,
+  MenuItem,
+  MenuList,
+  Spinner,
 } from '@chakra-ui/react';
 import { IOrderValidationSchema } from 'src/models/order';
 import { useEffect, useState } from 'react';
 import axios from 'axios';
 import { useAsync, useDispatch } from 'src/common/hooks';
-import { API_ROUTES } from 'src/common/consts';
+import { API_ROUTES, APP_ROUTES } from 'src/common/consts';
 import { toast } from '../Toast';
 import { OrderStatus } from '../../models/order';
 import { IClientValidationSchema } from 'src/models/client';
 import { AutoComplete, IAutocompleteOptions } from '../autoComplete';
 import { formatISODate, parseLocalDate } from 'src/utils/general';
 import { AddClient } from './AddClient';
+import {
+  MenuVerticalIcon,
+  SaveIcon,
+  ShareIcon,
+  MoneyIcon,
+} from 'src/common/icons';
+import { getBaseUrl } from 'src/common/utils';
+import { copyToClipboard } from 'src/common/utils/copyToClipboard';
 
 interface PedidoFormProps {
   order?: IOrderValidationSchema;
@@ -40,20 +55,20 @@ export const PedidoForm = (props: PedidoFormProps) => {
   const [order, setOrder] = useState<IOrderValidationSchema>({
     cliente: '',
     tipoMAC: 'Mac 2',
-    // fechaProgramacion: formatISODate(new Date().toDateString()),
+    invoice: '',
     fechaProgramacion: new Date().toISOString(),
     notas: '',
     precioCubo: 480,
     cantidadCubos: 1,
     subTotal: 480,
     totalPedido: 480,
-    montoAdelanto: 0,
     montoPorCobrar: 0,
     isCredit: false,
     status: OrderStatus.pending,
     isPaid: false,
     igv: 0,
     igvCheck: false,
+    payments: [],
   });
   const { listDispatch, runUpdateDispatch, refetchDispatch } = useDispatch({
     query: {
@@ -106,40 +121,6 @@ export const PedidoForm = (props: PedidoFormProps) => {
     });
   };
 
-  const handleNumberChange = (name: string, value: string) => {
-    let totalPedido = '';
-    let montoPorCobrar = '';
-    let totalPedidoValue = 0;
-    let totalMontoCobrar = 0;
-
-    if (name === 'cantidadCubos') {
-      totalPedido = 'totalPedido';
-      totalPedidoValue = parseFloat(value) * order.precioCubo;
-      if (order.isCredit) {
-        montoPorCobrar = 'montoPorCobrar';
-        totalMontoCobrar = order.totalPedido - (order.montoAdelanto ?? 0);
-      }
-    }
-    if (name === 'precioCubo') {
-      totalPedido = 'totalPedido';
-      totalPedidoValue = order.cantidadCubos * parseFloat(value);
-      if (order.isCredit) {
-        montoPorCobrar = 'montoPorCobrar';
-        totalMontoCobrar = order.totalPedido - (order.montoAdelanto ?? 0);
-      }
-    }
-    if (name === 'montoAdelanto') {
-      montoPorCobrar = 'montoPorCobrar';
-      totalMontoCobrar = order.totalPedido - parseFloat(value);
-    }
-    setOrder({
-      ...order,
-      [name]: value,
-      [totalPedido]: isNaN(totalPedidoValue) ? 0 : totalPedidoValue,
-      [montoPorCobrar]: isNaN(totalMontoCobrar) ? 0 : totalMontoCobrar,
-    });
-  };
-
   const handleSubmit = (e: any) => {
     e.preventDefault();
     const { _id, ...payload } = order;
@@ -158,15 +139,15 @@ export const PedidoForm = (props: PedidoFormProps) => {
       runUpdateOrder(
         axios.put(path, {
           ...payload,
+          payments: payload.payments.map(({ _id, ...rest }) => rest),
           cantidadCubos: parseFloat(payload.cantidadCubos.toString()),
           precioCubo: parseFloat(payload.precioCubo.toString()),
-          montoAdelanto: parseFloat(payload.montoAdelanto?.toString() ?? '0'),
+          totalPedido: parseFloat(payload.totalPedido?.toString() ?? '0'),
         }),
         {
           onSuccess: () => {
             toast.success('Pedido actualizado con éxito!');
             props.onSuccess?.();
-            props.onClose?.();
           },
           onError: () => {
             toast.error('ocurrio un error actualizando un pedido');
@@ -179,15 +160,15 @@ export const PedidoForm = (props: PedidoFormProps) => {
     runAddOrder(
       postOrder(API_ROUTES.order, {
         ...payload,
+        payments: payload.payments.map(({ _id, ...rest }) => rest),
         cantidadCubos: parseFloat(payload.cantidadCubos.toString()),
         precioCubo: parseFloat(payload.precioCubo.toString()),
-        montoAdelanto: parseFloat(payload.montoAdelanto?.toString() ?? '0'),
+        totalPedido: parseFloat(payload.totalPedido?.toString() ?? '0'),
       }),
       {
         onSuccess: () => {
           toast.success('Pedido añadido con éxito!');
           props.onSuccess?.();
-          props.onClose?.();
         },
         onError: () => {
           toast.error('ocurrio un error agregando un pedido');
@@ -241,6 +222,51 @@ export const PedidoForm = (props: PedidoFormProps) => {
 
   const clientList = clientResponse?.data ?? [];
   const clientFildsToFilter = ['name', 'ruc', 'alias'];
+
+  const onAddPayments = () => {
+    const currentPayments = [...order.payments];
+    currentPayments.push({
+      _id: new Date().toISOString(),
+      date: new Date().toISOString(),
+      amount: 0,
+      notes: '',
+    });
+    const orderUpdated = { ...order, payments: currentPayments };
+    setOrder(orderUpdated);
+  };
+
+  const onDeletePayment = (id: string) => {
+    const currentPayments = [...order.payments].filter((x) => x._id !== id);
+    const orderUpdated = { ...order, payments: currentPayments };
+    setOrder(orderUpdated);
+  };
+
+  const onUpdatePayment = (id: string, data: any) => {
+    const { key, value } = data;
+    const currentPayments = order.payments.map((x) => {
+      if (x._id === id) {
+        return { ...x, [key]: value };
+      }
+      return x;
+    });
+    const orderUpdated = { ...order, payments: currentPayments };
+    setOrder(orderUpdated);
+  };
+
+  const currentPayments =
+    order?.payments?.reduce(
+      (prev: number, curr: any) => prev + parseFloat(curr.amount),
+      0
+    ) ?? 0;
+
+  const pendingPayment = order.totalPedido - currentPayments;
+
+  const handleGenerateAndCopyURL = () => {
+    const baseUrl = getBaseUrl();
+    const clientReportUrl = `${baseUrl}${APP_ROUTES.clientReport}?clientId=${order.clienteId}`;
+    const toastMessage = 'Url copiado con éxito';
+    copyToClipboard(clientReportUrl, toastMessage);
+  };
 
   // Renders
   return (
@@ -379,9 +405,7 @@ export const PedidoForm = (props: PedidoFormProps) => {
                       const subTotal = order.cantidadCubos * precioCubo;
                       const igv = order.igvCheck ? subTotal * 0.18 : 0;
                       const total = subTotal + igv;
-                      const montoPorCobrar = order.isCredit
-                        ? total - order.montoAdelanto
-                        : 0;
+
                       setOrder({
                         ...order,
                         //@ts-ignore
@@ -389,7 +413,6 @@ export const PedidoForm = (props: PedidoFormProps) => {
                         subTotal,
                         igv,
                         totalPedido: total,
-                        montoPorCobrar,
                       });
                     }}
                   >
@@ -413,9 +436,7 @@ export const PedidoForm = (props: PedidoFormProps) => {
                       const subTotal = cantidadCubos * order.precioCubo;
                       const igv = order.igvCheck ? subTotal * 0.18 : 0;
                       const total = subTotal + igv;
-                      const montoPorCobrar = order.isCredit
-                        ? total - order.montoAdelanto
-                        : 0;
+
                       setOrder({
                         ...order,
                         //@ts-ignore
@@ -423,7 +444,6 @@ export const PedidoForm = (props: PedidoFormProps) => {
                         subTotal,
                         igv,
                         totalPedido: total,
-                        montoPorCobrar,
                       });
                     }}
                   >
@@ -446,15 +466,12 @@ export const PedidoForm = (props: PedidoFormProps) => {
                         const subTotal = order.cantidadCubos * order.precioCubo;
                         const igvValue = igvCheck ? subTotal * 0.18 : 0;
                         const total = subTotal + igvValue;
-                        const montoPorCobrar = order.isCredit
-                          ? total - (order.montoAdelanto ?? 0)
-                          : 0;
+
                         setOrder({
                           ...order,
                           igvCheck,
                           igv: igvValue,
                           totalPedido: total,
-                          montoPorCobrar,
                         });
                       }}
                     />
@@ -485,9 +502,6 @@ export const PedidoForm = (props: PedidoFormProps) => {
                       const igv = igvCheck ? total - total / 1.18 : 0;
                       const subTotal = total - igv;
                       const precio = subTotal / order.cantidadCubos;
-                      const montoPorCobrar = order.isCredit
-                        ? total - (order.montoAdelanto ?? 0)
-                        : 0;
 
                       setOrder({
                         ...order,
@@ -497,7 +511,6 @@ export const PedidoForm = (props: PedidoFormProps) => {
                         //@ts-ignore
                         totalPedido: value,
                         precioCubo: precio,
-                        montoPorCobrar,
                       });
                     }}
                   >
@@ -522,15 +535,10 @@ export const PedidoForm = (props: PedidoFormProps) => {
                   isChecked={order.isCredit}
                   onChange={(value) => {
                     const isCredit = value.target.checked;
-                    const montoAdelanto = isCredit ? order.montoAdelanto : 0;
-                    const montoPorCobrar = isCredit
-                      ? order.totalPedido - (order.montoAdelanto ?? 0)
-                      : 0;
+
                     setOrder({
                       ...order,
                       isCredit,
-                      montoPorCobrar,
-                      montoAdelanto,
                       fechaVencimiento: !isCredit
                         ? undefined
                         : order.fechaVencimiento,
@@ -539,47 +547,7 @@ export const PedidoForm = (props: PedidoFormProps) => {
                 />
               </Box>
             </GridItem>
-            <GridItem>
-              <FormControl>
-                <FormLabel fontSize="inherit">Adelanto</FormLabel>
-                <NumberInput
-                  isDisabled={!order.isCredit}
-                  size="xs"
-                  name="montoAdelanto"
-                  value={order.montoAdelanto}
-                  onChange={(value) => {
-                    const montoAdelanto = isNaN(parseFloat(value))
-                      ? 0
-                      : parseFloat(value);
-                    const montoPorCobrar = order.totalPedido - montoAdelanto;
-                    setOrder({
-                      ...order,
-                      //@ts-ignore
-                      montoAdelanto: value,
-                      montoPorCobrar,
-                    });
-                  }}
-                >
-                  <NumberInputField />
-                </NumberInput>
-              </FormControl>
-            </GridItem>
-            <GridItem>
-              <FormControl>
-                <FormLabel fontSize="inherit">Adeuda</FormLabel>
-                <NumberInput
-                  isDisabled
-                  size="xs"
-                  name="montoPorCobrar"
-                  value={order.montoPorCobrar}
-                  onChange={(value) =>
-                    handleNumberChange('montoPorCobrar', value)
-                  }
-                >
-                  <NumberInputField />
-                </NumberInput>
-              </FormControl>
-            </GridItem>
+
             <GridItem>
               <FormControl>
                 <FormLabel fontSize="inherit">Vencimiento</FormLabel>
@@ -592,34 +560,135 @@ export const PedidoForm = (props: PedidoFormProps) => {
                   onChange={(e) => {
                     setOrder({
                       ...order,
-                      fechaVencimiento: parseLocalDate(e.target.value).toISOString(),
+                      fechaVencimiento: parseLocalDate(
+                        e.target.value
+                      ).toISOString(),
                     });
                   }}
                 />
               </FormControl>
             </GridItem>
+            <GridItem>
+              <FormControl>
+                <FormLabel fontSize="inherit">Deuda:</FormLabel>
+                <NumberInput
+                  isDisabled
+                  size="xs"
+                  value={pendingPayment.toFixed(2)}
+                >
+                  <NumberInputField />
+                </NumberInput>
+              </FormControl>
+            </GridItem>
+
+            <GridItem>
+              <FormControl>
+                <FormLabel fontSize="inherit">Factura</FormLabel>
+                <Input
+                  placeholder="Factura"
+                  fontSize="inherit"
+                  size="xs"
+                  width="100px"
+                  value={order.invoice}
+                  onChange={(e) => {
+                    setOrder({ ...order, invoice: e.target.value });
+                  }}
+                />
+              </FormControl>
+            </GridItem>
           </Grid>
-          <Box flex={1} as={Flex} flexDir="column" gap={2}>
-            <FormControl>
+          <Box flex={1} as={Flex} gap={5} mt={2}>
+            <FormControl width={300}>
               <FormLabel fontSize="inherit">Notas</FormLabel>
               <Textarea
-                size="sm"
+                size="xs"
                 name="notas"
                 value={order.notas}
                 onChange={handleChange}
               />
             </FormControl>
-            <Flex alignItems="center" justifyContent="space-between">
-              {order.isCredit && (
-                <Tag
-                  fontSize="inherit"
-                  colorScheme={!order.isPaid ? 'red' : 'green'}
-                >
-                  Estado: {!order.isPaid ? 'Adeuda' : 'Pagado'}
-                </Tag>
-              )}
+
+            <Flex flexDir="column" fontSize="inherit" flex={1} gap={2}>
+              <Flex justifyContent="space-between">
+                <Text fontWeight={600}>
+                  Pagos: S/.({currentPayments.toFixed(2)})
+                </Text>
+                <Button size="xs" onClick={onAddPayments}>
+                  +
+                </Button>
+              </Flex>
+              <Flex flexDir="column">
+                {order.payments?.map((x, idx) => (
+                  <Flex
+                    key={x._id ?? idx}
+                    alignItems="center"
+                    justifyContent="space-between"
+                    width="100%"
+                  >
+                    <Flex width="90%" gap={1}>
+                      <Input
+                        size="xs"
+                        type="date"
+                        width="220px"
+                        value={formatISODate(x.date)}
+                        onChange={(e) =>
+                          onUpdatePayment(x._id!, {
+                            key: 'date',
+                            value: parseLocalDate(e.target.value).toISOString(),
+                          })
+                        }
+                      />
+                      <NumberInput
+                        size="xs"
+                        name="amount"
+                        value={x.amount}
+                        paddingInlineStart={0}
+                        paddingInlineEnd={0}
+                        onChange={(value) => {
+                          onUpdatePayment(x._id!, {
+                            key: 'amount',
+                            value: value,
+                          });
+                        }}
+                        onBlur={(e) => {
+                          onUpdatePayment(x._id!, {
+                            key: 'amount',
+                            value: parseFloat(e.target.value ?? '0'),
+                          });
+                        }}
+                      >
+                        <NumberInputField paddingInlineEnd={0} />
+                      </NumberInput>
+                      <Input
+                        size="xs"
+                        placeholder="Notas"
+                        value={x.notes}
+                        onChange={(e) =>
+                          onUpdatePayment(x._id!, {
+                            key: 'notes',
+                            value: e.target.value,
+                          })
+                        }
+                      />
+                    </Flex>
+                    <Button size="xs" onClick={() => onDeletePayment(x._id!)}>
+                      x
+                    </Button>
+                  </Flex>
+                ))}
+              </Flex>
             </Flex>
           </Box>
+          <Flex alignItems="center" justifyContent="space-between">
+            {order.isCredit && (
+              <Tag
+                fontSize="inherit"
+                colorScheme={!order.isPaid ? 'red' : 'green'}
+              >
+                Estado: {!order.isPaid ? 'Adeuda' : 'Pagado'}
+              </Tag>
+            )}
+          </Flex>
         </GridItem>
       </Grid>
 
@@ -634,25 +703,44 @@ export const PedidoForm = (props: PedidoFormProps) => {
         <Button size="xs" onClick={props.onClose}>
           Cancelar
         </Button>
-        <Button
-          size="xs"
-          type="submit"
-          colorScheme="yellow"
-          isLoading={addingOrder || updatingOrder}
-        >
-          Guardar
-        </Button>
-        {order._id && (
-          <Button
-            size="xs"
-            isDisabled={!order.isCredit || order.isPaid}
-            colorScheme="yellow"
-            isLoading={updatingOrder}
-            onClick={onPayOrder}
-          >
-            Pagar deuda
-          </Button>
-        )}
+        <Menu data-testid="page-menu" variant="brand">
+          <MenuButton
+            as={IconButton}
+            variant="unstyled"
+            minW="auto"
+            h="auto"
+            aria-label="Page details"
+            icon={
+              addingOrder || updatingOrder ? <Spinner /> : <MenuVerticalIcon />
+            }
+            rounded="full"
+          />
+
+          <MenuList maxW="170px">
+            <MenuItem>
+              <Button
+                size="xs"
+                type="submit"
+                variant="ghost"
+                isLoading={addingOrder || updatingOrder}
+              >
+                <SaveIcon />
+                Guardar
+              </Button>
+            </MenuItem>
+            <MenuItem
+              isDisabled={!order._id}
+              onClick={handleGenerateAndCopyURL}
+            >
+              <ShareIcon />
+              Compartir
+            </MenuItem>
+            <MenuItem isDisabled={!order._id} onClick={onPayOrder}>
+              <MoneyIcon />
+              Pagar
+            </MenuItem>
+          </MenuList>
+        </Menu>
       </Flex>
     </Box>
   );

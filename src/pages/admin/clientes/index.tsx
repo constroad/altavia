@@ -13,7 +13,7 @@ import {
   AdministrationLayout
 } from 'src/components'
 import { useAsync, useScreenSize } from 'src/common/hooks';
-import { ADMIN_ROUTES, API_ROUTES } from 'src/common/consts';
+import { API_ROUTES } from 'src/common/consts';
 import { PlusIcon } from 'src/common/icons';
 
 import axios from 'axios'

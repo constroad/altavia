@@ -1,7 +1,6 @@
 import {
   Box,
   Button,
-  Checkbox,
   Flex,
   FormLabel,
   Input,
@@ -31,14 +30,12 @@ export const SearchDispatch = (props: SearchDispatchProps) => {
   const [startDate, setStartDate] = useState(props.startDate);
   const [clientId, setClientId] = useState(props.clientId);
   const [endDate, setEndDate] = useState(props.endDate);
-  const [isPaid, setIsPaid] = useState(props.isPaid);
 
   const onSearch = () => {
     props.onSearch({
       startDate,
       endDate,
       clientId,
-      isPaid
     });
   };
 
@@ -112,17 +109,6 @@ export const SearchDispatch = (props: SearchDispatchProps) => {
       >
         <SearchIcon size="18px" />
       </Button>
-      <Box width="200px">
-        <Checkbox onChange={((e) => {
-          if (e.target.checked) {            
-            setIsPaid(false)
-            return
-          }
-          setIsPaid(undefined)
-        })}>
-          <Text fontSize={12}>Pendiente de Pago</Text>
-        </Checkbox>
-      </Box>
     </Flex>
   );
 };

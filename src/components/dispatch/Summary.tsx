@@ -11,6 +11,7 @@ interface SummaryProps {
   onRefreshDispatch: () => void;
   addindDispatch?: boolean;
   totalRecords?: number;
+  total: number;
 }
 
 export const Summary = (props: SummaryProps) => {
@@ -20,6 +21,7 @@ export const Summary = (props: SummaryProps) => {
     onAddDispatch,
     addindDispatch,
     totalRecords,
+    total,
   } = props;
   return (
     <Flex alignItems="center" justifyContent="space-between" fontSize="12px">
@@ -40,11 +42,7 @@ export const Summary = (props: SummaryProps) => {
           </Box>
           <Text textAlign="right" flex={1} bgColor={CONSTROAD_COLORS.yellow}>
             S/.
-            {formatMoney(
-              listDispatch
-                .map((x) => x.total)
-                .reduce((prev, current) => prev + current, 0)
-            )}
+            {formatMoney(total)}
           </Text>
         </Flex>
       </Flex>
@@ -68,11 +66,7 @@ export const Summary = (props: SummaryProps) => {
           </Button>
         </Tooltip>
         <Tooltip label="Guardar cambios">
-          <Button
-            autoFocus
-            onClick={props.onSaveDispatch}
-            size="sm"
-          >
+          <Button autoFocus onClick={props.onSaveDispatch} size="sm">
             <SaveIcon />
           </Button>
         </Tooltip>

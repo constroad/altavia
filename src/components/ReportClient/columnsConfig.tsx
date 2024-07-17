@@ -8,12 +8,12 @@ import {
   MenuItem,
   MenuList,
   GridItem,
-  Text
+  Text,
 } from '@chakra-ui/react';
-import { TableColumn } from "../Table";
-import { CONSTROAD_COLORS } from "src/styles/shared";
-import { formatMoney } from "src/utils/general";
-import { DownloadIcon, MenuVerticalIcon, ViewIcon } from "src/common/icons";
+import { TableColumn } from '../Table';
+import { CONSTROAD_COLORS } from 'src/styles/shared';
+import { formatMoney } from 'src/utils/general';
+import { MenuVerticalIcon, ViewIcon } from 'src/common/icons';
 import { getDate } from 'src/common/utils';
 
 const Summary = (value: number, symbol = 'S/.', bgColor?: string) => {
@@ -21,7 +21,7 @@ const Summary = (value: number, symbol = 'S/.', bgColor?: string) => {
     <Box
       bgColor={bgColor ?? 'black'}
       color="white"
-      textAlign={symbol === '' ? "center" : "right"}
+      textAlign={symbol === '' ? 'center' : 'right'}
       fontWeight={600}
       fontSize={12}
     >
@@ -38,8 +38,7 @@ export const generateReportClientColumns = (
   handleClickMenuButton: (row: any) => void,
   isMobile?: boolean
 ) => {
-
-  if ( !isMobile ) {
+  if (!isMobile) {
     const columns: TableColumn[] = [
       {
         key: 'fechaProgramacion',
@@ -55,18 +54,20 @@ export const generateReportClientColumns = (
         key: 'fechaVencimiento',
         label: 'Vence',
         width: '5%',
+        textAlign: 'center',
         render: (item, row) => {
-          return (
-            <Flex justifyContent="center">
-              {getDate(item).slashDate}
-            </Flex>
-          );
+          if (item) {
+            return (
+              <Flex justifyContent="center">{getDate(item).slashDate}</Flex>
+            );
+          }
+          return <>-</>
         },
       },
       {
         key: 'obra',
         label: 'Obra',
-        width: '40%',
+        width: '30%',
         render: (item, row) => {
           return <Flex>{item}</Flex>;
         },
@@ -76,6 +77,28 @@ export const generateReportClientColumns = (
         bgColor: CONSTROAD_COLORS.yellow,
         color: CONSTROAD_COLORS.black,
         label: 'M3 Pedidos',
+        width: '7%',
+        summary: (value) => Summary(value, ''),
+        render: (item) => {
+          return <Box textAlign="center">{item}</Box>;
+        },
+      },
+      {
+        key: 'm3dispatched',
+        bgColor: CONSTROAD_COLORS.yellow,
+        color: CONSTROAD_COLORS.black,
+        label: 'M3 Despachados',
+        width: '7%',
+        summary: (value) => Summary(value, ''),
+        render: (item) => {
+          return <Box textAlign="center">{item}</Box>;
+        },
+      },
+      {
+        key: 'm3Pending',
+        bgColor: CONSTROAD_COLORS.yellow,
+        color: CONSTROAD_COLORS.black,
+        label: 'Diferencia',
         width: '7%',
         summary: (value) => Summary(value, ''),
         render: (item) => {
@@ -93,7 +116,7 @@ export const generateReportClientColumns = (
         },
       },
       {
-        key: 'totalPedido',
+        key: 'm3Value',
         bgColor: CONSTROAD_COLORS.yellow,
         color: CONSTROAD_COLORS.black,
         label: 'Total',
@@ -128,7 +151,6 @@ export const generateReportClientColumns = (
       },
       {
         key: '_id',
-        // label: <>{props.isLoading && <Spinner size="xs" />}</>,
         label: '',
         width: '2%',
         render: (item, row) => {
@@ -145,11 +167,11 @@ export const generateReportClientColumns = (
                   minW="auto"
                   h="auto"
                   aria-label="Page details"
-                  icon={( <MenuVerticalIcon /> )}
+                  icon={<MenuVerticalIcon />}
                   onClick={() => handleClickMenuButton(row)}
                   rounded="full"
                 />
-  
+
                 <MenuList maxW="170px">
                   <MenuItem
                     onClick={() => onViewDispatches()}
@@ -159,24 +181,6 @@ export const generateReportClientColumns = (
                     <ViewIcon />
                     Ver despachos
                   </MenuItem>
-                  {/* <MenuItem
-                    onClick={() => onDownloadPDF()}
-                    color="red"
-                    as={Flex}
-                    gap={2}
-                  >
-                    <DownloadIcon />
-                    Descargar como PDF
-                  </MenuItem>
-                  <MenuItem
-                    onClick={() => onDownloadCertificates()}
-                    color="red"
-                    as={Flex}
-                    gap={2}
-                  >
-                    <DownloadIcon />
-                    Descargar certificados
-                  </MenuItem> */}
                 </MenuList>
               </Menu>
             </Flex>
@@ -184,9 +188,8 @@ export const generateReportClientColumns = (
         },
       },
     ];
-  
-    return columns;
 
+    return columns;
   } else {
     const columns: TableColumn[] = [
       {
@@ -195,122 +198,197 @@ export const generateReportClientColumns = (
         width: '100%',
         summary: (value, row) => Summary(value, 'S/.', 'red'),
         render: (item, row) => (
-          <Grid templateColumns="repeat(2, 1fr)" gap={2} my={2} px='0px'>
-            <GridItem px='0px'>
-              <Flex justifyContent='start' gap='2px'>
-                <Text w='77px' fontWeight={600} h='12px' textAlign='start' lineHeight='10px'>F. producción:</Text>
-                <Flex h='12px' lineHeight='10px' textAlign='start'>
-                  {new Date(row.fechaProgramacion).toLocaleDateString('es-PE')}
+          <Grid templateColumns="repeat(2, 1fr)" gap={2} my={2} px={0}>
+            <GridItem px="0px" pl={2}>
+              <Flex flexDir="column">
+                <Flex justifyContent="start" gap="2px">
+                  <Text
+                    w="85px"
+                    fontWeight={600}
+                    h="12px"
+                    textAlign="start"
+                    lineHeight="10px"
+                  >
+                    F. producción:
+                  </Text>
+                  <Flex h="12px" lineHeight="10px" textAlign="start">
+                    {new Date(row.fechaProgramacion).toLocaleDateString(
+                      'es-PE'
+                    )}
+                  </Flex>
+                </Flex>
+
+                <Flex justifyContent="start" gap="2px">
+                  <Text
+                    w="85px"
+                    fontWeight={600}
+                    h="12px"
+                    textAlign="start"
+                    lineHeight="10px"
+                  >
+                    F. vencimiento:
+                  </Text>
+                  <Flex h="12px" textAlign="start" lineHeight="10px">
+                    {row.fechaVencimiento &&
+                      new Date(row.fechaVencimiento).toLocaleDateString(
+                        'es-PE'
+                      )}
+                  </Flex>
+                </Flex>
+
+                <Flex justifyContent="start" gap="2px">
+                  <Text
+                    minW="30px"
+                    w="85px"
+                    fontWeight={600}
+                    h="12px"
+                    textAlign="start"
+                    lineHeight="10px"
+                  >
+                    Obra:
+                  </Text>
+                  <Flex minH="12px" textAlign="start" lineHeight="10px">
+                    {row.obra}
+                  </Flex>
+                </Flex>
+
+                <Flex justifyContent="start" gap="2px">
+                  <Text
+                    w="85px"
+                    fontWeight={600}
+                    h="12px"
+                    textAlign="start"
+                    lineHeight="10px"
+                  >
+                    M3 Pedidos:
+                  </Text>
+                  <Flex h="12px" textAlign="start" lineHeight="10px">
+                    {row.cantidadCubos}{' '}
+                  </Flex>
+                </Flex>
+
+                <Flex justifyContent="start" gap="2px">
+                  <Text
+                    w="85px"
+                    fontWeight={600}
+                    h="12px"
+                    textAlign="start"
+                    lineHeight="10px"
+                  >
+                    M3 Despachado:
+                  </Text>
+                  <Flex h="12px" textAlign="start" lineHeight="10px">
+                    {' '}
+                    {row.m3dispatched}{' '}
+                  </Flex>
                 </Flex>
               </Flex>
             </GridItem>
             <GridItem>
-              <Flex justifyContent='start' gap='2px'>
-                <Text w='50px' fontWeight={600} h='12px' textAlign='start' lineHeight='10px'>Total:</Text>
-                <Flex h='12px' textAlign='start' lineHeight='10px'> S/.{formatMoney(row.totalPedido)} </Flex>
-              </Flex>
-            </GridItem>
-
-            <GridItem>
-              <Flex justifyContent='start' gap='2px'>
-                <Text w='77px' fontWeight={600} h='12px' textAlign='start' lineHeight='10px'>F. vencimiento:</Text>
-                <Flex h='12px' textAlign='start' lineHeight='10px'>
-                  {row.fechaVencimiento && new Date(row.fechaVencimiento).toLocaleDateString('es-PE')}
+              <Flex flexDir="column">
+                <Flex justifyContent="start" gap="2px">
+                  <Text
+                    w="50px"
+                    fontWeight={600}
+                    h="12px"
+                    textAlign="start"
+                    lineHeight="10px"
+                  >
+                    Total:
+                  </Text>
+                  <Flex h="12px" textAlign="start" lineHeight="10px">
+                    {' '}
+                    S/.{formatMoney(row.m3Value)}{' '}
+                  </Flex>
                 </Flex>
-              </Flex>
-            </GridItem>
-            <GridItem>
-              <Flex justifyContent='start' gap='2px'>
-                <Text w='50px' fontWeight={600} h='12px' textAlign='start' lineHeight='10px'>Adelanto:</Text>
-                <Flex h='12px' textAlign='start' lineHeight='10px'> S/.{formatMoney(row.montoAdelanto)} </Flex>
-              </Flex>
-            </GridItem>
 
-            <GridItem>
-              <Flex justifyContent='start' gap='2px'>
-                <Text minW='30px' w='77px' fontWeight={600} h='12px' textAlign='start' lineHeight='10px'>Obra:</Text>
-                <Flex minH='12px' textAlign='start' lineHeight='10px'> {row.obra} </Flex>
-              </Flex>
-            </GridItem>
-            <GridItem>
-              <Flex justifyContent='start' gap='2px'>
-                <Text w='50px' fontWeight={600} h='12px' textAlign='start' lineHeight='10px'>Debe:</Text>
-                <Box h='12px' bgColor={row.isPaid ? "#d7ead4" : "pink"} rounded={2} textAlign="start" lineHeight='10px'>
-                  {!row.isPaid && <>
-                    S/.{formatMoney(row.montoPorCobrar)}
-                  </>}
-                  {row.isPaid && "Pagado"}
-                </Box>
-              </Flex>
-            </GridItem>
+                <Flex justifyContent="start" gap="2px">
+                  <Text
+                    w="50px"
+                    fontWeight={600}
+                    h="12px"
+                    textAlign="start"
+                    lineHeight="10px"
+                  >
+                    Pagos:
+                  </Text>
+                  <Flex h="12px" textAlign="start" lineHeight="10px">
+                    S/.
+                    {formatMoney(
+                      row.payments.reduce(
+                        (prev: number, curr: any) => prev + curr.amount,
+                        0
+                      )
+                    )}
+                  </Flex>
+                </Flex>
 
-            <GridItem>
-              <Flex justifyContent='start' gap='2px'>
-                <Text w='77px' fontWeight={600} h='12px' textAlign='start' lineHeight='10px'>M3 Pedidos:</Text>
-                <Flex h='12px' textAlign='start' lineHeight='10px'> {row.cantidadCubos} </Flex>
+                <Flex justifyContent="start" gap="2px">
+                  <Text
+                    w="50px"
+                    fontWeight={600}
+                    h="12px"
+                    textAlign="start"
+                    lineHeight="10px"
+                  >
+                    Debe:
+                  </Text>
+                  <Box
+                    h="12px"
+                    bgColor={row.isPaid ? '#d7ead4' : 'pink'}
+                    rounded={2}
+                    textAlign="start"
+                    lineHeight="10px"
+                  >
+                    {!row.isPaid && <>S/.{formatMoney(row.montoPorCobrar)}</>}
+                    {row.isPaid && 'Pagado'}
+                  </Box>
+                </Flex>
               </Flex>
             </GridItem>
           </Grid>
-        )
+        ),
       },
       {
-          key: 'clienteId',
-          label: '',
-          width: '2%',
-          render: (item, row) => {
-            return (
-              <Flex
-                width="inherit"
-                alignItems="center"
-                justifyContent="space-between"
-              >
-                <Menu data-testid="page-menu" variant="brand">
-                  <MenuButton
-                    as={IconButton}
-                    variant="unstyled"
-                    minW="auto"
-                    h="auto"
-                    aria-label="Page details"
-                    icon={( <MenuVerticalIcon /> )}
-                    onClick={() => handleClickMenuButton(row)}
-                    rounded="full"
-                  />
-    
-                  <MenuList maxW="170px">
-                    <MenuItem
-                      onClick={() => onViewDispatches()}
-                      as={Flex}
-                      gap={2}
-                    >
-                      <ViewIcon />
-                      Ver despachos
-                    </MenuItem>
-                    {/* <MenuItem
-                      onClick={() => onDownloadPDF()}
-                      color="red"
-                      as={Flex}
-                      gap={2}
-                    >
-                      <DownloadIcon />
-                      Descargar como PDF
-                    </MenuItem>
-                    <MenuItem
-                      onClick={() => onDownloadCertificates()}
-                      color="red"
-                      as={Flex}
-                      gap={2}
-                    >
-                      <DownloadIcon />
-                      Descargar certificados
-                    </MenuItem> */}
-                  </MenuList>
-                </Menu>
-              </Flex>
-            );
-          },
-        }
+        key: 'clienteId',
+        label: '',
+        width: '2%',
+        render: (item, row) => {
+          return (
+            <Flex
+              width="inherit"
+              alignItems="center"
+              justifyContent="space-between"
+            >
+              <Menu data-testid="page-menu" variant="brand">
+                <MenuButton
+                  as={IconButton}
+                  variant="unstyled"
+                  minW="auto"
+                  h="auto"
+                  aria-label="Page details"
+                  icon={<MenuVerticalIcon />}
+                  onClick={() => handleClickMenuButton(row)}
+                  rounded="full"
+                />
+
+                <MenuList maxW="170px">
+                  <MenuItem
+                    onClick={() => onViewDispatches()}
+                    as={Flex}
+                    gap={2}
+                  >
+                    <ViewIcon />
+                    Ver despachos
+                  </MenuItem>
+                </MenuList>
+              </Menu>
+            </Flex>
+          );
+        },
+      },
     ];
-  
+
     return columns;
   }
 };
@@ -362,10 +440,10 @@ export const generateDispatchColumns = () => {
       label: 'Nota',
       width: '15%',
       render: (item, row) => (
-        <Flex flexDir='column' alignItems='center'>
+        <Flex flexDir="column" alignItems="center">
           {item}
         </Flex>
-      )
+      ),
     },
     {
       key: 'quantity',

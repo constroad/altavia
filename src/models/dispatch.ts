@@ -9,22 +9,16 @@ export const dispatchValidationSchema = z.object({
   hour: z.string().optional(),
   transportId: z.string(),
   clientId: z.string(),
-  invoice: z.string().optional(),
   description: z.string().min(1),
   guia: z.string().optional(),
   obra: z.string().optional(),
   driverName: z.string().optional(),
   driverCard: z.string().optional(),
   quantity: z.number(),
-  price: z.number(),
-  igv: z.number().optional(),
-  igvCheck: z.boolean().optional().default(true),
-  subTotal: z.number(),
-  total: z.number(),
+  planedQuantity: z.number().optional(),
   note: z.string().optional(),
   nroVale: z.string().optional(),
   phoneNumber: z.string().optional(),
-  isPaid: z.boolean().optional().default(false),
   createdAt: z.string().optional(),
   updatedAt: z.string().optional(),  
 });
@@ -47,22 +41,16 @@ export interface DispatchModel extends Document {
   hour?: string;
   transportId: string;
   clientId: string;
-  invoice?: string;
   description: string;
   guia: string;
   obra: string;
   driverName: string;
   driverCard: string;
   quantity: number;
-  price: number;
-  igv?: number;
-  subTotal: number;
-  total: number;
+  planedQuantity?: number;
   note?: string;
   nroVale?: string;
   phoneNumber?: string;
-  igvCheck?: boolean
-  isPaid?: boolean
 }
 
 export interface IGetAll {
@@ -90,19 +78,13 @@ try {
     hour: { type: String, optional: true },
     transportId: { type: String, optional: false },
     clientId: { type: String, optional: false },
-    invoice: { type: String, optional: true },
     description: { type: String, optional: false },
     guia: { type: String, optional: false },
     obra: { type: String, optional: false },
     driverName: { type: String, optional: false },
     driverCard: { type: String, optional: false },
     quantity: { type: Number, optional: false },
-    price: { type: Number, optional: false },
-    igvCheck: { type: Boolean, optional: true },
-    isPaid: { type: Boolean, optional: true, default: false },
-    igv: { type: Number, optional: true },
-    subTotal: { type: Number, optional: false },
-    total: { type: Number, optional: false },
+    planedQuantity: { type: Number, optional: true },
     note: { type: String, optional: true },
     nroVale: { type: String, optional: true },
     phoneNumber: { type: String, optional: true },

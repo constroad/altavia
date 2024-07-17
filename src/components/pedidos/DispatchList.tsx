@@ -154,6 +154,7 @@ export const DispatchList = (props: DispatchListProps) => {
             onAddDispatch={() => onAddDispatch(OrderData)}
             addindDispatch={addingDispatch}
             totalRecords={dispatchSummary?.nroRecords ?? 0}
+            total={dispatchSummary?.total ?? 0}
             onSaveDispatch={onSaveAllDispatch}
           />
         }

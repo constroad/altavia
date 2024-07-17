@@ -19,7 +19,7 @@ const getAll = async (req: NextApiRequest, res: NextApiResponse) => {
 }
 
 const addRecord = async (req: NextApiRequest, res: NextApiResponse) => {
-  const newRecord = req.body.data as TransportModel
+  const newRecord = req.body as TransportModel
   const repo = new TransportRepository();
   try {
     const result = transportValidationSchema.safeParse(newRecord);

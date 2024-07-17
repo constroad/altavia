@@ -16,12 +16,12 @@ export const APP_ROUTES = {
   quote: '/quote',
   quoteNew: '/quote/new',
   admin: '/admin',
-  clientReport: '/client-report'
+  clientReport: '/public/client-report'
 }
 
 export const ADMIN_ROUTES = {
   clients: '/admin/clientes',
-  employees: '/admin/empleados',
+  employees: '/admin/employee',
   providers: '/admin/proveedores',
   products: '/admin/productos',
   services: '/admin/servicios',
@@ -32,6 +32,8 @@ export const ADMIN_ROUTES = {
   purchaseOrder: '/admin/orden-de-compra',
   dispatch: '/admin/despacho',
   controlFluid: '/admin/control-fluid',
+  controlMaterial: '/admin/control-material',
+  materials: '/admin/materials',
   production: '/admin/produccion',
   tasks: '/admin/tareas',
   orders: '/admin/pedidos',
@@ -43,10 +45,13 @@ export const API_ROUTES = {
   sendEmail: '/api/sendEmail',
   generatePDF: '/api/generate-pdf',
   client: '/api/client',
+  employee: '/api/employee',
   order: '/api/order',
   transport: '/api/transport',
   dispatch: '/api/dispatch',
   fluid: '/api/fluid',
+  material: '/api/material',
+  kardex: '/api/kardex',
   quote: '/api/quotes',
   serviceQuote: '/api/service-quote',
   provider: '/api/provider',
@@ -59,6 +64,8 @@ export const API_ROUTES = {
   generateDispatchReportPDF: '/api/generate-dispatch-report-pdf',
   task: '/api/task',
   note: '/api/note',
+  notificationWhatsApp: '/api/notifications/whatsapp',
+  attendance: '/api/attendance',
 }
 
 export const CONSTROAD = {
@@ -111,3 +118,48 @@ export const PDF_TEMPLATE = {
     filename: 'plantilla_dispatch_report.pdf'
   }
 }
+
+export enum WtspMessageType {
+  'SendText' = '/messages/text',
+  'SendDocument' = '/messages/document',
+  'GetGroups' = '/groups',
+}
+export const WHAPI_URL = 'https://gate.whapi.cloud/'
+export const WHAPI_TOKEN = 't1mDU3U89NVuEZqQprhYsOSKgisZhm1O'
+export const GROUP_SOCIOS_DE_LA_CONSTRUCCION = '120363043706150862@g.us'
+export const GROUP_PLANTA_PRODUCCION = '120363229712975495@g.us'
+export const GROUP_TRABAJADORES_CONSTROAD = '120363288945205546@g.us'
+export const PHONE_JOHAN = '51961678014'
+export const PHONE_JZ = '51902049935'
+export const PHONE_CONSTROAD = '51949376824'
+export const PHONE_CARIN = '51907579704'
+export const WhastAppGroups = [
+  {
+    id: '120363229712975495@g.us',
+    name: 'Planta Produccion'
+  },
+  {
+    "id": "120363043706150862@g.us",
+    "name": "Socios de la construccion",
+  },
+  {
+    "id": GROUP_TRABAJADORES_CONSTROAD,
+    "name": "Trabajadores ConstRoad",
+  },
+  {
+    "id": "120363279615230332@g.us",
+    "name": "Proveedores",
+  },
+  {
+    "id": "120363221222416292@g.us",
+    "name": "Comprobantes de pago sac",
+  },
+  {
+    "id": "120363284005976329@g.us",
+    "name": "Cotizaciones",
+  },
+  {
+    "id": "120363284827857219@g.us",
+    "name": "Despachos de agregados Chalin",
+  }
+]

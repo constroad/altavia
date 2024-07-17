@@ -11,7 +11,9 @@ import {
   PurchaseIcon,
   QuoteIcon,
   TaskIcon,
-  ServiceIcon
+  ServiceIcon,
+  MaterialIcon,
+  WorkerIcon
 } from "src/common/icons";
 import { CONSTROAD_COLORS } from "src/styles/shared";
 
@@ -58,6 +60,13 @@ export const adminTabs = [
     textColor: 'white',
     icon: HighwayIcon
   },
+  {
+    name: 'Kardex',
+    path: ADMIN_ROUTES.controlMaterial,
+    bgColor: CONSTROAD_COLORS.yellow,
+    textColor: 'black',
+    icon: MaterialIcon
+  },
 ]
 
 export const administrationTabs = [
@@ -68,19 +77,19 @@ export const administrationTabs = [
     textColor: 'black',
     icon: ClientsIcon
   },
+   {
+    name: 'Empleados',
+    path: ADMIN_ROUTES.employees,
+    bgColor: CONSTROAD_COLORS.yellow,
+    textColor: 'black',
+    icon: WorkerIcon
+  },
   {
     name: 'Proveedores',
     path: ADMIN_ROUTES.providers,
     bgColor: CONSTROAD_COLORS.black,
     textColor: 'white',
     icon: ProvidersIcon
-  },
-  {
-    name: 'Productos',
-    path: ADMIN_ROUTES.products,
-    bgColor: CONSTROAD_COLORS.darkGray,
-    textColor: 'white',
-    icon: ProductsIcon
   },
   {
     name: 'Pedidos',
@@ -102,5 +111,12 @@ export const administrationTabs = [
     bgColor: CONSTROAD_COLORS.lightGray,
     textColor: 'black',
     icon: DispatchIcon
+  },
+  {
+    name: 'Agregados',
+    path: ADMIN_ROUTES.materials,
+    bgColor: CONSTROAD_COLORS.lightGray,
+    textColor: 'black',
+    icon: MaterialIcon
   },
 ]

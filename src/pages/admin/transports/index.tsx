@@ -14,7 +14,9 @@ const fetcher = (path: string) => axios.get(path);
 const deleteTransport = (path: string) => axios.delete(path);
 
 const Transport = () => {
-  const [transportSelected, setTransportSelected] = useState<ITransportValidationSchema | undefined>()
+  const [transportSelected, setTransportSelected] = useState<
+    ITransportValidationSchema | undefined
+  >();
   const { onClose, isOpen, onOpen } = useDisclosure();
   const {
     onClose: onCloseDelete,
@@ -31,7 +33,6 @@ const Transport = () => {
   } = useAsync<ITransportValidationSchema[]>();
   const { run: runDeleteTransport, isLoading: deletingTransport } = useAsync();
 
-
   useEffect(() => {
     runGetTransports(fetcher(API_ROUTES.transport), {
       refetch: () => runGetTransports(fetcher(API_ROUTES.transport)),
@@ -39,23 +40,25 @@ const Transport = () => {
     });
   }, []);
 
-    // handlers
-    const handleDeleteTransport = () => {
-      runDeleteTransport(deleteTransport(`${API_ROUTES.transport}/${transportSelected?._id}`), {
+  // handlers
+  const handleDeleteTransport = () => {
+    runDeleteTransport(
+      deleteTransport(`${API_ROUTES.transport}/${transportSelected?._id}`),
+      {
         onSuccess: () => {
-          toast.success(`Eliminaste el pedido ${transportSelected?.plate}`)
-          refetch()
-          setTransportSelected(undefined)
-          onCloseDelete()
-        }
-      })
-    };
+          toast.success(`Eliminaste el pedido ${transportSelected?.plate}`);
+          refetch();
+          setTransportSelected(undefined);
+          onCloseDelete();
+        },
+      }
+    );
+  };
 
-    const handleCloseTransportModal = () => {
-      onClose()
-      setTransportSelected(undefined)
-    }
-  
+  const handleCloseTransportModal = () => {
+    onClose();
+    setTransportSelected(undefined);
+  };
 
   const columns = generateTransportColumns();
   const listTransportOrdered = useMemo(() => {
@@ -96,15 +99,16 @@ const Transport = () => {
 
         <Box w="100%">
           <TableComponent
+            itemsPerPage={100}
             data={listTransportOrdered}
             columns={columns}
             onDelete={(item) => {
-              setTransportSelected(item)
-              onOpenDelete()
+              setTransportSelected(item);
+              onOpenDelete();
             }}
             onEdit={(item) => {
-              setTransportSelected(item)
-              onOpen()
+              setTransportSelected(item);
+              onOpen();
             }}
             isLoading={isLoading}
             pagination

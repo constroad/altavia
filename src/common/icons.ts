@@ -5,6 +5,7 @@ import {
   MdNavigateBefore,
   MdOutlineLocalGroceryStore,
   MdOutlinePrecisionManufacturing,
+  MdAttachMoney,
 } from "react-icons/md";
 import {
   FaPlus,
@@ -21,7 +22,7 @@ import {
 import { FiMoreVertical } from 'react-icons/fi'
 import { FaUserTie, FaUserShield, FaTruckFast, FaRoadBarrier } from "react-icons/fa6";
 import { IoLogoWhatsapp, IoMdMail, IoMdClose, IoMdRefresh, IoIosSave } from "react-icons/io";
-import { BsCalculatorFill } from "react-icons/bs";
+import { BsArrowLeft, BsArrowRight, BsCalculatorFill } from "react-icons/bs";
 import { IoArrowBackOutline, IoSearch } from "react-icons/io5";
 import { ImMenu3, ImMenu4 } from "react-icons/im";
 import { HiClipboardDocumentList } from "react-icons/hi2";
@@ -29,7 +30,7 @@ import { BiSolidPencil, BiTask } from "react-icons/bi";
 import { RiSubtractLine } from "react-icons/ri";
 import { GrUserWorker } from "react-icons/gr";
 import { LuContainer } from "react-icons/lu";
-import { GiBoxUnpacking } from "react-icons/gi";
+import { GiBoxUnpacking, GiFallingRocks } from "react-icons/gi";
 import { FaShareAlt } from "react-icons/fa";
 import { FaEye } from "react-icons/fa";
 import { TiArrowSortedUp, TiArrowSortedDown } from "react-icons/ti";
@@ -86,4 +87,8 @@ export const SaveIcon = IoIosSave
 export const CircleIcon = FaCircle
 export const SortUpIcon = TiArrowSortedUp
 export const SortDownIcon = TiArrowSortedDown
-
+export const MoneyIcon = MdAttachMoney
+export const MaterialIcon = GiFallingRocks
+export const WorkerIcon = GrUserWorker
+export const ArrowRightIcon = BsArrowRight
+export const ArrowLeftIcon = BsArrowLeft

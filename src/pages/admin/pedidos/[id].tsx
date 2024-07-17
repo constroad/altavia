@@ -1,4 +1,4 @@
-import { Flex, Spinner } from '@chakra-ui/react';
+import { Box, Flex, Spinner } from '@chakra-ui/react';
 import axios from 'axios';
 import { useRouter } from 'next/router';
 import { useEffect } from 'react';
@@ -53,6 +53,7 @@ const Pedido = () => {
           />
 
           {order?._id && <DispatchList order={order} />}
+          {!order?._id && <Box>No hay despachos aun</Box>}
         </Flex>
       )}
     </IntranetLayout>

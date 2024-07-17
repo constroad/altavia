@@ -4,7 +4,7 @@ import { AdministrationLayout, DayCard, Modal, NoteModal, NoteType, Status, Task
 import { addDays, format, startOfWeek } from 'date-fns';
 import { es } from 'date-fns/locale/es';
 import { useAsync, useScreenSize } from 'src/common/hooks';
-import { ADMIN_ROUTES, API_ROUTES } from 'src/common/consts';
+import { ADMIN_ROUTES, API_ROUTES, GROUP_PLANTA_PRODUCCION, GROUP_SOCIOS_DE_LA_CONSTRUCCION, GROUP_TRABAJADORES_CONSTROAD, PHONE_CARIN, PHONE_CONSTROAD, PHONE_JZ, WtspMessageType } from 'src/common/consts';
 import { CONSTROAD_COLORS } from 'src/styles/shared';
 import { useRouter } from 'next/router';
 import { useSidebar } from 'src/context';
@@ -13,6 +13,7 @@ import axios from 'axios';
 
 const currentDay = new Date()
 const fetcher = (path: string) => axios.get(path)
+const postMessage = (path: string, data: any) => axios.post(path, data )
 const postItem = (path: string, data: TaskType | NoteType) => axios.post(path, { data })
 const updateItem = (path: string, data: TaskType | NoteType) => axios.put(path, { data})
 const deleteItem = (path: string) => axios.delete(path)
@@ -35,6 +36,7 @@ export const TasksPage = () => {
   const router = useRouter()
 
   const { run: runGetTasksDB, isLoading: isLoadingTasks, refetch: refetchTasks } = useAsync({ onSuccess(data) { setTasksDB(data.data) } })
+  const { run: runSendMessage, isLoading: sendingMessage } = useAsync();
   const { run: runAddTask, isLoading: addingTask } = useAsync();
   const { run: runEditTask, isLoading: editingTask } = useAsync();
   const { run: runDeleteTask, isLoading: deletingTask } = useAsync()
@@ -198,6 +200,27 @@ export const TasksPage = () => {
     setNoteSelected(item)
     onOpenNoteModal()
   }
+
+  const sendWhatsAppMessage = (reporter:string, title: string, message: string) => {
+    runSendMessage(postMessage(API_ROUTES.notificationWhatsApp, {
+      type: WtspMessageType.SendText, 
+      body: `🤖 Constroad Bot! *${title}*     
+Encargado: ${reporter}
+Mensaje:
+------------
+
+${message}
+cc: @${PHONE_JZ}, @${PHONE_CARIN}
+      `, 
+      to: GROUP_TRABAJADORES_CONSTROAD, 
+      mentions: [
+        PHONE_JZ,
+        PHONE_CONSTROAD,
+        PHONE_CARIN
+      ]
+    }))
+  }
+
   const onSubmitNote = (e: any) => {
     e.preventDefault();
     if ( !noteSelected ) {
@@ -209,6 +232,7 @@ export const TasksPage = () => {
       }
       runAddNote(postItem(API_ROUTES.note, addNote), {
         onSuccess: () => {
+          sendWhatsAppMessage(addNote.reporter?? '' , addNote.title, addNote.text ?? '')
           toast.success('Nota creada con éxito!')
           refetchNotes()
           handleCloseNoteModal()
@@ -228,6 +252,7 @@ export const TasksPage = () => {
       }
       runEditNote(updateItem(`${API_ROUTES.note}/${noteSelected?._id}`, editNote), {
         onSuccess: () => {
+          sendWhatsAppMessage(editNote.reporter ?? '', editNote.title, editNote.text ?? '')
           toast.success('Editaste correctamente la nota')
           refetchNotes()
           handleCloseNoteModal()

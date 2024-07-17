@@ -24,7 +24,6 @@ export type Dispatch = {
   date: string;
   material: string;
   plate: string;
-  invoice: string;
   guide: string;
   m3: string;
   client: string;

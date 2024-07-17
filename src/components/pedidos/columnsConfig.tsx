@@ -77,6 +77,9 @@ export const generatePedidoColumns = (props: ColumnProps) => {
       label: 'Cliente',
       width: '15%',
       bgColor: CONSTROAD_COLORS.darkGray,
+      // tdStyles: {
+      //   paddingY: "5px"
+      // },
       render: (item) => (
         <Tooltip label={item}>
           <Text noOfLines={1}>{item}</Text>
@@ -177,10 +180,11 @@ export const generatePedidoColumns = (props: ColumnProps) => {
       width: '3%',
       tdStyles: { textAlign: 'center' },
       summary: (value) => SummaryAmount(value),
+      render: (item) => <Text color={`${item <0 ? 'red' : 'black' }`}>{item}</Text>
     },
     {
       key: 'm3Value',
-      label: 'M3 Valor',
+      label: 'Total Real',
       width: '4%',
       tdStyles: { textAlign: 'right' },
       summary: (value) => Summary(value),
@@ -216,6 +220,7 @@ export const generatePedidoColumns = (props: ColumnProps) => {
             bgColor={row.isPaid ? '#d7ead4' : 'pink'}
             rounded={2}
             textAlign="right"
+            py="5px"
           >
             {!row.isPaid && <>S/.{formatMoney(item)}</>}
             {row.isPaid && 'Pagado'}

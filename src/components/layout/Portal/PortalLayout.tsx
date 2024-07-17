@@ -14,6 +14,7 @@ import { CONSTROAD_COLORS } from 'src/styles/shared';
 interface IPortalLayout {
   children: React.ReactNode
   noPaddingTop?: boolean
+  bgColor?: string
 }
 
 export const PortalLayout = (props: IPortalLayout) => {
@@ -92,11 +93,12 @@ export const PortalLayout = (props: IPortalLayout) => {
         width='100%'
         minHeight='calc(100vh - 339px)'
         paddingTop={{
-          base: props.noPaddingTop ? '0px' : '30px',
-          md: props.noPaddingTop ? '0px' : '40px'
+          base: props.noPaddingTop ? '0px' : '20px',
+          md: props.noPaddingTop ? '0px' : '50px'
         }}
         paddingBottom={{ base: '10px', md: '40px'}}
         position='relative'
+        bgColor={props.bgColor ?? ''}
       >
         {children}
 

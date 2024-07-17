@@ -28,9 +28,6 @@ const getAll = async (req: NextApiRequest, res: NextApiResponse) => {
     if (orderId) {
       query.orderId = orderId
     }
-    if (isPaid) {
-      query.isPaid = isPaid
-    }
     const result = await repo.getAll(query, pagination);
 
     res.status(200).json(result);

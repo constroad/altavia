@@ -18,29 +18,27 @@
 
 .code
 
+html, body {
+  overflow-y: scroll;
+  overflow-x: hidden;
+  scrollbar-width: thin; /* Ancho del scrollbar (puede ser 'thin', 'auto', o 'none') */
+  scrollbar-color: #888888 #f0f0f0; /* Color del scrollbar (puede ser ajustado según tus estilos) */
+}
+
+/* Ajusta el estilo del scrollbar para navegadores que soportan la propiedad */
 ::-webkit-scrollbar {
-  width: 6px; /* Ancho del scrollbar */
+  width: 1px; /* Ancho del scrollbar */
 }
 
-/* Track (fondo) del scrollbar */
+/* Ajusta el estilo de la pista del scrollbar */
 ::-webkit-scrollbar-track {
-  background: transparent; /* Fondo transparente */
+  background-color: #f0f0f0; /* Color de fondo de la pista */
 }
 
-/* Thumb (el "botón" del scrollbar) */
+/* Ajusta el estilo del thumb (parte movible del scrollbar) */
 ::-webkit-scrollbar-thumb {
-  background: rgba(0, 0, 0, 0.2); /* Color del "botón" */
-  border-radius: 8px; /* Bordes redondeados */
-}
-
-/* Cuando el usuario hace scroll, muestra el scrollbar */
-html {
-  overflow-y: scroll; /* Asegura que el scrollbar vertical siempre esté presente */
-}
-
-/* Cuando el usuario no está haciendo scroll, oculta el scrollbar */
-html:not(:hover) {
-  overflow-y: hidden;
+  background-color: #888888; /* Color del thumb */
+  border-radius: 5px; /* Bordes redondeados del thumb */
 }
 
 .code

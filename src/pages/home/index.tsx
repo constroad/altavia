@@ -154,6 +154,7 @@ const Home = () => {
               top='0px'
               flexDir={{ base: 'column', md: 'row' }}
               className='w-screen'
+              
               h={{ base: '420px', md: '200px' }}
               justifyContent={{ base: 'center', md: 'space-between' }}
               gap={{ base: '10px', md: '' }}

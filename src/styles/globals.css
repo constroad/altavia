@@ -16,11 +16,34 @@
   }
 }
 
-body {
-  color: black !important;
-  background: white;
-  font-family: 'Rubik', sans-serif;
+.code
+
+::-webkit-scrollbar {
+  width: 6px; /* Ancho del scrollbar */
 }
+
+/* Track (fondo) del scrollbar */
+::-webkit-scrollbar-track {
+  background: transparent; /* Fondo transparente */
+}
+
+/* Thumb (el "botón" del scrollbar) */
+::-webkit-scrollbar-thumb {
+  background: rgba(0, 0, 0, 0.2); /* Color del "botón" */
+  border-radius: 8px; /* Bordes redondeados */
+}
+
+/* Cuando el usuario hace scroll, muestra el scrollbar */
+html {
+  overflow-y: scroll; /* Asegura que el scrollbar vertical siempre esté presente */
+}
+
+/* Cuando el usuario no está haciendo scroll, oculta el scrollbar */
+html:not(:hover) {
+  overflow-y: hidden;
+}
+
+.code
 
 .font-roboto {
   font-family: 'Roboto', sans-serif;

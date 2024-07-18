@@ -1,8 +1,8 @@
 export type ContactFormType = {
   email: string,
-  name?: string,
-  companyName: string,
-  ruc: string,
+  name: string,
+  companyName?: string,
+  ruc?: string,
   message?: string,
   phone?: string,
   nroCubos?: string,

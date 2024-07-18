@@ -143,8 +143,8 @@ Mensaje:
 ------------
 Tanque (${fluid.name}) se actualizo!
 * CM: ${fluid.levelCentimeter}
-* Stock: ${cubes} gls
-* Para Producir: ${toProduce.toFixed(2)} gls
+* Stock: ${toProduce.toFixed(2)} gls
+* Para Producir: ${cubes.toFixed(2)} m3
 
 cc: @${PHONE_JZ}, @${PHONE_CARIN}
       `,

@@ -6,9 +6,8 @@ import { toast } from 'src/components/Toast';
 import { APP_ROUTES } from 'src/common/consts';
 import { ArrowDown, HideMenuMobileIcon, ShowMenuMobileIcon } from 'src/common/icons';
 
-import { GenerateNavOptions, nosotrosOptions, serviciosOptions } from './config'
+import { GenerateNavOptions, serviciosOptions } from './config'
 import { CONSTROAD_COLORS } from 'src/styles/shared';
-import { useEffect, useState } from 'react';
 import { useScreenSize } from 'src/common/hooks';
 
 interface INavbar {

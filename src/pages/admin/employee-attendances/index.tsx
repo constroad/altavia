@@ -43,7 +43,6 @@ const EmployeeAttendances = (props: EmployeeAttendancesProps) => {
   const columns = generateAttendanceColumns();
   const handleCloseEmployeeModal = () => {
     onClose();
-    // setEmployeeSelected(undefined);
     refetch();
   };
 

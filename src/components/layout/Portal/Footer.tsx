@@ -161,7 +161,7 @@ const Footer = () => {
           </Flex>
         </Flex>
 
-        <Flex w='100%' gap={{ base: '5px', md: '15px' }} zIndex={30} h='30px' position='absolute' bottom={{ base: '50px', md: '45px' }} justifyContent='start' alignItems='center' px={{ base: '20px', md: '105px' }}>
+        <Flex w='100%' gap={{ base: '5px', md: '15px' }} left='0px' zIndex={30} h='30px' position='absolute' bottom={{ base: '50px', md: '45px' }} justifyContent='start' alignItems='center' px={{ base: '20px', md: '112px' }}>
           <IconButton
             display='flex'
             justifyContent='center'

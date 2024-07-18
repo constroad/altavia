@@ -53,7 +53,7 @@ export const AdminSidebar = (props: AdminSidebarProps) => {
             <Flex gap='6px' alignItems='center' h='72px' cursor='pointer' onClick={() => router.push(APP_ROUTES.admin)}>
               <Image src='/constroad.ico' alt='constroad-logo' w='25px' h='25px'/>
               {isExpanded && !isMobile && (
-                <Text fontWeight={600} fontSize={18} >ConstRoad</Text>
+                <Text fontWeight={600} fontSize={18} className='font-logo' mt='8px'>ConstRoad</Text>
               )}
             </Flex>
 

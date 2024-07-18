@@ -43,17 +43,18 @@ export const carouselImages = [
 ]
 
 export const clientsImages = [
-  {label: 'falcob-logo', url: '/img/clients/logo1.png'},
-  {label: '2-logo', url: '/img/clients/logo2.png'},
-  {label: '3-logo', url: '/img/clients/logo3.png'},
-  {label: '4-logo', url: '/img/clients/logo4.png'},
-  {label: '5-logo', url: '/img/clients/logo5.png'},
-  {label: '6-logo', url: '/img/clients/logo6.png'},
+  {label: 'falcob-logo', url: '/img/clients/falcob-logo.png'},
+  {label: 'globo-fast-logo', url: '/img/clients/globo-fast-logo.png'},
+  {label: 'cyf-logo', url: '/img/clients/cyf-logo.png'},
+  {label: 'sercon-logo', url: '/img/clients/sercon-logo.png'},
+  {label: 'alfaco-logo', url: '/img/clients/alfaco-logo.png'},
+  {label: 'astec-logo', url: '/img/clients/astec-logo.png'},
+  {label: 'proconstruc-logo', url: '/img/clients/proconstruc-logo.png'},
 ]
 
 export const proyectsImages = [
   {label: 'proyecto-la-campigna', url: '/img/proyects/la-campigna-cajamarquilla.png'},
   {label: 'proyecto-los-plateros', url: '/img/proyects/los-plateros-ate.jpeg'},
   {label: 'proyecto-los-tulipanes', url: '/img/proyects/los-tulipanes-carapongo.jpeg'},
-  {label: 'proyecto-surco', url: '/img/proyects/surco.jpg'},
+  {label: 'proyecto-surco', url: '/img/proyects/surco.jpg'}, 
 ]

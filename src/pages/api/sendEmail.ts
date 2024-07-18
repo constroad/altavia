@@ -9,14 +9,15 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
 
     const phoneNumber = phone === '' ? '- - -' : phone
     const cubos = nroCubos === '' ? '1' : nroCubos
-    const Ruc = ruc === '' ? '- - -' : ruc  
+    const Ruc = ruc === '' ? '- - -' : ruc
+    const company = companyName === '' ? '- - -' : companyName
 
     const msg = `
 <html>
   <body>
     <strong style="font-size: 20px;">Estamos procesando tu cotización!</strong><br><br>
     <strong>Nombre:</strong> ${name}<br>
-    <strong>Razón social:</strong> ${companyName}<br>
+    <strong>Razón social:</strong> ${company}<br>
     <strong>RUC:</strong> ${Ruc}<br><br>
     <strong>Nro. cubos:</strong> ${cubos}<br>
     <strong>Mensaje:</strong> ${message}<br><br>

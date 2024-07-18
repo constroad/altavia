@@ -107,7 +107,7 @@ export const PortalLayout = (props: IPortalLayout) => {
           target="_blank"
           position='fixed'
           right={ isMobile ? 2 : '60px' }
-          bottom={isMobile ? 14 : 4}
+          bottom={isMobile ? 14 : '40px'}
           width={isMobile ? 'auto' : 'auto'}
           rounded='100%'
           background='#25d366'

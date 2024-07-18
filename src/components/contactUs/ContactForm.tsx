@@ -32,8 +32,9 @@ export const ContactForm = (props: ContactFormProps) => {
             value={user.name}
             onChange={(e) => handleChangeValue(e, 'name')}
             placeholder="Nombre"
+            required
           />
-          <Text fontSize={{ base: 12, md: 18 }} fontWeight={600} mt='4px' color='red' w='8px' />
+          <Text fontSize={{ base: 12, md: 18 }} fontWeight={600} mt='4px' color='red' w='8px'>*</Text>
         </Flex>
       </FormControl>
 
@@ -63,9 +64,8 @@ export const ContactForm = (props: ContactFormProps) => {
             value={user.companyName}
             onChange={(e) => handleChangeValue(e, 'companyName')}
             placeholder="Razón social"
-            required
           />
-          <Text fontSize={{ base: 12, md: 18 }} fontWeight={600} mt='4px' color='red' w='8px'>*</Text>
+          <Text fontSize={{ base: 12, md: 18 }} fontWeight={600} mt='4px' color='red' w='8px' />
         </Flex>
       </FormControl>
 
@@ -79,9 +79,8 @@ export const ContactForm = (props: ContactFormProps) => {
             value={user.ruc}
             onChange={(e) => handleChangeValue(e, 'ruc')}
             placeholder="RUC"
-            required
           />
-          <Text fontSize={{ base: 12, md: 18 }} fontWeight={600} mt='4px' color='red' w='8px'>*</Text>
+          <Text fontSize={{ base: 12, md: 18 }} fontWeight={600} mt='4px' color='red' w='8px' />
         </Flex>
       </FormControl>
 

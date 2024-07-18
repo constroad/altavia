@@ -12,7 +12,7 @@ import { useScreenSize } from 'src/common/hooks'
 
 const Home = () => {
   const [showArrow, setShowArrow] = useState(true);
-  const { isMobile } = useScreenSize()
+  const { isMobile, isDesktop } = useScreenSize()
 
   useEffect(() => {
     const handleScroll = () => {
@@ -26,6 +26,17 @@ const Home = () => {
     window.addEventListener('scroll', handleScroll);
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
+
+  function scrollTo() {
+    var element = document.getElementById('nosotrosBox');
+    var offset = 0;
+    var scrollToPosition = element!.offsetTop - offset;
+
+    window.scrollTo({
+      top: scrollToPosition,
+      behavior: 'smooth'
+    });
+  }
 
   return (
     <PortalLayout noPaddingTop >
@@ -41,6 +52,7 @@ const Home = () => {
           paddingX={{ base: '', md: '120px' }}
           marginX='auto'
           justifyContent='space-between'
+          id='nosotrosBox'
         >
           <Flex
             flexDir='column'
@@ -154,6 +166,7 @@ const Home = () => {
               top='0px'
               flexDir={{ base: 'column', md: 'row' }}
               className='w-screen'
+
               h={{ base: '420px', md: '200px' }}
               justifyContent={{ base: 'center', md: 'space-between' }}
               gap={{ base: '10px', md: '' }}
@@ -247,25 +260,31 @@ const Home = () => {
       </Flex>
 
       {/* Arrow Scroll */}
-      <Box
-        position="fixed"
-        bottom="50px"
-        left="50%"
-        transform="translateX(-50%)"
-        opacity={showArrow ? 1 : 0}
-        transition="opacity 0.5s"
-        zIndex="10"
-        visibility={{ base: 'hidden', md: 'visible' }}
-      >
-        <Icon
-          as={FaAnglesDown}
-          w={8}
-          h={8}
-          color="white"
-          className="scroll-down-arrow"
-          animation={showArrow ? 'bounce 2s infinite' : 'none'}
-        />
-      </Box>
+      {isDesktop && (
+        <Box
+          position="fixed"
+          bottom="50px"
+          left="50%"
+          transform="translateX(-50%)"
+          opacity={showArrow ? 1 : 0}
+          transition="opacity 0.5s"
+          zIndex="10"
+          visibility={{ base: 'hidden', md: 'visible' }}
+          _hover={{ cursor: 'pointer' }}
+          onClick={scrollTo}
+        >
+          <Icon
+            as={FaAnglesDown}
+            w={8}
+            h={8}
+            _hover={{ w: 10, h: 10 }}
+            transition='width 0.4s, height 0.4s'
+            color="white"
+            className="scroll-down-arrow"
+            animation={showArrow ? 'bounce 2s infinite' : 'none'}
+          />
+        </Box>
+      )}
     </PortalLayout>
   )
 }

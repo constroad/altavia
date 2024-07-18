@@ -12,17 +12,16 @@ const ColocacionMezclaAsfaltica = () => {
       <Flex width='100%' pb='20px'>
         <Flex
           flexDir={{ base: 'column', md: 'row' }}
-          width={{ base: '100%', md: '90%' }}
-          marginX='auto'
+          width={{ base: '100%', md: '100%' }}
           justifyContent='space-between'
         >
           <Flex
             flexDir='column'
             width={{ base: '100%', md: '100%' }}
-            paddingX={{base: '30px', md: '0px'}}
+            paddingX={{base: '30px', md: '120px'}}
           >
             <SubtitleComponent text='COLOCACIÓN DE MEZCLA ASFÁLTICA' fontsize={20} />
-            <Flex color='#707070' opacity={0.8} mt={{ base: '15px', md: '20px'}} textAlign='justify' className='font-roboto' flexDir={{ base: 'column', md: 'column' }} w='100%' justifyContent='space-between'>
+            <Flex color='#707070' opacity={0.8} mt={{ base: '15px', md: '15px'}} textAlign='justify' className='font-roboto' flexDir={{ base: 'column', md: 'column' }} w='100%' justifyContent='space-between'>
               <Flex flexDir='column' w={{ base: '100%', md: '100%' }}>
                 <Flex display='inline' fontSize={{ base: 14, md: 16 }} className='font-logo'>
                   <Text
@@ -55,37 +54,34 @@ const ColocacionMezclaAsfaltica = () => {
               >
                 <Flex flexDir={{ base: 'column', md: 'row' }} gap='15px' mt={{ base: '', md: '20px' }} w='100%' justifyContent='space-between'>
                   <Image
-                    src={serviciosConfig[1].image}
-                    alt='quienessomos-logo'
+                    src='/img/services/la-campigna.png'
+                    alt='obra-la-campina'
                     width={{ base: '100%', md: '32%' }}
                     height={{ base: '170px', md: '200px' }}
-                    rounded='10px'
-                    border='1px solid black'
+                    rounded='20px'
                     mt='0px'
                     transition="margin-top 0.3s"
-                    _hover={{ mt: '-10px', border: '2px solid black' }}
+                    _hover={{ mt: '-10px' }}
                   />
                   <Image
-                    src={proyectsImages[3].url}
-                    alt='quienessomos-logo'
+                    src='/img/proyects/surco.jpg'
+                    alt='obra-surco'
                     width={{ base: '100%', md: '32%' }}
                     height={{ base: '170px', md: '200px' }}
-                    rounded='10px'
-                    border='1px solid black'
+                    rounded='20px'
                     mt='0px'
                     transition="margin-top 0.3s"
-                    _hover={{ mt: '-10px', border: '2px solid black' }}
+                    _hover={{ mt: '-10px' }}
                   />
                   <Image
-                    src={proyectsImages[2].url}
-                    alt='quienessomos-logo'
+                    src='/img/proyects/los-tulipanes-carapongo.jpeg'
+                    alt='obra-los-tulipanes'
                     width={{ base: '100%', md: '32%' }}
                     height={{ base: '170px', md: '200px' }}
-                    rounded='10px'
-                    border='1px solid black'
+                    rounded='20px'
                     mt='0px'
                     transition="margin-top 0.3s"
-                    _hover={{ mt: '-10px', border: '2px solid black' }}
+                    _hover={{ mt: '-10px' }}
                   />
                 </Flex>
               </Flex>

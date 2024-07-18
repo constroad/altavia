@@ -65,7 +65,7 @@ export const getPenAvailable = (fluid: IFluidValidationSchema) => {
 
   return {
     volumeInStock,
-    toProduce: cubes,
-    cubes: availableGalons
+    toProduce: availableGalons,
+    cubes
   }
 }

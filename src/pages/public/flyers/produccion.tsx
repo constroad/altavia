@@ -1,4 +1,4 @@
-// components/GenerateImage.tsx
+'use client'
 import { useRef, useState } from 'react';
 import * as htmlToImage from 'html-to-image';
 import { saveAs } from 'file-saver';
@@ -15,6 +15,7 @@ import {
 } from '@chakra-ui/react';
 import { PortalLayout, toast } from 'src/components';
 import { DownloadIcon } from 'src/common/icons';
+import { parseLocalDate } from 'src/utils/general';
 
 const GenerateImage = () => {
   const [date, setDate] = useState(new Date().toISOString().slice(0, 10));
@@ -30,14 +31,14 @@ const GenerateImage = () => {
       const dataUrl = await htmlToImage.toPng(imageRef.current);
       saveAs(
         dataUrl,
-        `produccion-${new Date(date).toLocaleDateString('es-ES')}.png`
+        `produccion-${new Date(date).toLocaleDateString('es-PE')}.png`
       );
     }
   };
 
   const formatDate = (dateString: string) => {
-    const date = new Date(dateString);
-    return date.toLocaleDateString('es-ES', { day: '2-digit', month: 'short' });
+    const date = parseLocalDate(dateString);
+    return date.toLocaleDateString('es-PE', { day: '2-digit', month: 'short' });
   };
 
   const formatTime = (timeString: string) => {

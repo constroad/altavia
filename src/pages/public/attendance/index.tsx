@@ -1,4 +1,4 @@
-// pages/attendance.tsx
+'use client'
 import { useState } from 'react';
 import {
   Avatar,

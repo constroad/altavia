@@ -1,4 +1,4 @@
-// pages/attendance.tsx
+'use client'
 import { useEffect, useMemo, useRef, useState } from 'react';
 import { Avatar, Box, Button, Flex, Spinner, Text } from '@chakra-ui/react';
 import dynamic from 'next/dynamic';
@@ -39,7 +39,7 @@ export const RegisterAttendance = (props: RegisterAttendanceProps) => {
     {
       queryParams: {
         employeeId: props.employee?._id,
-        date: currentDate.toISOString(),
+        date: currentDate.toDateString(),
       },
     }
   );
@@ -211,7 +211,7 @@ export const RegisterAttendance = (props: RegisterAttendanceProps) => {
     <>
       <Flex gap={2} flexDir="column">
         <Flex alignItems="center" justifyContent="end">
-          <Button size="xs" gap={1} onClick={props.onGoBack}>
+          <Button size="sm" gap={1} onClick={props.onGoBack}>
             <ArrowLeftIcon />
             Regresar
           </Button>

@@ -22,6 +22,7 @@ export const APP_ROUTES = {
 export const ADMIN_ROUTES = {
   clients: '/admin/clientes',
   employees: '/admin/employee',
+  attandances: '/admin/employee-attendances',
   providers: '/admin/proveedores',
   products: '/admin/productos',
   services: '/admin/servicios',

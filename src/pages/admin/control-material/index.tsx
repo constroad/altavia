@@ -207,7 +207,7 @@ const StockPage = () => {
                   ))}
                 </select>
               </label>
-              <Flex alignItems="center">
+              <Flex flexDir={{base: 'column', md: 'row'}} alignItems="center">
                 <Text fontSize={{ base: 12 }}>Material:</Text>
                 <Select
                   defaultValue=""

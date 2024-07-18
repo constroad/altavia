@@ -41,8 +41,8 @@ export const AlquilerPlantaAsfaltica = () => {
               >
                 <Flex flexDir={{ base: 'column', md: 'row' }} gap='15px' mt={{ base: '', md: '20px' }} w='100%' justifyContent={{ base: 'space-between', md: 'space-around' }}>
                   <Image
-                    src={serviciosConfig[3].image}
-                    alt='quienessomos-logo'
+                    src='/img/carousel/presentacion.png'
+                    alt='planta-constroad'
                     width={{ base: '100%', md: '32%' }}
                     height={{ base: '170px', md: '200px' }}
                     rounded='20px'
@@ -51,8 +51,8 @@ export const AlquilerPlantaAsfaltica = () => {
                     _hover={{ mt: '-10px'}}
                   />
                   <Image
-                    src='/img/carousel/3.png'
-                    alt='señalizacion-vial-2'
+                    src='/img/carousel/planta-constroad-no-logo.png'
+                    alt='planta-constroad-2'
                     width={{ base: '100%', md: '32%' }}
                     height={{ base: '170px', md: '200px' }}
                     rounded='20px'

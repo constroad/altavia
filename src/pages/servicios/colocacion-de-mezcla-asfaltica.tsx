@@ -54,8 +54,8 @@ const ColocacionMezclaAsfaltica = () => {
               >
                 <Flex flexDir={{ base: 'column', md: 'row' }} gap='15px' mt={{ base: '', md: '20px' }} w='100%' justifyContent='space-between'>
                   <Image
-                    src={serviciosConfig[1].image}
-                    alt='quienessomos-logo'
+                    src='/img/services/la-campigna.png'
+                    alt='obra-la-campina'
                     width={{ base: '100%', md: '32%' }}
                     height={{ base: '170px', md: '200px' }}
                     rounded='20px'
@@ -64,8 +64,8 @@ const ColocacionMezclaAsfaltica = () => {
                     _hover={{ mt: '-10px' }}
                   />
                   <Image
-                    src={proyectsImages[3].url}
-                    alt='quienessomos-logo'
+                    src='/img/proyects/surco.jpg'
+                    alt='obra-surco'
                     width={{ base: '100%', md: '32%' }}
                     height={{ base: '170px', md: '200px' }}
                     rounded='20px'
@@ -74,8 +74,8 @@ const ColocacionMezclaAsfaltica = () => {
                     _hover={{ mt: '-10px' }}
                   />
                   <Image
-                    src={proyectsImages[2].url}
-                    alt='quienessomos-logo'
+                    src='/img/proyects/los-tulipanes-carapongo.jpeg'
+                    alt='obra-los-tulipanes'
                     width={{ base: '100%', md: '32%' }}
                     height={{ base: '170px', md: '200px' }}
                     rounded='20px'

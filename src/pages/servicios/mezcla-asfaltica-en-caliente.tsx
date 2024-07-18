@@ -59,8 +59,8 @@ const MezclaAsfaltica = () => {
               >
                 <Flex flexDir={{ base: 'column', md: 'row' }} gap='15px' mt={{ base: '', md: '20px' }} w='100%' justifyContent='space-between'>
                   <Image
-                    src={serviciosConfig[0].image}
-                    alt='quienessomos-logo'
+                    src='/img/carousel/produccion-madrugada.png'
+                    alt='produccion-constroad-madrugada'
                     width={{ base: '100%', md: '32%' }}
                     height={{ base: '170px', md: '200px' }}
                     rounded='20px'
@@ -70,7 +70,7 @@ const MezclaAsfaltica = () => {
                   />
                   <Image
                     src='/img/carousel/produccion-dia.png'
-                    alt='quienessomos-logo'
+                    alt='produccion-constroad-dia'
                     width={{ base: '100%', md: '32%' }}
                     height={{ base: '170px', md: '200px' }}
                     rounded='20px'
@@ -80,7 +80,7 @@ const MezclaAsfaltica = () => {
                   />
                   <Image
                     src='/img/carousel/produccion-noche.png'
-                    alt='quienessomos-logo'
+                    alt='produccion-constroad-noche'
                     width={{ base: '100%', md: '32%' }}
                     height={{ base: '170px', md: '200px' }}
                     rounded='20px'

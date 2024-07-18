@@ -43,7 +43,7 @@ export const serviciosConfig = [
     description: `Ofrecemos el servicio de producción de asfalto en caliente de alta calidad, ideales para proyectos de infraestructura vial y pavimentación.
     Nuestro proceso garantiza durabilidad y rendimiento superior, utilizando materiales de primera y tecnología avanzada para cumplir con los más altos estándares de la industria`,
     shortDescription: 'Ofrecemos el servicio de producción de asfalto en caliente de alta calidad...',
-    redirect: '/servicios/mezcla-asfaltica-en-caliente'
+    redirect: '/servicios/mezcla-asfaltica-en-caliente' 
   },
   {
     title: 'Colocación de mezcla asfáltica',

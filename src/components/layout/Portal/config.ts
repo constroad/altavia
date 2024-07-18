@@ -56,5 +56,5 @@ export const proyectsImages = [
   {label: 'proyecto-la-campigna', url: '/img/proyects/la-campigna-cajamarquilla.png'},
   {label: 'proyecto-los-plateros', url: '/img/proyects/los-plateros-ate.jpeg'},
   {label: 'proyecto-los-tulipanes', url: '/img/proyects/los-tulipanes-carapongo.jpeg'},
-  {label: 'proyecto-surco', url: '/img/proyects/surco.jpg'},
+  {label: 'proyecto-surco', url: '/img/proyects/surco.jpg'}, 
 ]

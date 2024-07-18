@@ -51,8 +51,8 @@ export const SenalizacionVial = () => {
               >
                 <Flex flexDir={{ base: 'column', md: 'row' }} gap='15px' mt={{ base: '', md: '20px' }} w='100%' justifyContent={{ base: 'space-between', md: 'space-around' }}>
                   <Image
-                    src={serviciosConfig[2].image}
-                    alt='quienessomos-logo'
+                    src='/img/segnalizacion-vial.jpg'
+                    alt='señalizacion-vial-1'
                     width={{ base: '100%', md: '32%' }}
                     height={{ base: '170px', md: '200px' }}
                     rounded='20px'

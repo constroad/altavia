@@ -13,7 +13,8 @@ import {
   TaskIcon,
   ServiceIcon,
   MaterialIcon,
-  WorkerIcon
+  WorkerIcon,
+  UserClockIcon
 } from "src/common/icons";
 import { CONSTROAD_COLORS } from "src/styles/shared";
 
@@ -83,6 +84,13 @@ export const administrationTabs = [
     bgColor: CONSTROAD_COLORS.yellow,
     textColor: 'black',
     icon: WorkerIcon
+  },
+   {
+    name: 'Asistencias',
+    path: ADMIN_ROUTES.attandances,
+    bgColor: CONSTROAD_COLORS.yellow,
+    textColor: 'black',
+    icon: UserClockIcon
   },
   {
     name: 'Proveedores',

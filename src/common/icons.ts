@@ -18,6 +18,7 @@ import {
   FaCloudDownloadAlt,
   FaWhatsapp,
   FaCircle,
+  FaUserClock,
 } from "react-icons/fa";
 import { FiMoreVertical } from 'react-icons/fi'
 import { FaUserTie, FaUserShield, FaTruckFast, FaRoadBarrier } from "react-icons/fa6";
@@ -92,3 +93,4 @@ export const MaterialIcon = GiFallingRocks
 export const WorkerIcon = GrUserWorker
 export const ArrowRightIcon = BsArrowRight
 export const ArrowLeftIcon = BsArrowLeft
+export const UserClockIcon = FaUserClock

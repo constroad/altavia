@@ -15,31 +15,7 @@ export const APP_ROUTES = {
   cotizar: '/cotizar',
   quote: '/quote',
   quoteNew: '/quote/new',
-  admin: '/admin',
   clientReport: '/public/client-report'
-}
-
-export const ADMIN_ROUTES = {
-  clients: '/admin/clientes',
-  employees: '/admin/employee',
-  attandances: '/admin/employee-attendances',
-  providers: '/admin/proveedores',
-  products: '/admin/productos',
-  services: '/admin/servicios',
-  quotes: '/admin/cotizar',
-  asphaltQuote: '/admin/cotizar/asfalto',
-  serviceQuote: '/admin/cotizar/servicios',
-  newServiceQuote: '/admin/cotizar/servicios/nuevo',
-  purchaseOrder: '/admin/orden-de-compra',
-  dispatch: '/admin/despacho',
-  controlFluid: '/admin/control-fluid',
-  controlMaterial: '/admin/control-material',
-  materials: '/admin/materials',
-  production: '/admin/produccion',
-  tasks: '/admin/tareas',
-  orders: '/admin/pedidos',
-  transports: '/admin/transports',
-  selectedDayTask: '/admin/tareas/dia-seleccionado',
 }
 
 export const API_ROUTES = {
@@ -66,7 +42,6 @@ export const API_ROUTES = {
   task: '/api/task',
   note: '/api/note',
   notificationWhatsApp: '/api/notifications/whatsapp',
-  attendance: '/api/attendance',
 }
 
 export const CONSTROAD = {

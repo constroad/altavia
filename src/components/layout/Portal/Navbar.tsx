@@ -1,8 +1,6 @@
 import { useRouter } from 'next/router'
-import { signOut, useSession } from 'next-auth/react';
 
 import { Box, Button, Flex, Image, Link, Text } from '@chakra-ui/react'
-import { toast } from 'src/components/Toast';
 import { APP_ROUTES } from 'src/common/consts';
 import { ArrowDown, HideMenuMobileIcon, ShowMenuMobileIcon } from 'src/common/icons';
 
@@ -21,15 +19,8 @@ interface INavbar {
 
 export const Navbar = (props: INavbar) => {
   const router = useRouter()
-  const { isMobile, isDesktop } = useScreenSize()
+  const { isDesktop } = useScreenSize()
   const path = router.pathname
-  const { data: session } = useSession()
-
-  const handleSignOut = async() => {
-    await signOut({redirect: false});
-    router.push(APP_ROUTES.home)
-    toast.info('Cerraste sesión');
-  }
 
   const menuItemClick = (option: any) => {
     if (option.label === 'Nosotros') {
@@ -40,12 +31,6 @@ export const Navbar = (props: INavbar) => {
       router.push(option.path)
     }
   }
-
-  const handleGoToAdminClick = () => {
-    router.push('/admin')
-  }
-
-  const isNotHomePage = path !== '/'
 
   return (
     <Flex
@@ -94,31 +79,6 @@ export const Navbar = (props: INavbar) => {
         </Flex>
 
         <Flex as='ul' gap={1} display={{ base: 'none', md: 'flex' }} alignItems='end' height={{base: '65px', md: '90px'}} className='font-logo' fontWeight={600}>
-          {session && (
-            <Box
-              as='li'
-              fontWeight={600}
-              display='flex'
-              justifyContent='center'
-              alignItems='end'
-              paddingBottom='10px'
-              paddingX={5}
-              height='50px'
-              color='black'
-              position='relative'
-              roundedTop='4px'
-              _hover={{
-                background: '#feb100',
-                color: 'white',
-                cursor: 'pointer',
-              }}
-              onClick={handleGoToAdminClick}
-            >
-              <Text className='font-logo'>
-                Intranet
-              </Text>
-            </Box>
-          )}
 
           {GenerateNavOptions().map(opt => (
             <Box
@@ -209,62 +169,6 @@ export const Navbar = (props: INavbar) => {
               )}
             </Box>
           ))}
-
-          {!session && (
-            <Box
-              as='li'
-              fontWeight={600}
-              display='flex'
-              justifyContent='center'
-              alignItems='end'
-              paddingBottom='10px'
-              paddingX={5}
-              height='50px'
-              color='black'
-              position='relative'
-              roundedTop='4px'
-              _hover={{
-                background: '#feb100',
-                color: 'white',
-                cursor: 'pointer',
-              }}
-              className={
-                path === APP_ROUTES.login ?
-                'bg-[#feb100] !text-white hover:text-white' : ''
-              }
-              onClick={() => router.push(APP_ROUTES.login)}
-            >
-              <Text>
-                Iniciar sesión
-              </Text>
-            </Box>
-          )}
-
-          {session && (
-            <Box
-              as='li'
-              fontWeight={600}
-              display='flex'
-              justifyContent='center'
-              alignItems='end'
-              paddingBottom='10px'
-              paddingX={5}
-              height='50px'
-              color='black'
-              position='relative'
-              roundedTop='4px'
-              _hover={{
-                background: '#feb100',
-                color: 'white',
-                cursor: 'pointer',
-              }}
-              onClick={handleSignOut}
-            >
-              <Text>
-                Cerrar sesión
-              </Text>
-            </Box>
-          )}
 
         </Flex>
 

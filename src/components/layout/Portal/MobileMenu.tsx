@@ -1,12 +1,9 @@
 import { MouseEvent } from 'react'
 import { useRouter } from 'next/router'
-import { signOut, useSession } from 'next-auth/react'
 import { Flex, Text } from '@chakra-ui/react'
 
-import { toast } from 'src/components/Toast'
-import { APP_ROUTES } from 'src/common/consts'
 import { DisplayOptionIcon, HideOptionIcon } from 'src/common/icons'
-import { GenerateNavOptions, nosotrosOptions, serviciosOptions } from './config'
+import { GenerateNavOptions, serviciosOptions } from './config'
 
 interface IMobileMenu {
   toggleNosotrosMenu: (option: string) => void
@@ -19,13 +16,6 @@ interface IMobileMenu {
 export const MobileMenu = (props: IMobileMenu) => {
   const router = useRouter()
   const path = router.pathname
-  const { data: session } = useSession()
-
-  const handleSignOut = () => {
-    signOut({redirect: false});
-    router.push(APP_ROUTES.home);
-    toast.info('Cerraste sesión');
-  }
 
   const handleOptionClick = async(e: MouseEvent<HTMLDivElement>, option: any) => {
     e.preventDefault()
@@ -34,10 +24,6 @@ export const MobileMenu = (props: IMobileMenu) => {
     } else {
       router.push(option.path)
     }
-  }
-
-  const handleGoToAdminClick = () => {
-    router.push('/admin')
   }
 
   return (
@@ -57,24 +43,6 @@ export const MobileMenu = (props: IMobileMenu) => {
       borderColor='lightgray'
       className={`${props.display ? 'opacity-100 unfold' : 'opacity-0'}`}
     >
-      {session && (
-        <Flex
-          flexDir='row'
-          fontSize={14}
-          fontWeight={700}
-          height={'70px'}
-          color={path === APP_ROUTES.login ? '#feb100' : '#004d89'}
-          paddingX='20px'
-          paddingY='30px'
-          width='100%'
-          cursor='pointer'
-          _hover={{shadow: 'md'}}
-          onClick={handleGoToAdminClick}
-          borderBottom="1px solid rgba(0, 0, 0, 0.1)"
-        >
-          Intranet
-        </Flex>
-      )}
       {GenerateNavOptions().map(opt => (
         <Flex
           flexDir='column'
@@ -162,42 +130,6 @@ export const MobileMenu = (props: IMobileMenu) => {
           )}
         </Flex>
       ))}
-
-      {!session && (
-        <Flex
-          flexDir='row'
-          fontSize={14}
-          fontWeight={700}
-          height={'70px'}
-          color={path === APP_ROUTES.login ? '#feb100' : '#004d89'}
-          paddingX='20px'
-          paddingY='30px'
-          width='100%'
-          cursor='pointer'
-          _hover={{shadow: 'md'}}
-          onClick={() => router.push(APP_ROUTES.login)}
-        >
-          Inicia sesión
-        </Flex>
-      )}
-
-      {session && (
-        <Flex
-          flexDir='row'
-          fontSize={14}
-          fontWeight={700}
-          height={'70px'}
-          color={path === APP_ROUTES.login ? '#feb100' : '#004d89'}
-          paddingX='20px'
-          paddingY='30px'
-          width='100%'
-          cursor='pointer'
-          _hover={{shadow: 'md'}}
-          onClick={handleSignOut}
-        >
-          Cerrar sesión
-        </Flex>
-      )}
     </Flex>
   )
 }

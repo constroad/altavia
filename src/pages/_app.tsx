@@ -3,10 +3,9 @@ import type { AppProps } from 'next/app';
 import { SnackbarProvider } from 'notistack';
 import { ChakraProvider } from '@chakra-ui/react';
 import { SessionProvider } from 'next-auth/react';
-import '@/styles/globals.css';
-import { QuoteProvider, SidebarProvider } from 'src/context';
 import { ToastProvider } from 'src/components/Toast';
-import { DispatchProvider } from 'src/context/DispatchContext/DispatchContext';
+import '@/styles/globals.css';
+
 
 export default function App({
   Component,
@@ -21,25 +20,19 @@ export default function App({
   return (
     <ToastProvider>
       <SessionProvider session={session}>
-        <DispatchProvider>
-          <QuoteProvider>
-            <SidebarProvider>
-              {domLoaded && (
-                <ChakraProvider>
-                  <SnackbarProvider
-                    maxSnack={3}
-                    anchorOrigin={{
-                      vertical: 'top',
-                      horizontal: 'right',
-                    }}
-                  >
-                    <Component {...pageProps} />
-                  </SnackbarProvider>
-                </ChakraProvider>
-              )}
-            </SidebarProvider>
-          </QuoteProvider>
-        </DispatchProvider>
+        {domLoaded && (
+          <ChakraProvider>
+            <SnackbarProvider
+              maxSnack={3}
+              anchorOrigin={{
+                vertical: 'top',
+                horizontal: 'right',
+              }}
+            >
+              <Component {...pageProps} />
+            </SnackbarProvider>
+          </ChakraProvider>
+        )}
       </SessionProvider>
     </ToastProvider>
   );

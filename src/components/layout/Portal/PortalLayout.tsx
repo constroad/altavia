@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react'
 
-import { Box, Flex, Link, Text } from '@chakra-ui/react';
+import { Box, Flex, Link } from '@chakra-ui/react';
 
 import Footer from './Footer';
 import { Navbar } from './Navbar';
@@ -9,9 +9,8 @@ import { CustomHead } from './CustomHead';
 import { useScreenSize } from 'src/common/hooks';
 import { useSession } from 'next-auth/react';
 import { WhatsappIcon } from 'src/common/icons';
-import { CONSTROAD_COLORS } from 'src/styles/shared';
 
-interface IPortalLayout {
+interface IPortalLayout { 
   children: React.ReactNode
   noPaddingTop?: boolean
   bgColor?: string

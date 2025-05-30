@@ -107,15 +107,14 @@ export const PortalLayout = (props: IPortalLayout) => {
           position='fixed'
           right={ isMobile ? 2 : '60px' }
           bottom={isMobile ? 14 : '40px'}
-          width={isMobile ? 'auto' : 'auto'}
           rounded='100%'
           background='#25d366'
           _hover={{ bg: '#1FAA53' }}
           zIndex={200}
           shadow='2lg'
         >
-          <Flex justifyContent='center' alignItems='center' padding='5px' gap='6px'>
-            <WhatsappIcon fontSize={40} color='white' />
+          <Flex justifyContent='center' alignItems='center' padding='5px' gap='6px' fontSize='32px'>
+            <WhatsappIcon color='white' fontSize="32px" />
           </Flex>
         </Link>
 

@@ -1,11 +1,11 @@
-import { useRouter } from 'next/router'
+import { usePathname, useRouter } from 'next/navigation'
 
 import { Box, Button, Flex, Image, Link, Text } from '@chakra-ui/react'
 import { APP_ROUTES } from 'src/common/consts';
 import { ArrowDown, HideMenuMobileIcon, ShowMenuMobileIcon } from 'src/common/icons';
 
 import { GenerateNavOptions, serviciosOptions } from './config'
-import { CONSTROAD_COLORS } from 'src/styles/shared';
+import { ALTAVIA_COLORS, CONSTROAD_COLORS } from 'src/styles/shared';
 import { useScreenSize } from 'src/common/hooks';
 
 interface INavbar {
@@ -18,9 +18,11 @@ interface INavbar {
 }
 
 export const Navbar = (props: INavbar) => {
+  const path = usePathname() as string
   const router = useRouter()
   const { isDesktop } = useScreenSize()
-  const path = router.pathname
+
+  console.log('path:', path)
 
   const menuItemClick = (option: any) => {
     if (option.label === 'Nosotros') {
@@ -35,7 +37,7 @@ export const Navbar = (props: INavbar) => {
   return (
     <Flex
       id='navbar'
-      bg='white'
+      bg={ALTAVIA_COLORS.primary}
       as='nav'
       width='100%'
       height={{ base: '65px', md: '90px' }}
@@ -51,7 +53,7 @@ export const Navbar = (props: INavbar) => {
         paddingX={{ base: '30px', md: '120px' }}
         alignItems='center'
         justifyContent='space-between'
-        bg='white'
+        bg={ALTAVIA_COLORS.primary}
         width={{ base: '100vw', md: '100vw' }}
         marginX={{ base: '', md: 'auto' }}
       >
@@ -62,53 +64,74 @@ export const Navbar = (props: INavbar) => {
           alignItems='center'
           justifyContent='center'
         >
-          <Link href={APP_ROUTES.home} title='Constroad | Planta de asfalto' _hover={{ textDecoration: 'none' }}>
-            <Flex w='fit-content' h={{base: '65px', md:'90px'}} rounded='6px' justifyContent='center' alignItems='center' flexDir={{ base: 'row', md: 'column'}} gap={{ base: '6px', md: '0px' }}>
-              <Image src='/constroad.jpeg' width={{ base: '26px', md: '32px' }} h={{ base: '26px', md: '32px' }} alt='constroad-logo' rounded='4px' />
-              <Text className='font-logo' fontWeight={650} fontSize={{ base: 25, md: 30 }} lineHeight={{ base: '25px', md: '30px' }} textAlign='end' pt={{base: '8px', md: '5px'}}>
-                ConstRoad
-              </Text>
-              {isDesktop && (
-                <Text className='font-logo' fontWeight={650} fontSize={16} lineHeight='16px' textAlign='center' textDecoration='none' color={CONSTROAD_COLORS.darkYellow} h='10p'>
-                  Planta de Asfalto
-                </Text>
-              )}
+          <Link href={APP_ROUTES.home} title='Altavía Perú | Transporte de carga' _hover={{ textDecoration: 'none' }}>
+            <Flex
+              w='fit-content'
+              h={{base: '65px', md:'90px'}}
+              rounded='6px'
+              justifyContent='center'
+              alignItems='center'
+              flexDir={{ base: 'row', md: 'column'}}
+              gap={{ base: '6px', md: '0px' }}
+              mt='20px'
+            >
+              <Image
+                alt="Logo de Altavia"
+                h={{base: '65px', md:'90px'}}
+                w={{base: '65px', md:'120px'}}
+                src='/img/logos/logo-nobg-white.png'
+              />
             </Flex>
           </Link>
 
         </Flex>
 
-        <Flex as='ul' gap={1} display={{ base: 'none', md: 'flex' }} alignItems='end' height={{base: '65px', md: '90px'}} className='font-logo' fontWeight={600}>
+        <Flex
+          as='ul'
+          gap={1}
+          display={{ base: 'none', md: 'flex' }}
+          alignItems='end'
+          height={{base: '65px', md: '90px'}}
+          className='font-logo'
+          fontWeight={600}
+        >
 
           {GenerateNavOptions().map(opt => (
-            <Box
-              as='li'
-              key={opt.label}
-              fontWeight={600}
-              display='flex'
-              justifyContent='center'
-              alignItems='end'
-              paddingBottom='10px'
-              paddingX={5}
-              height='50px'
-              color='black'
-              position='relative'
-              roundedTop='4px'
-              _hover={{
-                background: '#feb100',
-                color: 'white',
-                cursor: 'pointer',
-              }}
-              className={
-                path === opt.path ||
-                path.includes(APP_ROUTES.nosotros) && opt.path.includes(APP_ROUTES.nosotros) ||
-                path.includes(APP_ROUTES.servicios) && opt.path.includes(APP_ROUTES.servicios) ?
-                'bg-[#feb100] !text-white hover:text-white' : ''
-              }
-              onMouseEnter={() => props.handleEnterMouse(opt.label)}
-              onMouseLeave={props.handleLeaveMouse}
-              onClick={() => menuItemClick(opt)}
-            >
+          <Box
+            as="li"
+            key={opt.label}
+            fontWeight={600}
+            display="flex"
+            justifyContent="center"
+            alignItems="end"
+            paddingBottom="10px"
+            paddingX={5}
+            height="50px"
+            color={
+              path === opt.path ||
+              (path.includes(APP_ROUTES.nosotros) && opt.path.includes(APP_ROUTES.nosotros)) ||
+              (path.includes(APP_ROUTES.servicios) && opt.path.includes(APP_ROUTES.servicios))
+                ? 'white'
+                : 'white'
+            }
+            bg={
+              path === opt.path ||
+              (path.includes(APP_ROUTES.nosotros) && opt.path.includes(APP_ROUTES.nosotros)) ||
+              (path.includes(APP_ROUTES.servicios) && opt.path.includes(APP_ROUTES.servicios))
+                ? ALTAVIA_COLORS.darkPrimary
+                : 'transparent'
+            }
+            _hover={{
+              background: ALTAVIA_COLORS.darkPrimary,
+              color: 'white',
+              cursor: 'pointer',
+            }}
+            position="relative"
+            borderTopRadius="4px"
+            onMouseEnter={() => props.handleEnterMouse(opt.label)}
+            onMouseLeave={props.handleLeaveMouse}
+            onClick={() => menuItemClick(opt)}
+          >
               <Flex alignItems='center' gap='2px'>
                 <Text>
                   {opt.label}
@@ -129,7 +152,7 @@ export const Navbar = (props: INavbar) => {
                   left='0px'
                   flexDir='column'
                   gap='1px'
-                  paddingY='1px'
+                  // paddingY='1px'
                   background='white'
                   width='180px'
                   visibility={props.isHoverButton ? 'visible' : 'hidden'}
@@ -145,16 +168,16 @@ export const Navbar = (props: INavbar) => {
                 >
                   {serviciosOptions.map(sopt => (
                     <Flex
-                      as='li'
+                      as="li"
                       key={sopt.label}
-                      color='black'
-                      paddingX={5}
-                      paddingY={2}
-                      cursor='pointer'
-                      alignItems='center'
-                      className={ path.includes(sopt.path) ? 'bg-[#feb100]' : 'text-black' }
+                      color={path.includes(sopt.path) ? 'white' : ALTAVIA_COLORS.primary}
+                      bg={path.includes(sopt.path) ? ALTAVIA_COLORS.primary : 'transparent'}
+                      px={5}
+                      py={2}
+                      cursor="pointer"
+                      alignItems="center"
                       _hover={{
-                        background: '#feb100',
+                        background: ALTAVIA_COLORS.primary,
                         color: 'white',
                       }}
                       onClick={(e) => {
@@ -172,7 +195,7 @@ export const Navbar = (props: INavbar) => {
 
         </Flex>
 
-        <Flex display={{ base: 'block', md: 'none' }} textColor='black'>
+        <Flex display={{ base: 'block', md: 'none' }} color="black">
           <Button paddingX='4px' paddingY='2px' onClick={(e) => props.handleMobileMenuClick(e)} backgroundColor='white'>
             {props.showMobileOptions ? <HideMenuMobileIcon fontSize={26}/> : <ShowMenuMobileIcon fontSize={26}/>}
           </Button>

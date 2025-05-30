@@ -1,17 +1,23 @@
 {
-  "name": "constroad-web",
+  "name": "altavia-web",
   "version": "0.1.0",
   "private": true,
   "scripts": {
     "debug": "NODE_OPTIONS='--inspect' next dev",
-    "dev": "next dev -p 8080",
+    "dev": "next dev -p 3010",
     "build": "next build",
     "start": "next start",
     "lint": "next lint"
   },
   "dependencies": {
-    "@chakra-ui/react": "^2.8.2",
-    "@emotion/react": "^11.11.1",
+    "@chakra-ui/form-control": "^2.2.0",
+    "@chakra-ui/layout": "^2.3.1",
+    "@chakra-ui/react": "^3.19.1",
+    "@chakra-ui/react-types": "^2.0.6",
+    "@chakra-ui/react-use-merge-refs": "^2.1.0",
+    "@chakra-ui/styled-system": "^2.12.0",
+    "@chakra-ui/system": "^2.6.2",
+    "@emotion/react": "^11.14.0",
     "@emotion/styled": "^11.11.0",
     "@hookform/resolvers": "^3.9.0",
     "@react-three/drei": "^9.102.3",
@@ -28,7 +34,7 @@
     "leaflet": "^1.9.4",
     "lodash": "^4.17.21",
     "mongoose": "^8.1.2",
-    "next": "^14.0.1",
+    "next": "^15.3.0",
     "next-auth": "^4.24.5",
     "next-connect": "^1.0.0-next.4",
     "nodemailer": "^6.9.8",
@@ -60,11 +66,8 @@
     "@types/react-dom": "^18",
     "@types/react-slick": "^0.23.13",
     "@types/three": "^0.162.0",
-    "autoprefixer": "^10.0.1",
     "eslint": "^8",
-    "eslint-config-next": "14.0.1",
-    "postcss": "^8",
-    "tailwindcss": "^3.3.0",
+    "eslint-config-next": "^15.3.0",
     "typescript": "^5"
   }
 }

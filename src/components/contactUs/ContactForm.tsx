@@ -1,7 +1,9 @@
 import React, { ChangeEvent } from 'react'
-import { Button, Flex, FormControl, FormLabel, Input, Text, Textarea, VStack } from '@chakra-ui/react'
+import { Button, Flex, Input, Text, Textarea } from '@chakra-ui/react'
+import { FormControl, FormLabel } from '@chakra-ui/form-control'
+import { VStack } from '@chakra-ui/layout'
 import { ContactFormType } from './utils';
-import { CONSTROAD_COLORS } from 'src/styles/shared';
+// import { CONSTROAD_COLORS } from 'src/styles/shared';
 
 type ContactFormProps = {
   user: ContactFormType;
@@ -129,7 +131,7 @@ export const ContactForm = (props: ContactFormProps) => {
 
       <Button
         type="submit"
-        isLoading={isLoading}
+        loading={isLoading}
         loadingText="Enviando"
         colorScheme='orange'
         size='sm'

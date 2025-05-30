@@ -36,10 +36,10 @@ export const serviciosOptions = [
 ]
 
 export const carouselImages = [
-  {label: 'planta-de-asfalto-constroad', url: 'url(/img/carousel/presentacion.png)'},
-  {label: 'produccion-asfalto-dia', url: 'url(/img/carousel/produccion-dia.png)'},
-  {label: 'produccion-asfalto-madrugada', url: 'url(/img/carousel/produccion-madrugada.png)'},
-  {label: 'produccion-asfalto-noche', url: 'url(/img/carousel/produccion-noche.png)'},
+  {labe: 'img0', url: 'url(/img/carousel/img0.png)'},
+  {labe: 'img2', url: 'url(/img/carousel/img2.png)'},
+  {labe: 'img3', url: 'url(/img/carousel/img3.png)'},
+  {labe: 'img1', url: 'url(/img/carousel/img1.png)'},
 ]
 
 export const clientsImages = [

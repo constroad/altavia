@@ -9,3 +9,13 @@ export const CONSTROAD_COLORS = {
   bgPDF: '#525659',
   black: '#1D1E23',
 }
+
+
+export const ALTAVIA_COLORS = {
+  primary: '#0F5C3D',
+  lightPrimary: '#14724C',
+  darkPrimary: '#093D27',
+  secundary: '#fff',
+  black: '#000',
+  textColor: '#707070',
+}

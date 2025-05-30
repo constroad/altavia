@@ -44,13 +44,12 @@ export const API_ROUTES = {
   notificationWhatsApp: '/api/notifications/whatsapp',
 }
 
-export const CONSTROAD = {
+export const ALTAVIA = {
   companyName: 'RJZ CONSTRUCTORES S.A.C',
   ruc: '20612003905',
-  email: process.env.EMAIL,
-  web: 'constroad.com',
-  phoneCarin: '907 579 704',
-  phoneJose: '949 376 824',
+  // email: process.env.EMAIL,
+  web: 'altaviaperu.com',
+  phone: '949 376 824',
   address: 'AV. MARIANO MELGAR LOTE. 9E DPTO. 301 URB. MARIANO MELGAR - LIMA - LIMA - ATE',
 }
 

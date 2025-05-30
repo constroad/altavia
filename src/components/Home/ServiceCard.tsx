@@ -1,8 +1,9 @@
 import React from 'react'
 import { Button, Flex, Text } from '@chakra-ui/react'
 import { useScreenSize } from 'src/common/hooks'
-import { useRouter } from 'next/router'
-import { CONSTROAD_COLORS } from 'src/styles/shared'
+import { useRouter } from 'next/navigation'
+import { ALTAVIA_COLORS, CONSTROAD_COLORS } from 'src/styles/shared'
+import { ALTAVIA } from 'src/common/consts'
 
 interface ServiceCardProps {
   service: any
@@ -16,7 +17,7 @@ export const ServiceCard = (props: ServiceCardProps) => {
   return (
     <Flex
       w='100%'
-      h={{ base: '230px', md: '270px' }}
+      h={{ base: '230px', md: '250px' }}
       _hover={{
         '& > .child1': {
           width: '60%',
@@ -32,11 +33,12 @@ export const ServiceCard = (props: ServiceCardProps) => {
           transition: 'clip-path 0.5s',
         },
       }}
-      rounded='20px'
+      rounded='10px'
       overflow='hidden'
       position='relative'
       justifyContent='end'
       className='font-logo'
+      border={`2px solid ${ALTAVIA_COLORS.primary}`}
     >
        <Flex
         w={{ base: '60%', md: '40%' }}
@@ -69,6 +71,7 @@ export const ServiceCard = (props: ServiceCardProps) => {
           _hover={{ color: 'black', bg: 'white' }}
           onClick={() => router.push(service.redirect)}
           fontSize={{ base: 14, md: 16 }}
+          fontWeight={600}
           pt='5px'
         >
           Ver más...
@@ -88,7 +91,8 @@ export const ServiceCard = (props: ServiceCardProps) => {
         <Flex
           className='child3'
           position='absolute'
-          bg={CONSTROAD_COLORS.darkYellow}
+          bg={ALTAVIA_COLORS.primary}
+          color='white'
           fontWeight={600}
           rounded='10px'
           py='5px'

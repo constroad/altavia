@@ -1,11 +1,11 @@
-import { Flex, IconButton, Text } from "@chakra-ui/react";
+import { Button, Flex, IconButton, Text } from "@chakra-ui/react";
 import { APP_ROUTES } from "src/common/consts";
 import { LocationIcon, MailIcon, RoadIcon, WhatsAppIcon } from "src/common/icons";
 import { FooterLink } from './FooterLink';
 import { SiNintendogamecube } from "react-icons/si";
 import { LuPaintbrush } from "react-icons/lu";
 import { MdFactory } from "react-icons/md";
-import { useRouter } from "next/router";
+import { usePathname, useRouter } from 'next/navigation'
 import { useScreenSize } from "src/common/hooks";
 import { SiFacebook } from "react-icons/si";
 import { AiFillInstagram } from "react-icons/ai";
@@ -13,10 +13,12 @@ import { HiHome } from "react-icons/hi2";
 import { FaPeopleGroup } from "react-icons/fa6";
 import { BsMailbox2 } from "react-icons/bs";
 import { TbLogin2 } from "react-icons/tb";
+import { CustomIconButton } from "src/components/CustomIconButton";
 
 const Footer = () => {
   const { isMobile } = useScreenSize()
   const router = useRouter()
+  const path = usePathname() as string
   const currentDate = new Date()
   const currentYear = currentDate.getFullYear();
 
@@ -31,9 +33,9 @@ const Footer = () => {
       justifyContent='space-between'
       width='100%'
       background='#3b3b3b'
-      minHeight={router.pathname === '/' ? '650px' : '249px'}
+      minHeight={path === '/' ? '650px' : '249px'}
     >
-      {router.pathname === '/' && (
+      {path === '/' && (
         <Flex
           width={{ base: '100%', md: '100%' }}
           justifyContent={{ base: 'center', md: 'center' }}
@@ -146,7 +148,13 @@ const Footer = () => {
 
             <Flex marginTop='5px' gap={2} alignItems='center'>
               <MailIcon fontSize={ isMobile ? 20 : 22 } />
-              <Text className='w-[100%] text-justify font-[600] font-logo' fontSize={{ base: 14, md: 16 }}>
+              <Text
+                w="100%"
+                textAlign="justify"
+                fontWeight={600}
+                fontFamily="logo"
+                fontSize={{ base: "14px", md: "16px" }}
+              >
                 administracion@constroad.com
               </Text>
             </Flex>
@@ -161,32 +169,42 @@ const Footer = () => {
           </Flex>
         </Flex>
 
-        <Flex w='100%' gap={{ base: '5px', md: '15px' }} left='0px' zIndex={30} h='30px' position='absolute' bottom={{ base: '50px', md: '45px' }} justifyContent='start' alignItems='center' px={{ base: '20px', md: '112px' }}>
-          <IconButton
-            display='flex'
-            justifyContent='center'
-            w={{ base: '30px', md: '40px' }}
+        <Flex
+          w='100%'
+          gap={{ base: '5px', md: '15px' }}
+          left='0px'
+          zIndex={30}
+          h='30px'
+          position='absolute'
+          bottom={{ base: '50px', md: '45px' }}
+          justifyContent='start'
+          alignItems='center'
+          px={{ base: '20px', md: '112px' }}
+        >
+          <CustomIconButton
+            icon={<SiFacebook fontSize={isMobile ? 20 : 24} />}
             aria-label="Ir a nuestra página de Facebook"
-            icon={<SiFacebook fontSize={ isMobile ? 20 : 24 } />}
             onClick={() => openNewPage('https://facebook.com/constroad/')}
-            variant='unstyled'
+            variant="plain"
+            size="sm"
           />
-          <IconButton
-            display='flex'
-            justifyContent='center'
+
+          <CustomIconButton
+            icon={<AiFillInstagram fontSize={isMobile ? 26 : 30} color="#1A202C" />}
             aria-label="Ir a nuestra página de Instagram"
-            icon={<AiFillInstagram fontSize={ isMobile ? 26 : 30 } color="gray.900" />}
             onClick={() => openNewPage('https://instagram.com/asfaltoconstroad/')}
-            variant='unstyled'
+            variant="plain"
+            size="sm" // o "md", dependiendo de lo que configuraste en tu sizeMap
           />
-          <IconButton
-            display='flex'
-            justifyContent='center'
-            aria-label="Ir a nuestra página de Instagram"
-            icon={<WhatsAppIcon fontSize={ isMobile ? 22 : 26 } color="gray.900" />}
+
+          <CustomIconButton
+            icon={<WhatsAppIcon fontSize={isMobile ? 22 : 26} color="gray.900" />}
+            aria-label="Ir a nuestra página de WhatsApp"
             onClick={() => openNewPage('https://api.whatsapp.com/send?phone=51949376824')}
-            variant='unstyled'
+            variant="plain"
+            size="sm" // o "md", dependiendo de lo que hayas mapeado en `sizeMap`
           />
+
         </Flex>
 
         <Flex

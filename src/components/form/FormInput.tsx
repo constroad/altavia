@@ -1,5 +1,8 @@
 import React from 'react'
-import { FormControl, FormLabel, Input, Text } from '@chakra-ui/react'
+
+import { FormControl, FormLabel } from '@chakra-ui/form-control'
+import { Input } from '@chakra-ui/input'
+import { Text } from '@chakra-ui/react' // este sí se queda
 
 interface FormInputProps {
   id: string;

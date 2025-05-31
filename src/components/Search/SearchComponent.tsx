@@ -1,5 +1,7 @@
 import React, { useEffect, useState } from 'react'
-import { Box, Flex, Input, InputGroup, InputLeftElement, ListItem, Text, UnorderedList } from '@chakra-ui/react';
+import { Box, Flex, Text } from '@chakra-ui/react';
+import { Input, InputGroup, InputLeftElement } from '@chakra-ui/input'
+import { UnorderedList, ListItem } from '@chakra-ui/layout'
 import { SearchIcon } from 'src/common/icons';
 import { CONSTROAD_COLORS } from 'src/styles/shared';
 

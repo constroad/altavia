@@ -1,5 +1,10 @@
-import React, { useState } from 'react';
-import { Select, Input, Box, Text, Flex, FormControl, FormLabel } from '@chakra-ui/react';
+import React, { useState } from 'react'
+
+import { Input } from '@chakra-ui/input'
+import { FormControl, FormLabel } from '@chakra-ui/form-control'
+import { Box, Text, Flex } from '@chakra-ui/react'
+import { Select } from '@chakra-ui/select'
+
 
 type OptionType = {
   label: string;

@@ -52,6 +52,15 @@ export const ALTAVIA = {
   phone: '949 376 824',
   address: 'AV. MARIANO MELGAR LOTE. 9E DPTO. 301 URB. MARIANO MELGAR - LIMA - LIMA - ATE',
 }
+export const CONSTROAD = {
+  companyName: 'RJZ CONSTRUCTORES S.A.C',
+  ruc: '20612003905',
+  email: process.env.EMAIL,
+  web: 'altaviaperu.com',
+  phoneJose: '949 376 824',
+  phoneCarin: '949 376 824',
+  address: 'AV. MARIANO MELGAR LOTE. 9E DPTO. 301 URB. MARIANO MELGAR - LIMA - LIMA - ATE',
+}
 
 export const PDF_TEMPLATE = {
   cotizacion: {

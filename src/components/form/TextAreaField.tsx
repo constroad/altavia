@@ -1,11 +1,9 @@
 import React from 'react';
 import {
-  FormControl,
-  FormErrorMessage,
-  FormLabel,
   Textarea,
 } from '@chakra-ui/react';
 import { useFormContext, Controller } from 'react-hook-form';
+import { FormControl, FormLabel, FormErrorMessage } from '@chakra-ui/form-control'
 
 interface TextAreaFieldProps {
   name: string;

@@ -1,10 +1,6 @@
 import React from 'react';
-import {
-  FormControl,
-  FormErrorMessage,
-  FormLabel,
-  Checkbox,
-} from '@chakra-ui/react';
+import { FormControl, FormLabel, FormErrorMessage } from '@chakra-ui/form-control'
+import { Checkbox } from '@chakra-ui/checkbox'
 import { useFormContext, Controller } from 'react-hook-form';
 
 interface CheckboxFieldProps {

@@ -1,7 +1,5 @@
 import React, { PropsWithChildren } from 'react'
 import {
-  Button,
-  Flex,
   Modal as ModalChakra,
   ModalBody,
   ModalCloseButton,
@@ -9,6 +7,11 @@ import {
   ModalFooter,
   ModalHeader,
   ModalOverlay,
+} from '@chakra-ui/modal'
+
+import {
+  Button,
+  Flex,
 } from '@chakra-ui/react'
 
 export type ModalProps = PropsWithChildren & {

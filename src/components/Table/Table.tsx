@@ -1,17 +1,21 @@
 import {
+  Button,
+  Flex,
+  Box,
+  Text,
+} from '@chakra-ui/react';
+
+import { CircularProgress } from '@chakra-ui/progress'
+import {
   Table,
   Thead,
   Tbody,
   Tr,
   Th,
   Td,
-  Button,
-  Flex,
-  CircularProgress,
-  Box,
-  Text,
   TableProps,
-} from '@chakra-ui/react';
+} from '@chakra-ui/table'
+
 import { SortColumnStatus, TableColumn, TableData } from './TableTypes';
 import { CONSTROAD_COLORS } from 'src/styles/shared';
 import { EditIcon, ShareIcon, TrashIcon } from 'src/common/icons';
@@ -202,19 +206,12 @@ export const TableComponent = (props: Props) => {
               >
                 {columns.map((column, idx) => (
                   <Td
-                    //@ts-ignore
                     key={`item-${column.key}-${idx}`}
-                    maxWidth={column.width}
-                    width={column.width}
-                    p={0}
-                    m={0}
-                    px={{ base: 1.5, md: 2 }}
-                    py={0}
-                    height="max-content"
-                    textAlign={column.textAlign ?? 'start'}
-                    paddingInlineStart={0}
-                    paddingInlineEnd={0}
-                    {...column.tdStyles}
+                    maxWidth={column.width as any}
+                    width={column.width as any}
+                    height={"max-content" as any}
+                    textAlign={(column.textAlign ?? 'start') as any}
+                    {...column.tdStyles as any}
                   >
                     {column.render
                       ? column.render(row[column.key], row)

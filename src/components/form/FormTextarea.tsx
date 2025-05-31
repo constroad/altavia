@@ -1,6 +1,7 @@
 import React from 'react'
-import { FormControl, FormLabel, Text, Textarea } from '@chakra-ui/react'
+import { Text, Textarea } from '@chakra-ui/react'
 import { useScreenSize } from 'src/common/hooks';
+import { FormControl, FormLabel } from '@chakra-ui/form-control'
 
 interface FormTextareaProps {
   id: string;

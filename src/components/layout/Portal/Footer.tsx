@@ -85,22 +85,22 @@ const Footer = () => {
               SERVICIOS
             </Text>
             <FooterLink
-              href={APP_ROUTES.servicios + APP_ROUTES.mezclaAsfaltica}
+              href={APP_ROUTES.servicios + APP_ROUTES.transporteCargaGeneral}
               label="Transporte de carga general"
               icon={<SiNintendogamecube fontSize={ isMobile ? 20 : 22} color='white' />}
             />
             <FooterLink
-              href={APP_ROUTES.servicios + APP_ROUTES.colocacionAsfaltica}
+              href={APP_ROUTES.servicios + APP_ROUTES.transporteInterprovincial}
               label="Transporte interprovincial"
               icon={<RoadIcon fontSize={ isMobile ? 20 : 22} color='white' />}
             />
             <FooterLink
-              href={APP_ROUTES.servicios + APP_ROUTES.senalizacionVial}
-              label="Transporte de carga complete"
-              icon={<LuPaintbrush fontSize={ isMobile ? 20 : 22} color='white' />}
+              href={APP_ROUTES.servicios + APP_ROUTES.transporteCargaCompleta}
+              label="Transporte de carga completa"
+              icon={<SiNintendogamecube fontSize={ isMobile ? 20 : 22} color='white' />}
             />
             <FooterLink
-              href={APP_ROUTES.servicios + APP_ROUTES.alquilerPlanta}
+              href={APP_ROUTES.servicios + APP_ROUTES.transporteCargaSobredimensionada}
               label="Transporte de carga sobredimensionada"
               icon={<MdFactory fontSize={ isMobile ? 20 : 22} color='white' />}
             />
@@ -125,11 +125,11 @@ const Footer = () => {
               label="Contáctanos"
               icon={<BsMailbox2 fontSize={ isMobile ? 20 : 22} color='white' />}
             />
-            <FooterLink
+            {/* <FooterLink
               href={APP_ROUTES.login}
               label="Iniciar sesión"
               icon={<TbLogin2 fontSize={ isMobile ? 20 : 22} color='white' />}
-            />
+            /> */}
           </Flex>
 
           <Flex
@@ -171,7 +171,7 @@ const Footer = () => {
             <FooterLink
               href='https://api.whatsapp.com/send?phone=51949376824'
               label="949 376 824"
-              icon={<WhatsAppIcon fontSize={ isMobile ? 20 : 22 } />}
+              icon={<WhatsAppIcon fontSize={ isMobile ? 20 : 22 } color="white" />}
               target="_blank"
             />
 

@@ -5,10 +5,10 @@ import nodemailer from 'nodemailer';
 
 export default async function handler(req: NextApiRequest, res: NextApiResponse) {
   if (req.method === 'POST') {
-    const { email, name, message, phone, nroCubos, companyName, ruc } = req.body;
+    const { email, name, message, phone, companyName, ruc, startCity, endCity } = req.body;
 
     const phoneNumber = phone === '' ? '- - -' : phone
-    const cubos = nroCubos === '' ? '1' : nroCubos
+    // const cubos = nroCubos === '' ? '1' : nroCubos
     const Ruc = ruc === '' ? '- - -' : ruc
     const company = companyName === '' ? '- - -' : companyName
 
@@ -19,10 +19,11 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     <strong>Nombre:</strong> ${name}<br>
     <strong>Razón social:</strong> ${company}<br>
     <strong>RUC:</strong> ${Ruc}<br><br>
-    <strong>Nro. cubos:</strong> ${cubos}<br>
     <strong>Mensaje:</strong> ${message}<br><br>
     <strong>Correo electrónico:</strong> ${email}<br>
     <strong>Teléfono:</strong> ${phoneNumber}<br>
+    <strong>Ciudad de partida:</strong> ${startCity}<br>
+    <strong>Ciudad de destino:</strong> ${endCity}<br>
   </body>
 </html>
 `;

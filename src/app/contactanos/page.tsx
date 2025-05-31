@@ -27,9 +27,11 @@ const Contactanos = () => {
       ruc: formData.ruc,
       message: formData.message,
       phone: formData.phone,
-      nroCubos: formData.nroCubos,
-      unitPrice: '',
-      nroQuote: ''
+      startCity: formData.startCity,
+      endCity: formData.endCity,
+      // nroCubos: formData.nroCubos,
+      // unitPrice: '',
+      // nroQuote: ''
     }
     await run( postEmail( API_ROUTES.sendEmail, data ) )
 
@@ -103,7 +105,7 @@ const Contactanos = () => {
               <Text className='font-logo' fontSize={20} fontWeight={600} >Correo</Text>
               <Flex mb='5px'><MailIcon color={CONSTROAD_COLORS.darkOrange} /></Flex>
             </Flex>
-            <Text className='font-logo' fontSize={14} fontWeight={300} lineHeight={{ base: '12px', md: '15px' }}>administracion@constroad.com</Text>
+            <Text className='font-logo' fontSize={14} fontWeight={300} lineHeight={{ base: '12px', md: '15px' }}>administracion@altaviaperu.com</Text>
           </Flex>
 
           <Flex w={{ base: '100%', md: '25%' }} p='10px' borderRight={{ base: 'none', md: '1px solid #e2e8f0' }} flexDir='column' justifyContent=''>
@@ -111,7 +113,7 @@ const Contactanos = () => {
               <Text className='font-logo' fontSize={20} fontWeight={600} >Teléfono</Text>
               <Flex mb='5px'><WhatsAppIcon color={CONSTROAD_COLORS.darkOrange} /></Flex>
             </Flex>
-            <Text className='font-logo' fontSize={14} fontWeight={300} lineHeight={{ base: '12px', md: '15px' }}>994 173 962</Text>
+            <Text className='font-logo' fontSize={14} fontWeight={300} lineHeight={{ base: '12px', md: '15px' }}>949 376 824 | 902 049 935</Text>
           </Flex>
 
           <Flex w={{ base: '100%', md: '25%' }} p='10px' borderRight={{ base: 'none', md: '1px solid #e2e8f0' }} flexDir='column' justifyContent=''>

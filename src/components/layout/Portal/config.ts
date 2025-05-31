@@ -29,10 +29,10 @@ export const nosotrosOptions = [
 ]
 
 export const serviciosOptions = [
-  {label: 'Mezcla asfáltica en caliente', path: APP_ROUTES.mezclaAsfaltica},
-  {label: 'Colocación de mezcla asfáltica', path: APP_ROUTES.colocacionAsfaltica},
-  {label: 'Señalización vial', path: APP_ROUTES.senalizacionVial},
-  {label: 'Alquiler de planta de asfalto', path: APP_ROUTES.alquilerPlanta},
+  {label: 'Transporte de carga general', path: APP_ROUTES.transporteCargaGeneral},
+  {label: 'Transporte interprovincial', path: APP_ROUTES.transporteInterprovincial},
+  {label: 'Transporte de carga completa', path: APP_ROUTES.transporteCargaCompleta},
+  {label: 'Transporte de carga sobredimensionada', path: APP_ROUTES.transporteCargaSobredimensionada},
 ]
 
 export const carouselImages = [

@@ -19,9 +19,7 @@ import {
   clientsImages,
 } from 'src/components/layout/Portal/config'
 import { useScreenSize } from 'src/common/hooks'
-import { SiNintendogamecube } from "react-icons/si";
 import { ALTAVIA_COLORS } from 'src/styles/shared'
-import { ALTAVIA } from '../common/consts';
 
 export default function HomePageContent() {
   const [showArrow, setShowArrow] = useState(true)
@@ -132,7 +130,7 @@ export default function HomePageContent() {
                   marginTop={{ base: '20px', md: '12px' }}
                 >
                   <Image
-                    src='/img/web/quienessomos.png'
+                    src='/img/web/quienessomos2.png'
                     rounded='10px'
                     border={`2px solid ${ALTAVIA_COLORS.lightPrimary}`}
                     alt='quienes-somos-logo'

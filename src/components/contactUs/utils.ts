@@ -5,7 +5,9 @@ export type ContactFormType = {
   ruc?: string,
   message?: string,
   phone?: string,
-  nroCubos?: string,
+  // nroCubos?: string,
+  startCity?: string,
+  endCity?: string,
 }
 
 export const initialContactForm: ContactFormType = {
@@ -15,5 +17,7 @@ export const initialContactForm: ContactFormType = {
   ruc: '',
   message: '',
   phone: '',
-  nroCubos: '',
+  // nroCubos: '',
+  startCity: '',
+  endCity: '',
 }

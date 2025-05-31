@@ -12,6 +12,7 @@
   "dependencies": {
     "@chakra-ui/form-control": "^2.2.0",
     "@chakra-ui/layout": "^2.3.1",
+    "@chakra-ui/modal": "^2.3.1",
     "@chakra-ui/react": "^3.19.1",
     "@chakra-ui/react-types": "^2.0.6",
     "@chakra-ui/react-use-merge-refs": "^2.1.0",

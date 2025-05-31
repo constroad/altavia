@@ -14,6 +14,7 @@ import { FaPeopleGroup } from "react-icons/fa6";
 import { BsMailbox2 } from "react-icons/bs";
 import { TbLogin2 } from "react-icons/tb";
 import { CustomIconButton } from "src/components/CustomIconButton";
+import { ALTAVIA_COLORS } from "src/styles/shared";
 
 const Footer = () => {
   const { isMobile } = useScreenSize()
@@ -43,9 +44,9 @@ const Footer = () => {
           alignItems='center'
         >
           <iframe
+            style={{ width: '100%' }} // ✅ reemplaza className
             className='w-full'
             src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3902.784458000577!2d-76.87262702479192!3d-11.989411040835808!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x9105c300705538cf%3A0xdb0d06d91ffcf2a3!2sconstroad!5e0!3m2!1ses-419!2spe!4v1709245188866!5m2!1ses-419!2spe"
-            width="600"
             height="400"
             loading="lazy"
           />
@@ -61,39 +62,47 @@ const Footer = () => {
         justifyContent={{ base: 'center', md: 'space-between' }}
         alignItems={{ base: 'center' }}
         gap={{ base: '10px' }}
-        backgroundImage='url(/img/proyects/estadisticas.png)'
+        backgroundImage='url(/img/carousel/img3.png)'
         backgroundSize="cover"
         backgroundPosition='center'
         backgroundRepeat="no-repeat"
         pb='15px'
         position='relative'
       >
-        <Flex bg='gray.800' w='100%' h='100%' opacity={0.8} zIndex={10} position='absolute' top='0' left='0'></Flex>
+        <Flex bg={ALTAVIA_COLORS.darkPrimary} w='100%' h='100%' opacity={0.8} zIndex={10} position='absolute' top='0' left='0'></Flex>
 
         <Flex flexDir={{ base: 'column', md: 'row' }} w='100%' justifyContent={{ base: 'start', md: 'space-between' }} pb='40px' h={{ base: 'calc(100vh - 105px)', md: '263px' }}>
           <Flex flexDir='column' width={{ base: '100%', md: 'fit-content' }} paddingX={{ base: '30px', md: '0px' }} zIndex={20}>
-            <Text borderBottom='2px solid #feb100' width='min-content' marginX={{ base: '0px', md: '0px' }} marginBottom='5px' className="font-logo" fontWeight={900} fontSize={{ base: 18, md: 20 }}>
+            <Text
+              borderBottom={`2px solid ${ALTAVIA_COLORS.lightPrimary} `}
+              width='min-content'
+              marginX={{ base: '0px', md: '0px' }}
+              marginBottom='5px'
+              className="font-logo"
+              fontWeight={900}
+              fontSize={{ base: 18, md: 20 }}
+            >
               SERVICIOS
             </Text>
             <FooterLink
               href={APP_ROUTES.servicios + APP_ROUTES.mezclaAsfaltica}
-              label="Mezcla asfáltica en caliente"
-              icon={<SiNintendogamecube fontSize={ isMobile ? 20 : 22} />}
+              label="Transporte de carga general"
+              icon={<SiNintendogamecube fontSize={ isMobile ? 20 : 22} color='white' />}
             />
             <FooterLink
               href={APP_ROUTES.servicios + APP_ROUTES.colocacionAsfaltica}
-              label="Colocación de mezcla asfáltica"
-              icon={<RoadIcon fontSize={ isMobile ? 20 : 22} />}
+              label="Transporte interprovincial"
+              icon={<RoadIcon fontSize={ isMobile ? 20 : 22} color='white' />}
             />
             <FooterLink
               href={APP_ROUTES.servicios + APP_ROUTES.senalizacionVial}
-              label="Señalización vial"
-              icon={<LuPaintbrush fontSize={ isMobile ? 20 : 22} />}
+              label="Transporte de carga complete"
+              icon={<LuPaintbrush fontSize={ isMobile ? 20 : 22} color='white' />}
             />
             <FooterLink
               href={APP_ROUTES.servicios + APP_ROUTES.alquilerPlanta}
-              label="Alquiler de planta de asfalto"
-              icon={<MdFactory fontSize={ isMobile ? 20 : 22} />}
+              label="Transporte de carga sobredimensionada"
+              icon={<MdFactory fontSize={ isMobile ? 20 : 22} color='white' />}
             />
           </Flex>
 
@@ -104,22 +113,22 @@ const Footer = () => {
             <FooterLink
               href={APP_ROUTES.home}
               label="Inicio"
-              icon={<HiHome fontSize={ isMobile ? 20 : 22} />}
+              icon={<HiHome fontSize={ isMobile ? 20 : 22} color='white' />}
             />
             <FooterLink
               href={APP_ROUTES.nosotros}
               label="Nosotros"
-              icon={<FaPeopleGroup fontSize={ isMobile ? 20 : 22} />}
+              icon={<FaPeopleGroup fontSize={ isMobile ? 20 : 22} color='white' />}
             />
             <FooterLink
               href={APP_ROUTES.contactanos}
               label="Contáctanos"
-              icon={<BsMailbox2 fontSize={ isMobile ? 20 : 22} />}
+              icon={<BsMailbox2 fontSize={ isMobile ? 20 : 22} color='white' />}
             />
             <FooterLink
               href={APP_ROUTES.login}
               label="Iniciar sesión"
-              icon={<TbLogin2 fontSize={ isMobile ? 20 : 22} />}
+              icon={<TbLogin2 fontSize={ isMobile ? 20 : 22} color='white' />}
             />
           </Flex>
 
@@ -135,7 +144,7 @@ const Footer = () => {
             </Text>
             
             <Flex marginTop='10px' gap='8px' alignItems='top'>
-              <LocationIcon fontSize={ isMobile ? 20 : 22} className="mt-[8px]"/>
+              <LocationIcon fontSize={ isMobile ? 20 : 22} style={{ marginTop: '8px' }}/>
               <Flex flexDir='column'>
                 <Text width='100%' fontSize={{ base: 14, md: 16 }} fontWeight={600} className="font-logo">
                   Carapongo S/N Urb. El Portillo
@@ -147,15 +156,15 @@ const Footer = () => {
             </Flex>
 
             <Flex marginTop='5px' gap={2} alignItems='center'>
-              <MailIcon fontSize={ isMobile ? 20 : 22 } />
+              <MailIcon fontSize={ isMobile ? 20 : 22 } style={{ marginTop: '-3px' }} />
               <Text
                 w="100%"
                 textAlign="justify"
                 fontWeight={600}
-                fontFamily="logo"
+                className="font-logo"
                 fontSize={{ base: "14px", md: "16px" }}
               >
-                administracion@constroad.com
+                administracion@altaviaperu.com
               </Text>
             </Flex>
 
@@ -222,7 +231,7 @@ const Footer = () => {
           zIndex={20}
           className="font-logo"
         >
-          Constroad {currentYear}  -  Todos los derechos reservados.
+          Altavía Perú {currentYear}  -  Todos los derechos reservados.
         </Flex>
       </Flex>
 

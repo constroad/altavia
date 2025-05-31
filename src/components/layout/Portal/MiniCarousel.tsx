@@ -29,7 +29,7 @@ function SampleNextArrow(props: any) {
         color: 'black',
         borderTopLeftRadius: '6px',
         borderBottomLeftRadius: '6px',
-        fontSize: 36,
+        fontSize: 60,
         cursor: 'pointer',
       }}
       onClick={onClick}
@@ -56,7 +56,7 @@ function SamplePrevArrow(props: any) {
         color: 'black',
         borderTopRightRadius: '6px',
         borderBottomRightRadius: '6px',
-        fontSize: 36,
+        fontSize: 60,
         cursor: 'pointer',
       }}
       onClick={onClick}
@@ -83,16 +83,24 @@ export const MiniCarousel = (props: CarouselProps) => {
   }
 
   return (
-    <div className='w-full relative justify-center' style={{ height: isMobile ? '90px' : '150px' }}>
+    <Box w='full' position='relative' justifyContent='center' style={{ height: isMobile ? '90px' : '150px' }}>
       <Slider {...settings}>
         {props.images.map((img, idx) => (
-          <Flex key={idx} w='100%' justifyContent='center' alignItems='center'  style={{ height: isMobile ? '150px' : '150px' }} overflow='hidden' textAlign='center'>
+          <Flex
+            key={idx}
+            w='100%'
+            justifyContent='center'
+            alignItems='center'
+            style={{ height: isMobile ? '150px' : '150px' }}
+            overflow='hidden'
+            textAlign='center'
+          >
             <Flex w='100%' mx='auto'>
               <Image alt={img.label} src={img.url} width='60%' height={{ base: '60px', md: '120px' }} />
             </Flex>
           </Flex>
         ))} 
       </Slider>
-    </div>
+    </Box>
   )
 }

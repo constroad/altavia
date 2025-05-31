@@ -17,7 +17,6 @@ import { MiniCarousel } from 'src/components/layout/Portal/MiniCarousel'
 import {
   carouselImages,
   clientsImages,
-  proyectsImages,
 } from 'src/components/layout/Portal/config'
 import { useScreenSize } from 'src/common/hooks'
 import { SiNintendogamecube } from "react-icons/si";
@@ -64,7 +63,7 @@ export default function HomePageContent() {
           <Flex
             flexDir='column'
             width={{ base: '100%', md: '100%' }}
-            h={{ base: '', md: 'calc((100vh - 90px) *2 )' }}
+            h={{ base: '', md: 'calc((100vh - 45px) *2 )' }}
             backgroundImage="url(/img/web/mision-portada2.png)"
             backgroundSize="cover"
             backgroundPosition="center"
@@ -152,16 +151,16 @@ export default function HomePageContent() {
               paddingX={{base: '30px', md: '120px'}}
               h={{ base: '', md: 'calc(100vh - 90px)' }}
             >
-              <Box mt='0px'>
+              <Box mt='10px'>
                 <SubtitleComponent text='NUESTROS SERVICIOS' />
               </Box>
 
-              <Flex w='100%' mt={{ base: '10px', md: '30px' }}>
+              <Flex w='100%' mt={{ base: '10px', md: '40px' }}>
                 <Grid
                   w='100%'
                   templateColumns={{ base: 'repeat(1, 1fr)', md: "repeat(2, 1fr)"}}
-                  columnGap={{ base: '20px', md: '40px' }}
-                  rowGap={{ base: '20px', md: '40px' }}>
+                  columnGap={{ base: '20px', md: '50px' }}
+                  rowGap={{ base: '20px', md: '50px' }}>
                   {serviciosConfig.map(item => (
                     <GridItem key={item.title}>
                       <ServiceCard service={item} />
@@ -179,7 +178,7 @@ export default function HomePageContent() {
             flexDir='column'
             mt={{ base: '40px', md: '0px' }}
             position='relative'
-            h={{ base: '420px', md: 'calc(100vh - 90px)'}}
+            h={{ base: '420px', md: 'calc(60vh)'}}
           >
             <Flex
               position='absolute'
@@ -187,8 +186,6 @@ export default function HomePageContent() {
               top='0px'
               flexDir={{ base: 'column', md: 'column' }}
               className='w-screen'
-              h={{ base: '420px', md: 'calc(100vh - 90px)' }}
-              justifyContent={{ base: 'center', md: 'space-between' }}
               gap={{ base: '10px', md: '' }}
               alignItems='start'
               px={{base: '30px', md: '120px' }}
@@ -196,97 +193,51 @@ export default function HomePageContent() {
               <Flex
                 w='100%'
                 opacity={0.9}
-                backgroundImage='url(/img/proyects/estadisticas.png)'
+                backgroundImage='url(/img/carousel/img0.png)'
                 backgroundSize="cover"
                 backgroundPosition='center'
                 backgroundRepeat="no-repeat"
                 position='absolute'
                 left='0px'
                 top='0px'
-                h={{ base: '420px', md: 'calc(100vh - 90px)' }}
+                h={{ base: '420px', md: 'calc(60vh)' }}
               >
                 <Flex w='100%' bg='gray.800' opacity={0.8} zIndex={20} h='100%'></Flex>
               </Flex>
 
-              <Box mt='60px'>
+              <Box mt='80px' >
                 <SubtitleComponent text='LOGROS DE LA EMPRESA' color='#fff' />
               </Box>
 
-              <Flex
-                border='2px solid white'
-                w={{ base: '100%', md: '370px' }}
-                zIndex={30}
-                opacity={1}
-                fontWeight={900}
-                color='white'
-                className='font-logo'
-                h='120px'
-              >
-                <Flex w='30%' justifyContent='center' alignItems='center'>
-                  <GiGears fontSize={60} color='white' />
-                </Flex>
-                <Flex flexDir='column' w='70%' justifyContent='center' alignItems='start' color='white'>
-                  <Text w='100%' textAlign='start' fontWeight={900} fontSize={30}>
-                    +117,000
-                  </Text>
-                  <Text fontSize={{ base: 18, md: 20 }}>
-                    Horas máquina trabajadas
-                  </Text>
+              <Flex w='100%' opacity={1} zIndex={100} gap='20px' flexDir='column' mt='10px'>
+                <Flex justifyContent='space-between' flexDir={{ base: 'column', md: 'row' }}>
+                  <Image rounded='5px' w='260px' h='220px' alt='nuestros clientes' src='/img/goals/clientes.png'/>
+                  <Image rounded='5px' w='260px' h='220px' alt='nuestra cobertura' src='/img/goals/cobertura.png' />
+                  <Image rounded='5px' w='260px' h='220px' alt='nuestro equipo' src='/img/goals/equipo.png'/>
+                  <Image rounded='5px' w='260px' h='220px' alt='cantidad de viajes' src='/img/goals/viajes.png' />
                 </Flex>
               </Flex>
-
-              <Flex border='2px solid white' w={{ base: '100%', md: '370px' }} zIndex={30} opacity={1} fontWeight={900} color='white' className='font-logo' h='120px'>
-                <Flex w='30%' justifyContent='center' alignItems='center'>
-                  <SiNintendogamecube fontSize={60} color='white' />
-                </Flex>
-                <Flex flexDir='column' w='70%' justifyContent='center' alignItems='start' color='white'>
-                  <Text w='100%' textAlign='start' fontWeight={900} fontSize={30}>
-                    +7000
-                  </Text>
-                  <Text fontSize={{ base: 18, md: 20 }}>
-                    M3 de asfalto producidos
-                  </Text>
-                </Flex>
-              </Flex>
-
-              <Flex border='2px solid white' w={{ base: '100%', md: '370px' }} zIndex={30} opacity={1} fontWeight={900} color='white' className='font-logo' h='120px'>
-                <Flex w='30%' justifyContent='center' alignItems='center'>
-                  <ImLeaf fontSize={60} color='white' />
-                </Flex>
-                <Flex flexDir='column' w='70%' justifyContent='center' alignItems='start' color='white'>
-                  <Text w='100%' textAlign='start' fontWeight={900} fontSize={30}>
-                    +40
-                  </Text>
-                  <Text fontSize={{ base: 18, md: 20 }}>
-                    Proyectos completados
-                  </Text>
-                </Flex>
-              </Flex>
-
             </Flex>
           </Flex>
 
-
-          {/* <Flex mt={{ base: '40px', md: '70px' }} flexDir='column' w='100%' paddingX={{base: '30px', md: '0px'}}>
-            <SubtitleComponent text='PROYECTOS' />
-            <Flex mt={{ base: '10px', md: '' }}>
-              <Grid templateColumns={{ base: "repeat(1, 1fr)", md: "repeat(2, 1fr)" }} w='100%' columnGap='20px' rowGap='20px'>
-                {proyectsImages.map(item => (
-                  <GridItem key={item.label}>
-                    <Flex w='100%' h='100%' justifyContent='center' alignItems='center'>
-                      <Image alt={item.label} src={item.url} w='100%' h={{ base: '300px', md: '400px' }} />
-                    </Flex>
-                  </GridItem>
-                ))}
-              </Grid>
-            </Flex>
-          </Flex> */}
-
-          <Flex mt={{ base: '60px', md: '80px' }} flexDir='column' w='100%' position='relative' h={{ base: '150px', md: '250px' }}>
-            <Flex px={{ base: '30px', md: '0px' }}>
+          <Flex
+            w='100%'
+            flexDir='column'
+            mt={{ base: '60px', md: '0px' }}
+            h={{ base: '150px', md: '350px'}}
+            position='relative'
+          >
+            <Flex px={{ base: '30px', md: '120px' }} mt='120px'>
               <SubtitleComponent text='NUESTROS CLIENTES' />
             </Flex>
-            <Flex position='absolute' left={{ base: '0px', md: '-120px' }} top={{ base: '50px', md: '70px' }} className='w-screen' h={{ base: '90px', md: '135px' }} px={{ base: '30px', md: '120px' }}>
+            <Flex
+              position='relative'
+              left={{ base: '0px', md: '0px' }}
+              top={{ base: '50px', md: '10px' }}
+              className='w-screen'
+              // h={{ base: '90px', md: '135px' }}
+              px={{ base: '30px', md: '120px' }}
+            >
               <MiniCarousel images={clientsImages} />
             </Flex>
           </Flex>

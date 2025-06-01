@@ -8,15 +8,13 @@ import {
 import { IoSearchSharp } from 'react-icons/io5';
 import {
   Box,
-  Flex,
-  Input,
-  InputGroup,
-  InputLeftElement,
-  InputProps,
+  Flex,  
   ListItem,
   Spinner,
-  UnorderedList,
 } from '@chakra-ui/react';
+
+import { InputLeftElement, InputGroup, InputProps, Input  } from '@chakra-ui/input'
+import { UnorderedList } from '@chakra-ui/layout' // ✅
 
 import { ClickAwayListener } from '../clickAwayListener';
 import { isEmpty } from 'lodash';
@@ -139,7 +137,7 @@ export const AutoComplete = (props: AutocompleteProps) => {
             onKeyDown={onKeyDown}
             aria-label="search"
             size={props.inputProps?.size ?? 'sm'}
-            isDisabled={props.inputProps?.isDisabled ?? false}            
+            isDisabled={props.inputProps?.isDisabled ?? false}        
             _focus={{
               ring: 'none',
               roundedTop: 6,

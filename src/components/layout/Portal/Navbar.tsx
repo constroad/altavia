@@ -28,7 +28,7 @@ export const Navbar = (props: INavbar) => {
     if (option.label === 'Nosotros') {
       router.push(`${APP_ROUTES.nosotros}`)
     } else if (option.label === 'Servicios') {
-      router.push(`${APP_ROUTES.servicios + APP_ROUTES.mezclaAsfaltica}`)
+      router.push(`${APP_ROUTES.servicios + APP_ROUTES.transporteCargaGeneral}`)
     } else {
       router.push(option.path)
     }

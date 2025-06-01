@@ -1,11 +1,7 @@
 import React from 'react';
-import {
-  FormControl,
-  FormErrorMessage,
-  FormLabel,
-  Input,
-} from '@chakra-ui/react';
+import { Input } from '@chakra-ui/react';
 import { useFormContext, Controller } from 'react-hook-form';
+import { FormControl, FormLabel, FormErrorMessage } from '@chakra-ui/form-control'
 
 interface DateFieldProps {
   name: string;

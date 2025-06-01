@@ -1,4 +1,5 @@
-import { Tooltip } from '@chakra-ui/react';
+import { Tooltip } from '@chakra-ui/tooltip'
+
 
 interface CustomTooltipProps {
   label: string;

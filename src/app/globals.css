@@ -1,0 +1,129 @@
+:root {
+  --foreground-rgb: 0, 0, 0;
+  --background-start-rgb: 214, 219, 220;
+  --background-end-rgb: 255, 255, 255;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --foreground-rgb: 255, 255, 255;
+    --background-start-rgb: 0, 0, 0;
+    --background-end-rgb: 0, 0, 0;
+  }
+}
+
+.code
+
+html, body {
+  overflow-y: scroll;
+  overflow-x: hidden;
+  scrollbar-width: thin; /* Ancho del scrollbar (puede ser 'thin', 'auto', o 'none') */
+  scrollbar-color: #333 #333; /* Color del scrollbar (puede ser ajustado según tus estilos) */
+}
+
+/* Ajusta el estilo del scrollbar para navegadores que soportan la propiedad */
+::-webkit-scrollbar {
+  width: 4px; /* Ancho del scrollbar */
+}
+
+/* Ajusta el estilo de la pista del scrollbar */
+::-webkit-scrollbar-track {
+  background-color: #f0f0f0; /* Color de fondo de la pista */
+}
+
+/* Ajusta el estilo del thumb (parte movible del scrollbar) */
+::-webkit-scrollbar-thumb {
+  background-color: #333; /* Color del thumb */
+  border-radius: 5px; /* Bordes redondeados del thumb */
+}
+
+.code
+
+.font-roboto {
+  font-family: 'Roboto', sans-serif;
+}
+
+.font-logo {
+  font-family: 'Anek Devanagari', sans-serif;
+}
+
+.transicion-div {
+  opacity: 0;
+  transition: opacity 2s ease-in-out;
+}
+
+.visible {
+  opacity: 1;
+}
+
+.invisible {
+  opacity: 0;
+}
+
+.container {
+  width: 100vw;
+  padding: 40px;
+}
+
+.triangle {
+  max-width: 0px;
+  max-height: 0px;
+  border-left: 28px solid transparent;
+  border-right: 0px solid transparent;
+  border-top: 28px solid #9a6601;
+}
+
+@media (max-width: 768px) {
+  .triangle {
+    max-width: 0px;
+    max-height: 0px;
+    border-left: 20px solid transparent;
+    border-right: 0px solid transparent;
+    border-top: 20px solid #9a6601;
+  }
+}
+
+@keyframes unfold {
+  0% {
+    clip-path: polygon(0% 0%, 100% 0%, 100% 0%, 0% 0%);
+  }
+  100% {
+    clip-path: polygon(0% 0%, 100% 0%, 100% 100%, 0% 100%);
+  }
+}
+
+.unfold {
+  animation: unfold 1s ease-in-out;
+}
+
+.unfold-03 {
+  animation: unfold 0.3s ease-in-out;
+}
+
+.notistack-SnackbarContainer {
+  z-index: 10000000000 !important;
+}
+
+@keyframes bounce {
+  0% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(20px);
+  }
+  95% {
+    transform: translateY(0);
+  }
+  100% {
+    transform: translateY(0);
+  }
+}
+
+.scroll-down-arrow {
+  animation: bounce 0.50s infinite;
+}
+
+.slick-slide > * > * > * {
+  display: flex !important;
+  justify-content: center !important;
+}

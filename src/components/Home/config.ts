@@ -46,7 +46,7 @@ export const serviciosConfig = [
     description: `Servicio de traslado de bienes que no requieren condiciones especiales. Incluye
     productos terminados (empaquetados), materiales de construcción, maquinaria, herramientas, y más.`,
     shortDescription: 'Servicio de traslado de bienes que no requieren condiciones especiales...',
-    redirect: '/servicios/mezcla-asfaltica-en-caliente' 
+    redirect: '/servicios/transporte-carga-general' 
   },
   {
     title: 'Transporte interprovincial',
@@ -54,7 +54,7 @@ export const serviciosConfig = [
     description: `Servicio de traslado de mercancías entre distintas regiones o provincias del país, ya
     sea de costa, sierra o selva. Involucra planificación de rutas, permisos y seguimiento en tiempo real.`,
     shortDescription: 'Servicio de traslado de mercancías entre distintas regiones o provincias...',
-    redirect: '/servicios/colocacion-de-mezcla-asfaltica'
+    redirect: '/servicios/transporte-interprovincial'
   },
   {
     title: 'Transporte carga completa',
@@ -62,7 +62,7 @@ export const serviciosConfig = [
     description: `Transporte exclusivo para un solo cliente que necesita usar todo el espacio del camión.
     Se garantiza mayor seguridad, rapidez y menor manipulación de la mercancía.`,
     shortDescription: 'Transporte exclusivo para un solo cliente...',
-    redirect: '/servicios/senalizacion-vial'
+    redirect: '/servicios/transporte-carga-completa'
   },
   {
     title: 'Transporte de carga sobredimensionada',
@@ -71,6 +71,6 @@ export const serviciosConfig = [
     como maquinaria pesada, estructuras industriales o equipos de gran volumen. Requiere planificación de rutas,
     permisos especiales y experiencia en maniobras seguras.`,
     shortDescription: 'Servicio especializado para trasladar cargas que exceden las dimensiones o pesos estándar...',
-    redirect: '/servicios/alquiler-planta-asfaltica'
+    redirect: '/servicios/transporte-carga-sobredimensionada'
   },
 ]

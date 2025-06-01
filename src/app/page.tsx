@@ -15,7 +15,7 @@ export const metadata = {
     card: 'summary_large_image',
     title: 'Altavía Perú',
     description: 'Transporte de carga por carretera',
-    images: ['/img/logos/altavia-logo-2.png'],
+    images: ['/img/logos/altavia-logo-1.png'],
   },
 }
 

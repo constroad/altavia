@@ -1,25 +1,14 @@
 // src/app/layout.tsx
-'use client'
+import './globals.css'
+import Providers from './providers'
+import type { ReactNode } from 'react'
 
-import { ReactNode, useEffect, useState } from 'react'
-import { ChakraProviderWrapper } from '../chakra-provider'
-import { SnackbarProvider } from 'notistack'
-import { SessionProvider } from 'next-auth/react'
-import { ToastProvider } from '../components/Toast'
-import '../styles/globals.css'
-
-// export const metadata = {
-//   themeColor: '#000000',
-//   authors: [{ name: 'Constroad' }],
-// }
+export const metadata = {
+  title: 'Altavía',
+  description: 'Transporte de carga en Perú',
+}
 
 export default function RootLayout({ children }: { children: ReactNode }) {
-  const [domLoaded, setDomLoaded] = useState(false)
-
-  useEffect(() => {
-    setDomLoaded(true)
-  }, [])
-
   return (
     <html lang="es">
       <head>
@@ -39,21 +28,8 @@ export default function RootLayout({ children }: { children: ReactNode }) {
           }}
         />
       </head>
-      <body className="min-h-[100vh] w-full flex flex-col">
-        <ToastProvider>
-          <SessionProvider>
-            {domLoaded && (
-              <ChakraProviderWrapper>
-                <SnackbarProvider
-                  maxSnack={3}
-                  anchorOrigin={{ vertical: 'top', horizontal: 'right' }}
-                >
-                  {children}
-                </SnackbarProvider>
-              </ChakraProviderWrapper>
-            )}
-          </SessionProvider>
-        </ToastProvider>
+      <body style={{ minHeight: '100vh', width: '100%', display: 'flex', flexDirection: 'column' }}>
+        <Providers>{children}</Providers>
       </body>
     </html>
   )

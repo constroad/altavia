@@ -183,7 +183,7 @@ export default function HomePageContent() {
               w='100%'
               top='0px'
               flexDir={{ base: 'column', md: 'column' }}
-              className='w-screen'
+              className='100vw'
               gap={{ base: '10px', md: '' }}
               alignItems='start'
               px={{base: '30px', md: '120px' }}

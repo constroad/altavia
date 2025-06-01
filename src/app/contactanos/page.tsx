@@ -13,7 +13,8 @@ import { FaYoutube } from "react-icons/fa";
 import { CONSTROAD_COLORS } from '../../styles/shared';
 
 const postEmail = (path: string, data: ContactFormType) => axios.post(path, data);
-const Contactanos = () => {
+
+export default function Page() {
   const [formData, setFormData] = useState<ContactFormType>(initialContactForm)
   const { run, isLoading } = useAsync({ onSuccess: successFunction })
   const { isMobile } = useScreenSize()
@@ -131,4 +132,3 @@ const Contactanos = () => {
   )
 }
 
-export default Contactanos

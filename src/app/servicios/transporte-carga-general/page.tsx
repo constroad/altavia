@@ -6,7 +6,7 @@ import { PortalLayout, SubtitleComponent, serviciosConfig } from 'src/components
 import { useScreenSize } from 'src/common/hooks'
 import { ALTAVIA_COLORS } from 'src/styles/shared'
 
-const TransporteCargaGeneral = () => {
+export default function Page() {
   const { isMobile } = useScreenSize()
   return (
     <PortalLayout>
@@ -85,5 +85,3 @@ const TransporteCargaGeneral = () => {
     </PortalLayout>
   )
 }
-
-export default TransporteCargaGeneral

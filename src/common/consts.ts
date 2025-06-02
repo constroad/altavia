@@ -104,9 +104,9 @@ export const PDF_TEMPLATE = {
 }
 
 export enum WtspMessageType {
-  'SendText' = '/messages/text',
-  'SendDocument' = '/messages/document',
-  'GetGroups' = '/groups',
+  'SendText' = 'SendText',
+  'SendDocument' = 'SendDocument',
+  'SendImage' = 'SendImage',
 }
 export const WHAPI_URL = 'https://gate.whapi.cloud/'
 export const WHAPI_TOKEN = 't1mDU3U89NVuEZqQprhYsOSKgisZhm1O'

@@ -50,7 +50,7 @@ export const Navbar = (props: INavbar) => {
       <Flex
         as='header'
         height={{ base: '50px', md: '90px' }}
-        paddingX={{ base: '10px', md: '110px' }}
+        paddingX={{ base: '20px', md: '110px' }}
         alignItems='center'
         justifyContent='space-between'
         bg={ALTAVIA_COLORS.primary}
@@ -60,9 +60,10 @@ export const Navbar = (props: INavbar) => {
         <Flex
           as='h1'
           cursor='pointer'
-          width={{ base: '120px', md: 'fit-content' }}
+          width={{ base: '85px', md: 'fit-content' }}
           alignItems='center'
           justifyContent='center'
+          pt='5px'
         >
           <Link href={APP_ROUTES.home} title='Altavía Perú | Transporte de carga' _hover={{ textDecoration: 'none' }}>
             <Flex
@@ -87,9 +88,8 @@ export const Navbar = (props: INavbar) => {
                 <Image
                   alt="Logo de Altavia"
                   h='50px'
-                  w='120px'
+                  w='85px'
                   src='/img/logos/altavia-logo-mobile.png'
-                  // ml='-20px'
                 />
               )}
             </Flex>
@@ -206,7 +206,7 @@ export const Navbar = (props: INavbar) => {
 
         </Flex>
 
-        <Flex display={{ base: 'block', md: 'none' }} color="black" mr='20px'>
+        <Flex display={{ base: 'block', md: 'none' }} color="black" mr='10px'>
           <Button
             size='xs'
             paddingX='4px'

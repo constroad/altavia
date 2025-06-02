@@ -75,7 +75,7 @@ export const PortalLayout = (props: IPortalLayout) => {
         handleMobileMenuClick={handleMobileMenuClick}
         showMobileOptions={showMobileOptions}
       />
-      <Flex h={{base: '65px', md: '90px'}} w='100%' bg='white' />
+      <Flex h={{base: '50px', md: '90px'}} w='100%' bg='white' />
 
       {isMobile && showMobileOptions && (
         <MobileMenu

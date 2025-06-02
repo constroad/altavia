@@ -1,9 +1,10 @@
 import { MouseEvent } from 'react'
-import { useRouter } from 'next/router'
+import { useRouter, usePathname } from 'next/navigation'
 import { Flex, Text } from '@chakra-ui/react'
 
 import { DisplayOptionIcon, HideOptionIcon } from 'src/common/icons'
 import { GenerateNavOptions, serviciosOptions } from './config'
+import { ALTAVIA_COLORS } from 'src/styles/shared'
 
 interface IMobileMenu {
   toggleNosotrosMenu: (option: string) => void
@@ -15,7 +16,9 @@ interface IMobileMenu {
 
 export const MobileMenu = (props: IMobileMenu) => {
   const router = useRouter()
-  const path = router.pathname
+  // const path = router.pathname
+  const path = usePathname()
+
 
   const handleOptionClick = async(e: MouseEvent<HTMLDivElement>, option: any) => {
     e.preventDefault()
@@ -29,17 +32,17 @@ export const MobileMenu = (props: IMobileMenu) => {
   return (
     <Flex
       position='fixed'
-      top={{ base: '65px', md: '95px' }}
+      top={{ base: '50px', md: '95px' }}
       left="0"
       width='100%'
       height='auto'
       zIndex={1000}
-      backgroundColor='white'
+      backgroundColor={ALTAVIA_COLORS.lightPrimary}
       flexDir='column'
       alignItems='center'
-      borderBottom="1px solid rgba(0, 0, 0, 0.1)"
+      borderBottom="0px solid rgba(0, 0, 0, 0.1)"
       boxShadow="0px 2px 4px rgba(0, 0, 0, 0.1)"
-      borderTop='1px solid'
+      borderTop='0px solid'
       borderColor='lightgray'
       className={`${props.display ? 'opacity-100 unfold' : 'opacity-0'}`}
     >
@@ -61,8 +64,8 @@ export const MobileMenu = (props: IMobileMenu) => {
             fontSize={14}
             fontWeight={700}
             height={'70px'}
-            color={path === opt.path ? '#feb100' : '#004d89'}
-            paddingX='20px'
+            color={path === opt.path ? 'white' : 'black'}
+            paddingX='30px'
             paddingY='30px'
             width='100%'
           >
@@ -75,8 +78,8 @@ export const MobileMenu = (props: IMobileMenu) => {
               <Flex width='full' justifyContent='space-between'>
                 {opt.label}
                 {props.serviciosMenu ?
-                  <HideOptionIcon color='#004d89' fontSize={19} /> :
-                  <DisplayOptionIcon color='#004d89' fontSize={19} />
+                  <HideOptionIcon color='black' fontSize={19} /> :
+                  <DisplayOptionIcon color='black' fontSize={19} />
                 }
               </Flex>
             )}
@@ -118,8 +121,8 @@ export const MobileMenu = (props: IMobileMenu) => {
                   width='100%'
                   fontSize={12}
                   fontWeight={700}
-                  paddingX='20px'
-                  color={path === `${opt.path}${sopt.path}` ? '#feb100' : '#004d89'}
+                  paddingX='40px'
+                  color={path === `${opt.path}${sopt.path}` ? 'white' : 'black'}
                 >
                   - {sopt.label}
                 </Text>

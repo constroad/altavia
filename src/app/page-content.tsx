@@ -1,6 +1,6 @@
 'use client'
 
-import { Box, Flex, Grid, GridItem, Icon, Image, Text } from '@chakra-ui/react'
+import { Box, Flex, Grid, GridItem, Icon, Image, Text, SimpleGrid } from '@chakra-ui/react'
 import { useEffect, useState } from 'react'
 import { FaAnglesDown } from 'react-icons/fa6'
 import { GiGears } from 'react-icons/gi'
@@ -44,6 +44,13 @@ export default function HomePageContent() {
     }
   }
 
+  const goalImages = [
+    { src: '/img/goals/clientes.png', alt: 'nuestros clientes' },
+    { src: '/img/goals/cobertura.png', alt: 'nuestra cobertura' },
+    { src: '/img/goals/equipo.png', alt: 'nuestro equipo' },
+    { src: '/img/goals/viajes.png', alt: 'cantidad de viajes' },
+  ]
+
   return (
     <PortalLayout noPaddingTop >
 
@@ -62,6 +69,7 @@ export default function HomePageContent() {
             flexDir='column'
             width={{ base: '100%', md: '100%' }}
             h={{ base: '', md: 'calc((100vh - 45px) *2 )' }}
+            pb={{ base: '30px', md: '' }}
             backgroundImage="url(/img/web/mision-portada2.png)"
             backgroundSize="cover"
             backgroundPosition="center"
@@ -159,7 +167,7 @@ export default function HomePageContent() {
                   templateColumns={{ base: 'repeat(1, 1fr)', md: "repeat(2, 1fr)"}}
                   columnGap={{ base: '20px', md: '50px' }}
                   rowGap={{ base: '20px', md: '50px' }}>
-                  {serviciosConfig.map(item => (
+                  {serviciosConfig.map((item, index) => (
                     <GridItem key={item.title}>
                       <ServiceCard service={item} />
                     </GridItem>
@@ -174,9 +182,9 @@ export default function HomePageContent() {
           <Flex
             w='100%'
             flexDir='column'
-            mt={{ base: '40px', md: '0px' }}
+            mt={{ base: '0px', md: '0px' }}
             position='relative'
-            h={{ base: '420px', md: 'calc(60vh)'}}
+            h={{ base: '400px', md: 'calc(60vh)'}}
           >
             <Flex
               position='absolute'
@@ -203,35 +211,63 @@ export default function HomePageContent() {
                 <Flex w='100%' bg='gray.800' opacity={0.8} zIndex={20} h='100%'></Flex>
               </Flex>
 
-              <Box mt='80px' >
+              <Box mt={{ base: '30px',md :'60px' }} >
                 <SubtitleComponent text='LOGROS DE LA EMPRESA' color='#fff' />
               </Box>
 
-              <Flex w='100%' opacity={1} zIndex={100} gap='20px' flexDir='column' mt='10px'>
-                <Flex justifyContent='space-between' flexDir={{ base: 'column', md: 'row' }}>
+              {/* <Flex w='100%' opacity={1} zIndex={100} gap='20px' flexDir={{base: 'row', md: 'row'}} mt='10px' justifyContent='space-between'>
+                <Flex justifyContent='space-between' flexDir={{ base: 'row', md: 'row' }} gap='20px' w='50%'>
                   <Image rounded='5px' w='260px' h='220px' alt='nuestros clientes' src='/img/goals/clientes.png'/>
                   <Image rounded='5px' w='260px' h='220px' alt='nuestra cobertura' src='/img/goals/cobertura.png' />
                   <Image rounded='5px' w='260px' h='220px' alt='nuestro equipo' src='/img/goals/equipo.png'/>
                   <Image rounded='5px' w='260px' h='220px' alt='cantidad de viajes' src='/img/goals/viajes.png' />
                 </Flex>
+                <Flex justifyContent='space-between' flexDir={{ base: 'row', md: 'row' }} gap='20px' width='50%'>
+                  <Image rounded='5px' w='260px' h='220px' alt='nuestros clientes' src='/img/goals/clientes.png'/>
+                  <Image rounded='5px' w='260px' h='220px' alt='nuestra cobertura' src='/img/goals/cobertura.png' />
+                  <Image rounded='5px' w='260px' h='220px' alt='nuestro equipo' src='/img/goals/equipo.png'/>
+                  <Image rounded='5px' w='260px' h='220px' alt='cantidad de viajes' src='/img/goals/viajes.png' />
+                </Flex>
+              </Flex> */}
+
+              <Flex w='100%' opacity={1} zIndex={100} gap='20px' flexDir={{base: 'row', md: 'row'}} justifyContent='space-between'>
+                <Grid
+                  templateColumns={{ base: 'repeat(2, 1fr)', md: 'repeat(4, 1fr)' }}
+                  gap="20px"
+                  w="100%"
+                >
+                  {goalImages.map((img) => (
+                    <Image
+                      key={img.alt}
+                      src={img.src}
+                      alt={img.alt}
+                      rounded="5px"
+                      h={{ base: '130px', md: "270px" }}
+                      w="100%"
+                      objectFit="cover"
+                    />
+                  ))}
+                </Grid>
               </Flex>
             </Flex>
           </Flex>
 
+
+          {/* CLIENTES */}
           <Flex
             w='100%'
             flexDir='column'
-            mt={{ base: '60px', md: '0px' }}
-            h={{ base: '150px', md: '350px'}}
+            mt={{ base: '30px', md: '0px' }}
+            h={{ base: '200px', md: '350px'}}
             position='relative'
           >
-            <Flex px={{ base: '30px', md: '120px' }} mt='120px'>
+            <Flex px={{ base: '30px', md: '30px' }} mt={{ base: '40px', md: '120px' }} >
               <SubtitleComponent text='NUESTROS CLIENTES' />
             </Flex>
             <Flex
               position='relative'
               left={{ base: '0px', md: '0px' }}
-              top={{ base: '50px', md: '10px' }}
+              top={{ base: '20px', md: '10px' }}
               className='w-screen'
               // h={{ base: '90px', md: '135px' }}
               px={{ base: '30px', md: '120px' }}

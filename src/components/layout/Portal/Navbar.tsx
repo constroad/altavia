@@ -20,7 +20,7 @@ interface INavbar {
 export const Navbar = (props: INavbar) => {
   const path = usePathname() as string
   const router = useRouter()
-  const { isDesktop } = useScreenSize()
+  const { isDesktop, isMobile } = useScreenSize()
 
   console.log('path:', path)
 
@@ -40,7 +40,7 @@ export const Navbar = (props: INavbar) => {
       bg={ALTAVIA_COLORS.primary}
       as='nav'
       width='100%'
-      height={{ base: '65px', md: '90px' }}
+      height={{ base: '50px', md: '90px' }}
       position={'fixed'}
       top={{ base: '', md: '0px'}}
       zIndex={1000}
@@ -49,8 +49,8 @@ export const Navbar = (props: INavbar) => {
     >
       <Flex
         as='header'
-        height={{ base: '65px', md: '90px' }}
-        paddingX={{ base: '30px', md: '120px' }}
+        height={{ base: '50px', md: '90px' }}
+        paddingX={{ base: '10px', md: '110px' }}
         alignItems='center'
         justifyContent='space-between'
         bg={ALTAVIA_COLORS.primary}
@@ -60,27 +60,38 @@ export const Navbar = (props: INavbar) => {
         <Flex
           as='h1'
           cursor='pointer'
-          width={{ base: '160px', md: 'fit-content' }}
+          width={{ base: '120px', md: 'fit-content' }}
           alignItems='center'
           justifyContent='center'
         >
           <Link href={APP_ROUTES.home} title='Altavía Perú | Transporte de carga' _hover={{ textDecoration: 'none' }}>
             <Flex
               w='fit-content'
-              h={{base: '65px', md:'90px'}}
+              h={{base: '50px', md:'90px'}}
               rounded='6px'
               justifyContent='center'
               alignItems='center'
               flexDir={{ base: 'row', md: 'column'}}
               gap={{ base: '6px', md: '0px' }}
-              mt='20px'
+              mt={{ base: '0px', md: '20px' }}
             >
-              <Image
-                alt="Logo de Altavia"
-                h={{base: '65px', md:'90px'}}
-                w={{base: '65px', md:'120px'}}
-                src='/img/logos/logo-nobg-white.png'
-              />
+              {!isMobile && (
+                <Image
+                  alt="Logo de Altavia"
+                  h='90px'
+                  w='120px'
+                  src='/img/logos/logo-nobg-white.png'
+                />
+              )}
+              {isMobile && (
+                <Image
+                  alt="Logo de Altavia"
+                  h='50px'
+                  w='120px'
+                  src='/img/logos/altavia-logo-mobile.png'
+                  // ml='-20px'
+                />
+              )}
             </Flex>
           </Link>
 
@@ -91,7 +102,7 @@ export const Navbar = (props: INavbar) => {
           gap={1}
           display={{ base: 'none', md: 'flex' }}
           alignItems='end'
-          height={{base: '65px', md: '90px'}}
+          height={{base: '50px', md: '90px'}}
           className='font-logo'
           fontWeight={600}
         >
@@ -195,9 +206,15 @@ export const Navbar = (props: INavbar) => {
 
         </Flex>
 
-        <Flex display={{ base: 'block', md: 'none' }} color="black">
-          <Button paddingX='4px' paddingY='2px' onClick={(e) => props.handleMobileMenuClick(e)} backgroundColor='white'>
-            {props.showMobileOptions ? <HideMenuMobileIcon fontSize={26}/> : <ShowMenuMobileIcon fontSize={26}/>}
+        <Flex display={{ base: 'block', md: 'none' }} color="black" mr='20px'>
+          <Button
+            size='xs'
+            paddingX='4px'
+            paddingY='2px'
+            onClick={(e) => props.handleMobileMenuClick(e)}
+            backgroundColor={ALTAVIA_COLORS.darkPrimary}
+          >
+            {props.showMobileOptions ? <HideMenuMobileIcon fontSize={10}/> : <ShowMenuMobileIcon fontSize={10}/>}
           </Button>
         </Flex>
       </Flex>

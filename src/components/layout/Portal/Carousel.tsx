@@ -88,7 +88,7 @@ export const CarouselComponent = (props: CarouselProps) => {
       w="full"
       bg="black"
       position="relative"
-      height={isMobile ? '180px' : 'calc(100vh - 90px)'}
+      height={isMobile ? '200px' : 'calc(100vh - 90px)'}
     >
       <Box
         className="font-logo"
@@ -123,7 +123,7 @@ export const CarouselComponent = (props: CarouselProps) => {
             key={idx}
             w="full"
             justify="center"
-            height={isMobile ? '180px' : 'calc(100vh - 90px)'}
+            height={isMobile ? '200px' : 'calc(100vh - 90px)'}
           >
             <Box
               width="100%"
@@ -131,7 +131,7 @@ export const CarouselComponent = (props: CarouselProps) => {
                 backgroundImage: img.url,
                 backgroundSize: 'cover',
                 backgroundPosition: 'center',
-                height: isMobile ? '180px' : 'calc(100vh - 90px)',
+                height: isMobile ? '200px' : 'calc(100vh - 90px)',
               }}
             />
           </Flex>

@@ -74,7 +74,7 @@ const Footer = () => {
         <Flex flexDir={{ base: 'column', md: 'row' }} w='100%' justifyContent={{ base: 'start', md: 'space-between' }} pb='40px' h={{ base: 'calc(100vh - 105px)', md: '263px' }}>
           <Flex flexDir='column' width={{ base: '100%', md: 'fit-content' }} paddingX={{ base: '30px', md: '0px' }} zIndex={20}>
             <Text
-              borderBottom={`2px solid ${ALTAVIA_COLORS.lightPrimary} `}
+              borderBottom={`3px solid #feb100`}
               width='min-content'
               marginX={{ base: '0px', md: '0px' }}
               marginBottom='5px'
@@ -107,7 +107,7 @@ const Footer = () => {
           </Flex>
 
           <Flex flexDir='column' width={{ base: '100%', md: 'fit-content' }} paddingX={{ base: '30px', md: '0px' }} zIndex={20} marginTop={{ base: '30px', md: '0px' }}>
-            <Text borderBottom='2px solid #feb100' width='min-content' marginX={{ base: '0px', md: '0px' }} marginBottom='0px' className="font-logo" fontWeight={900} fontSize={{ base: 18, md: 20 }}>
+            <Text borderBottom='3px solid #feb100' width='min-content' marginX={{ base: '0px', md: '0px' }} marginBottom='0px' className="font-logo" fontWeight={900} fontSize={{ base: 18, md: 20 }}>
               MENÚ
             </Text>
             <FooterLink
@@ -178,7 +178,7 @@ const Footer = () => {
           </Flex>
         </Flex>
 
-        <Flex
+        {/* <Flex
           w='100%'
           gap={{ base: '5px', md: '15px' }}
           left='0px'
@@ -213,8 +213,7 @@ const Footer = () => {
             variant="plain"
             size="sm" // o "md", dependiendo de lo que hayas mapeado en `sizeMap`
           />
-
-        </Flex>
+        </Flex> */}
 
         <Flex
           position='absolute'

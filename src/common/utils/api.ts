@@ -1,5 +1,7 @@
 import { NextApiRequest, NextApiResponse } from "next";
 import { NextHandler } from "next-connect";
+import { TELEGRAM_GROUP_ID_ERRORS } from "../consts";
+import { sendTelegramTextMessage } from "./general";
 
 export const ApiTimeTracker = async (req: NextApiRequest, res: NextApiResponse, next: NextHandler) => {
   const start = Date.now();
@@ -38,6 +40,19 @@ export const onApiError = (apiName: string) => async (err: any, req: NextApiRequ
 //   })
 
   res.status(500).end(`Internal Server Error in ${apiName} api`)
+}
+
+export const onPageError = (pageName: string) => async (err: any) => {  
+  console.log(err)
+
+  const message = `
+  ConstRoad PAGE ERROR!
+  ---------------------
+  page: ${pageName}  
+  message: ${err.message ?? ''}  
+  errorFull: ${JSON.stringify(err)}
+  `
+  sendTelegramTextMessage(message, TELEGRAM_GROUP_ID_ERRORS)  
 }
 
 export const onApiNoMatch = (req: NextApiRequest, res: NextApiResponse) => {

@@ -117,6 +117,7 @@ export const PHONE_JOHAN = '51961678014'
 export const PHONE_JZ = '51902049935'
 export const PHONE_CONSTROAD = '51949376824'
 export const PHONE_CARIN = '51907579704'
+export const GROUP_ADMINISTRACION_ALTAVIA = '120363402687680206@g.us'
 export const WhastAppGroups = [
   {
     id: '120363229712975495@g.us',
@@ -147,3 +148,14 @@ export const WhastAppGroups = [
     "name": "Despachos de agregados Chalin",
   }
 ]
+
+// --------------
+
+const LOCAL_SERVER_WHATSAPP = 'http://localhost:3001/api';
+
+export const WHATSAPP_SENDER = '51949376824'
+export const WHATSAPP_SERVER_URL = process.env.NEXT_PUBLIC_WHATSAPP_SERVER || LOCAL_SERVER_WHATSAPP;
+
+export const TELEGRAM_GROUP_ID_ERRORS = '-4556555230';
+export const TELEGRAM_TOKEN = '7278967592:AAHLnzjx3L-uYl3a96JhvIWbQ-YpBtF1kz8';
+export const GROUP_ERRORS_TRACKING = '120363376500470254@g.us';

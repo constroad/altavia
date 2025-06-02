@@ -83,12 +83,14 @@ export const CarouselComponent = (props: CarouselProps) => {
     prevArrow: <SamplePrevArrow isMobile={isMobile} />,
   }
 
+  const carouselHeight = '500px';
+
   return (
     <Box
       w="full"
       bg="black"
       position="relative"
-      height={isMobile ? '200px' : 'calc(100vh - 90px)'}
+      height={isMobile ? carouselHeight : 'calc(100vh - 90px)'}
     >
       <Box
         className="font-logo"
@@ -123,7 +125,7 @@ export const CarouselComponent = (props: CarouselProps) => {
             key={idx}
             w="full"
             justify="center"
-            height={isMobile ? '200px' : 'calc(100vh - 90px)'}
+            height={isMobile ? carouselHeight : 'calc(100vh - 90px)'}
           >
             <Box
               width="100%"
@@ -131,7 +133,7 @@ export const CarouselComponent = (props: CarouselProps) => {
                 backgroundImage: img.url,
                 backgroundSize: 'cover',
                 backgroundPosition: 'center',
-                height: isMobile ? '200px' : 'calc(100vh - 90px)',
+                height: isMobile ? carouselHeight : 'calc(100vh - 90px)',
               }}
             />
           </Flex>

@@ -5,12 +5,13 @@ import axios from 'axios'
 import { Flex, Text } from '@chakra-ui/react'
 import { ContactForm, ContactFormType, PortalLayout, SubtitleComponent, initialContactForm, toast } from 'src/components'
 import { useAsync, useScreenSize } from 'src/common/hooks'
-import { API_ROUTES } from 'src/common/consts'
+import { API_ROUTES, GROUP_ADMINISTRACION_ALTAVIA } from 'src/common/consts'
 import { SiFacebook } from 'react-icons/si'
 import { AiFillInstagram } from 'react-icons/ai'
 import { LocationIcon, MailIcon, WhatsAppIcon } from 'src/common/icons'
 import { FaYoutube } from "react-icons/fa";
 import { CONSTROAD_COLORS } from '../../styles/shared';
+import { useWhatsapp } from 'src/common/hooks/useWhatsapp'
 
 const postEmail = (path: string, data: ContactFormType) => axios.post(path, data);
 
@@ -18,6 +19,16 @@ export default function Page() {
   const [formData, setFormData] = useState<ContactFormType>(initialContactForm)
   const { run, isLoading } = useAsync({ onSuccess: successFunction })
   const { isMobile } = useScreenSize()
+
+  const { onSendWhatsAppText } = useWhatsapp({
+    page: 'Contactanos',
+  });
+
+  const handleSendingMessage = (message: string) => {
+    // const formattedMessage = encodeURIComponent(message)
+    const formattedMessage = message;
+    onSendWhatsAppText({ message: formattedMessage, to: GROUP_ADMINISTRACION_ALTAVIA });
+  };
 
   const handleSubmit = async (event: { preventDefault: () => void; }) => {
     event.preventDefault();
@@ -30,11 +41,28 @@ export default function Page() {
       phone: formData.phone,
       startCity: formData.startCity,
       endCity: formData.endCity,
-      // nroCubos: formData.nroCubos,
-      // unitPrice: '',
-      // nroQuote: ''
     }
-    await run( postEmail( API_ROUTES.sendEmail, data ) )
+
+    const quoteRequestMessage = `🤖 AltavíaBot
+
+🚨 *Solicitud de cotizacion*:
+- Nombre: ${formData.name}
+- Razón Social: ${formData.companyName}
+- RUC: ${formData.ruc}
+
+- Mensaje: ${formData.message}
+
+- Ciudad de partida: ${formData.startCity}
+- Ciudad de destino: ${formData.endCity}
+
+- Correo: ${formData.email}
+- Teléfono: ${formData.phone}`;
+
+    await run( postEmail( API_ROUTES.sendEmail, data ), {
+      onSuccess() {
+        handleSendingMessage(quoteRequestMessage);
+      }
+    } )
 
     setFormData(initialContactForm)
   };

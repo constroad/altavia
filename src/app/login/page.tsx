@@ -24,7 +24,7 @@ export default function Page() {
     setLoading(false);
 
     if (result && !result.error) {
-      router.push(APP_ROUTES.admin);
+      router.push(APP_ROUTES.dashboard);
       toast.info('Iniciaste sesión')
     } else {
       if (result?.error === "Tu usuario está deshabilitado.") {

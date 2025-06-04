@@ -74,12 +74,12 @@ import { UserRepository } from "src/repositories/userRepository";
 
 const parseEnvList = (envVar: string): string[] => {
   return (process.env[envVar] || '').split(',').map(item => item.trim());
-}
+};
 
 const usernames = parseEnvList('AUTH_USER');
 const passwords = parseEnvList('AUTH_PASSWORD');
 
-export const authOptions: NextAuthOptions = {
+const handler = NextAuth({
   providers: [
     CredentialsProvider({
       name: 'Credentials',
@@ -87,7 +87,7 @@ export const authOptions: NextAuthOptions = {
         username: { label: "Username", type: "text" },
         password: { label: "Password", type: "password" },
       },
-      authorize: async (credentials, req) => {
+      authorize: async (credentials) => {
         if (credentials) {
           const userIndex = usernames.indexOf(credentials.username);
           if (userIndex !== -1 && credentials.password === passwords[userIndex]) {
@@ -99,11 +99,8 @@ export const authOptions: NextAuthOptions = {
     })
   ],
   session: {
-    maxAge: 14400, // 8 hours
+    maxAge: 1800, // 30 minutos
   },
-}
+});
 
-const handler = NextAuth(authOptions);
 export { handler as GET, handler as POST };
-
-// export default NextAuth(options)

@@ -16,7 +16,7 @@ export const APP_ROUTES = {
   quote: '/quote',
   quoteNew: '/quote/new',
   clientReport: '/public/client-report',
-  admin: '/admin',
+  dashboard: '/dashboard',
 }
 
 export const API_ROUTES = {

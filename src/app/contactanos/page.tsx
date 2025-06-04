@@ -62,14 +62,14 @@ export default function Page() {
       onSuccess() {
         handleSendingMessage(quoteRequestMessage);
       }
-    } )
+    });
 
-    setFormData(initialContactForm)
+    setFormData(initialContactForm);
   };
 
   function successFunction() {
-    toast.success('Cotización solicitada!')
-  }
+    toast.success('Cotización solicitada!');
+  };
 
   return (
     <PortalLayout noPaddingTop>

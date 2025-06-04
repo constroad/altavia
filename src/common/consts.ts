@@ -15,7 +15,8 @@ export const APP_ROUTES = {
   cotizar: '/cotizar',
   quote: '/quote',
   quoteNew: '/quote/new',
-  clientReport: '/public/client-report'
+  clientReport: '/public/client-report',
+  admin: '/admin',
 }
 
 export const API_ROUTES = {

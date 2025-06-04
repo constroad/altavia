@@ -7,6 +7,8 @@ import { ArrowDown, HideMenuMobileIcon, ShowMenuMobileIcon } from 'src/common/ic
 import { GenerateNavOptions, serviciosOptions } from './config'
 import { ALTAVIA_COLORS, CONSTROAD_COLORS } from 'src/styles/shared';
 import { useScreenSize } from 'src/common/hooks';
+import { signOut, useSession } from 'next-auth/react';
+import { toast } from 'src/components/Toast';
 
 interface INavbar {
   isHoverButton: boolean
@@ -21,8 +23,13 @@ export const Navbar = (props: INavbar) => {
   const path = usePathname() as string
   const router = useRouter()
   const { isDesktop, isMobile } = useScreenSize()
+  const { data: session } = useSession()
 
-  console.log('path:', path)
+  const handleSignOut = async() => {
+    await signOut({redirect: false});
+    router.push(APP_ROUTES.home)
+    toast.info('Cerraste sesión');
+  }
 
   const menuItemClick = (option: any) => {
     if (option.label === 'Nosotros') {
@@ -106,43 +113,42 @@ export const Navbar = (props: INavbar) => {
           className='font-logo'
           fontWeight={600}
         >
-
           {GenerateNavOptions().map(opt => (
-          <Box
-            as="li"
-            key={opt.label}
-            fontWeight={600}
-            display="flex"
-            justifyContent="center"
-            alignItems="end"
-            paddingBottom="10px"
-            paddingX={5}
-            height="50px"
-            color={
-              path === opt.path ||
-              (path.includes(APP_ROUTES.nosotros) && opt.path.includes(APP_ROUTES.nosotros)) ||
-              (path.includes(APP_ROUTES.servicios) && opt.path.includes(APP_ROUTES.servicios))
-                ? 'white'
-                : 'white'
-            }
-            bg={
-              path === opt.path ||
-              (path.includes(APP_ROUTES.nosotros) && opt.path.includes(APP_ROUTES.nosotros)) ||
-              (path.includes(APP_ROUTES.servicios) && opt.path.includes(APP_ROUTES.servicios))
-                ? ALTAVIA_COLORS.darkPrimary
-                : 'transparent'
-            }
-            _hover={{
-              background: ALTAVIA_COLORS.darkPrimary,
-              color: 'white',
-              cursor: 'pointer',
-            }}
-            position="relative"
-            borderTopRadius="4px"
-            onMouseEnter={() => props.handleEnterMouse(opt.label)}
-            onMouseLeave={props.handleLeaveMouse}
-            onClick={() => menuItemClick(opt)}
-          >
+            <Box
+              as="li"
+              key={opt.label}
+              fontWeight={600}
+              display="flex"
+              justifyContent="center"
+              alignItems="end"
+              paddingBottom="10px"
+              paddingX={5}
+              height="50px"
+              color={
+                path === opt.path ||
+                (path.includes(APP_ROUTES.nosotros) && opt.path.includes(APP_ROUTES.nosotros)) ||
+                (path.includes(APP_ROUTES.servicios) && opt.path.includes(APP_ROUTES.servicios))
+                  ? 'white'
+                  : 'white'
+              }
+              bg={
+                path === opt.path ||
+                (path.includes(APP_ROUTES.nosotros) && opt.path.includes(APP_ROUTES.nosotros)) ||
+                (path.includes(APP_ROUTES.servicios) && opt.path.includes(APP_ROUTES.servicios))
+                  ? ALTAVIA_COLORS.darkPrimary
+                  : 'transparent'
+              }
+              _hover={{
+                background: ALTAVIA_COLORS.darkPrimary,
+                color: 'white',
+                cursor: 'pointer',
+              }}
+              position="relative"
+              borderTopRadius="4px"
+              onMouseEnter={() => props.handleEnterMouse(opt.label)}
+              onMouseLeave={props.handleLeaveMouse}
+              onClick={() => menuItemClick(opt)}
+            >
               <Flex alignItems='center' gap='2px'>
                 <Text>
                   {opt.label}
@@ -204,6 +210,62 @@ export const Navbar = (props: INavbar) => {
             </Box>
           ))}
 
+          {!session && (
+            <Box
+              as='li'
+              fontWeight={600}
+              display='flex'
+              justifyContent='center'
+              alignItems='end'
+              paddingBottom='10px'
+              paddingX={5}
+              height='50px'
+              color='white'
+              position='relative'
+              roundedTop='4px'
+              _hover={{
+                background: ALTAVIA_COLORS.darkPrimary,
+                color: 'white',
+                cursor: 'pointer',
+              }}
+              bg={ path === APP_ROUTES.login ? ALTAVIA_COLORS.darkPrimary : 'transparent'}
+              className={
+                path === APP_ROUTES.login ?
+                'bg-[#feb100] !text-white hover:text-white' : ''
+              }
+              onClick={() => router.push(APP_ROUTES.login)}
+            >
+              <Text>
+                Iniciar sesión
+              </Text>
+            </Box>
+          )}
+
+          {session && (
+            <Box
+              as='li'
+              fontWeight={600}
+              display='flex'
+              justifyContent='center'
+              alignItems='end'
+              paddingBottom='10px'
+              paddingX={5}
+              height='50px'
+              color='black'
+              position='relative'
+              roundedTop='4px'
+              _hover={{
+                background: '#feb100',
+                color: 'white',
+                cursor: 'pointer',
+              }}
+              onClick={handleSignOut}
+            >
+              <Text>
+                Cerrar sesión
+              </Text>
+            </Box>
+          )}
         </Flex>
 
         <Flex display={{ base: 'block', md: 'none' }} color="black" mr='10px'>

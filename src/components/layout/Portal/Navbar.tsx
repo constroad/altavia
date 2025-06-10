@@ -24,6 +24,7 @@ export const Navbar = (props: INavbar) => {
   const router = useRouter()
   const { isDesktop, isMobile } = useScreenSize()
   const { data: session } = useSession()
+  console.log('session:', session)
 
   const handleSignOut = async() => {
     await signOut({redirect: false});

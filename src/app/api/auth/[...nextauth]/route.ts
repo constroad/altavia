@@ -79,7 +79,7 @@ const parseEnvList = (envVar: string): string[] => {
 const usernames = parseEnvList('AUTH_USER');
 const passwords = parseEnvList('AUTH_PASSWORD');
 
-const handler = NextAuth({
+export const authOptions: NextAuthOptions = {
   providers: [
     CredentialsProvider({
       name: 'Credentials',
@@ -99,8 +99,10 @@ const handler = NextAuth({
     })
   ],
   session: {
+    strategy: 'jwt',
     maxAge: 1800, // 30 minutos
   },
-});
+};
 
+const handler = NextAuth(authOptions);
 export { handler as GET, handler as POST };

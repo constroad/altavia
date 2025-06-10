@@ -8,7 +8,7 @@ interface CustomTooltipProps {
 
 export const CustomTooltip = (props: CustomTooltipProps) => {
   return (
-    <Tooltip label={props.label} hasArrow placement="top">
+    <Tooltip label={props.label} hasArrow placement="top" bg='black' color='white'>
       {props.children}
     </Tooltip>
   );

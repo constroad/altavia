@@ -1,3 +1,5 @@
+'use client'
+
 import { useEffect, useState } from 'react'
 
 import { Box, Flex, Link } from '@chakra-ui/react';

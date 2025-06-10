@@ -1,3 +1,5 @@
+'use client'
+
 import React, { useState } from 'react'
 import { Button, Flex, Text } from '@chakra-ui/react'
 import { useScreenSize } from 'src/common/hooks'

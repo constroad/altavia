@@ -2,13 +2,17 @@
 import '../styles/globals.css'
 import Providers from './providers'
 import type { ReactNode } from 'react'
+import { getServerSession } from 'next-auth'
+import { authOptions } from './api/auth/[...nextauth]/route'
 
 export const metadata = {
   title: 'Altavía',
   description: 'Transporte de carga en Perú',
 }
 
-export default function RootLayout({ children }: { children: ReactNode }) {
+export default async function RootLayout({ children }: { children: ReactNode }) {
+  // const session = await getServerSession(authOptions)
+
   return (
     <html lang="es">
       <head>
@@ -29,7 +33,9 @@ export default function RootLayout({ children }: { children: ReactNode }) {
         />
       </head>
       <body style={{ minHeight: '100vh', width: '100%', display: 'flex', flexDirection: 'column' }}>
-        <Providers>{children}</Providers>
+        <Providers>
+          {children}
+        </Providers>
       </body>
     </html>
   )

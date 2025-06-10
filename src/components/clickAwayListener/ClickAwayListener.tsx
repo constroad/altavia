@@ -1,3 +1,5 @@
+'use client'
+
 import React, { PropsWithChildren, useCallback, useEffect, useRef } from 'react'
 
 type ClickAwayListenerProps = PropsWithChildren & {

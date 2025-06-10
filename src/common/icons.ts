@@ -39,6 +39,11 @@ import { FaAngleDown } from "react-icons/fa";
 import { HiLightBulb } from "react-icons/hi";
 import { GoGoal } from "react-icons/go";
 import { MdBusinessCenter } from "react-icons/md";
+import { MdDashboard } from "react-icons/md";
+import { PiCalculatorBold, PiCaretDown, PiCaretUp, PiCertificate, PiCheck, PiCheckBold, PiCheckCircleFill, PiCylinderLight, PiDatabase, PiEyeBold, PiEyeSlash, PiFileImage, PiFilePdf, PiGearBold, PiImageFill, PiMagnifyingGlass, PiMagnifyingGlassMinusLight, PiMagnifyingGlassPlusLight, PiPauseCircleFill, PiPauseFill, PiPlayFill, PiPlusCircle, PiRecordFill, PiTimerFill, PiVideoCameraFill, PiWhatsappLogo, PiX, PiXBold, PiXCircleFill } from "react-icons/pi";
+import { RiTruckFill } from "react-icons/ri";
+import { HiBellAlert } from "react-icons/hi2";
+import { MdAlternateEmail } from "react-icons/md";
 
 export const ArrowBackIcon = IoArrowBackOutline
 export const DownloadIcon = FaCloudDownloadAlt
@@ -74,7 +79,7 @@ export const PurchaseIcon = MdOutlineLocalGroceryStore
 export const ProvidersIcon = FaTruckLoading
 export const EmployeesIcon = GrUserWorker
 export const ProductsIcon = GiBoxUnpacking
-export const DispatchIcon = FaTruckFast
+export const TripIcon = FaTruckFast
 export const HighwayIcon = LuContainer
 export const AdminIcon = FaUserShield
 export const ClientsIcon = FaUserTie
@@ -94,3 +99,8 @@ export const WorkerIcon = GrUserWorker
 export const ArrowRightIcon = BsArrowRight
 export const ArrowLeftIcon = BsArrowLeft
 export const UserClockIcon = FaUserClock
+export const GearBoldIcon = PiGearBold
+export const DashboardIcon = MdDashboard
+export const VehiclesIcon = RiTruckFill
+export const AlertsIcon = HiBellAlert
+export const SignupIcon = MdAlternateEmail

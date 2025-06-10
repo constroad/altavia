@@ -17,6 +17,11 @@ export const APP_ROUTES = {
   quoteNew: '/quote/new',
   clientReport: '/public/client-report',
   dashboard: '/dashboard',
+  vehicles: '/vehicles',
+  trips: '/trips',
+  alerts: '/alerts',
+  configuration: '/configuration',
+  users: '/users',
 }
 
 export const API_ROUTES = {

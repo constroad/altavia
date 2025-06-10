@@ -71,7 +71,6 @@ import { UserRepository } from "src/repositories/userRepository";
 // const handler = NextAuth(authOptions);
 // export { handler as GET, handler as POST };
 
-
 const parseEnvList = (envVar: string): string[] => {
   return (process.env[envVar] || '').split(',').map(item => item.trim());
 };
@@ -105,4 +104,6 @@ export const authOptions: NextAuthOptions = {
 };
 
 const handler = NextAuth(authOptions);
+
 export { handler as GET, handler as POST };
+

@@ -2,8 +2,6 @@
 import '../styles/globals.css'
 import Providers from './providers'
 import type { ReactNode } from 'react'
-import { getServerSession } from 'next-auth'
-import { authOptions } from './api/auth/[...nextauth]/route'
 
 export const metadata = {
   title: 'Altavía',

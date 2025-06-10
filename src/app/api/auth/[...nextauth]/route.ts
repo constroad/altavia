@@ -78,13 +78,13 @@ const parseEnvList = (envVar: string): string[] => {
 const usernames = parseEnvList('AUTH_USER');
 const passwords = parseEnvList('AUTH_PASSWORD');
 
-export const authOptions: NextAuthOptions = {
+const handler = NextAuth({
   providers: [
     CredentialsProvider({
       name: 'Credentials',
       credentials: {
-        username: { label: "Username", type: "text" },
-        password: { label: "Password", type: "password" },
+        username: { label: 'Username', type: 'text' },
+        password: { label: 'Password', type: 'password' },
       },
       authorize: async (credentials) => {
         if (credentials) {
@@ -95,15 +95,13 @@ export const authOptions: NextAuthOptions = {
         }
         return null;
       },
-    })
+    }),
   ],
   session: {
     strategy: 'jwt',
-    maxAge: 1800, // 30 minutos
+    maxAge: 1800,
   },
-};
-
-const handler = NextAuth(authOptions);
+});
 
 export { handler as GET, handler as POST };
 

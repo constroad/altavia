@@ -1,8 +1,6 @@
 import React from 'react';
-import { Field, Input } from '@chakra-ui/react';
+import { Field, Input, InputProps } from '@chakra-ui/react';
 import { useFormContext, Controller } from 'react-hook-form';
-
-import { InputProps } from '@chakra-ui/input';
 
 interface InputFieldProps extends InputProps {
   name: string;
@@ -23,7 +21,16 @@ export const InputField: React.FC<InputFieldProps> = ({
     formState: { errors },
   } = useFormContext();
 
-  const errorMessage = errors[name]?.message;
+  const rawError = errors[name];
+  const errorMessage =
+    typeof rawError === "object" &&
+    rawError !== null &&
+    "message" in rawError &&
+    typeof rawError.message === "string"
+      ? rawError.message
+      : undefined;
+
+
   return (
     <Field.Root invalid={!!errorMessage} required={isRequired}>
       {label && (
@@ -47,12 +54,13 @@ export const InputField: React.FC<InputFieldProps> = ({
               if (type === 'number') {
                 value = +value;
               }
-              field.onChange(value); // Asegurar que React Hook Form reciba el valor modificado
+              field.onChange(value);
             }}
           />
         )}
       />
-      {isRequired && <Field.ErrorText>{errorMessage}</Field.ErrorText>}
+      {errorMessage && <Field.ErrorText>{errorMessage}</Field.ErrorText>}
     </Field.Root>
   );
+
 };

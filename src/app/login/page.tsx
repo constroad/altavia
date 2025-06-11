@@ -63,8 +63,9 @@ export default function Page() {
             className='font-logo'
             colorScheme='orange'
             border='1px solid black'
-            disabled={loading}
+            disabled={loading}            
             fontWeight={600}
+            loading={loading}
           >
             Ingresar
           </Button>

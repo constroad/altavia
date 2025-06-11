@@ -1,5 +1,4 @@
 import { BusinessIcon, GoalIcon, IdeaIcon } from "src/common/icons";
-import { ALTAVIA_COLORS, CONSTROAD_COLORS } from "src/styles/shared";
 
 export const nosotrosConfig = [
   {
@@ -7,7 +6,7 @@ export const nosotrosConfig = [
     icon: IdeaIcon,
     mt: '35px',
     hoverMt: '15px',
-    textColor: ALTAVIA_COLORS.primary,
+    textColor: 'primary',
     bgColor: '#fff',
     content: `Ser la empresa líder en transporte de carga en el Perú, reconocida por su innovación, confiabilidad
     y excelencia operativa. Altavía Perú busca crecer de forma sostenible, incorporando tecnología de vanguardia
@@ -19,7 +18,7 @@ export const nosotrosConfig = [
     mt: '-10px',
     hoverMt: '-30px',
     textColor: 'white',
-    bgColor: ALTAVIA_COLORS.primary,
+    bgColor: 'primary',
     content: `Altavía Perú brinda soluciones integrales de transporte de carga terrestre a nivel nacional,
     adaptadas a las necesidades de cada cliente. Con una flota moderna, tecnología de monitoreo y un equipo
     comprometido, garantiza seguridad, eficiencia y puntualidad en cada operación. Es el socio logístico
@@ -30,7 +29,7 @@ export const nosotrosConfig = [
     icon: GoalIcon,
     mt: '35px',
     hoverMt: '15px',
-    textColor: ALTAVIA_COLORS.primary,
+    textColor: 'primary',
     bgColor: '#fff',
     content: `Brindar un servicio de transporte de carga terrestre eficiente, seguro y confiable en todo el Perú.
     Altavía Perú se compromete a ser el socio logístico estratégico de sus clientes, ofreciendo soluciones flexibles

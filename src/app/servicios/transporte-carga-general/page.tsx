@@ -1,10 +1,9 @@
 'use client'
 
 import React from 'react'
-import { Box, Flex, Image, Text } from '@chakra-ui/react'
-import { PortalLayout, SubtitleComponent, serviciosConfig } from 'src/components'
+import { Box, Flex, Image } from '@chakra-ui/react'
+import { PortalLayout, SubtitleComponent } from 'src/components'
 import { useScreenSize } from 'src/common/hooks'
-import { ALTAVIA_COLORS } from 'src/styles/shared'
 
 export default function Page() {
   const { isMobile } = useScreenSize()
@@ -14,7 +13,6 @@ export default function Page() {
         <Flex
           flexDir={{ base: 'column', md: 'row' }}
           width={{ base: '100%', md: '100%' }}
-          // marginX='auto'
           justifyContent='space-between'
         >
           <Flex
@@ -39,10 +37,10 @@ export default function Page() {
                     color='black'
                     display='inline'
                   >
-                    <Box fontWeight={800} color={ALTAVIA_COLORS.primary} fontSize={{ base: '14px', md: '20px' }} display='inline'>
+                    <Box fontWeight={800} color='primary' fontSize={{ base: '14px', md: '20px' }} display='inline'>
                       ALTAVÍA PERÚ
                     </Box>
-                    <Box ml='10px' color={ALTAVIA_COLORS.black} fontSize={{ base: '14px', md: '18px' }} fontWeight={600} display='inline'>
+                    <Box ml='10px' color='black' fontSize={{ base: '14px', md: '18px' }} fontWeight={600} display='inline'>
                       Servicio de traslado de bienes que no requieren condiciones especiales.
                       Incluye productos terminados (empaquetados), materiales de construcción,
                       maquinaria, herramientas, y más.
@@ -51,7 +49,7 @@ export default function Page() {
                 </Flex>
 
                 {!isMobile && (
-                  <Box as='p' mt={{ base: '15px', md: '25px' }} color={ALTAVIA_COLORS.black} fontWeight={600} fontSize={{ base: '14px', md: '18px' }} display='inline'>
+                  <Box as='p' mt={{ base: '15px', md: '25px' }} color='black' fontWeight={600} fontSize={{ base: '14px', md: '18px' }} display='inline'>
                     Ofrecemos cobertura a nivel nacional con unidades monitoreadas en tiempo real,
                     operadores experimentados y cumplimiento estricto de plazos. Adaptamos nuestros
                     servicios a las necesidades de cada cliente, garantizando seguridad, puntualidad
@@ -69,7 +67,7 @@ export default function Page() {
                 <Image
                   src='/img/services/transporte-de-carga-general.jpg'
                   rounded='10px'
-                  border={`2px solid ${ALTAVIA_COLORS.lightPrimary}`}
+                  border='2px solid primary.400'
                   alt='transporte de carga general'
                   width={{ base: '100%', md: '100%' }}
                   height={{ base: '200px', md: '300px' }}

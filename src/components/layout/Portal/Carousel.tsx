@@ -7,7 +7,6 @@ import { CalculatorIcon, NextIcon, PrevIcon } from "src/common/icons";
 
 import "slick-carousel/slick/slick.css";
 import "slick-carousel/slick/slick-theme.css";
-import { ALTAVIA_COLORS } from "src/styles/shared";
 
 interface CarouselProps {
   images: any[]
@@ -85,6 +84,8 @@ export const CarouselComponent = (props: CarouselProps) => {
 
   const carouselHeight = '500px';
 
+  const TypedSlider = Slider as unknown as React.ComponentType<any>;
+
   return (
     <Box
       w="full"
@@ -119,7 +120,7 @@ export const CarouselComponent = (props: CarouselProps) => {
         SEGURO Y CONFIABLE
       </Box>
 
-      <Slider {...settings}>
+      <TypedSlider {...settings}>
         {props.images.map((img, idx) => (
           <Flex
             key={idx}
@@ -138,7 +139,7 @@ export const CarouselComponent = (props: CarouselProps) => {
             />
           </Flex>
         ))} 
-      </Slider>
+      </TypedSlider>
 
       <Link
         className="font-logo"
@@ -146,7 +147,7 @@ export const CarouselComponent = (props: CarouselProps) => {
         position='absolute'
         left={{ base: '30px', md: '120px'}}
         bottom={{ base: '-20px', md: '40px'}}
-        bg={ALTAVIA_COLORS.primary}
+        bg='primary'
         width={{ base: '210px', md: '350px'}}
         fontSize={{ base: 14, md: 22}}
         lineHeight='26px'
@@ -158,7 +159,7 @@ export const CarouselComponent = (props: CarouselProps) => {
         alignItems='center'
         _hover={{
           textDecoration: 'none',
-          bg: ALTAVIA_COLORS.lightPrimary
+          bg: 'primary.400'
         }}
         gap={2}
       >

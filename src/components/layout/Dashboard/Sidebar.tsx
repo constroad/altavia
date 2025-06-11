@@ -1,18 +1,15 @@
 'use client'
 
 import React from 'react'
-import { Box, Button, Flex, Icon, Image, Text } from '@chakra-ui/react'
-import { ALTAVIA_COLORS } from 'src/styles/shared'
+import { Box, Button, Flex, Icon, Image, Stack, Text } from '@chakra-ui/react'
 import { AiOutlineDoubleLeft } from "react-icons/ai";
 import { AiOutlineDoubleRight } from "react-icons/ai";
 import { useRouter, usePathname } from 'next/navigation';
 import { APP_ROUTES } from 'src/common/consts';
 import { ArrowBackIcon } from 'src/common/icons';
-import { CustomTooltip } from 'src/components/CustomTooltip';
 import { useScreenSize } from 'src/common/hooks';
 import DashboardNavbar from './DashboardNavbar';
 import { useSidebar } from 'src/context';
-import { Stack } from '@chakra-ui/layout';
 
 interface AdminSidebarProps {
   menuOptions?: any[]
@@ -37,7 +34,7 @@ export const Sidebar = (props: AdminSidebarProps) => {
     <Flex>
       <Flex
         flexDirection='column'
-        bgColor={ALTAVIA_COLORS.darkPrimary}
+        bgColor='primary.700'
         color="white"
         h='100vh'
         flexDir='column'
@@ -82,7 +79,7 @@ export const Sidebar = (props: AdminSidebarProps) => {
             )}
           </Flex>
 
-          <Stack spacing={1} mt='10px'>
+          <Stack spaceY={1} mt='10px'>
             {menuOptions?.map((opt, idx) => {
               return (
                 <Box key={idx}>
@@ -90,8 +87,8 @@ export const Sidebar = (props: AdminSidebarProps) => {
                     <Flex
                       alignItems="center"
                       cursor='pointer'
-                      _hover={{ bg: ALTAVIA_COLORS.primary }}
-                      bg={pathname.includes(opt.path) ? ALTAVIA_COLORS.lightPrimary : ''}
+                      _hover={{ bg: 'primary' }}
+                      bg={pathname.includes(opt.path) ? 'primary.400' : ''}
                       p={4}
                       h='56px'
                       minH='56px'

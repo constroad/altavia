@@ -9,12 +9,13 @@ import { IoSearchSharp } from 'react-icons/io5';
 import {
   Box,
   Flex,  
+  Input,  
+  InputGroup,  
+  InputProps,  
+  List,  
   ListItem,
   Spinner,
 } from '@chakra-ui/react';
-
-import { InputLeftElement, InputGroup, InputProps, Input  } from '@chakra-ui/input'
-import { UnorderedList } from '@chakra-ui/layout' // ✅
 
 import { ClickAwayListener } from '../clickAwayListener';
 import { isEmpty } from 'lodash';
@@ -118,11 +119,10 @@ export const AutoComplete = (props: AutocompleteProps) => {
         position="relative"
         borderColor="light-gray-3"
       >
-        <InputGroup>
-          <InputLeftElement width="32px" height="32px">
-            <IoSearchSharp color="gray" fontSize={18} />
-          </InputLeftElement>
-
+        <InputGroup
+          startElement={ <IoSearchSharp color="gray" fontSize={18} /> }
+          endElement={ props.isLoading ? <Spinner /> : props.rightIcon }
+        >
           <Input
             placeholder={placeholder}
             fontSize="inherit"
@@ -137,14 +137,13 @@ export const AutoComplete = (props: AutocompleteProps) => {
             onKeyDown={onKeyDown}
             aria-label="search"
             size={props.inputProps?.size ?? 'sm'}
-            isDisabled={props.inputProps?.isDisabled ?? false}        
+            disabled={props.inputProps?.disabled ?? false}        
             _focus={{
               ring: 'none',
               roundedTop: 6,
               borderColor: 'light-gray-3',
             }}
           />
-          {props.isLoading ? <Spinner /> : props.rightIcon}
         </InputGroup>
         <Box
           position="absolute"
@@ -158,7 +157,7 @@ export const AutoComplete = (props: AutocompleteProps) => {
           roundedBottom={openResultBox && !emptyOptions ? '6px' : ''}
           paddingY={openResultBox && !emptyOptions ? 1 : 0}
         >
-          <UnorderedList styleType="none" marginLeft="0px">
+          <List.Root as='ul' style={{ }} marginLeft="0px">
             {openResultBox &&
               localOptions.map((option) => {
                 return (
@@ -180,7 +179,7 @@ export const AutoComplete = (props: AutocompleteProps) => {
                   </ListItem>
                 );
               })}
-          </UnorderedList>
+          </List.Root>
         </Box>
         {/* No found */}
         {openResultBox && emptyOptions && (

@@ -4,7 +4,6 @@ import React from 'react'
 import { Box, Flex, Image, Text } from '@chakra-ui/react';
 import { useScreenSize } from 'src/common/hooks';
 import { PortalLayout, SubtitleComponent, nosotrosConfig } from 'src/components';
-import { ALTAVIA_COLORS } from 'src/styles/shared';
 
 export const NosotrosPage = () => {
   const { isMobile } = useScreenSize()
@@ -30,10 +29,10 @@ export const NosotrosPage = () => {
                   color='black'
                   display='inline'
                 >
-                  <Box fontWeight={800} color={ALTAVIA_COLORS.primary} fontSize={{ base: '14px', md: '20px' }} display='inline'>
+                  <Box fontWeight={800} color='primary' fontSize={{ base: '14px', md: '20px' }} display='inline'>
                     ALTAVÍA PERÚ
                   </Box>
-                  <Box ml='10px' color={ALTAVIA_COLORS.black} fontSize={{ base: '14px', md: '18px' }} fontWeight={600} display='inline'>
+                  <Box ml='10px' color='black' fontSize={{ base: '14px', md: '18px' }} fontWeight={600} display='inline'>
                     es una empresa peruana especializada en transporte de carga por carretera, con experiencia en el rubro y una sólida
                     reputación construida sobre la base del trabajo honesto, eficiente y comprometido. Cuenta con una moderna flota de
                     camiones equipada con sistemas de rastreo GPS, unidades acondicionadas para distintos tipos de carga, y un equipo
@@ -43,7 +42,7 @@ export const NosotrosPage = () => {
               </Flex>
 
               {!isMobile && (
-                <Box as='p' mt={{ base: '15px', md: '25px' }} color={ALTAVIA_COLORS.black} fontWeight={600} fontSize={{ base: '14px', md: '18px' }} display='inline'>
+                <Box as='p' mt={{ base: '15px', md: '25px' }} color='black' fontWeight={600} fontSize={{ base: '14px', md: '18px' }} display='inline'>
                   Atendemos a empresas de distintos sectores como agroindustria, construcción, minería, comercio, alimentos y manufactura.
                   Y nos diferenciamos en el mercado por brindar un servicio personalizado, entendiendo las necesidades específicas de cada
                   cliente y ofreciendo soluciones logísticas que optimizan tiempo y costos.
@@ -59,7 +58,7 @@ export const NosotrosPage = () => {
               <Image
                 src='/img/web/quienessomos2.png'
                 rounded='10px'
-                border={`2px solid ${ALTAVIA_COLORS.lightPrimary}`}
+                border={`2px solid primary.400`}
                 alt='quienes-somos-logo'
                 width={{ base: '100%', md: '100%' }}
                 height={{ base: '200px', md: '350px' }}
@@ -84,11 +83,13 @@ export const NosotrosPage = () => {
                 flexDir='column'
                 bg={item.bgColor}
                 transition="margin-top 0.3s"
-                border={`3px solid ${ALTAVIA_COLORS.lightPrimary}`}
+                border={'3px solid'}
+                borderColor={'primary.400'}
                 _hover={{
                   boxShadow: "0 8px 16px rgba(0, 0, 0, 0.4)",
                   mt: isMobile ? '15px' : `${item.hoverMt}`,
-                  border: `3px solid ${ALTAVIA_COLORS.lightPrimary}`,
+                  border: `3px solid`,
+                  borderColor: 'primary.400'
                 }}
                 className='font-logo'
               >

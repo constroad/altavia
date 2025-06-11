@@ -1,5 +1,4 @@
 import React from 'react';
-import { Select } from '@chakra-ui/select'
 
 import { useFormContext, Controller } from 'react-hook-form';
 import { FormControl, FormLabel, FormErrorMessage } from '@chakra-ui/form-control'
@@ -31,13 +30,28 @@ export const SelectField: React.FC<SelectFieldProps> = ({
         name={name}
         control={control}
         render={({ field }) => (
-          <Select {...field} id={name} placeholder={`Select ${label}`}>
+          <select
+            {...field}
+            id={name}
+            value={field.value}
+            onChange={field.onChange}
+            style={{
+              padding: '6px',
+              borderRadius: '6px',
+              fontSize: '14px',
+              border: '1px solid #CBD5E0',
+              width: '100%',
+            }}
+          >
+            <option value="" disabled hidden>
+              {`Select ${label}`}
+            </option>
             {options.map((option) => (
               <option key={option.value} value={option.value}>
                 {option.label}
               </option>
             ))}
-          </Select>
+          </select>
         )}
       />
       <FormErrorMessage>{errorMessage as React.ReactNode}</FormErrorMessage>

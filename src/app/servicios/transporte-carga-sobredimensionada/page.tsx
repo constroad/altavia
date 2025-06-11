@@ -3,11 +3,10 @@
 import React from 'react'
 import { Box, Flex, Image, Text } from '@chakra-ui/react'
 import { useScreenSize } from 'src/common/hooks'
-import { PortalLayout, SubtitleComponent, serviciosConfig } from 'src/components'
-import { ALTAVIA_COLORS } from 'src/styles/shared'
+import { PortalLayout, SubtitleComponent } from 'src/components'
 
 export default function Page() {
-  const { isDesktop, isMobile } = useScreenSize()
+  const { isMobile } = useScreenSize()
   return (
     <PortalLayout>
       <Flex width='100%' pb='20px'>
@@ -39,10 +38,10 @@ export default function Page() {
                     color='black'
                     display='inline'
                   >
-                    <Box fontWeight={800} color={ALTAVIA_COLORS.primary} fontSize={{ base: '14px', md: '20px' }} display='inline'>
+                    <Box fontWeight={800} color='primary' fontSize={{ base: '14px', md: '20px' }} display='inline'>
                       ALTAVÍA PERÚ
                     </Box>
-                    <Box ml='10px' color={ALTAVIA_COLORS.black} fontSize={{ base: '14px', md: '18px' }} fontWeight={600} display='inline'>
+                    <Box ml='10px' color='black' fontSize={{ base: '14px', md: '18px' }} fontWeight={600} display='inline'>
                       Servicio especializado para trasladar cargas que exceden las dimensiones o pesos estándar,
                       como maquinaria pesada, estructuras industriales o equipos de gran volumen. Requiere planificación de rutas,
                       permisos especiales y experiencia en maniobras seguras.
@@ -51,7 +50,7 @@ export default function Page() {
                 </Flex>
 
                 {!isMobile && (
-                  <Box as='p' mt={{ base: '15px', md: '25px' }} color={ALTAVIA_COLORS.black} fontWeight={600} fontSize={{ base: '14px', md: '18px' }} display='inline'>
+                  <Box as='p' mt={{ base: '15px', md: '25px' }} color='black' fontWeight={600} fontSize={{ base: '14px', md: '18px' }} display='inline'>
                     Contamos con unidades acondicionadas para este tipo de transporte, personal capacitado y
                     el respaldo técnico necesario para cumplir con las exigencias legales y operativas.
                     Garantizamos una ejecución segura y eficiente, minimizando riesgos y asegurando la
@@ -69,7 +68,7 @@ export default function Page() {
                 <Image
                   src='/img/services/transporte-de-carga-sobredimensionada.jpg'
                   rounded='10px'
-                  border={`2px solid ${ALTAVIA_COLORS.lightPrimary}`}
+                  border='2px solid primary'
                   alt='transporte de carga sobredimensionada'
                   width={{ base: '100%', md: '100%' }}
                   height={{ base: '200px', md: '300px' }}

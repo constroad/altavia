@@ -1,9 +1,7 @@
 'use client'
 
 import React, { useEffect, useState } from 'react'
-import { Box, Flex, Text } from '@chakra-ui/react';
-import { Input, InputGroup, InputLeftElement } from '@chakra-ui/input'
-import { UnorderedList, ListItem } from '@chakra-ui/layout'
+import { Box, Flex, Input, InputGroup, List, Text } from '@chakra-ui/react';
 import { SearchIcon } from 'src/common/icons';
 import { CONSTROAD_COLORS } from 'src/styles/shared';
 
@@ -53,10 +51,7 @@ export const SearchComponent = <T extends Option>(props: SearchComponentProps<T>
 
   return (
     <Box position='relative'>
-      <InputGroup>
-        <InputLeftElement pointerEvents="none" width='32px' height='32px'>
-          <SearchIcon color="gray.300" />
-        </InputLeftElement>
+      <InputGroup startElement={<SearchIcon color="gray.300" />} >
         <Input
           placeholder={placeholder}
           size='sm'
@@ -73,7 +68,8 @@ export const SearchComponent = <T extends Option>(props: SearchComponentProps<T>
         />
       </InputGroup>
       {openOptionBox && (
-        <UnorderedList
+        <List.Root
+          as='ul'
           listStyleType="none"
           width='100%'
           ml={0}
@@ -91,7 +87,7 @@ export const SearchComponent = <T extends Option>(props: SearchComponentProps<T>
           overflowY='scroll'
         >
           {filteredOptions.map((option, idx) => (
-            <ListItem
+            <List.Item
               key={idx}
               display='flex'
               alignItems='center'
@@ -112,9 +108,9 @@ export const SearchComponent = <T extends Option>(props: SearchComponentProps<T>
                   <Text fontSize={8} color={CONSTROAD_COLORS.darkGray}>{option.alias?.toUpperCase()}</Text>
                 )}
               </Flex>
-            </ListItem>
+            </List.Item>
           ))}
-        </UnorderedList>
+        </List.Root>
       )}
     </Box>
   );

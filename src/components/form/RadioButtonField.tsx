@@ -1,10 +1,10 @@
 import React from 'react';
 
-import { Radio, RadioGroup } from '@chakra-ui/radio'
 import { Stack } from '@chakra-ui/react' // Stack sí puede quedar
 
 import { useFormContext, Controller } from 'react-hook-form';
 import { FormControl, FormLabel, FormErrorMessage } from '@chakra-ui/form-control'
+import { Radio, RadioGroup } from '../ui/radio';
 
 interface RadioButtonFieldProps {
   name: string;

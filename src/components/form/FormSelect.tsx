@@ -2,11 +2,9 @@
 
 import React, { useState } from 'react'
 
-import { Input } from '@chakra-ui/input'
 import { FormControl, FormLabel } from '@chakra-ui/form-control'
-import { Box, Text, Flex } from '@chakra-ui/react'
-import { Select } from '@chakra-ui/select'
-
+import { Box, Text, Flex, Input } from '@chakra-ui/react'
+import { useScreenSize } from 'src/common/hooks'
 
 type OptionType = {
   label: string;
@@ -28,6 +26,7 @@ export const FormSelect = (props: CustomSelectProps) => {
   const [value, setValue] = useState<string>(phaseValue ?? '');
   const [inputValue, setInputValue] = useState<string>('')
   const [isCustom, setIsCustom] = useState<boolean>(false);
+  const { isMobile } = useScreenSize();
 
   const newOptions = [...options, { label: 'PERSONALIZAR FASE', value: 'CUSTOM' }]
 
@@ -59,22 +58,26 @@ export const FormSelect = (props: CustomSelectProps) => {
               {label} {!props.required ? <Text color='gray' fontSize={8} display='inline-block'>(optional)</Text> : <Text color='red' fontSize={10} display='inline-block'>*</Text>}
             </FormLabel> 
           )}
-          <Select
-            placeholder="SELECCIONA UNA FASE"
+          <select
             value={value}
             onChange={handleChangeSelect}
-            maxH='28px'
-            minH='28px'
-            h='28px'
-            fontSize={{ base: 10, md: 12 }}
-            rounded='6px'
-            style={{ paddingLeft: '5px' }}
+            style={{
+              paddingLeft: '5px',
+              maxHeight: '28px',
+              minHeight: '28px',
+              height: '28px',
+              fontSize: isMobile ? '10px' : '12px',
+              borderRadius: '6px',
+            }}
             required={props.required}
           >
+            <option value="" disabled hidden>
+              SELECCIONA UNA FASE
+            </option>
             {newOptions.map(option => (
               <option key={option.value} value={option.value}>{option.label}</option>
             ))}
-          </Select>
+          </select>
         </Flex>
 
         {isCustom && (

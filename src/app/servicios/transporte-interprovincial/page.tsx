@@ -4,7 +4,6 @@ import React from 'react'
 import { Box, Flex, Image, Text } from '@chakra-ui/react'
 import { useScreenSize } from 'src/common/hooks'
 import { PortalLayout, SubtitleComponent, serviciosConfig } from 'src/components'
-import { ALTAVIA_COLORS } from 'src/styles/shared'
 
 export default function Page() {
   const { isDesktop, isMobile } = useScreenSize()
@@ -39,10 +38,10 @@ export default function Page() {
                     color='black'
                     display='inline'
                   >
-                    <Box fontWeight={800} color={ALTAVIA_COLORS.primary} fontSize={{ base: '14px', md: '20px' }} display='inline'>
+                    <Box fontWeight={800} color='primary' fontSize={{ base: '14px', md: '20px' }} display='inline'>
                       ALTAVÍA PERÚ
                     </Box>
-                    <Box ml='10px' color={ALTAVIA_COLORS.black} fontSize={{ base: '14px', md: '18px' }} fontWeight={600} display='inline'>
+                    <Box ml='10px' color='black' fontSize={{ base: '14px', md: '18px' }} fontWeight={600} display='inline'>
                       Servicio de traslado de mercancías entre distintas regiones o provincias del país,
                       ya sea de costa, sierra o selva. Involucra planificación de rutas, permisos y
                       seguimiento en tiempo real.
@@ -51,7 +50,7 @@ export default function Page() {
                 </Flex>
 
                 {!isMobile && (
-                  <Box as='p' mt={{ base: '15px', md: '25px' }} color={ALTAVIA_COLORS.black} fontWeight={600} fontSize={{ base: '14px', md: '18px' }} display='inline'>
+                  <Box as='p' mt={{ base: '15px', md: '25px' }} color='black' fontWeight={600} fontSize={{ base: '14px', md: '18px' }} display='inline'>
                     Contamos con una flota equipada para enfrentar diversos terrenos y condiciones climáticas,
                     así como un equipo logístico que asegura el cumplimiento normativo y la entrega puntual.
                     Nuestro sistema de trazabilidad permite a los clientes conocer el estado de sus envíos en
@@ -69,7 +68,7 @@ export default function Page() {
                 <Image
                   src='/img/services/transporte-interprovincial.png'
                   rounded='10px'
-                  border={`2px solid ${ALTAVIA_COLORS.lightPrimary}`}
+                  border={`2px solid primary.400`}
                   alt='transporte interprovincial'
                   width={{ base: '100%', md: '100%' }}
                   height={{ base: '200px', md: '300px' }}

@@ -1,20 +1,14 @@
-import { Button, Flex, IconButton, Text } from "@chakra-ui/react";
+import { Flex, Text } from "@chakra-ui/react";
 import { APP_ROUTES } from "src/common/consts";
 import { LocationIcon, MailIcon, RoadIcon, WhatsAppIcon } from "src/common/icons";
 import { FooterLink } from './FooterLink';
 import { SiNintendogamecube } from "react-icons/si";
-import { LuPaintbrush } from "react-icons/lu";
 import { MdFactory } from "react-icons/md";
 import { usePathname, useRouter } from 'next/navigation'
 import { useScreenSize } from "src/common/hooks";
-import { SiFacebook } from "react-icons/si";
-import { AiFillInstagram } from "react-icons/ai";
 import { HiHome } from "react-icons/hi2";
 import { FaPeopleGroup } from "react-icons/fa6";
 import { BsMailbox2 } from "react-icons/bs";
-import { TbLogin2 } from "react-icons/tb";
-import { CustomIconButton } from "src/components/CustomIconButton";
-import { ALTAVIA_COLORS } from "src/styles/shared";
 
 const Footer = () => {
   const { isMobile } = useScreenSize()
@@ -69,7 +63,7 @@ const Footer = () => {
         pb='15px'
         position='relative'
       >
-        <Flex bg={ALTAVIA_COLORS.darkPrimary} w='100%' h='100%' opacity={0.8} zIndex={10} position='absolute' top='0' left='0'></Flex>
+        <Flex bg='primary.700' w='100%' h='100%' opacity={0.8} zIndex={10} position='absolute' top='0' left='0'></Flex>
 
         <Flex flexDir={{ base: 'column', md: 'row' }} w='100%' justifyContent={{ base: 'start', md: 'space-between' }} pb='40px' h={{ base: 'calc(100vh - 105px)', md: '263px' }}>
           <Flex flexDir='column' width={{ base: '100%', md: 'fit-content' }} paddingX={{ base: '30px', md: '0px' }} zIndex={20}>

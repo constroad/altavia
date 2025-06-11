@@ -5,7 +5,6 @@ import { Button, Flex, Text } from '@chakra-ui/react'
 import { signOut, useSession } from 'next-auth/react'
 import { APP_ROUTES } from 'src/common/consts'
 import { toast } from 'src/components/Toast'
-import { ALTAVIA_COLORS } from 'src/styles/shared'
 import { useSidebar } from 'src/context'
 
 export const DashboardNavbar = () => {
@@ -37,7 +36,7 @@ export const DashboardNavbar = () => {
             height={{base: '25px', md: '40px'}}
             color='white'
             onClick={handleSignOut}
-            bg={ALTAVIA_COLORS.darkPrimary}
+            bg='primary.700'
             fontSize={{base: 10, md: 14}}
             _hover={{opacity: 0.7}}
           >

@@ -3,13 +3,10 @@
 import { Box, Flex, Grid, GridItem, Icon, Image, Text, SimpleGrid } from '@chakra-ui/react'
 import { useEffect, useState } from 'react'
 import { FaAnglesDown } from 'react-icons/fa6'
-import { GiGears } from 'react-icons/gi'
-import { ImLeaf } from 'react-icons/im'
 import {
   PortalLayout,
   ServiceCard,
   SubtitleComponent,
-  nosotrosConfig,
   serviciosConfig,
 } from 'src/components'
 import { CarouselComponent } from 'src/components/layout/Portal/Carousel'
@@ -19,7 +16,6 @@ import {
   clientsImages,
 } from 'src/components/layout/Portal/config'
 import { useScreenSize } from 'src/common/hooks'
-import { ALTAVIA_COLORS } from 'src/styles/shared'
 
 export default function HomePageContent() {
   const [showArrow, setShowArrow] = useState(true)
@@ -89,7 +85,7 @@ export default function HomePageContent() {
                   as='h2'
                   fontSize={{ base: 18, md: 22 }}
                   fontWeight={700}
-                  color={ALTAVIA_COLORS.black}
+                  color='black'
                   className='font-logo'
                   mt={{ base: '5px', md: '20px' }}
                 >
@@ -111,10 +107,10 @@ export default function HomePageContent() {
                       color='black'
                       display='inline'
                     >
-                      <Box fontWeight={800} color={ALTAVIA_COLORS.primary} fontSize={{ base: '14px', md: '20px' }} display='inline'>
+                      <Box fontWeight={800} color='primary' fontSize={{ base: '14px', md: '20px' }} display='inline'>
                         ALTAVÍA PERÚ
                       </Box>
-                      <Box ml='10px' color={ALTAVIA_COLORS.black} fontSize={{ base: '14px', md: '18px' }} fontWeight={600} display='inline'>
+                      <Box ml='10px' color='black' fontSize={{ base: '14px', md: '18px' }} fontWeight={600} display='inline'>
                         es una empresa peruana especializada en transporte de carga por carretera, con experiencia en el rubro y una sólida
                         reputación construida sobre la base del trabajo honesto, eficiente y comprometido. Cuenta con una moderna flota de
                         camiones equipada con sistemas de rastreo GPS, unidades acondicionadas para distintos tipos de carga, y un equipo
@@ -124,7 +120,7 @@ export default function HomePageContent() {
                   </Flex>
 
                   {!isMobile && (
-                    <Box as='p' mt={{ base: '15px', md: '25px' }} color={ALTAVIA_COLORS.black} fontWeight={600} fontSize={{ base: '14px', md: '18px' }} display='inline'>
+                    <Box as='p' mt={{ base: '15px', md: '25px' }} color='black' fontWeight={600} fontSize={{ base: '14px', md: '18px' }} display='inline'>
                       Atendemos a empresas de distintos sectores como agroindustria, construcción, minería, comercio, alimentos y manufactura.
                       Y nos diferenciamos en el mercado por brindar un servicio personalizado, entendiendo las necesidades específicas de cada
                       cliente y ofreciendo soluciones logísticas que optimizan tiempo y costos.
@@ -140,7 +136,7 @@ export default function HomePageContent() {
                   <Image
                     src='/img/web/quienessomos2.png'
                     rounded='10px'
-                    border={`2px solid ${ALTAVIA_COLORS.lightPrimary}`}
+                    border={`2px solid primary.400`}
                     alt='quienes-somos-logo'
                     width={{ base: '100%', md: '100%' }}
                     height={{ base: '200px', md: '350px' }}

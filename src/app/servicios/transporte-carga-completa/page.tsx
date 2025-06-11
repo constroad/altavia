@@ -4,10 +4,9 @@ import React from 'react'
 import { Flex, Image, Box } from '@chakra-ui/react'
 import { useScreenSize } from 'src/common/hooks'
 import { PortalLayout, SubtitleComponent } from 'src/components'
-import { ALTAVIA_COLORS } from 'src/styles/shared'
 
 export default function Page() {
-  const { isDesktop, isMobile } = useScreenSize()
+  const { isMobile } = useScreenSize()
   return (
     <PortalLayout>
       <Flex width='100%' pb='20px'>
@@ -39,10 +38,10 @@ export default function Page() {
                     color='black'
                     display='inline'
                   >
-                    <Box fontWeight={800} color={ALTAVIA_COLORS.primary} fontSize={{ base: '14px', md: '20px' }} display='inline'>
+                    <Box fontWeight={800} color='primary' fontSize={{ base: '14px', md: '20px' }} display='inline'>
                       ALTAVÍA PERÚ
                     </Box>
-                    <Box ml='10px' color={ALTAVIA_COLORS.black} fontSize={{ base: '14px', md: '18px' }} fontWeight={600} display='inline'>
+                    <Box ml='10px' color='black' fontSize={{ base: '14px', md: '18px' }} fontWeight={600} display='inline'>
                       Transporte exclusivo para un solo cliente que necesita usar todo el espacio del camión.
                       Se garantiza mayor seguridad, rapidez y menor manipulación de la mercancía.
                     </Box>
@@ -50,7 +49,7 @@ export default function Page() {
                 </Flex>
 
                 {!isMobile && (
-                  <Box as='p' mt={{ base: '15px', md: '25px' }} color={ALTAVIA_COLORS.black} fontWeight={600} fontSize={{ base: '14px', md: '18px' }} display='inline'>
+                  <Box as='p' mt={{ base: '15px', md: '25px' }} color='black' fontWeight={600} fontSize={{ base: '14px', md: '18px' }} display='inline'>
                     Este servicio está diseñado para cargas sensibles, urgentes o de alto valor, donde
                     la prioridad es minimizar riesgos y optimizar tiempos de entrega. Ofrecemos unidades dedicadas,
                     rutas directas y atención personalizada desde el origen hasta el destino final,
@@ -68,7 +67,7 @@ export default function Page() {
                 <Image
                   src='/img/services/transporte-de-carga-completa.png'
                   rounded='10px'
-                  border={`2px solid ${ALTAVIA_COLORS.lightPrimary}`}
+                  border={`2px solid primary.400`}
                   alt='transporte de carga completa'
                   width={{ base: '100%', md: '100%' }}
                   height={{ base: '200px', md: '300px' }}

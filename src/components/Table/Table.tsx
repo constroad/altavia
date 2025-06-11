@@ -7,24 +7,14 @@ import {
   Text,
 } from '@chakra-ui/react';
 
-import { CircularProgress } from '@chakra-ui/progress'
-import {
-  Table,
-  Thead,
-  Tbody,
-  Tr,
-  Th,
-  Td,
-  TableProps,
-} from '@chakra-ui/table'
-
 import { SortColumnStatus, TableColumn, TableData } from './TableTypes';
 import { CONSTROAD_COLORS } from 'src/styles/shared';
 import { EditIcon, ShareIcon, TrashIcon } from 'src/common/icons';
 import { useEffect, useMemo, useState } from 'react';
 import { Pagination } from './Pagination';
-import { v4 as uuidv4 } from 'uuid';
 import { WithSort } from './WithSort';
+import { Table, Tbody, Td, Th, Thead, Tr } from '../ui/table';
+import { ProgressCircle } from '../ui/progress-circle';
 
 export type TableAction = 'paginate' | 'filter';
 export type TablePagination = {
@@ -48,7 +38,7 @@ interface Props {
   totalRecords?: number;
   // Renders
   toolbar?: React.ReactNode;
-  tableProps?: TableProps
+  // tableProps?: TableProps
 }
 
 export const TableComponent = (props: Props) => {
@@ -171,7 +161,7 @@ export const TableComponent = (props: Props) => {
                 position="absolute"
                 fontSize={12}
               >
-                <CircularProgress
+                <ProgressCircle
                   isIndeterminate
                   color="white"
                   size="25px"

@@ -4,7 +4,6 @@ import { Flex, Text } from '@chakra-ui/react'
 
 import { DisplayOptionIcon, HideOptionIcon } from 'src/common/icons'
 import { GenerateNavOptions, serviciosOptions } from './config'
-import { ALTAVIA_COLORS } from 'src/styles/shared'
 
 interface IMobileMenu {
   toggleNosotrosMenu: (option: string) => void
@@ -37,7 +36,7 @@ export const MobileMenu = (props: IMobileMenu) => {
       width='100%'
       height='auto'
       zIndex={1000}
-      backgroundColor={ALTAVIA_COLORS.lightPrimary}
+      backgroundColor='primary.400'
       flexDir='column'
       alignItems='center'
       borderBottom="0px solid rgba(0, 0, 0, 0.1)"

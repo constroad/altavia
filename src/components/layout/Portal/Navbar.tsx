@@ -5,7 +5,6 @@ import { APP_ROUTES } from 'src/common/consts';
 import { ArrowDown, HideMenuMobileIcon, ShowMenuMobileIcon } from 'src/common/icons';
 
 import { GenerateNavOptions, serviciosOptions } from './config'
-import { ALTAVIA_COLORS, CONSTROAD_COLORS } from 'src/styles/shared';
 import { useScreenSize } from 'src/common/hooks';
 import { signOut, useSession } from 'next-auth/react';
 import { toast } from 'src/components/Toast';
@@ -45,7 +44,7 @@ export const Navbar = (props: INavbar) => {
   return (
     <Flex
       id='navbar'
-      bg={ALTAVIA_COLORS.primary}
+      bg='primary'
       as='nav'
       width='100%'
       height={{ base: '50px', md: '90px' }}
@@ -61,7 +60,7 @@ export const Navbar = (props: INavbar) => {
         paddingX={{ base: '20px', md: '110px' }}
         alignItems='center'
         justifyContent='space-between'
-        bg={ALTAVIA_COLORS.primary}
+        bg='primary'
         width={{ base: '100vw', md: '100vw' }}
         marginX={{ base: '', md: 'auto' }}
       >
@@ -136,11 +135,11 @@ export const Navbar = (props: INavbar) => {
                 path === opt.path ||
                 (path.includes(APP_ROUTES.nosotros) && opt.path.includes(APP_ROUTES.nosotros)) ||
                 (path.includes(APP_ROUTES.servicios) && opt.path.includes(APP_ROUTES.servicios))
-                  ? ALTAVIA_COLORS.darkPrimary
+                  ? 'primary.700'
                   : 'transparent'
               }
               _hover={{
-                background: ALTAVIA_COLORS.darkPrimary,
+                background: 'primary.700',
                 color: 'white',
                 cursor: 'pointer',
               }}
@@ -188,14 +187,14 @@ export const Navbar = (props: INavbar) => {
                     <Flex
                       as="li"
                       key={sopt.label}
-                      color={path.includes(sopt.path) ? 'white' : ALTAVIA_COLORS.primary}
-                      bg={path.includes(sopt.path) ? ALTAVIA_COLORS.primary : 'transparent'}
+                      color={path.includes(sopt.path) ? 'white' : 'primary'}
+                      bg={path.includes(sopt.path) ? 'primary' : 'transparent'}
                       px={5}
                       py={2}
                       cursor="pointer"
                       alignItems="center"
                       _hover={{
-                        background: ALTAVIA_COLORS.primary,
+                        background: 'primary',
                         color: 'white',
                       }}
                       onClick={(e) => {
@@ -225,11 +224,11 @@ export const Navbar = (props: INavbar) => {
               position='relative'
               roundedTop='4px'
               _hover={{
-                background: ALTAVIA_COLORS.darkPrimary,
+                background: 'primary.700',
                 color: 'white',
                 cursor: 'pointer',
               }}
-              bg={ path === APP_ROUTES.login ? ALTAVIA_COLORS.darkPrimary : 'transparent'}
+              bg={ path === APP_ROUTES.login ? 'primary.700' : 'transparent'}
               className={
                 path === APP_ROUTES.login ?
                 'bg-[#feb100] !text-white hover:text-white' : ''
@@ -275,7 +274,7 @@ export const Navbar = (props: INavbar) => {
             paddingX='4px'
             paddingY='2px'
             onClick={(e) => props.handleMobileMenuClick(e)}
-            backgroundColor={ALTAVIA_COLORS.darkPrimary}
+            backgroundColor='primary.700'
           >
             {props.showMobileOptions ? <HideMenuMobileIcon fontSize={10}/> : <ShowMenuMobileIcon fontSize={10}/>}
           </Button>

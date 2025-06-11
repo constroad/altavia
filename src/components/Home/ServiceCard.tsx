@@ -4,7 +4,6 @@ import React, { useState } from 'react'
 import { Button, Flex, Text } from '@chakra-ui/react'
 import { useScreenSize } from 'src/common/hooks'
 import { useRouter } from 'next/navigation'
-import { ALTAVIA_COLORS } from 'src/styles/shared'
 
 interface ServiceCardProps {
   service: {
@@ -37,7 +36,7 @@ export const ServiceCard = (props: ServiceCardProps) => {
       position='relative'
       justifyContent='end'
       className='font-logo'
-      border={`2px solid ${ALTAVIA_COLORS.primary}`}
+      border={`2px solid primary`}
       _hover={
         !isMobile
           ? {
@@ -125,7 +124,7 @@ export const ServiceCard = (props: ServiceCardProps) => {
         <Flex
           className='child3'
           position='absolute'
-          bg={ALTAVIA_COLORS.primary}
+          bg='primary'
           color='white'
           fontWeight={600}
           rounded='10px'

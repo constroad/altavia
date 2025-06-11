@@ -1,6 +1,5 @@
 import React from 'react'
 import { Text } from '@chakra-ui/react'
-import { ALTAVIA_COLORS, CONSTROAD_COLORS } from 'src/styles/shared'
 import { useScreenSize } from 'src/common/hooks'
 
 interface SubtitleComponentProps {
@@ -16,7 +15,7 @@ export const SubtitleComponent = (props: SubtitleComponentProps) => {
       as='h2'
       fontSize={{ base: props.fontsize ?? 22, md: 40 }}
       fontWeight={800}
-      color={ props.color ? props.color : ALTAVIA_COLORS.black}
+      color='black'
       className='font-logo'
       w='fit-content'
       position='relative'
@@ -24,10 +23,10 @@ export const SubtitleComponent = (props: SubtitleComponentProps) => {
         content: '""',
         position: 'absolute',
         left: '0px',
-        bottom: isMobile ? '6px' : '15px', // Ajusta esta distancia si es necesario
-        width: '80%', // Controla el ancho del subrayado aquí
+        bottom: isMobile ? '6px' : '15px',
+        width: '80%',
         height: '4px',
-        backgroundColor: ALTAVIA_COLORS.lightPrimary // Cambia esto al color que prefieras
+        backgroundColor: 'primary.400'
       }}
     >
       {props.text}

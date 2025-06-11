@@ -26,8 +26,6 @@ export const Sidebar = (props: AdminSidebarProps) => {
   const router = useRouter()
   const pathname = usePathname()
 
-  console.log('isExpanded:', isExpanded)
-
   const handleToggleSidebar = () => {
     if (isMobile) return;
     toggleSidebar()
@@ -149,6 +147,7 @@ export const Sidebar = (props: AdminSidebarProps) => {
           py={2}
           overflowY='scroll'
           w={isMobile ? 'calc(100vw - 50px)' : ''}
+          flexDir="column"
         >
           {children}
         </Flex>

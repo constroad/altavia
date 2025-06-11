@@ -104,7 +104,7 @@ export const TableComponent = (props: Props) => {
     setSortColumn(key);
   };
 
-  const totalPages = props.totalPages || Math.ceil(data.length / itemsPerPage);
+  const totalPages = props.totalPages ?? Math.ceil(data.length / itemsPerPage);
 
   return (
     <Flex

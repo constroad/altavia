@@ -23,17 +23,17 @@ export const DashboardLayout = (props: DashboardLayoutProps) => {
     <div style={{ width: '100vw', minHeight: '100vh' }}>
       <CustomHead />
 
-      {session && (
+      {/* {session && ( */}
         <Flex>
           <Sidebar menuOptions={dashboardTabs} > 
             { props.children }
           </Sidebar>
         </Flex>
-      )}
+      {/* )} */}
 
-      {!session && (
+      {/* {!session && (
         <NoSessionPage />
-      )}
+      )} */}
     </div>
   )
 }

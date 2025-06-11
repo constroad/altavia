@@ -1,22 +1,22 @@
 import React from 'react';
-import {
-  Input,
-  Text,
-} from '@chakra-ui/react';
+import { Field, Input } from '@chakra-ui/react';
 import { useFormContext, Controller } from 'react-hook-form';
 
-import { FormControl, FormLabel, FormErrorMessage } from '@chakra-ui/form-control'
+import { InputProps } from '@chakra-ui/input';
 
-interface InputFieldProps {
+interface InputFieldProps extends InputProps {
   name: string;
   label?: string;
   isRequired?: boolean;
+  placeholder?: string;
 }
 
 export const InputField: React.FC<InputFieldProps> = ({
   name,
   label,
   isRequired = false,
+  placeholder,
+  type,
 }) => {
   const {
     control,
@@ -25,14 +25,34 @@ export const InputField: React.FC<InputFieldProps> = ({
 
   const errorMessage = errors[name]?.message;
   return (
-    <FormControl isInvalid={!!errors[name]} isRequired={isRequired}>
-      {label && <FormLabel htmlFor={name}>{label}</FormLabel>}
+    <Field.Root invalid={!!errorMessage} required={isRequired}>
+      {label && (
+        <Field.Label htmlFor={name}>
+          {label}
+          <Field.RequiredIndicator />
+        </Field.Label>
+      )}
       <Controller
         name={name}
         control={control}
-        render={({ field }) => <Input size="sm" {...field} id={name} />}
+        render={({ field }) => (
+          <Input
+            size="sm"
+            {...field}
+            id={name}
+            placeholder={placeholder}
+            type={type}
+            onChange={(e) => {
+              let value: string | number = e.target.value;
+              if (type === 'number') {
+                value = +value;
+              }
+              field.onChange(value); // Asegurar que React Hook Form reciba el valor modificado
+            }}
+          />
+        )}
       />
-      <FormErrorMessage>{errorMessage as React.ReactNode}</FormErrorMessage>
-    </FormControl>
+      {isRequired && <Field.ErrorText>{errorMessage}</Field.ErrorText>}
+    </Field.Root>
   );
 };

@@ -1,16 +1,9 @@
 'use client';
-import { Controller, useForm } from 'react-hook-form';
-import { Box, Button, Input, Select, VStack, HStack, Portal } from '@chakra-ui/react';
-
-export type TripFormValues = {
-  origin: string;
-  destination: string;
-  vehicle: string;
-  driver: string;
-  client: string;
-  startDate: string;
-  revenue: number;
-};
+import { FormProvider, useForm } from 'react-hook-form';
+import { Box, Button, VStack, HStack, Field, Textarea } from '@chakra-ui/react';
+import { ITripSchemaValidation, TripSchemaValidation } from 'src/models/trip';
+import { zodResolver } from '@hookform/resolvers/zod';
+import { InputField, SelectField } from '../form';
 
 export default function TripForm({
   vehicles,
@@ -21,106 +14,82 @@ export default function TripForm({
   vehicles: any[];
   drivers: any[];
   clients: any[];
-  onSubmit: (data: TripFormValues) => void;
+  onSubmit: (data: ITripSchemaValidation) => void;
 }) {
-  const { register, handleSubmit, control } = useForm<TripFormValues>();
+  const methods = useForm<ITripSchemaValidation>({
+    resolver: zodResolver(TripSchemaValidation),
+    // defaultValues: employee,
+  });
+
+  const {
+    // reset,
+    // control,
+    // setValue,
+    watch,
+    formState: { errors },
+  } = methods;
+
+  const values = watch();
+  console.log('values:', values);
 
   return (
-    <Box
-      as="form"
-      onSubmit={handleSubmit(onSubmit)}
-      p={4}
-      bg="white"
-      borderRadius="lg"
-      boxShadow="lg"
-    >
-      <VStack gap={4}>
-        <HStack gap={4}>
-          <Box>
-            <Box>Origin</Box>
-            <Input {...register('origin')} placeholder="Region/Province" />
-          </Box>
-          <Box>
-            <Box>Destination</Box>
-            <Input {...register('destination')} placeholder="Region/Province" />
-          </Box>
-        </HStack>
-        <HStack gap={4}>
-          <Box>
-            <Box>Vehicle</Box>
-            <Controller
-              name="vehicle"
-              control={control}
-              render={({ field }) => (
-                <Select.Root
-                  collection={vehicles}
-                  onValueChange={field.onChange}
-                  value={field.value}
-                  name={field.name}
-                  size="sm"
-                  width="320px"
-                >
-                  <Select.HiddenSelect />
-                  <Select.Control>
-                    <Select.Trigger>
-                      <Select.ValueText placeholder="Select vehicle" />
-                    </Select.Trigger>
-                    <Select.IndicatorGroup>
-                      <Select.Indicator />
-                    </Select.IndicatorGroup>
-                  </Select.Control>
-                  <Portal>
-                    <Select.Positioner>
-                      <Select.Content>
-                        {vehicles.map((vehicle) => (
-                          <Select.Item item={vehicle} key={vehicle.value}>
-                            {vehicle.label}
-                            <Select.ItemIndicator />
-                          </Select.Item>
-                        ))}
-                      </Select.Content>
-                    </Select.Positioner>
-                  </Portal>
-                </Select.Root>
-              )}
+    <FormProvider {...methods}>
+      <form onSubmit={methods.handleSubmit(onSubmit)} noValidate>
+        <VStack gap={4}>
+          <HStack gap={4}>
+            <InputField
+              name="origin"
+              label="Origen"
+              placeholder="Region/Province"
+              // isRequired
+              isInvalid={!!errors.origin?.message}
             />
-            {/* <Select {...register('vehicle')}>
-              {vehicles.map((v) => <option value={v._id} key={v._id}>{v.plate}</option>)}
-            </Select> */}
-          </Box>
+
+            <InputField
+              name="destination"
+              label="Destino"
+              placeholder="Region/Province"
+              // isRequired
+            />
+          </HStack>
+          <HStack gap={4}>
+            <SelectField name="vehicle" label="Vehicle" options={vehicles} />
+            <SelectField name="driver" label="Driver" options={drivers} />
+          </HStack>
           <Box>
-            <Box>Driver</Box>
-            {/* <Select {...register('driver')}>
-              {drivers.map((d) => (
-                <option value={d._id} key={d._id}>
-                  {d.name}
-                </option>
-              ))}
-            </Select> */}
+            <SelectField name="client" label="Client" options={clients} />
           </Box>
-        </HStack>
-        <Box>
-          <Box>Client</Box>
-          {/* <Select {...register('client')}>
-            {clients.map((c) => (
-              <option value={c._id} key={c._id}>
-                {c.name}
-              </option>
-            ))}
-          </Select> */}
-        </Box>
-        <Box>
-          <Box>Start Date</Box>
-          <Input type="datetime-local" {...register('startDate')} />
-        </Box>
-        <Box>
-          <Box>Revenue</Box>
-          <Input type="number" {...register('revenue')} />
-        </Box>
-        <Button type="submit" colorScheme="green" w="full">
-          Create Trip
-        </Button>
-      </VStack>
-    </Box>
+          <HStack gap={4}>
+            <InputField
+              type="date-local"
+              name="startDate"
+              label="Start Date"
+              // isRequired
+            />
+            <InputField
+              type="date-local"
+              name="endDate"
+              label="End Date"
+              isRequired
+            />
+          </HStack>
+          <Box>
+            <InputField
+              type="number"
+              name="revenue"
+              label="Ganancia"
+              isRequired
+            />
+          </Box>
+          <Field.Root invalid>
+            <Field.Label>Notes</Field.Label>
+            <Textarea name="notes" />
+          </Field.Root>
+          <Button type="submit" colorScheme="green" w="full">
+            Create Trip
+          </Button>
+        </VStack>
+      </form>
+    </FormProvider>
   );
 }

@@ -162,9 +162,8 @@ export const TableComponent = (props: Props) => {
                 fontSize={12}
               >
                 <ProgressCircle
-                  isIndeterminate
                   color="white"
-                  size="25px"
+                  size="md"
                   thickness="10px"
                   trackColor="green.500"
                 />

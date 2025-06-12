@@ -82,9 +82,11 @@ export const MiniCarousel = (props: CarouselProps) => {
     prevArrow: <SamplePrevArrow isMobile={isMobile} />,
   }
 
+  const TypedSlider = Slider as unknown as React.ComponentType<any>;
+
   return (
     <Box w='full' position='relative' justifyContent='center' style={{ height: isMobile ? '90px' : '150px' }}>
-      <Slider {...settings}>
+      <TypedSlider {...settings}>
         {props.images.map((img, idx) => (
           <Flex
             key={idx}
@@ -100,7 +102,7 @@ export const MiniCarousel = (props: CarouselProps) => {
             </Flex>
           </Flex>
         ))} 
-      </Slider>
+      </TypedSlider>
     </Box>
   )
 }

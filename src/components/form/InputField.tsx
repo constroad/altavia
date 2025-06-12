@@ -7,6 +7,7 @@ interface InputFieldProps extends InputProps {
   label?: string;
   isRequired?: boolean;
   placeholder?: string;
+  isInvalid?: boolean;
 }
 
 export const InputField: React.FC<InputFieldProps> = ({
@@ -15,6 +16,7 @@ export const InputField: React.FC<InputFieldProps> = ({
   isRequired = false,
   placeholder,
   type,
+  isInvalid
 }) => {
   const {
     control,
@@ -32,7 +34,10 @@ export const InputField: React.FC<InputFieldProps> = ({
 
 
   return (
-    <Field.Root invalid={!!errorMessage} required={isRequired}>
+    <Field.Root
+      invalid={isInvalid ?? !!errorMessage}
+      required={isRequired}
+    >
       {label && (
         <Field.Label htmlFor={name}>
           {label}

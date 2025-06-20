@@ -7,6 +7,7 @@ interface UseMutateOptions extends RequestInit {
 }
 
 interface MutateParams<T> {
+  requestUrl?: string;
   onSuccess?: (data: T) => void;
   onError?: (error: Error) => void;
 }
@@ -66,6 +67,7 @@ export const useMutate = <T = any>(
     setMutateLoading(true);
     setMutateError(null);
     setMutateData(null);
+    const { requestUrl } = params ?? {}
 
     let previousData: T[] | undefined;
     if (updateCache) {
@@ -84,7 +86,7 @@ export const useMutate = <T = any>(
     }
 
     try {
-      const response = await fetch(url, {
+      const response = await fetch(requestUrl || url, {
         ...options,
         method,
         headers: {

@@ -2,6 +2,7 @@ import NextAuth from "next-auth";
 import CredentialsProvider from "next-auth/providers/credentials";
 import type { NextAuthOptions } from "next-auth";
 import { UserRepository } from "src/repositories/userRepository";
+import { IUser } from "src/models/user";
 
 // export const authOptions: NextAuthOptions = {
 //   providers: [
@@ -12,20 +13,26 @@ import { UserRepository } from "src/repositories/userRepository";
 //         password: { label: "Password", type: "password" },
 //       },
 //       async authorize(credentials) {
-//         if (credentials?.username && credentials?.password) {
-//           const repo = new UserRepository();
-//           const user = await repo.authenticateUser(credentials.username, credentials.password);
+//         try {
+//           if (credentials?.username && credentials?.password) {
+//             // const repo = new UserRepository();
+//             const user = await UserRepository.authenticateUser(credentials.username, credentials.password);
 
-//           if (user) {
-//             return {
-//               id: user._id.toString(),
-//               name: user.userName,
-//               role: user.role,
-//               isActive: user.isActive
-//             };
+//             if (user && user._id && user.userName) {
+//               return {
+//                 id: user._id.toString(),
+//                 name: user.userName,
+//                 role: user.role,
+//                 isActive: user.isActive
+//               };
+//             }
 //           }
+//           return null;
+          
+//         } catch (error: any) {
+//           console.error("❌ Error en authorize:", error.message);
+//           throw new Error(error.message || "Error al iniciar sesión");
 //         }
-//         return null;
 //       },
 //     }),
 //   ],

@@ -31,6 +31,7 @@ export const API_ROUTES = {
   trips: '/api/trips',    
   vehicles: '/api/vehicles',    
   notificationWhatsApp: '/api/notifications/whatsapp',
+  user: '/api/user',
 }
 
 export const ALTAVIA = {

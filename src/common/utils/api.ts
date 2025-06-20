@@ -10,6 +10,21 @@ export const ApiTimeTracker = async (req: NextApiRequest, res: NextApiResponse, 
   console.log(`Request took ${end - start}ms`);
 }
 
+export async function withApiTimeTracker<T>(
+  handler: () => Promise<T>,
+  context?: { method?: string; url?: string }
+): Promise<T> {
+  const start = Date.now();
+  try {
+    const result = await handler();
+    return result;
+  } finally {
+    const end = Date.now();
+    console.log(`[API] ${context?.method || ''} ${context?.url || ''} - ${end - start}ms`);
+  }
+}
+
+
 export const convertDateMiddleware = (field: string)=>(req: NextApiRequest, res: NextApiResponse, next: NextHandler) => {
   if (req.body[field]) {
     req.body[field] = new Date(req.body[field]);

@@ -9,6 +9,7 @@ import { useSidebar } from 'src/context'
 
 export const DashboardNavbar = () => {
   const { data: session } = useSession() 
+  console.log('session:', session)
   const { isExpanded } = useSidebar();
 
   const handleSignOut = async() => {
@@ -32,13 +33,11 @@ export const DashboardNavbar = () => {
           <Text fontWeight={600} fontSize={{base: 11, md: 14}}>Bienvenido: Admin</Text>
           <Button
             fontWeight={600}
-            width={{ base: '75px', md: '100px' }}
-            height={{base: '25px', md: '40px'}}
-            color='white'
             onClick={handleSignOut}
-            bg='primary.700'
+            colorPalette='primary'
+            variant='outline'
+            size='xs'
             fontSize={{base: 10, md: 14}}
-            _hover={{opacity: 0.7}}
           >
             Cerrar sesión
           </Button>

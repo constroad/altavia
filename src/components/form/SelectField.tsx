@@ -2,12 +2,14 @@ import React from 'react';
 
 import { useFormContext, Controller } from 'react-hook-form';
 import { FormControl, FormLabel, FormErrorMessage } from '@chakra-ui/form-control'
+import { Portal, Select, createListCollection } from '@chakra-ui/react';
 
 interface SelectFieldProps {
   name: string;
   label?: string;
   options: { value: string; label: string }[];
   isRequired?: boolean;
+  field?: any;
 }
 
 export const SelectField: React.FC<SelectFieldProps> = ({
@@ -15,46 +17,52 @@ export const SelectField: React.FC<SelectFieldProps> = ({
   label,
   options,
   isRequired = false,
+  field,
 }) => {
-  const {
-    control,
-    formState: { errors },
-  } = useFormContext();
 
-  const errorMessage = errors[name]?.message;
+  const frameworks = createListCollection({
+    items: options,
+  })
 
   return (
-    <FormControl isInvalid={!!errors[name]} isRequired={isRequired}>
-      {label && <FormLabel htmlFor={name}>{label}</FormLabel>}
-      <Controller
-        name={name}
-        control={control}
-        render={({ field }) => (
-          <select
-            {...field}
-            id={name}
-            value={field.value}
-            onChange={field.onChange}
-            style={{
-              padding: '6px',
-              borderRadius: '6px',
-              fontSize: '14px',
-              border: '1px solid #CBD5E0',
-              width: '100%',
-            }}
-          >
-            <option value="" disabled hidden>
-              {`Select ${label}`}
-            </option>
-            {options.map((option) => (
-              <option key={option.value} value={option.value}>
-                {option.label}
-              </option>
+    <Select.Root
+      {...field}
+      id={name}
+      name={field.name}
+      value={field.value}
+      onValueChange={({ value }) => field.onChange(value)}
+      onInteractOutside={() => field.onBlur()}
+      collection={frameworks}
+      // style={{
+      //   padding: '6px',
+      //   borderRadius: '6px',
+      //   fontSize: '14px',
+      //   border: '1px solid #CBD5E0',
+      //   width: '100%',
+      // }}
+    >
+      <Select.HiddenSelect />
+      <Select.Control>
+        <Select.Trigger>
+          <Select.ValueText placeholder="Selecciona un rol" />
+        </Select.Trigger>
+        <Select.IndicatorGroup>
+          <Select.Indicator />
+        </Select.IndicatorGroup>
+      </Select.Control>
+
+      <Portal>
+        <Select.Positioner>
+          <Select.Content zIndex={99999}>
+            {frameworks.items.map((framework) => (
+              <Select.Item item={framework} key={framework.value}>
+                {framework.label}
+                <Select.ItemIndicator />
+              </Select.Item>
             ))}
-          </select>
-        )}
-      />
-      <FormErrorMessage>{errorMessage as React.ReactNode}</FormErrorMessage>
-    </FormControl>
+          </Select.Content>
+        </Select.Positioner>
+      </Portal>
+    </Select.Root>
   );
 };

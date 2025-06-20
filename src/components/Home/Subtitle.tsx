@@ -15,7 +15,7 @@ export const SubtitleComponent = (props: SubtitleComponentProps) => {
       as='h2'
       fontSize={{ base: props.fontsize ?? 22, md: 40 }}
       fontWeight={800}
-      color='black'
+      color={ props.color ? props.color : 'black' }
       className='font-logo'
       w='fit-content'
       position='relative'

@@ -28,6 +28,8 @@ export const Sidebar = (props: AdminSidebarProps) => {
     toggleSidebar()
   };
 
+  const isNotDashboard = pathname !== '/dashboard'
+
   return (
     <Flex>
       <Flex
@@ -77,31 +79,29 @@ export const Sidebar = (props: AdminSidebarProps) => {
             )}
           </Flex>
 
-          <Stack spaceY={1} mt='10px'>
+          <Stack mt='10px'>
             {menuOptions?.map((opt, idx) => {
               return (
                 <Box key={idx}>
-                  {/* <CustomTooltip label={opt.name}> */}
-                    <Flex
-                      alignItems="center"
-                      cursor='pointer'
-                      _hover={{ bg: 'primary' }}
-                      bg={pathname.includes(opt.path) ? 'primary.400' : ''}
-                      p={4}
-                      h='56px'
-                      minH='56px'
-                      maxH='56px'
-                      onClick={ opt.path !== null ?
-                        () => router.push(opt.path) :
-                        () => null
-                      }
-                    >
-                      <Icon as={opt.icon} mr={2} w={{ base: '18px', md: '22px' }} h={{ base: '18px', md: '22px'}} />
-                      {!isMobile && (
-                        <Text fontWeight={400} fontSize={16}>{isExpanded && !isMobile ? opt.name : ''}</Text>
-                      )}
-                    </Flex>
-                  {/* </CustomTooltip> */}
+                  <Flex
+                    alignItems="center"
+                    cursor='pointer'
+                    _hover={{ bg: 'primary.400' }}
+                    bg={pathname.includes(opt.path) ? 'primary.400' : ''}
+                    p={4}
+                    h='56px'
+                    minH='56px'
+                    maxH='56px'
+                    onClick={ opt.path !== null ?
+                      () => router.push(opt.path) :
+                      () => null
+                    }
+                  >
+                    <Icon as={opt.icon} mr={2} w={{ base: '18px', md: '22px' }} h={{ base: '18px', md: '22px'}} />
+                    {!isMobile && (
+                      <Text fontWeight={500} fontSize={16}>{isExpanded && !isMobile ? opt.name : ''}</Text>
+                    )}
+                  </Flex>
                 </Box>
               )
             })}
@@ -112,15 +112,31 @@ export const Sidebar = (props: AdminSidebarProps) => {
           <Box
             p={4}
             cursor='pointer'
-            onClick={() => router.push(APP_ROUTES.dashboard)}
+            onClick={
+              () => isNotDashboard 
+                ? router.push(APP_ROUTES.dashboard) 
+                : null
+            }
             _hover={{ bg: 'gray.600' }}
             w='100%'
             bg='black'
             color='white'
           >
-            <Flex alignItems="center">
-              <Icon as={ArrowBackIcon} mr={3} w='20px' h='20px' fontWeight={600} />
-              <Text fontWeight={600}>{isExpanded && !isMobile ? 'Volver al dashboard' : ''}</Text>
+            <Flex alignItems="center" justifyContent={ isNotDashboard ? '' : 'center' }>
+              {
+                isNotDashboard 
+                  ? <Icon as={ArrowBackIcon} mr={3} w='20px' h='20px' fontWeight={600} /> 
+                  : <Box w='20px' h='20px' />
+              }
+              <Text fontWeight={600}>
+                {
+                  isExpanded && !isMobile
+                    ? isNotDashboard
+                      ? 'Volver al dashboard'
+                      : 'Altavía Perú'
+                    : ''
+                }
+              </Text>
             </Flex>
           </Box>
         </Flex>
@@ -142,6 +158,7 @@ export const Sidebar = (props: AdminSidebarProps) => {
             md: 'calc(100vh - 72px)'
           }}
           py={2}
+          pt={6}
           overflowY='scroll'
           w={isMobile ? 'calc(100vw - 50px)' : ''}
           flexDir="column"

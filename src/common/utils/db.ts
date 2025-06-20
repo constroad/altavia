@@ -7,19 +7,27 @@ if (!MONGO_URI) {
   throw new Error('❌ Falta definir MONGO_URI en las variables de entorno')
 }
 
-let isConnected = false
+// ⚠️ En entornos serverless (ej. Vercel), mongoose mantiene el estado de conexión en múltiples ejecuciones
+let cached = (global as any).mongoose
+
+if (!cached) {
+  cached = (global as any).mongoose = { conn: null, promise: null }
+}
 
 export const connectToDatabase = async (): Promise<void> => {
-  if (isConnected) {
+  if (cached.conn) {
     return
   }
 
-  try {
-    const db = await mongoose.connect(MONGO_URI, {
+  if (!cached.promise) {
+    cached.promise = mongoose.connect(MONGO_URI, {
       dbName: process.env.NODE_ENV === 'production' ? 'altavia' : 'local',
     })
-    isConnected = true
-    console.log('✅ MongoDB conectado a', db.connection.name)
+  }
+
+  try {
+    cached.conn = await cached.promise
+    console.log('✅ MongoDB conectado a', cached.conn.connection.name)
   } catch (error) {
     console.error('❌ Error al conectar con MongoDB:', error)
     throw new Error('No se pudo conectar a la base de datos')

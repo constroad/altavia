@@ -208,7 +208,7 @@ export default function HomePageContent() {
               </Flex>
 
               <Box mt={{ base: '30px',md :'60px' }} >
-                <SubtitleComponent text='LOGROS DE LA EMPRESA' color='#fff' />
+                <SubtitleComponent text='LOGROS DE LA EMPRESA' color='white' />
               </Box>
 
               {/* <Flex w='100%' opacity={1} zIndex={100} gap='20px' flexDir={{base: 'row', md: 'row'}} mt='10px' justifyContent='space-between'>
@@ -257,7 +257,7 @@ export default function HomePageContent() {
             h={{ base: '200px', md: '350px'}}
             position='relative'
           >
-            <Flex px={{ base: '30px', md: '30px' }} mt={{ base: '40px', md: '120px' }} >
+            <Flex px={{base: '30px', md: '120px' }} mt={{ base: '40px', md: '120px' }} >
               <SubtitleComponent text='NUESTROS CLIENTES' />
             </Flex>
             <Flex

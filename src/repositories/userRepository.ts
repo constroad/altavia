@@ -1,80 +1,51 @@
-import bcrypt from 'bcryptjs';
-import { connectToDatabase } from 'src/common/utils/db';
-import User, { UserModel } from 'src/models/user';
+import bcrypt from "bcryptjs";
+import { connectToDatabase } from "src/common/utils/db";
+import User, {IUser} from "src/models/user";
 
-export class UserRepository {
-  constructor() {
-    connectToDatabase();
-  }
-
-  async getAll(filter: object = {}): Promise<UserModel[]> {
-    try {
-      return await User.find({ ...filter }).sort({ createdAt: -1 });
-    } catch (error) {
-      console.error('Error getting users:', error);
-      throw new Error('Error getting users');
+export const UserRepository = {
+  findAll: (filter: object): Promise<IUser[]> => User.find().find({...filter}).sort({ createdAt: -1 }),
+  findById: (id: string): Promise<IUser | null> => User.findById(id),
+  create: async (data: Partial<IUser>): Promise<IUser> => {
+    if (data.password) {
+      const salt = await bcrypt.genSalt(10);
+      data.password = await bcrypt.hash(data.password, salt);
     }
-  }
-
-  async getById(id: string): Promise<UserModel | null> {
-    try {
-      return await User.findById(id);
-    } catch (error) {
-      console.error('Error getting user:', error);
-      throw new Error('Error getting user');
+  
+    return User.create(data);
+  },
+  updateById: async (id: string, data: Partial<IUser>): Promise<IUser | null> => {
+    console.log('id:', id)
+    console.log('data:', data)
+    if (data.password) {
+      const salt = await bcrypt.genSalt(10);
+      data.password = await bcrypt.hash(data.password, salt);
     }
-  }
-
-  async create(data: Partial<UserModel>): Promise<UserModel> {
-    try {
-      if (data.password) {
-        const salt = await bcrypt.genSalt(10);
-        data.password = await bcrypt.hash(data.password, salt);
-      }
-      const newUser = new User(data);
-      return await newUser.save();
-    } catch (error) {
-      console.error('Error creating user:', error);
-      throw new Error('Error creating user');
-    }
-  }
-
-  async update(id: string, data: Partial<UserModel>): Promise<UserModel> {
-    try {
-      if (data.password) {
-        const salt = await bcrypt.genSalt(10);
-        data.password = await bcrypt.hash(data.password, salt);
-      }
-      const updatedUser = await User.findByIdAndUpdate(id, data, { new: true });
-      if (!updatedUser) throw new Error('User not found');
-      return updatedUser;
-    } catch (error) {
-      console.error('Error updating user:', error);
-      throw new Error('Error updating user');
-    }
-  }
-
-  async delete(id: string): Promise<void> {
-    try {
-      const deletedUser = await User.findByIdAndDelete(id);
-      if (!deletedUser) throw new Error('User not found');
-    } catch (error) {
-      console.error('Error deleting user:', error);
-      throw new Error('Error deleting user');
-    }
-  }
-
-  async authenticateUser(username: string, password: string): Promise<UserModel | null> {
+  
+    return User.findByIdAndUpdate(id, data, { new: true });
+  },  
+  deleteById: (id: string) => User.findByIdAndDelete(id),
+  authenticateUser: async (username: string, password: string): Promise<IUser | null> => {
     try {
       await connectToDatabase();
-      const user = await User.findOne({ userName: username });
-      if (!user) return null;
-      if (!user.isActive) throw new Error('Tu usuario está deshabilitado.');
-      const isValid = await bcrypt.compare(password, user.password);
-      return isValid ? user : null;
+
+      const foundUser = await User.findOne({ userName: username });
+
+      if (!foundUser) return null;
+      if (!foundUser.isActive) throw new Error("Tu usuario está deshabilitado.");
+
+      const isMatch = await bcrypt.compare(password, foundUser.password);
+      if (!isMatch) return null;
+
+      return {
+        _id: foundUser._id,
+        userName: foundUser.userName,
+        role: foundUser.role,
+        isActive: foundUser.isActive,
+      } as IUser;
+
     } catch (error) {
-      console.error('Error in authenticateUser:', error);
-      throw new Error('Error authenticating user');
+      console.error("Error in authenticateUser:", error);
+      throw new Error("Error authenticating user");
     }
   }
 }

@@ -25,7 +25,7 @@ const buildUrl = (url: string, pathParameters?: UseMutateOptions["urlParams"], q
   if (pathParameters) {
     Object.keys(pathParameters).forEach(key => {
       if (pathParameters[ key ] !== undefined) {
-        builtUrl = builtUrl.replace(`:${key}`, pathParameters[ key ]!);
+        builtUrl = builtUrl.replace(`:${key}`, pathParameters[ key ] as any);
       } else {
         builtUrl = builtUrl.replace(`:${key}`, '');
       }
@@ -86,7 +86,7 @@ export const useMutate = <T = any>(
     }
 
     try {
-      const response = await fetch(requestUrl || url, {
+      const response = await fetch(requestUrl ?? url, {
         ...options,
         method,
         headers: {
@@ -105,7 +105,7 @@ export const useMutate = <T = any>(
       setMutateError(error);
       params?.onError?.(error)
       if (updateCache && previousData) {
-        updateCache(() => previousData!);
+        updateCache(() => previousData as any);
       }
     } finally {
       setMutateLoading(false);

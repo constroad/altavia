@@ -1,3 +1,5 @@
+import { TELEGRAM_GROUP_ID_ERRORS, TELEGRAM_TOKEN } from "src/common/consts";
+
 export function formatISODate(isoString: string | Date) {
   let date: Date;
   if (typeof isoString === "string") {
@@ -90,3 +92,74 @@ export function addHoursAndFormat(dateString: string, hoursToAdd: number): strin
 
   return date.toLocaleTimeString('en-US', options);
 }
+
+function escapeMarkdown(message: string) {  
+  const escapeMessage = message.replace(/([_\[\]()~`>#+\-=|{}.!])/g, '\\$1');
+  return escapeMessage
+}
+
+export const sendTelegramTextMessage = async (message: string, chaiId?: string) => {
+  let url
+  if (process.env.NODE_ENV === 'development') {
+    url = `https://api.telegram.org/bot${TELEGRAM_TOKEN}/sendMessage?chat_id=${TELEGRAM_GROUP_ID_ERRORS}`;
+  } else {
+    url = `https://api.telegram.org/bot${TELEGRAM_TOKEN}/sendMessage?chat_id=${chaiId}`;
+  }
+
+  try {
+    const response = await fetch(url, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        text: escapeMarkdown(message),
+        parse_mode: 'MarkdownV2',
+      }),
+    });
+
+    const data = await response.json();
+    if (data.ok) {
+      console.log('Message sent successfully');
+    } else {
+      console.error('Error sending message:', data.description);
+    }
+  } catch (err) {
+    console.log('error', err);
+  }
+  return;
+};
+
+export const sendTelegramImageText = async (imagesBase64: string | string[], text: string, chatId?: string) => {
+  const url =
+    process.env.NODE_ENV === 'development'
+      ? `https://api.telegram.org/bot${TELEGRAM_TOKEN}/sendPhoto?chat_id=${TELEGRAM_GROUP_ID_ERRORS}`
+      : `https://api.telegram.org/bot${TELEGRAM_TOKEN}/sendPhoto?chat_id=${chatId}`;
+
+  const message = escapeMarkdown(text);
+
+  const images = Array.isArray(imagesBase64) ? imagesBase64 : [ imagesBase64 ];
+
+  // Itera sobre las imágenes y envía cada una con sendPhoto
+  for (let i = 0; i < images.length; i++) {
+    try {
+      const formData = new FormData();
+      const response = await fetch(images[ i ]);
+      const blob = await response.blob();
+      formData.append('photo', blob, 'photo.png');
+
+      // Si es la última imagen, agrega el mensaje al caption
+      if (i === images.length - 1) {
+        formData.append('caption', message);
+        formData.append('parse_mode', 'MarkdownV2');
+      }
+
+      await fetch(url, {
+        method: 'POST',
+        body: formData,
+      });
+    } catch (err) {
+      console.error('Error al enviar la imagen a Telegram:', err);
+    }
+  }
+};

@@ -4,18 +4,17 @@ import { Box, Button, VStack, HStack, Field, Textarea } from '@chakra-ui/react';
 import { ITripSchemaValidation, TripSchemaValidation } from 'src/models/trip';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { InputField, SelectField } from '../form';
+import { UploadButton } from '../upload/UploadButton';
 
-export default function TripForm({
-  vehicles,
-  drivers,
-  clients,
-  onSubmit,
-}: {
+type ITripForm = {
   vehicles: any[];
   drivers: any[];
   clients: any[];
   onSubmit: (data: ITripSchemaValidation) => void;
-}) {
+};
+
+export default function TripForm(props: Readonly<ITripForm>) {
+  const { vehicles, drivers, clients, onSubmit } = props;
   const methods = useForm<ITripSchemaValidation>({
     resolver: zodResolver(TripSchemaValidation),
     // defaultValues: employee,
@@ -34,6 +33,7 @@ export default function TripForm({
 
   return (
     <FormProvider {...methods}>
+      <UploadButton type="ROUTE_TRACKING" resourceId='JZENA' />
       <form onSubmit={methods.handleSubmit(onSubmit)} noValidate>
         <VStack gap={4}>
           <HStack gap={4}>

@@ -31,13 +31,13 @@ export function withValidation<T>(
     });
 }
 
-export async function withDb<T>(handler: () => Promise<T>): Promise<T> {  
+export async function withDb<T>(handler: () => Promise<T>): Promise<T> {
   await connectToMongoDB();
 
   return handler();
 }
 
-export function withTimeTracker<T>(handler: () => Promise<T>): Promise<T> {  
+export function withTimeTracker<T>(handler: () => Promise<T>): Promise<T> {
   const start = Date.now();
   return handler().then((result) => {
     const elapsed = Date.now() - start;
@@ -48,7 +48,7 @@ export function withTimeTracker<T>(handler: () => Promise<T>): Promise<T> {
 
 export function withErrorHandler<T extends Response>(
   handler: () => Promise<T>
-): Promise<Response> {  
+): Promise<Response> {
   return handler().catch((err) => {
     console.error(`[❌] API error: ${err.message}`);
     return new Response(JSON.stringify({ error: err.message }), { status: 500 });
@@ -64,7 +64,7 @@ export function withQueryValidation<T>(
   const url = new URL(request.url);
   const rawParams: Record<string, string> = {};
   url.searchParams.forEach((value, key) => {
-    rawParams[key] = value;
+    rawParams[ key ] = value;
   });
 
   const result = schema.safeParse(rawParams);
@@ -77,6 +77,15 @@ export function withQueryValidation<T>(
   }
 
   return handler(result.data);
+}
+
+export function getQueryParameters(request: NextRequest) {
+  const url = new URL(request.url);
+  const rawParams: Record<string, string> = {};
+  url.searchParams.forEach((value, key) => {
+    rawParams[ key ] = value;
+  });
+  return rawParams
 }
 
 // Middleware para validar params de rutas dinámicas (e.g. `[id]`)

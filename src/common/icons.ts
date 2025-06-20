@@ -19,6 +19,7 @@ import {
   FaWhatsapp,
   FaCircle,
   FaUserClock,
+  FaCloudUploadAlt,
 } from "react-icons/fa";
 import { FiMoreVertical } from 'react-icons/fi'
 import { FaUserTie, FaUserShield, FaTruckFast, FaRoadBarrier } from "react-icons/fa6";
@@ -104,3 +105,6 @@ export const DashboardIcon = MdDashboard
 export const VehiclesIcon = RiTruckFill
 export const AlertsIcon = HiBellAlert
 export const SignupIcon = MdAlternateEmail
+
+//media
+export const UploadIcon = FaCloudUploadAlt

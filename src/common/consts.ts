@@ -29,6 +29,7 @@ export const API_ROUTES = {
   generatePDF: '/api/generate-pdf',
   client: '/api/client',    
   trips: '/api/trips',    
+  media: '/api/medias',    
   vehicles: '/api/vehicles',    
   notificationWhatsApp: '/api/notifications/whatsapp',
 }
@@ -143,8 +144,9 @@ export const WhastAppGroups = [
 const LOCAL_SERVER_WHATSAPP = 'http://localhost:3001/api';
 
 export const WHATSAPP_SENDER = '51949376824'
-export const WHATSAPP_SERVER_URL = process.env.NEXT_PUBLIC_WHATSAPP_SERVER || LOCAL_SERVER_WHATSAPP;
+export const WHATSAPP_SERVER_URL = process.env.NEXT_PUBLIC_WHATSAPP_SERVER ?? LOCAL_SERVER_WHATSAPP;
 
 export const TELEGRAM_GROUP_ID_ERRORS = '-4556555230';
 export const TELEGRAM_TOKEN = '7278967592:AAHLnzjx3L-uYl3a96JhvIWbQ-YpBtF1kz8';
+export const TELEGRAM_GROUP_ID_ALTAVIA_MEDIA = '-1002667366211';
 export const GROUP_ERRORS_TRACKING = '120363376500470254@g.us';

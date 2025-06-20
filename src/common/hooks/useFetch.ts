@@ -1,5 +1,32 @@
 import { useState, useEffect, useCallback, useRef } from 'react';
 
+interface FetchParams<T> extends RequestInit {
+  raceCondition?: boolean
+  enabled?: boolean
+  onSuccess?: (data: T) => void;
+  onError?: (error: any) => void;
+  revalidateOnFocus?: boolean;
+  body?: any;
+  refreshInterval?: number;
+  urlParams?: Record<string, string | undefined>;
+  queryParams?: Record<string, string | undefined>;
+  cacheTime?: number
+}
+
+interface FetchResult<T> {
+  url: string;
+  data: T | null;
+  isLoading: boolean;
+  error: any;
+  refetch: () => Promise<void>;
+  updateCache: (updateFn: (prevData: T | null) => T) => void;
+}
+
+const cache: Record<string, any> = {};
+const cacheExpiry: Record<string, number> = {};
+
+const fetchConfig: Record<string, FetchParams<any>> = {};
+
 const deepEqual = (a: any, b: any): boolean => {
   if (a === b) return true;
 
@@ -29,38 +56,18 @@ const useDeepCompareMemo = <T>(value: T): T => {
   return ref.current as T;
 };
 
-interface FetchParams<T> extends RequestInit {
-  onSuccess?: (data: T) => void;
-  onError?: (error: any) => void;
-  revalidateOnFocus?: boolean;
-  body?: any;
-  refreshInterval?: number;
-  urlParams?: Record<string, string | undefined>;
-  queryParams?: Record<string, string | undefined>;
-}
-
-interface FetchResult<T> {
-  data: T | null;
-  isLoading: boolean;
-  error: any;
-  refetch: () => Promise<void>;
-  updateCache: (updateFn: (prevData: T | null) => T) => void;
-}
-
-const cache: Record<string, any> = {};
-const cacheExpiry: Record<string, number> = {};
 
 const buildUrl = (
-  url: string, 
-  pathParameters?: Record<string, string | undefined>, 
+  url: string,
+  pathParameters?: Record<string, string | undefined>,
   queryParameters?: Record<string, string | undefined>
-  ): string => {
+): string => {
   let builtUrl = url;
 
   if (pathParameters) {
     Object.keys(pathParameters).forEach(key => {
       if (pathParameters[ key ] !== undefined) {
-        builtUrl = builtUrl.replace(`:${key}`, pathParameters[ key ]!);
+        builtUrl = builtUrl.replace(`:${key}`, pathParameters[ key ] as any);
       } else {
         builtUrl = builtUrl.replace(`:${key}`, '');
       }
@@ -85,6 +92,36 @@ const buildUrl = (
   return builtUrl;
 };
 
+const fetchRequest = async <T>(
+  keyCache: string,
+  url: string,
+  options: RequestInit,
+  cacheTime: number,
+  onSuccess?: (data: T) => void,
+  onError?: (error: any) => void,
+  signal?: AbortSignal
+): Promise<{ result: T, isDirty: boolean }> => {
+  const response = await fetch(url, {
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    ...options,
+    signal,
+  });
+  if (!response.ok) {
+    throw new Error('Network response was not ok');
+  }
+  const result = await response.json();
+  const currentData = cache[ keyCache ];
+  let isDirty = false
+  if (JSON.stringify(currentData) !== JSON.stringify(result)) {
+    isDirty = true
+    cache[ keyCache ] = result;
+    onSuccess?.(result);
+  }
+  cacheExpiry[ keyCache ] = new Date().getTime() + cacheTime;
+  return { result, isDirty };
+};
 
 export const useFetch = <T = any>(baseUrl: string, params?: FetchParams<T>, cacheTime: number = 900000): FetchResult<T> => {
   const {
@@ -94,6 +131,8 @@ export const useFetch = <T = any>(baseUrl: string, params?: FetchParams<T>, cach
     onSuccess,
     onError,
     revalidateOnFocus = true,
+    enabled = true,
+    raceCondition = true,
     ...options
   } = params ?? {};
 
@@ -103,21 +142,28 @@ export const useFetch = <T = any>(baseUrl: string, params?: FetchParams<T>, cach
     keyCache = `${keyCache}, ${JSON.stringify(options.body)}`;
   }
 
-  const [ data, setData ] = useState<T | null>(cache[ keyCache ] || null);
+  const [ data, setData ] = useState<T | null>(cache[ keyCache ] ?? null);
   const [ loading, setLoading ] = useState<boolean>(!cache[ keyCache ]);
   const [ error, setError ] = useState<any>(null);
   const abortControllerRef = useRef<AbortController | null>(null);
 
   const memoizedOptions = useDeepCompareMemo(options);
+  // Store the original fetch configuration
+  fetchConfig[ keyCache ] = params ?? {};
 
   const fetchData = useCallback(async (ignoreCache = false, inBackGround = false) => {
-    if (abortControllerRef.current) {
+    if (enabled === false) {
+      setLoading(false);
+      return
+    }
+    if (abortControllerRef.current && raceCondition) {
       abortControllerRef.current.abort();
     }
     const now = new Date().getTime();
     if (!ignoreCache && cache[ keyCache ] && cacheExpiry[ keyCache ] > now) {
       setData(cache[ keyCache ]);
       setLoading(false);
+      onSuccess?.(cache[ keyCache ])
       return;
     }
     if (!inBackGround) setLoading(true);
@@ -126,26 +172,21 @@ export const useFetch = <T = any>(baseUrl: string, params?: FetchParams<T>, cach
     const { signal } = abortControllerRef.current;
 
     try {
-      const response = await fetch(url, {
-        headers: {
-          'Content-Type': 'application/json',
+      const { result, isDirty } = await fetchRequest<T>(
+        keyCache,
+        url,
+        {
+          ...memoizedOptions,
+          body: memoizedOptions?.body ? JSON.stringify(memoizedOptions.body ?? '') : undefined,
         },
-        ...memoizedOptions,
+        cacheTime,
+        onSuccess,
+        onError,
         signal,
-        body: memoizedOptions?.body ? JSON.stringify(memoizedOptions.body ?? '') : undefined,
-      });
-      if (!response.ok) {
-        throw new Error('Network response was not ok');
-      }
-      const result = await response.json();
-
-      const currentData = cache[ keyCache ];
-      if (JSON.stringify(currentData) !== JSON.stringify(result)) {
-        cache[ keyCache ] = result;
+      );
+      if (isDirty) {
         setData(result);
-        onSuccess?.(result);
       }
-      cacheExpiry[ keyCache ] = now + cacheTime;
     } catch (error: any) {
       if (error.name !== 'AbortError') {
         setError(error);
@@ -157,7 +198,7 @@ export const useFetch = <T = any>(baseUrl: string, params?: FetchParams<T>, cach
       }
       abortControllerRef.current = null;
     }
-  }, [ url, memoizedOptions, cacheTime ]);
+  }, [ url, memoizedOptions, cacheTime, enabled ]);
 
   const updateCache = (updateFn: (prevData: T | null) => T) => {
     setData(prevData => {
@@ -190,5 +231,38 @@ export const useFetch = <T = any>(baseUrl: string, params?: FetchParams<T>, cach
     }
   }, [ refreshInterval, fetchData ]);
 
-  return { data, isLoading: loading, error, refetch: () => fetchData(true), updateCache };
+  return { url, data, isLoading: loading, error, refetch: () => fetchData(true), updateCache };
+};
+
+// Function to search keys in the cache
+useFetch.searchCache = (searchString: string) => {
+  let result: string[] = [];
+  for (const key in cache) {
+    if (key.includes(searchString)) {
+      result.push(key);
+    }
+  }
+  return result;
+};
+
+// Function to access the cache
+useFetch.cache = cache;
+
+// Function to mutate the cache
+useFetch.mutate = async (cacheKeys: string[]) => {
+  const promises = []
+
+  for (const cacheKey of cacheKeys) {
+    const originalConfig = fetchConfig[ cacheKey ];
+    if (!originalConfig) {
+      console.error(`No fetch configuration found for cache key: ${cacheKey}`)
+      return
+    }
+    const { urlParams, queryParams, cacheTime, ...options } = originalConfig;
+    const baseUrl = cacheKey.split('?')[ 0 ]
+    const url = buildUrl(baseUrl, urlParams, queryParams);
+    promises.push(fetchRequest(cacheKey, url, options, cacheTime ?? 900000, options.onSuccess, options.onError));
+  }
+  
+  return Promise.all(promises)
 };

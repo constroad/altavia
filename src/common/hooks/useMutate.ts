@@ -7,6 +7,7 @@ interface UseMutateOptions extends RequestInit {
 }
 
 interface MutateParams<T> {
+  requestUrl?: string;
   onSuccess?: (data: T) => void;
   onError?: (error: Error) => void;
 }
@@ -24,7 +25,7 @@ const buildUrl = (url: string, pathParameters?: UseMutateOptions["urlParams"], q
   if (pathParameters) {
     Object.keys(pathParameters).forEach(key => {
       if (pathParameters[ key ] !== undefined) {
-        builtUrl = builtUrl.replace(`:${key}`, pathParameters[ key ]!);
+        builtUrl = builtUrl.replace(`:${key}`, pathParameters[ key ] as any);
       } else {
         builtUrl = builtUrl.replace(`:${key}`, '');
       }
@@ -66,6 +67,7 @@ export const useMutate = <T = any>(
     setMutateLoading(true);
     setMutateError(null);
     setMutateData(null);
+    const { requestUrl } = params ?? {}
 
     let previousData: T[] | undefined;
     if (updateCache) {
@@ -84,7 +86,7 @@ export const useMutate = <T = any>(
     }
 
     try {
-      const response = await fetch(url, {
+      const response = await fetch(requestUrl ?? url, {
         ...options,
         method,
         headers: {
@@ -103,7 +105,7 @@ export const useMutate = <T = any>(
       setMutateError(error);
       params?.onError?.(error)
       if (updateCache && previousData) {
-        updateCache(() => previousData!);
+        updateCache(() => previousData as any);
       }
     } finally {
       setMutateLoading(false);

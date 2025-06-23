@@ -237,6 +237,8 @@ export const TableComponent = (props: Props) => {
                           fontSize={{ base: 12, md: 14 }}
                           paddingX="5px"
                           onClick={() => onDelete(row)}
+                          colorPalette='danger'
+                          variant='solid'
                         >
                           <TrashIcon fontSize={12} />
                         </Button>

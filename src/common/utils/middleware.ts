@@ -3,7 +3,7 @@ import { connectToMongoDB } from "src/config/mongoose";
 import { ZodSchema } from 'zod';
 import { NextRequest } from 'next/server';
 
-export function withValidation<T>(
+export function withBodyValidation<T>(
   schema: ZodSchema<T>,
   request: NextRequest,
   handler: (data: T) => Promise<Response>
@@ -114,6 +114,6 @@ export function withApi(handler: () => Promise<Response>) {
 // Con esto ya tienes:
 
 // Validación	        Middleware usado	       Método
-// JSON Body	        withValidation()	       POST / PUT
+// JSON Body	        withBodyValidation()	       POST / PUT
 // Query params	      withQueryValidation()	   GET
 // Route params	      withParamsValidation()	 GET / PUT / DELETE en [id]

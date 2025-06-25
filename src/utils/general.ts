@@ -1,5 +1,36 @@
 import { TELEGRAM_GROUP_ID_ERRORS, TELEGRAM_TOKEN } from "src/common/consts";
 
+export function formatUtcDateTime(
+  isoString: string,
+  options: { showDate?: boolean; showTime?: boolean } = { showDate: true }
+): string {
+  const date = new Date(isoString);
+
+  if (isNaN(date.getTime())) {
+    throw new Error("Invalid ISO date string");
+  }
+
+  const { showDate = true, showTime = false } = options;
+  const parts: string[] = [];
+
+  if (showDate) {
+    const day = String(date.getDate()).padStart(2, '0');
+    const month = String(date.getMonth() + 1).padStart(2, '0'); // 0-indexed
+    const year = date.getFullYear();
+    parts.push(`${day}/${month}/${year}`);
+  }
+
+  if (showTime) {
+    const hours = String(date.getHours()).padStart(2, '0');
+    const minutes = String(date.getMinutes()).padStart(2, '0');
+    const seconds = String(date.getSeconds()).padStart(2, '0');
+    parts.push(`${hours}:${minutes}:${seconds}`);
+  }
+
+  return parts.join(' ');
+}
+
+
 export function formatISODate(isoString: string | Date) {
   let date: Date;
   if (typeof isoString === "string") {

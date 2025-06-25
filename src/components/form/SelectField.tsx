@@ -28,10 +28,10 @@ export const SelectField: React.FC<SelectFieldProps> = ({
     <Select.Root
       {...field}
       id={name}
-      name={field.name}
-      value={field.value}
-      onValueChange={({ value }) => field.onChange(value)}
-      onInteractOutside={() => field.onBlur()}
+      name={field?.name}
+      value={field?.value}
+      onValueChange={({ value }) => field?.onChange(value)}
+      onInteractOutside={() => field?.onBlur()}
       collection={frameworks}
       // style={{
       //   padding: '6px',

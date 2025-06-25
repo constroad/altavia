@@ -1,5 +1,5 @@
 import { APP_ROUTES } from "src/common/consts";
-import { AlertsIcon, DashboardIcon, GearBoldIcon, SignupIcon, TripIcon, TruckIcon, VehiclesIcon } from "src/common/icons";
+import { AlertsIcon, CashRegisterBoldIcon, DashboardIcon, GearBoldIcon, SignupIcon, TripIcon, TruckIcon, VehiclesIcon } from "src/common/icons";
 
 export const dashboardTabs = [
   {
@@ -22,6 +22,13 @@ export const dashboardTabs = [
    bgColor: 'primary',
    textColor: 'white',
    icon: TripIcon
+ },
+  {
+   name: 'Egresos',
+   path: APP_ROUTES.expenses,
+   bgColor: 'primary',
+   textColor: 'white',
+   icon: CashRegisterBoldIcon
  },
  {
    name: 'Alerts',

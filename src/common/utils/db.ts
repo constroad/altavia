@@ -21,7 +21,7 @@ export const connectToDatabase = async (): Promise<void> => {
 
   if (!cached.promise) {
     cached.promise = mongoose.connect(MONGO_URI, {
-      dbName: process.env.NODE_ENV === 'production' ? 'altavia' : 'local',
+      dbName: process.env.NODE_ENV === 'production' ? 'altavia' : 'test',
     })
   }
 

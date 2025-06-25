@@ -1,6 +1,7 @@
 export const APP_ROUTES = {
   home: '/',
   nosotros: '/nosotros',
+  expenses: '/expenses',
   mision: '/mision',
   vision: '/vision',
   valores: '/valores',
@@ -31,6 +32,7 @@ export const API_ROUTES = {
   trips: '/api/trips',    
   media: '/api/medias',    
   vehicles: '/api/vehicles',    
+  expenses: '/api/expenses',    
   notificationWhatsApp: '/api/notifications/whatsapp',
   user: '/api/user',
 }

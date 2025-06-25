@@ -1,10 +1,27 @@
 import mongoose from 'mongoose';
 
+let cached = (global as any).mongoose
+
+if (!cached) {
+  cached = (global as any).mongoose = { conn: null, promise: null }
+}
+
+
 export async function connectToMongoDB() {
+  if (cached.conn) {
+    return
+  }
+
   try {
-    const uri = process.env.MONGO_URI ?? '';
-    await mongoose.connect(uri);
-    console.log('MongoDB connected');
+    const dbName = process.env.NODE_ENV === 'production' ? 'altavia' : 'test'
+    if (!cached.promise) {
+      const uri = process.env.MONGO_URI ?? '';
+      cached.promise = mongoose.connect(uri, {
+        dbName
+      });
+      cached.conn = await cached.promise
+      console.log('✅ MongoDB connected');
+    }
   } catch (error) {
     console.error('Error connecting MongoDB:', error);
   }

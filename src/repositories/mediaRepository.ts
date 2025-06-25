@@ -1,10 +1,15 @@
 
 import Media, { IMedia } from "src/models/media";
+import { BaseRepository } from "./baseRepository";
+class MediaRepository extends BaseRepository<IMedia> {
+  constructor() {
+    super(Media);
+  }
 
-export const MediaRepository = {
-  create: (data: Partial<IMedia>): Promise<IMedia> => Media.create(data),
-  findById: (id: string): Promise<IMedia | null> => Media.findById(id),
-  findAll: (filter: object): Promise<IMedia[]> => Media.find().find({ ...filter }).sort({ createdAt: -1 }),
-  updateById: (id: string, data: Partial<IMedia>): Promise<IMedia | null> => Media.findByIdAndUpdate(id, data, { new: true }),
-  deleteById: (id: string) => Media.findByIdAndDelete(id),
-};
+  // Método personalizado
+  findByType(type: string): Promise<IMedia[]> {
+    return this.model.find({ type }).exec();
+  }
+}
+
+export const mediaRepository = new MediaRepository();

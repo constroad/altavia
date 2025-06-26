@@ -24,6 +24,8 @@ export const SelectField: React.FC<SelectFieldProps> = ({
     formState: { errors },
   } = useFormContext();
 
+  console.log('errors:', errors)
+
   const optionCollection = createListCollection({
     items: options,
     itemToValue: (item) => item.value,
@@ -31,9 +33,11 @@ export const SelectField: React.FC<SelectFieldProps> = ({
     isItemDisabled: () => false,
   });
 
+  const isInvalidField = !!errors[name]?.message  || error !== undefined
+
   return (
     <Field.Root
-      invalid={error !== undefined}
+      invalid={isInvalidField}
       required={isRequired ?? !!error}
       width="320px"
     >
@@ -44,8 +48,7 @@ export const SelectField: React.FC<SelectFieldProps> = ({
       <Controller
         name={name}
         control={control}
-        render={({ field }) => {
-          console.log('select field:', { field, optionCollection });
+        render={({ field }) => {          
           return (
             <Select.Root
               name={field.name}
@@ -67,7 +70,7 @@ export const SelectField: React.FC<SelectFieldProps> = ({
               </Select.Control>
               <Portal>
                 <Select.Positioner>
-                  <Select.Content>
+                  <Select.Content >
                     {optionCollection.items.map((framework: any) => (
                       <Select.Item item={framework} key={framework.value}>
                         {framework.label}
@@ -81,7 +84,7 @@ export const SelectField: React.FC<SelectFieldProps> = ({
           );
         }}
       />
-      <Field.ErrorText>{error as React.ReactNode}</Field.ErrorText>
+      <Field.ErrorText>{errors[name]?.message as React.ReactNode}</Field.ErrorText>
     </Field.Root>
   );
 };

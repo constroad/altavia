@@ -79,9 +79,26 @@ export function withQueryValidation<T>(
   return handler(result.data);
 }
 
+export function getPathParams(request: NextRequest, basePathPattern: string[]) {
+  const pathSegments = request.nextUrl.pathname
+    .split('/')
+    .filter(Boolean); // e.g. ['api', 'expenses', '685c5cc6f197628941cbe587']
+
+  const paramValues: Record<string, string> = {};
+
+  basePathPattern.forEach((segment, index) => {
+    if (segment.startsWith('[') && segment.endsWith(']')) {
+      const paramName = segment.slice(1, -1);
+      paramValues[paramName] = pathSegments[index] || '';
+    }
+  });
+
+  return paramValues;
+}
 export function getQueryParameters(request: NextRequest) {
-  const url = new URL(request.url);
+  const url = new URL(request.url);  
   const rawParams: Record<string, string> = {};
+  
   url.searchParams.forEach((value, key) => {
     rawParams[ key ] = value;
   });

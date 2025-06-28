@@ -91,11 +91,11 @@ export const ImageView = (props: ImageViewProps) => {
   const getImageThumbnail = (fileUrl: string) => {
     const mediaType = type as MediaType;
 
-    if (mediaType === 'GUIA') {
+    if (mediaType === 'TRIP_WAYBILL') {
       return '/img/placeholders/guia.png';
     }
 
-    if (mediaType === 'INVOICE') {
+    if (mediaType === 'TRIP_INVOICE') {
       return '/img/placeholders/invoice.png';
     }
     return fileUrl;

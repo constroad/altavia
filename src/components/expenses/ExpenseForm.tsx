@@ -149,7 +149,7 @@ export const ExpenseForm = (props: ExpenseFormProps) => {
                 <Show when={expense?._id}>
                   <UploadButton
                     title="Adjuntar comprobante"
-                    type="EXPENSES"
+                    type="TRIP_EXPENSE"
                     resourceId={expense?._id}
                     onSuccess={refetchMedias}
                   />

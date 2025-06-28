@@ -112,7 +112,6 @@ export const UserForm = (props: UserFormProps) => {
               label="Rol"
               isRequired
               options={options}
-              // error={errors.role?.message}
             />  
           </Box>
 

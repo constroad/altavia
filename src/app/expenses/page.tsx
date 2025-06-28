@@ -2,8 +2,7 @@
 
 import { Button, Flex, Stack, Text } from '@chakra-ui/react';
 import { DashboardLayout } from 'src/components';
-import { useMutate } from 'src/common/hooks/useMutate';
-import { API_ROUTES, APP_ROUTES } from 'src/common/consts';
+import { APP_ROUTES } from 'src/common/consts';
 import { ExpenseList } from 'src/components/expenses/ExpenseList';
 import { useRouter } from 'next/navigation';
 
@@ -21,7 +20,7 @@ export default function Page() {
         <Flex gap={2} justifyContent="space-between">
           <Text fontWeight={600} fontSize={22}>Gastos Generales</Text>
           <Button size="sm" onClick={() => handleGoToExpenseId('new')}>
-            Nuevo viaje
+            Nuevo Gasto
           </Button>
         </Flex>
         <ExpenseList />

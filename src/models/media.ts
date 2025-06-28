@@ -4,6 +4,7 @@ import mongoose, { Document, Schema } from 'mongoose';
 
 export type MediaType = 'ROUTE_TRACKING' |
   'GUIA' |
+  'EXPENSES' |
   'INVOICE' |
   'ORDER_PAYMENT' |  
   'DISPATCH_PICTURES' |

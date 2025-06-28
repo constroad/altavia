@@ -106,6 +106,8 @@ export const VehiclesIcon = RiTruckFill
 export const AlertsIcon = HiBellAlert
 export const SignupIcon = MdAlternateEmail
 export const CashRegisterBoldIcon = PiCashRegisterBold
+export const MagnifyingGlassPlusLightIcon = PiMagnifyingGlassPlusLight
+export const MagnifyingGlassMinusLightIcon = PiMagnifyingGlassMinusLight
 
 //media
 export const UploadIcon = FaCloudUploadAlt

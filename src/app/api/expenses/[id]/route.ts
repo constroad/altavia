@@ -13,6 +13,15 @@ export async function PUT(request: NextRequest) {
 
   })
 }
+export async function DELETE(request: NextRequest) {
+  return withApi(async () => {
+
+    const { id } = getPathParams(request, ['api', 'expenses', '[id]'])
+    const created = await expenseRepository.deleteById(id);
+    return json(created, 201)
+
+  })
+}
 
 export async function GET(request: NextRequest) {  
   return withApi(async () => {

@@ -2,42 +2,73 @@ import React from 'react';
 import { Field, Input, InputProps } from '@chakra-ui/react';
 import { useFormContext, Controller } from 'react-hook-form';
 
-interface InputFieldProps extends InputProps {
+interface InputFieldProps extends Omit<InputProps, 'onChange' | 'value'> {
   name: string;
   label?: string;
   isRequired?: boolean;
   placeholder?: string;
   isInvalid?: boolean;
+  controlled?: boolean;
+  value?: string | number;
+  onChange?: (value: string | number) => void;
 }
 
-export const InputField: React.FC<InputFieldProps> = ({
-  name,
-  label,
-  isRequired = false,
-  placeholder,
-  type,
-  isInvalid
-}) => {
+export const InputField = (props: InputFieldProps) => {
+  const {
+    name,
+    label,
+    isRequired = false,
+    placeholder,
+    type,
+    isInvalid,
+    controlled,
+    ...rest
+  } = props;
   const {
     control,
     formState: { errors },
-  } = useFormContext();
+  } = useFormContext() ?? { formState: {} };
+
+  if (controlled) {
+    return (
+      <Field.Root required={isRequired}>
+        {label && (
+          <Field.Label htmlFor={name}>
+            {label}
+            <Field.RequiredIndicator />
+          </Field.Label>
+        )}
+
+        <Input
+          size="sm"
+          {...rest}
+          id={name}
+          value={props.value}
+          placeholder={placeholder}
+          type={type}
+          onChange={(e) => {
+            let value: string | number = e.target.value;
+            if (type === 'number') {
+              value = +value;
+            }
+            props.onChange?.(value);
+          }}
+        />
+      </Field.Root>
+    );
+  }
 
   const rawError = errors[name];
   const errorMessage =
-    typeof rawError === "object" &&
+    typeof rawError === 'object' &&
     rawError !== null &&
-    "message" in rawError &&
-    typeof rawError.message === "string"
+    'message' in rawError &&
+    typeof rawError.message === 'string'
       ? rawError.message
       : undefined;
 
-
   return (
-    <Field.Root
-      invalid={isInvalid ?? !!errorMessage}
-      required={isRequired}
-    >
+    <Field.Root invalid={isInvalid ?? !!errorMessage} required={isRequired}>
       {label && (
         <Field.Label htmlFor={name}>
           {label}
@@ -50,6 +81,7 @@ export const InputField: React.FC<InputFieldProps> = ({
         render={({ field }) => (
           <Input
             size="sm"
+            {...rest}
             {...field}
             id={name}
             placeholder={placeholder}
@@ -67,5 +99,4 @@ export const InputField: React.FC<InputFieldProps> = ({
       {errorMessage && <Field.ErrorText>{errorMessage}</Field.ErrorText>}
     </Field.Root>
   );
-
 };

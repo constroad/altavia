@@ -2,17 +2,34 @@
 import mongoose, { Schema, Document } from 'mongoose';
 import { z } from 'zod';
 
+export const EXPENSE_TYPES_MAP = {
+  '': 'Todos',
+  service: 'Service',
+  spare_part: 'Repuesto',
+  driver_payment: 'Pago a Chofer',
+  
+}
+export const EXPENSE_STATUS_MAP = {
+  '': 'Todos',
+  active: 'Activo',
+  to_pay: 'Por Pagar',
+  deleted: 'Eliminado',
+}
+
 export const EXPENSE_TYPES = ['service', 'spare_part', 'driver_payment'] as const;
 export type EXPENSE_TYPE = typeof EXPENSE_TYPES[number]; 
+
+export const EXPENSE_STATUS = ['active', 'to_pay', 'deleted'] as const;
+export type EXPENSE_STATUS_TYPE = typeof EXPENSE_STATUS[number];
 
 export const expenseValidationSchema = z.object({
   _id: z.string().optional(),
   description: z.string(),
   amount: z.number(),
   type: z.enum(EXPENSE_TYPES),
+  status: z.enum(EXPENSE_STATUS).default('active'),
   date: z.coerce.date(),
   note: z.string().optional(),
-  // date: z.string(),
    //auditoria
    createdAt: z.string().optional(),
    updatedAt: z.string().optional()
@@ -25,6 +42,7 @@ export interface IGeneralExpense extends Document {
   note?: string;
   amount: number;
   type: EXPENSE_TYPE;
+  status: EXPENSE_STATUS_TYPE;
   date: Date;
 }
 
@@ -33,9 +51,13 @@ const GeneralExpenseSchema: Schema = new Schema({
   note: { type: String, required: false },
   amount: { type: Number, required: true },
   type: { type: String, enum: EXPENSE_TYPES, required: true },
+  status: { type: String, enum: EXPENSE_STATUS, default: 'pending' },
   date: { type: Date, required: true }
 }, {
   timestamps: true
 });
+
+// Add index for efficient querying
+GeneralExpenseSchema.index({ date: 1, status: 1, type: 1 });
 
 export default mongoose.models?.GeneralExpense || mongoose.model<IGeneralExpense>('GeneralExpense', GeneralExpenseSchema);

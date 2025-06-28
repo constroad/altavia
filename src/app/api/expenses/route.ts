@@ -21,12 +21,19 @@ export async function GET(request: NextRequest) {
   return withApi(async () => {
 
     const filter: any = {};
-    const { month, year } = getQueryParameters(request)
-    if (month && year) {
-      const start = new Date(Number(year), Number(month) - 1, 1);
-      const end = new Date(Number(year), Number(month), 0, 23, 59, 59);
-      filter.date = { $gte: start, $lte: end };
+    const { startDate, endDate, status } = getQueryParameters(request)
+
+    if (status) {
+      filter.status = status
     }
+
+    const date1 = new Date(startDate)
+    const date2 = new Date(endDate)
+    const startOfDay = new Date(date1.setHours(0, 0, 0, 0));
+    const endOfDay = new Date(date2.setHours(23, 59, 59, 999));
+
+    filter.date = { $gte: startOfDay, $lte: endOfDay };
+
 
     const expenses = await expenseRepository.findAll(filter);
     return json(expenses);

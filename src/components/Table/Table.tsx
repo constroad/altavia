@@ -1,11 +1,6 @@
-'use client'
+'use client';
 
-import {
-  Button,
-  Flex,
-  Box,
-  Text,
-} from '@chakra-ui/react';
+import { Button, Flex, Box, Text } from '@chakra-ui/react';
 
 import { SortColumnStatus, TableColumn, TableData } from './TableTypes';
 import { CONSTROAD_COLORS } from 'src/styles/shared';
@@ -15,6 +10,8 @@ import { Pagination } from './Pagination';
 import { WithSort } from './WithSort';
 import { Table, Tbody, Td, Th, Thead, Tr } from '../ui/table';
 import { ProgressCircle } from '../ui/progress-circle';
+import { ButtonConfirm } from '../ButtonConfirm/ButtonConfirm';
+import { IconWrapper } from '../IconWrapper/IconWrapper';
 
 export type TableAction = 'paginate' | 'filter';
 export type TablePagination = {
@@ -124,7 +121,12 @@ export const TableComponent = (props: Props) => {
                 maxWidth={column.width}
               >
                 {/* @ts-ignore */}
-                <Flex width="100%" textAlign="center" justifyContent="center" {...column.thStyles}>
+                <Flex
+                  width="100%"
+                  textAlign="center"
+                  justifyContent="center"
+                  {...column.thStyles}
+                >
                   {typeof column.label === 'string' && (
                     <Text>{column.label}</Text>
                   )}
@@ -200,9 +202,9 @@ export const TableComponent = (props: Props) => {
                     key={`item-${column.key}-${idx}`}
                     maxWidth={column.width as any}
                     width={column.width as any}
-                    height={"max-content" as any}
+                    height={'max-content' as any}
                     textAlign={(column.textAlign ?? 'start') as any}
-                    {...column.tdStyles as any}
+                    {...(column.tdStyles as any)}
                   >
                     {column.render
                       ? column.render(row[column.key], row)
@@ -219,29 +221,27 @@ export const TableComponent = (props: Props) => {
                       }}
                     >
                       {onEdit && (
-                        <Button
-                          minWidth="25px"
-                          height={{ base: '20px', md: '' }}
-                          fontSize={{ base: 12, md: 14 }}
-                          paddingX="5px"
+                        <Button                          
+                          padding={0}
+                          margin={0}
+                          height="fit-content"
                           onClick={() => onEdit(row)}
+                          size="xs"
+                          variant="outline"
+                          borderWidth={0}
                         >
-                          <EditIcon fontSize={12} />
+                          <IconWrapper icon={EditIcon} size={10} />
                         </Button>
                       )}
 
                       {onDelete && (
-                        <Button
-                          minWidth="25px"
-                          height={{ base: '20px', md: '' }}
-                          fontSize={{ base: 12, md: 14 }}
-                          paddingX="5px"
-                          onClick={() => onDelete(row)}
-                          colorPalette='danger'
-                          variant='solid'
+                        <ButtonConfirm
+                          message="Esta seguro de eliminar este gasto?"
+                          onOk={() => onDelete(row)}
+                          size="xs"
                         >
-                          <TrashIcon fontSize={12} />
-                        </Button>
+                          <IconWrapper icon={TrashIcon} size={10} color="red" />
+                        </ButtonConfirm>                        
                       )}
 
                       {onShare && (
@@ -252,7 +252,7 @@ export const TableComponent = (props: Props) => {
                           paddingX="5px"
                           onClick={() => onShare(row)}
                         >
-                          <ShareIcon fontSize={12} />
+                          <IconWrapper icon={ShareIcon} fontSize={12} />
                         </Button>
                       )}
                     </Flex>

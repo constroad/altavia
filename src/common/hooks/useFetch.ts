@@ -235,7 +235,7 @@ export const useFetch = <T = any>(baseUrl: string, params?: FetchParams<T>, cach
 };
 
 // Function to search keys in the cache
-useFetch.searchCache = (searchString: string) => {
+const searchCache = (searchString: string): string[] => {
   let result: string[] = [];
   for (const key in cache) {
     if (key.includes(searchString)) {
@@ -243,13 +243,16 @@ useFetch.searchCache = (searchString: string) => {
     }
   }
   return result;
-};
+}
+useFetch.searchCache = searchCache;
 
 // Function to access the cache
 useFetch.cache = cache;
 
 // Function to mutate the cache
-useFetch.mutate = async (cacheKeys: string[]) => {
+useFetch.mutate = async (searchTerm: string) => {
+  const cacheKeys = searchCache(searchTerm)
+
   const promises = []
 
   for (const cacheKey of cacheKeys) {

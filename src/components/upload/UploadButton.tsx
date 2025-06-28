@@ -43,8 +43,8 @@ export const UploadButton = (props: UploadButtonProps) => {
     variant = 'outline',
   } = props;
 
-  const { onUpload, isUploading, onPasteImages } = useMedias({
-    enabled: false,
+  const { medias, onUpload, isUploading, onPasteImages } = useMedias({
+    // enabled: false,
     type,
     resourceId,
     onPasteMetadata: {
@@ -54,6 +54,9 @@ export const UploadButton = (props: UploadButtonProps) => {
       onSuccess: props.onSuccess,
     },
   });
+
+  console.log('medias:', medias)
+  console.log('resourceId:', resourceId)
 
   useEffect(() => {
     if (enableOnPaste) {

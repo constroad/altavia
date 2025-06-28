@@ -41,7 +41,7 @@ import { HiLightBulb } from "react-icons/hi";
 import { GoGoal } from "react-icons/go";
 import { MdBusinessCenter } from "react-icons/md";
 import { MdDashboard } from "react-icons/md";
-import { PiCalculatorBold, PiCaretDown, PiCaretUp, PiCertificate, PiCheck, PiCheckBold, PiCheckCircleFill, PiCylinderLight, PiDatabase, PiEyeBold, PiEyeSlash, PiFileImage, PiFilePdf, PiGearBold, PiImageFill, PiMagnifyingGlass, PiMagnifyingGlassMinusLight, PiMagnifyingGlassPlusLight, PiPauseCircleFill, PiPauseFill, PiPlayFill, PiPlusCircle, PiRecordFill, PiTimerFill, PiVideoCameraFill, PiWhatsappLogo, PiX, PiXBold, PiXCircleFill } from "react-icons/pi";
+import { PiGearBold, PiXCircleFill } from "react-icons/pi";
 import { RiTruckFill } from "react-icons/ri";
 import { HiBellAlert } from "react-icons/hi2";
 import { MdAlternateEmail } from "react-icons/md";
@@ -73,6 +73,7 @@ export const ViewIcon = FaEye
 export const IdeaIcon = HiLightBulb
 export const GoalIcon = GoGoal
 export const BusinessIcon = MdBusinessCenter
+export const PixCircleIcon = PiXCircleFill
 
 // admin menu
 export const ProductionIcon = MdOutlinePrecisionManufacturing

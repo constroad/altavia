@@ -1,6 +1,7 @@
 import React from 'react';
 import { Field, Input, InputProps } from '@chakra-ui/react';
 import { useFormContext, Controller } from 'react-hook-form';
+import { useScreenSize } from 'src/common/hooks';
 
 interface InputFieldProps extends InputProps {
   name: string;
@@ -16,12 +17,14 @@ export const InputField: React.FC<InputFieldProps> = ({
   isRequired = false,
   placeholder,
   type,
-  isInvalid
+  isInvalid,
+  ...rest
 }) => {
   const {
     control,
     formState: { errors },
   } = useFormContext();
+  const { isMobile } = useScreenSize();
 
   const rawError = errors[name];
   const errorMessage =
@@ -37,9 +40,14 @@ export const InputField: React.FC<InputFieldProps> = ({
     <Field.Root
       invalid={isInvalid ?? !!errorMessage}
       required={isRequired}
+      w='100%'
     >
       {label && (
-        <Field.Label htmlFor={name}>
+        <Field.Label
+          htmlFor={name}
+          fontWeight={600}
+          fontSize={ isMobile ? 12 : 14}
+        >
           {label}
           <Field.RequiredIndicator />
         </Field.Label>
@@ -49,11 +57,13 @@ export const InputField: React.FC<InputFieldProps> = ({
         control={control}
         render={({ field }) => (
           <Input
-            size="sm"
+            w='100%'
             {...field}
+            {...rest}
             id={name}
             placeholder={placeholder}
             type={type}
+            value={field.value ?? ''}
             onChange={(e) => {
               let value: string | number = e.target.value;
               if (type === 'number') {

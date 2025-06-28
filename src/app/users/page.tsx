@@ -4,14 +4,12 @@ import React, { useState } from 'react'
 import { Box, Button, Flex, Text, useDisclosure } from '@chakra-ui/react';
 import { DashboardLayout, Modal, TableComponent, UserForm, generateUserColumns, toast } from 'src/components'
 import { useFetch } from 'src/common/hooks/useFetch';
-import { IUserSchemaValidation, Role } from 'src/models/user';
+import { IUserSchemaValidation } from 'src/models/user';
 import { API_ROUTES } from 'src/common/consts';
 import { useMutate } from 'src/common/hooks/useMutate';
  
 export default function Page() {
   const [userSelected, setUserSelected] = useState<IUserSchemaValidation>();
-  console.log('userSelected:', userSelected)
-
   const { open, onOpen, onClose } = useDisclosure();
   const { open: isOpenDelete, onOpen: onOpenDelete, onClose: onCloseDelete } = useDisclosure();
 
@@ -22,7 +20,7 @@ export default function Page() {
 
   const columns = generateUserColumns(); 
 
-  const handleCloseDriverModal = () => {
+  const handleCloseUserModal = () => {
     onClose();
     setUserSelected(undefined);
     refetch()
@@ -51,12 +49,12 @@ export default function Page() {
   }
 
   // consts
-  const creationDate = new Date()
   const deleteFooter = (
     <Button
       colorPalette="danger"
       variant="outline"
       onClick={handleDeleteDriver}
+      loading={isMutating}
     >
       Confirmar
     </Button>
@@ -69,7 +67,7 @@ export default function Page() {
         width='100%'
         gap='5px'
       >
-        <Flex width="100%" justifyContent="space-between">
+        <Flex width="100%" justifyContent="space-between" alignItems='center'>
           <Text
             fontSize={{ base: 25, md: 36 }}
             fontWeight={700}
@@ -109,12 +107,12 @@ export default function Page() {
         <Modal
           hideCancelButton
           isOpen={open}
-          onClose={handleCloseDriverModal}
+          onClose={handleCloseUserModal}
           heading={userSelected ? 'Editar usuario' : 'Añadir usuario'}
         >
           <UserForm
             user={userSelected}
-            onSuccess={handleCloseDriverModal}
+            closeModal={handleCloseUserModal}
           />
         </Modal>
 

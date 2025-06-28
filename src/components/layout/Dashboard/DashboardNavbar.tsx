@@ -34,7 +34,7 @@ export const DashboardNavbar = () => {
           <Button
             fontWeight={600}
             onClick={handleSignOut}
-            colorPalette='primary'
+            colorPalette='danger'
             variant='outline'
             size='xs'
             fontSize={{base: 10, md: 14}}

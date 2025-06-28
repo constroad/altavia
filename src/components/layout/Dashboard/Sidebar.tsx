@@ -154,11 +154,11 @@ export const Sidebar = (props: AdminSidebarProps) => {
         <Flex
           px={{ base: 4, md: 6 }}
           height={{
-            base: 'calc(100vh - 41px)',
+            base: 'calc(100vh - 48px)',
             md: 'calc(100vh - 72px)'
           }}
-          py={2}
-          pt={6}
+          py={4}
+          // pt={6}
           overflowY='scroll'
           w={isMobile ? 'calc(100vw - 50px)' : ''}
           flexDir="column"

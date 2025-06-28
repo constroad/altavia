@@ -13,9 +13,11 @@ export const buttonRecipe = defineRecipe({
     colorPalette: {
       primary: {},
       danger: {},
+      info: {},
     },
   },
   compoundVariants: [
+    // PRIMARY - verde
     {
       variant: "solid",
       colorPalette: "primary" as any,
@@ -42,6 +44,8 @@ export const buttonRecipe = defineRecipe({
         },
       },
     },
+
+    // DANGER - rojo
     {
       variant: "solid",
       colorPalette: "danger" as any,
@@ -63,6 +67,34 @@ export const buttonRecipe = defineRecipe({
         borderColor: "danger.solid",
         _hover: {
           bg: "danger.muted",
+        },
+      },
+    },
+
+    // INFO - azul
+    {
+      variant: "solid",
+      colorPalette: "info" as any,
+      css: {
+        bg: "info.solid",
+        color: "info.contrast",
+        borderColor: "info.focusRing",
+        _hover: {
+          bg: "info.focusRing",
+          borderColor: "info.700",
+        },
+      },
+    },
+    {
+      variant: "outline",
+      colorPalette: "info" as any,
+      css: {
+        bg: "colors.white",
+        color: "info.solid",
+        border: "1.5px solid",
+        borderColor: "info.solid",
+        _hover: {
+          bg: "info.muted",
         },
       },
     },

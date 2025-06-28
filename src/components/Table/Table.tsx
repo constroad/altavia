@@ -5,6 +5,7 @@ import {
   Flex,
   Box,
   Text,
+  Icon,
 } from '@chakra-ui/react';
 
 import { SortColumnStatus, TableColumn, TableData } from './TableTypes';
@@ -225,22 +226,24 @@ export const TableComponent = (props: Props) => {
                           fontSize={{ base: 12, md: 14 }}
                           paddingX="5px"
                           onClick={() => onEdit(row)}
+                          colorPalette='info'
+                          variant='solid'
                         >
-                          <EditIcon fontSize={12} />
+                          <Icon as={EditIcon} boxSize={3} />
                         </Button>
                       )}
 
                       {onDelete && (
                         <Button
                           minWidth="25px"
+                          padding='5px'
+                          width={{ base: '', md: '20px' }}
                           height={{ base: '20px', md: '' }}
-                          fontSize={{ base: 12, md: 14 }}
-                          paddingX="5px"
                           onClick={() => onDelete(row)}
                           colorPalette='danger'
                           variant='solid'
                         >
-                          <TrashIcon fontSize={12} />
+                          <Icon as={TrashIcon} boxSize={3} />
                         </Button>
                       )}
 

@@ -1,39 +1,62 @@
-import React from 'react'
-import { Text, Textarea } from '@chakra-ui/react'
-import { useScreenSize } from 'src/common/hooks';
-import { FormControl, FormLabel } from '@chakra-ui/form-control'
+import { useFormContext, Controller } from 'react-hook-form';
+import { Field, Textarea } from '@chakra-ui/react';
 
 interface FormTextareaProps {
-  id: string;
+  name: string;
   label?: string;
-  value: string | number | readonly string[] | undefined
   placeholder?: string;
-  required?: boolean;
-  onChange: React.ChangeEventHandler<HTMLTextAreaElement> | undefined
+  isRequired?: boolean;
   height?: string;
 }
 
-export const FormTextarea = (props: FormTextareaProps) => {
-  const { isMobile, isDesktop } = useScreenSize()
+export const FormTextarea: React.FC<FormTextareaProps> = ({
+  name,
+  label,
+  placeholder,
+  isRequired = false,
+  height = '50px',
+}) => {
+  const {
+    control,
+    formState: { errors },
+  } = useFormContext();
+
+  const rawError = errors[name];
+  const errorMessage =
+    typeof rawError === 'object' &&
+    rawError !== null &&
+    'message' in rawError &&
+    typeof rawError.message === 'string'
+      ? rawError.message
+      : undefined;
+
   return (
-    <FormControl id={props.id}>
-      <FormLabel mb={{ base: '2px', md: '6px' }} fontSize={{ base: 10, md: 12 }}>
-        {props.label} {!props.required ? <Text color='gray' fontSize={8} display='inline-block'>(optional)</Text> : <Text color='red' fontSize={10} display='inline-block'>*</Text>}
-      </FormLabel>
-      <Textarea
-        _placeholder={{ fontSize: isMobile ? 10 : 12 }}
-        placeholder={props.placeholder}
-        fontSize={{ base: 10, md: 12 }}
-        lineHeight='13px'
-        value={props.value}
-        px={{ base: '5px', md: '3px' }}
-        py={{ base: '2px', md: '4px' }}
-        onChange={props.onChange}
-        maxHeight={props.height ? props.height : '50px'}
-        minHeight={props.height ? props.height : '50px'}
-        height={props.height ? props.height : '50px'}
-        required={props.required ? true : false}
+    <Field.Root required={isRequired} invalid={!!errorMessage}>
+      {label && (
+        <Field.Label htmlFor={name} fontWeight={600} fontSize={14}>
+          {label}
+          <Field.RequiredIndicator />
+        </Field.Label>
+      )}
+      <Controller
+        name={name}
+        control={control}
+        render={({ field }) => (
+          <Textarea
+            id={name}
+            {...field}
+            placeholder={placeholder}
+            fontSize={{ base: 10, md: 12 }}
+            lineHeight="13px"
+            px={{ base: '5px', md: '3px' }}
+            py={{ base: '2px', md: '4px' }}
+            height={height}
+            minHeight={height}
+            maxHeight={height}
+          />
+        )}
       />
-    </FormControl>
-  )
-}
+      {errorMessage && <Field.ErrorText>{errorMessage}</Field.ErrorText>}
+    </Field.Root>
+  );
+};

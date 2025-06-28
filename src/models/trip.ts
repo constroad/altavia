@@ -4,7 +4,7 @@ import { z } from 'zod';
 export interface IExpense {
   description: string;
   amount: number;
-  fileUrl?: string;
+  expenseId?: string;
 }
 
 export interface ILocationLog {
@@ -14,30 +14,38 @@ export interface ILocationLog {
   km: number;
 }
 
+export enum TripStatus {
+  Pending = 'Pending',
+  Completed = 'Completed',
+  Deleted = 'Deleted',
+}
+
 export const TripSchemaValidation = z.object({
-  origin: z.string(),
-  destination: z.string(),
-  vehicle: z.string(),
-  driver: z.string(),
-  client: z.string(),
-  startDate: z.string(),
-  endDate: z.string(),
+  origin: z.string(),  //ok
+  destination: z.string(), //ok
+  vehicle: z.string(), //ok
+  driver: z.string(), //ok
+  client: z.string(), //ok
+  startDate: z.string(), //ok
+  endDate: z.string().optional(), //ok
+  paymentDueDate: z.string().optional(), //ok
   expenses: z.array(z.object({
+    expenseId: z.string(), // UUID único por cada gasto
     description: z.string(),
     amount: z.number(),
-    fileUrl: z.string(),
   })),
   waybills: z.array(z.string()),
   invoices: z.array(z.string()),
-  revenue: z.number(),
+  revenue: z.number(), //ok
   locationLogs: z.array(z.object({
     timestamp: z.string(),
     latitude: z.number(),
     longitude: z.number(),
     km: z.number(),
   })),
-  kmTravelled: z.number(),
-  status: z.string()
+  kmTravelled: z.number(), //ok
+  status: z.nativeEnum(TripStatus), //ok
+  notes: z.string(), //ok
 })
 
 export type ITripSchemaValidation = z.infer<typeof TripSchemaValidation>
@@ -57,7 +65,8 @@ export interface ITrip extends Document {
   revenue: number;
   locationLogs: ILocationLog[];
   kmTravelled: number;
-  status: 'open' | 'closed';
+  status: TripStatus;
+  notes: string;
 }
 
 const TripSchema: Schema = new Schema({
@@ -71,7 +80,7 @@ const TripSchema: Schema = new Schema({
   expenses: [ {
     description: String,
     amount: Number,
-    fileUrl: String,
+    expenseId: String,
   } ],
   waybills: [ String ],
   invoices: [ String ],
@@ -83,7 +92,12 @@ const TripSchema: Schema = new Schema({
     km: Number
   } ],
   kmTravelled: { type: Number, default: 0 },
-  status: { type: String, enum: [ 'open', 'closed' ], default: 'open' }
+  status: {
+    type: String,
+    enum: Object.values(TripStatus),
+    default: TripStatus.Pending
+  },
+  notes: String,
 }, {
   timestamps: true, // this will add both createdAt y updatedAt automatically
 });

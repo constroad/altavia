@@ -1,6 +1,6 @@
 'use client'
 
-import { Box, Button, Text, VStack } from '@chakra-ui/react';
+import { Box, Button, Flex, Text, VStack } from '@chakra-ui/react';
 import { FormControl, FormLabel } from '@chakra-ui/form-control'
 import { useForm, FormProvider, Controller } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
@@ -14,12 +14,11 @@ import { Checkbox } from '../ui/checkbox';
 
 interface UserFormProps {
   user?: IUserSchemaValidation;
-  onSuccess: () => void;
+  closeModal: () => void;
 }
 
 export const UserForm = (props: UserFormProps) => {
   const { user } = props;
-  console.log('user en userForm para pasar al mutate:', user)
 
   const methods = useForm<IUserSchemaValidation>({
     resolver: zodResolver(userSchemaValidation),
@@ -49,7 +48,7 @@ export const UserForm = (props: UserFormProps) => {
       updateUser('PUT', data, {
         onSuccess: () => {
           toast.success('El usuario se actualizo correctamente');
-          props.onSuccess();
+          props.closeModal();
         },
         onError: (err) => {
           toast.error('Error al actualizar el nuevo usuario');
@@ -62,7 +61,7 @@ export const UserForm = (props: UserFormProps) => {
     createUser('POST', data, {
       onSuccess: () => {
         toast.success('El usuario se registro correctamente');
-        props.onSuccess();
+        props.closeModal();
       },
       onError: (err) => {
         toast.error('Error al registrar el nuevo usuario');
@@ -89,27 +88,12 @@ export const UserForm = (props: UserFormProps) => {
           <InputField name="doi" label="Documento de Identidad (DOI)" type='number' /> 
 
           <Box w='100%'>
-            <FormControl>
-              <FormLabel fontSize={13}>Rol</FormLabel>
-              <Controller
-                name="role"
-                control={methods.control}
-                render={({ field }) => (
-                  <SelectField
-                    name="role"
-                    label="Rol"
-                    isRequired
-                    field={field}
-                    options={options}
-                  />
-                )}
-              />
-              {methods.formState.errors.role && (
-                <Text color="red.500" fontSize="sm">
-                  {methods.formState.errors.role.message}
-                </Text>
-              )}
-            </FormControl>
+            <SelectField
+              name="role"
+              label="Rol"
+              isRequired
+              options={options}
+            />
           </Box>
 
           {/* Campo para el estado activo (Checkbox) */}
@@ -133,9 +117,24 @@ export const UserForm = (props: UserFormProps) => {
             </FormControl>
           </Box>
 
-          <Button colorScheme="blue" type="submit" loading={user?._id ? updatingUser : creatingUser }>
-            Guardar
-          </Button>
+          <Flex w='100%' justifyContent='end' gap={2} mt='10px'>
+            <Button
+              colorPalette='danger'
+              variant='outline'
+              onClick={props.closeModal}
+              size='sm'
+            >
+              Cancelar
+            </Button>
+            <Button
+              colorScheme="blue"
+              type="submit"
+              loading={user?._id ? updatingUser : creatingUser }
+              size='sm'
+            >
+              Guardar
+            </Button>
+          </Flex>
         </VStack>
       </form>
     </FormProvider>

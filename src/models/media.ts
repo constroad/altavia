@@ -2,9 +2,11 @@
 import { z } from 'zod';
 import mongoose, { Document, Schema } from 'mongoose';
 
-export type MediaType = 'ROUTE_TRACKING' |
-  'GUIA' |
-  'INVOICE' |
+export type MediaType =
+  'ROUTE_TRACKING' |
+  'TRIP_EXPENSE' |
+  'TRIP_WAYBILL' |
+  'TRIP_INVOICE' |
   'ORDER_PAYMENT' |  
   'DISPATCH_PICTURES' |
   'EMPLOYEE_AVATAR'

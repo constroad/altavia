@@ -59,6 +59,6 @@ const MediaSchema = new Schema({
   timestamps: true, // this will add both createdAt y updatedAt automatically
 });
 
-MediaSchema.index({ resourceId: 1})
+MediaSchema.index({ resourceId: 1, type: 1})
 
 export default mongoose.models?.Media || mongoose.model<IMedia>('Media', MediaSchema)

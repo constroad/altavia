@@ -4,7 +4,7 @@ import { getQueryParameters, withApi } from "src/common/utils/middleware";
 import { NextRequest } from 'next/server';
 import { json } from 'src/common/utils/response';
 import { expenseRepository } from "src/repositories/expenseRepository";
-import { TripRepository } from "src/repositories/tripRepository";
+import { tripRepository } from "src/repositories/tripRepository";
 
 
 export async function GET(request: NextRequest) {
@@ -18,21 +18,21 @@ export async function GET(request: NextRequest) {
     filter.date = { $gte: start, $lte: end };
 
     const expenses = await expenseRepository.findAll(filter);
-    const trips = await TripRepository.findAll(filter)
+    const trips = await tripRepository.findAll(filter)
 
-    const totalRevenue = trips.reduce((acc, t) => acc + t.revenue, 0);
-    const totalTripExpenses = trips.reduce((acc, t) => acc + t.expenses.reduce((eAcc, e) => eAcc + e.amount, 0), 0);
+    const totalRevenue = trips.reduce((acc, t) => acc + (t.revenue ?? 0), 0);
+    // const totalTripExpenses = trips.reduce((acc, t) => acc + t.expenses.reduce((eAcc, e) => eAcc + e.amount, 0), 0);
     const totalGeneralExpenses = expenses.reduce((acc, e) => acc + e.amount, 0);
-    const netProfit = totalRevenue - totalTripExpenses - totalGeneralExpenses;
+    // const netProfit = totalRevenue - totalTripExpenses - totalGeneralExpenses;
 
     const response = {
       month,
       year,
       tripsCount: trips.length,
       totalRevenue,
-      totalTripExpenses,
+      // totalTripExpenses,
       totalGeneralExpenses,
-      netProfit,
+      // netProfit,
     }
 
     return json(response);

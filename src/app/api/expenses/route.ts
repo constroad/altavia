@@ -26,7 +26,7 @@ export async function GET(request: NextRequest) {
   return withApi(async () => {
 
     const filter: any = {};
-    const { startDate, endDate, status, type } = getQueryParameters(request)
+    const { startDate, endDate, status, type, tripId } = getQueryParameters(request)
 
     if (type) {
       filter.type = type
@@ -34,13 +34,20 @@ export async function GET(request: NextRequest) {
     if (status) {
       filter.status = status
     }
+    if (tripId) {
+      filter.tripId = new mongoose.Types.ObjectId(tripId)
+    }
 
-    const date1 = new Date(startDate)
-    const date2 = new Date(endDate)
-    const startOfDay = new Date(date1.setHours(0, 0, 0, 0));
-    const endOfDay = new Date(date2.setHours(23, 59, 59, 999));
+    console.log('filter-expense', filter)
 
-    filter.date = { $gte: startOfDay, $lte: endOfDay };
+    if (startDate && endDate) {      
+      const date1 = new Date(startDate)
+      const date2 = new Date(endDate)
+      const startOfDay = new Date(date1.setHours(0, 0, 0, 0));
+      const endOfDay = new Date(date2.setHours(23, 59, 59, 999));
+  
+      filter.date = { $gte: startOfDay, $lte: endOfDay };
+    }
 
 
     const expenses = await expenseRepository.findAll(filter);

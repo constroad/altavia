@@ -98,7 +98,21 @@ export const ExpenseForm = (props: ExpenseFormProps) => {
   const medias = mediaResponse ?? [];
 
   return (
-    <DashboardLayout>
+    <DashboardLayout
+      title="Gastos"
+      actions={
+        <Button
+          size="xs"
+          variant="outline"
+          onClick={() => {
+            reset();
+            router.push(`${APP_ROUTES.expenses}`);
+          }}
+        >
+          Regresar
+        </Button>
+      }
+    >
       <Box p={8}>
         <FormProvider {...methods}>
           <form onSubmit={methods.handleSubmit(onSubmit)} noValidate>
@@ -156,17 +170,6 @@ export const ExpenseForm = (props: ExpenseFormProps) => {
                 </Show>
                 <Button size="xs" loading={isMutating} type="submit">
                   Guardar
-                </Button>
-
-                <Button
-                  size="xs"
-                  variant="outline"
-                  onClick={() => {
-                    reset();
-                    router.push(`${APP_ROUTES.expenses}`);
-                  }}
-                >
-                  Cancelar
                 </Button>
               </Flex>
             </Stack>

@@ -14,6 +14,10 @@ const DriverSchema: Schema = new Schema({
   phone: { type: String, required: true },
   licenseNumber: { type: String, required: true },
   licenseExpiry: { type: Date, required: true },
+}, {
+  timestamps: true
 });
+
+DriverSchema.index({ dni: 1, name: 1})
 
 export default mongoose.models.Driver || mongoose.model<IDriver>('Driver', DriverSchema);

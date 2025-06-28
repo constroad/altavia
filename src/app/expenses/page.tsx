@@ -1,6 +1,6 @@
 'use client';
 
-import { Button, Flex, Stack, Text } from '@chakra-ui/react';
+import { Button } from '@chakra-ui/react';
 import { DashboardLayout } from 'src/components';
 import { APP_ROUTES } from 'src/common/consts';
 import { ExpenseList } from 'src/components/expenses/ExpenseList';
@@ -15,16 +15,15 @@ export default function Page() {
   };
 
   return (
-    <DashboardLayout>
-      <Stack gap={4}>
-        <Flex gap={2} justifyContent="space-between">
-          <Text fontWeight={600} fontSize={22}>Gastos Generales</Text>
-          <Button size="sm" onClick={() => handleGoToExpenseId('new')}>
-            Nuevo Gasto
-          </Button>
-        </Flex>
-        <ExpenseList />
-      </Stack>
+    <DashboardLayout
+      title="Gastos"
+      actions={
+        <Button size="sm" onClick={() => handleGoToExpenseId('new')}>
+          + Nuevo Gasto
+        </Button>
+      }
+    >
+      <ExpenseList />
     </DashboardLayout>
   );
 }

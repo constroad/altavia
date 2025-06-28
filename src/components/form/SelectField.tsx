@@ -1,6 +1,4 @@
 import React from 'react';
-import { FormControl, FormErrorMessage, FormLabel } from '@chakra-ui/form-control';
-import { useScreenSize } from 'src/common/hooks';
 
 import { useFormContext, Controller } from 'react-hook-form';
 
@@ -9,6 +7,7 @@ import {
   Field,
   Portal,
   Select,
+  Spinner,
   createListCollection,
 } from '@chakra-ui/react';
 
@@ -16,13 +15,15 @@ interface SelectFieldProps {
   name: string;
   label?: string;
   value?: string;
+  multiple?: boolean;
   onChange?: (value: string) => void;
   options: { value: string; label: string }[];
   isRequired?: boolean;
   error?: string;
   controlled?: boolean;
   size?: ConditionalValue<'sm' | 'md' | 'lg' | 'xs' | undefined>;
-  width?: string
+  width?: string;
+  loading?: boolean;
 }
 
 export const SelectField = (props: SelectFieldProps) => {
@@ -34,7 +35,9 @@ export const SelectField = (props: SelectFieldProps) => {
     isRequired = false,
     error,
     size = 'sm',
-    width= '100%'
+    width = '100%',
+    multiple = false,
+    loading = false,
   } = props;
 
   const {
@@ -44,9 +47,9 @@ export const SelectField = (props: SelectFieldProps) => {
 
   const optionCollection = createListCollection({
     items: options,
-    itemToValue: (item) => item.value,
-    itemToString: (item) => item.label,
-    isItemDisabled: () => false,
+    // itemToValue: (item) => item.value,
+    // itemToString: (item) => item.label,
+    // isItemDisabled: () => false,
   });
 
   if (props.controlled) {
@@ -60,6 +63,7 @@ export const SelectField = (props: SelectFieldProps) => {
           width={width}
           size={size}
           name={name}
+          multiple={multiple}
           value={value ? [value] : ['']}
           onValueChange={(details: { value: string[] }) => {
             props.onChange?.(details.value[0] ?? '');
@@ -72,12 +76,15 @@ export const SelectField = (props: SelectFieldProps) => {
               <Select.ValueText placeholder={`Selecciona ${label}`} />
             </Select.Trigger>
             <Select.IndicatorGroup>
+              {loading && (
+                <Spinner size="xs" borderWidth="1.5px" color="fg.muted" />
+              )}
               <Select.Indicator />
             </Select.IndicatorGroup>
           </Select.Control>
           <Portal>
             <Select.Positioner>
-              <Select.Content>
+            <Select.Content zIndex={99999}>
                 {optionCollection.items.map((item: any) => (
                   <Select.Item item={item} key={item.value}>
                     {item.label}
@@ -112,8 +119,13 @@ export const SelectField = (props: SelectFieldProps) => {
             <Select.Root
               size={size}
               name={field.name}
-              value={field.value ? [field.value] : []}
+              multiple={multiple}
+              value={multiple ? field.value : field.value ? [field.value] : []}
               onValueChange={(details: { value: string[] }) => {
+                if (multiple) {
+                  field.onChange(details.value);
+                  return;
+                }
                 field.onChange(details.value[0] ?? '');
               }}
               onInteractOutside={() => field.onBlur()}
@@ -125,12 +137,15 @@ export const SelectField = (props: SelectFieldProps) => {
                   <Select.ValueText placeholder={`Selecciona ${label}`} />
                 </Select.Trigger>
                 <Select.IndicatorGroup>
+                  {loading && (
+                    <Spinner size="xs" borderWidth="1.5px" color="fg.muted" />
+                  )}
                   <Select.Indicator />
                 </Select.IndicatorGroup>
               </Select.Control>
               <Portal>
                 <Select.Positioner>
-                  <Select.Content>
+                <Select.Content zIndex={99999}> 
                     {optionCollection.items.map((framework: any) => (
                       <Select.Item item={framework} key={framework.value}>
                         {framework.label}

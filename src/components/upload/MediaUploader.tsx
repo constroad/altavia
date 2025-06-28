@@ -6,6 +6,7 @@ import { PixCircleIcon } from 'src/common/icons';
 import { useMedias } from 'src/common/hooks/useMedias';
 import { CopyPaste } from './CopyPaste';
 import { MediaType } from 'src/models/media';
+import { IconWrapper } from '@/components/IconWrapper/IconWrapper';
 
 interface MediaUploaderProps {
   parentId?: string; // tripId, si está creado
@@ -95,7 +96,7 @@ export const MediaUploader = ({
                 right={-3}
                 onClick={() => handleRemove(idx)}
               >
-                <PixCircleIcon color="gray.500" size={35} />
+                <IconWrapper icon={PixCircleIcon} color="gray.500" size={35} />
               </Box>
               <img
                 src={URL.createObjectURL(file)}

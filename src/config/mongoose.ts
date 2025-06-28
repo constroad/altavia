@@ -12,15 +12,16 @@ export async function connectToMongoDB() {
     return
   }
 
-  try {
-    const dbName = process.env.NODE_ENV === 'production' ? 'altavia' : 'test'
+  try {    
+    // const dbName = process.env.NODE_ENV === 'production' ? 'altavia' : 'test'
+    const dbName =  'altavia'
     if (!cached.promise) {
       const uri = process.env.MONGO_URI ?? '';
       cached.promise = mongoose.connect(uri, {
         dbName
       });
       cached.conn = await cached.promise
-      console.log('✅ MongoDB connected');
+      console.log('✅ MongoDB connected:', dbName);
     }
   } catch (error) {
     console.error('Error connecting MongoDB:', error);

@@ -15,9 +15,6 @@ export default function Page() {
   const { data: session } = useSession() 
   const userRole = session?.user?.role ?? '';
 
-  console.log('session:', session)
-  console.log('userRole:', userRole)
-
   return (
     <Flex w='100%' h='calc(100vh - 150px)' justifyContent='center' alignItems='center' flexDir='column'>
       <Text>No tienes acceso a esta página</Text>

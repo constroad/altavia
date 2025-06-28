@@ -58,7 +58,7 @@ export const ExpenseList = (props: ExpenseListProps) => {
       }
     );
   };
-  const handleSelectClient = (expense: IExpenseSchema) => {
+  const handleSelectExpense = (expense: IExpenseSchema) => {
     router.push(`${APP_ROUTES.expenses}/${expense._id}`);
   };
 
@@ -96,7 +96,7 @@ export const ExpenseList = (props: ExpenseListProps) => {
 
   return (
     <>
-      <Flex gap={1} alignItems="end" width="fit-content">
+      <Flex gap={1} alignItems="end" width="fit-content" mb={4}>
         <InputField
           width="120px"
           size="xs"
@@ -145,7 +145,7 @@ export const ExpenseList = (props: ExpenseListProps) => {
         data={data ?? []}
         columns={columns}
         actions
-        onEdit={handleSelectClient}
+        onEdit={handleSelectExpense}
         onDelete={handleDeleteExpense}
       />
     </>

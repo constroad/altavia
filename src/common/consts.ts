@@ -28,10 +28,11 @@ export const APP_ROUTES = {
 export const API_ROUTES = {
   sendEmail: '/api/sendEmail',
   generatePDF: '/api/generate-pdf',
-  client: '/api/client',    
+  clients: '/api/clients',    
   trips: '/api/trips',    
   media: '/api/medias',    
   vehicles: '/api/vehicles',    
+  drivers: '/api/drivers',    
   expenses: '/api/expenses',    
   notificationWhatsApp: '/api/notifications/whatsapp',
   user: '/api/user',

@@ -16,90 +16,82 @@ export interface ILocationLog {
 
 export enum TripStatus {
   Pending = 'Pending',
+  InProgress = 'InProgress',
   Completed = 'Completed',
   Deleted = 'Deleted',
 }
 
 export const TripSchemaValidation = z.object({
-  origin: z.string(),  //ok
-  destination: z.string(), //ok
-  vehicle: z.string(), //ok
-  driver: z.string(), //ok
-  client: z.string(), //ok
-  startDate: z.string(), //ok
-  endDate: z.string().optional(), //ok
-  paymentDueDate: z.string().optional(), //ok
-  expenses: z.array(z.object({
-    expenseId: z.string(), // UUID único por cada gasto
-    description: z.string(),
-    amount: z.number(),
-  })),
-  waybills: z.array(z.string()),
-  invoices: z.array(z.string()),
-  revenue: z.number(), //ok
+  _id: z.string().optional(),
+  origin: z.string(),
+  destination: z.string(),
+  vehicle: z.array(z.string()),
+  driver: z.array(z.string()), 
+  client: z.string(),
+  startDate: z.string(),
+  endDate: z.string().optional(),
+  paymentDueDate: z.string().optional(),
+  waybills: z.array(z.string()).optional(),
+  invoices: z.array(z.string()).optional(),
+  revenue: z.number().optional(),
   locationLogs: z.array(z.object({
     timestamp: z.string(),
     latitude: z.number(),
     longitude: z.number(),
     km: z.number(),
-  })),
-  kmTravelled: z.number(), //ok
-  status: z.nativeEnum(TripStatus), //ok
-  notes: z.string(), //ok
-})
+  })).optional(),
+  kmTravelled: z.number().optional(),
+  status: z.nativeEnum(TripStatus).optional(),
+  notes: z.string().optional(),
+});
 
-export type ITripSchemaValidation = z.infer<typeof TripSchemaValidation>
-
+export type ITripSchemaValidation = z.infer<typeof TripSchemaValidation>;
 
 export interface ITrip extends Document {
-  origin: string; // E.g., "Lima/Lima"
-  destination: string; // E.g., "Arequipa/Arequipa"
-  vehicle: mongoose.Types.ObjectId;
-  driver: mongoose.Types.ObjectId;
+  origin: string;
+  destination: string;
+  vehicle: mongoose.Types.ObjectId[];
+  driver: mongoose.Types.ObjectId[];
   client: mongoose.Types.ObjectId;
   startDate: Date;
   endDate?: Date;
-  expenses: IExpense[];
-  waybills: string[]; // file URLs
-  invoices: string[]; // file URLs
-  revenue: number;
-  locationLogs: ILocationLog[];
-  kmTravelled: number;
-  status: TripStatus;
-  notes: string;
+  waybills?: string[];
+  invoices?: string[];
+  revenue?: number;
+  locationLogs?: ILocationLog[];
+  kmTravelled?: number;
+  status?: TripStatus;
+  notes?: string;
 }
 
 const TripSchema: Schema = new Schema({
   origin: String,
   destination: String,
-  vehicle: { type: Schema.Types.ObjectId, ref: 'Vehicle', required: true },
-  driver: { type: Schema.Types.ObjectId, ref: 'Driver', required: true },
+  vehicle: [{ type: Schema.Types.ObjectId, ref: 'Vehicle', required: true }],
+  driver: [{ type: Schema.Types.ObjectId, ref: 'Driver', required: true }],  
   client: { type: Schema.Types.ObjectId, ref: 'Client', required: true },
   startDate: { type: Date, required: true },
   endDate: { type: Date, required: false },
-  expenses: [ {
-    description: String,
-    amount: Number,
-    expenseId: String,
-  } ],
-  waybills: [ String ],
-  invoices: [ String ],
+  waybills: [String],
+  invoices: [String],
   revenue: { type: Number, default: 0 },
-  locationLogs: [ {
+  locationLogs: [{
     timestamp: Date,
     latitude: Number,
     longitude: Number,
     km: Number
-  } ],
+  }],
   kmTravelled: { type: Number, default: 0 },
   status: {
     type: String,
     enum: Object.values(TripStatus),
     default: TripStatus.Pending
   },
-  notes: String,
+  notes: { type: String, required: false },
 }, {
-  timestamps: true, // this will add both createdAt y updatedAt automatically
+  timestamps: true,
 });
+
+TripSchema.index({ origin: 1, destination: 1, driver: 1, startDate: 1, endDate: 1 });
 
 export default mongoose.models?.Trip || mongoose.model<ITrip>('Trip', TripSchema);

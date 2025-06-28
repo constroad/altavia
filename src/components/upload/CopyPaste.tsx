@@ -6,6 +6,7 @@ import { useMedias } from 'src/common/hooks/useMedias';
 import { UploadIcon } from 'src/common/icons';
 import { toast } from '../Toast';
 import { TelegramMedia } from 'src/common/hooks/useTelegram';
+import { IconWrapper } from '@/components/IconWrapper/IconWrapper';
 
 type CopyPasteProps = {
   chat_Id?: string;
@@ -25,7 +26,7 @@ type CopyPasteProps = {
 };
 export const CopyPaste = (props: CopyPasteProps) => {
   const fileInputRef = useRef<HTMLInputElement>(null);
-  const { type, resourceId, metadata, onSuccess, fileName, onSelect } = props;
+  const { type, resourceId, metadata, onSuccess, fileName } = props;
 
   const { onUpload, isUploading, onPasteImages } = useMedias({
     chat_id: props.chat_Id,
@@ -127,7 +128,7 @@ export const CopyPaste = (props: CopyPasteProps) => {
       >
         {(props.isUploading || isUploading) && <Spinner size="sm" />}
         <Flex alignItems="center" justifyContent="center" gap={1}>
-          {props.icon || <UploadIcon fontSize={20} />}
+          {props.icon || <IconWrapper icon={UploadIcon} fontSize={20} />}
           {props.title}
         </Flex>
       </Flex>

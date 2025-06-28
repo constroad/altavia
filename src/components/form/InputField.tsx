@@ -30,6 +30,8 @@ export const InputField = (props: InputFieldProps) => {
     formState: { errors },
   } = useFormContext() ?? { formState: {} };
 
+  const { isMobile } = useScreenSize()
+
   if (controlled) {
     return (
       <Field.Root required={isRequired}>

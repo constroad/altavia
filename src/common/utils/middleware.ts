@@ -3,7 +3,7 @@ import { connectToMongoDB } from "src/config/mongoose";
 import { ZodSchema } from 'zod';
 import { NextRequest } from 'next/server';
 
-export function withValidation<T>(
+export function withBodyValidation<T>(
   schema: ZodSchema<T>,
   request: NextRequest,
   handler: (data: T) => Promise<Response>
@@ -79,9 +79,26 @@ export function withQueryValidation<T>(
   return handler(result.data);
 }
 
+export function getPathParams(request: NextRequest, basePathPattern: string[]) {
+  const pathSegments = request.nextUrl.pathname
+    .split('/')
+    .filter(Boolean); // e.g. ['api', 'expenses', '685c5cc6f197628941cbe587']
+
+  const paramValues: Record<string, string> = {};
+
+  basePathPattern.forEach((segment, index) => {
+    if (segment.startsWith('[') && segment.endsWith(']')) {
+      const paramName = segment.slice(1, -1);
+      paramValues[paramName] = pathSegments[index] || '';
+    }
+  });
+
+  return paramValues;
+}
 export function getQueryParameters(request: NextRequest) {
-  const url = new URL(request.url);
+  const url = new URL(request.url);  
   const rawParams: Record<string, string> = {};
+  
   url.searchParams.forEach((value, key) => {
     rawParams[ key ] = value;
   });
@@ -114,6 +131,6 @@ export function withApi(handler: () => Promise<Response>) {
 // Con esto ya tienes:
 
 // Validación	        Middleware usado	       Método
-// JSON Body	        withValidation()	       POST / PUT
+// JSON Body	        withBodyValidation()	       POST / PUT
 // Query params	      withQueryValidation()	   GET
 // Route params	      withParamsValidation()	 GET / PUT / DELETE en [id]

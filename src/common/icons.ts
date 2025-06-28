@@ -41,7 +41,7 @@ import { HiLightBulb } from "react-icons/hi";
 import { GoGoal } from "react-icons/go";
 import { MdBusinessCenter } from "react-icons/md";
 import { MdDashboard } from "react-icons/md";
-import { PiGearBold, PiXCircleFill } from "react-icons/pi";
+import { PiCalculatorBold, PiCaretDown, PiCaretUp, PiCashRegisterBold, PiCertificate, PiCheck, PiCheckBold, PiCheckCircleFill, PiCylinderLight, PiDatabase, PiEyeBold, PiEyeSlash, PiFileImage, PiFilePdf, PiGearBold, PiImageFill, PiMagnifyingGlass, PiMagnifyingGlassMinusLight, PiMagnifyingGlassPlusLight, PiPauseCircleFill, PiPauseFill, PiPlayFill, PiPlusCircle, PiRecordFill, PiTimerFill, PiVideoCameraFill, PiWhatsappLogo, PiX, PiXBold, PiXCircleFill } from "react-icons/pi";
 import { RiTruckFill } from "react-icons/ri";
 import { HiBellAlert } from "react-icons/hi2";
 import { MdAlternateEmail } from "react-icons/md";
@@ -106,6 +106,9 @@ export const DashboardIcon = MdDashboard
 export const VehiclesIcon = RiTruckFill
 export const AlertsIcon = HiBellAlert
 export const SignupIcon = MdAlternateEmail
+export const CashRegisterBoldIcon = PiCashRegisterBold
+export const MagnifyingGlassPlusLightIcon = PiMagnifyingGlassPlusLight
+export const MagnifyingGlassMinusLightIcon = PiMagnifyingGlassMinusLight
 
 //media
 export const UploadIcon = FaCloudUploadAlt

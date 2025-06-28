@@ -1,5 +1,5 @@
 // components/ui/modal.tsx
-'use client'
+'use client';
 
 import {
   DialogRoot,
@@ -8,18 +8,18 @@ import {
   DialogBody,
   DialogFooter,
   DialogCloseTrigger,
-} from '../ui/dialog'
-import { Button } from '@chakra-ui/react'
-import { ReactNode } from 'react'
-import { CloseIcon } from 'src/common/icons'
+} from '../ui/dialog';
+import { ReactNode } from 'react';
+import { CloseIcon } from 'src/common/icons';
+import { IconWrapper } from '../IconWrapper/IconWrapper';
 
 interface ModalProps {
-  isOpen: boolean
-  onClose: () => void
-  heading?: string
-  children?: ReactNode
-  footer?: ReactNode
-  hideCancelButton?: boolean
+  isOpen: boolean;
+  onClose: () => void;
+  heading?: string;
+  children?: ReactNode;
+  footer?: ReactNode;
+  hideCancelButton?: boolean;
 }
 
 export const Modal = ({
@@ -31,7 +31,12 @@ export const Modal = ({
   hideCancelButton = false,
 }: ModalProps) => {
   return (
-    <DialogRoot open={isOpen} onOpenChange={({ open }) => { if (!open) onClose(); }}>
+    <DialogRoot
+      open={isOpen}
+      onOpenChange={({ open }) => {
+        if (!open) onClose();
+      }}
+    >
       <DialogContent>
         {heading && <DialogHeader fontWeight={600}>{heading}</DialogHeader>}
 
@@ -41,7 +46,12 @@ export const Modal = ({
           <DialogFooter gap={2}>
             {!hideCancelButton && (
               <DialogCloseTrigger asChild>
-                <CloseIcon color='red' fontSize={40} fontWeight={800}/>
+                <IconWrapper
+                  icon={CloseIcon}
+                  color="red"
+                  fontSize={40}
+                  fontWeight={800}
+                />
               </DialogCloseTrigger>
             )}
             {footer}
@@ -49,5 +59,5 @@ export const Modal = ({
         )}
       </DialogContent>
     </DialogRoot>
-  )
-}
+  );
+};

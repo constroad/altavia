@@ -1,92 +1,152 @@
 import React from 'react';
-import { Controller, useFormContext } from 'react-hook-form';
-import { Field, Portal, Select, SelectRootProps, createListCollection } from '@chakra-ui/react';
 import { FormControl, FormErrorMessage, FormLabel } from '@chakra-ui/form-control';
 import { useScreenSize } from 'src/common/hooks';
 
-interface SelectFieldProps extends Omit<SelectRootProps, 'name' | 'children' | 'collection'> {
+import { useFormContext, Controller } from 'react-hook-form';
+
+import {
+  ConditionalValue,
+  Field,
+  Portal,
+  Select,
+  createListCollection,
+} from '@chakra-ui/react';
+
+interface SelectFieldProps {
   name: string;
   label?: string;
+  value?: string;
+  onChange?: (value: string) => void;
   options: { value: string; label: string }[];
   isRequired?: boolean;
-  placeholder?: string;
+  error?: string;
+  controlled?: boolean;
+  size?: ConditionalValue<'sm' | 'md' | 'lg' | 'xs' | undefined>;
+  width?: string
 }
 
-export const SelectField: React.FC<SelectFieldProps> = ({
-  name,
-  label,
-  options,
-  isRequired = false,
-  placeholder = 'Selecciona una opción',
-  ...rest
-}) => {
-  const { control, formState: { errors } } = useFormContext();
-  const frameworks = createListCollection({ items: options });
-  const { isMobile } = useScreenSize();
+export const SelectField = (props: SelectFieldProps) => {
+  const {
+    name,
+    value,
+    label,
+    options,
+    isRequired = false,
+    error,
+    size = 'sm',
+    width= '100%'
+  } = props;
 
-  const rawError = errors[name];
-  const errorMessage =
-    typeof rawError === "object" &&
-    rawError !== null &&
-    "message" in rawError &&
-    typeof rawError.message === "string"
-      ? rawError.message
-      : undefined;
+  const {
+    control,
+    formState: { errors },
+  } = useFormContext() ?? { formState: {} };
 
-  return (
-    <Field.Root invalid={!!errors[name]} w='100%'>
-      {label && (
-        <Field.Label
-          htmlFor={name}
-          fontWeight={600}
-          fontSize={ isMobile ? 12 : 14}
-        >
+  const optionCollection = createListCollection({
+    items: options,
+    itemToValue: (item) => item.value,
+    itemToString: (item) => item.label,
+    isItemDisabled: () => false,
+  });
+
+  if (props.controlled) {
+    return (
+      <Field.Root required={isRequired ?? !!error} width="fit-content">
+        <Field.Label>
           {label}
           <Field.RequiredIndicator />
         </Field.Label>
-      )}
+        <Select.Root
+          width={width}
+          size={size}
+          name={name}
+          value={value ? [value] : ['']}
+          onValueChange={(details: { value: string[] }) => {
+            props.onChange?.(details.value[0] ?? '');
+          }}
+          collection={optionCollection}
+        >
+          <Select.HiddenSelect />
+          <Select.Control>
+            <Select.Trigger>
+              <Select.ValueText placeholder={`Selecciona ${label}`} />
+            </Select.Trigger>
+            <Select.IndicatorGroup>
+              <Select.Indicator />
+            </Select.IndicatorGroup>
+          </Select.Control>
+          <Portal>
+            <Select.Positioner>
+              <Select.Content>
+                {optionCollection.items.map((item: any) => (
+                  <Select.Item item={item} key={item.value}>
+                    {item.label}
+                    <Select.ItemIndicator />
+                  </Select.Item>
+                ))}
+              </Select.Content>
+            </Select.Positioner>
+          </Portal>
+        </Select.Root>
+      </Field.Root>
+    );
+  }
 
+  const isInvalidField = !!errors[name]?.message || error !== undefined;
+
+  return (
+    <Field.Root
+      invalid={isInvalidField}
+      required={isRequired ?? !!error}
+      width="320px"
+    >
+      <Field.Label>
+        {label}
+        <Field.RequiredIndicator />
+      </Field.Label>
       <Controller
         name={name}
         control={control}
-        render={({ field }) => (
-          <Select.Root
-            {...field}
-            {...rest}
-            id={name}
-            name={field.name}
-            value={field.value}
-            onValueChange={({ value }) => field.onChange(value)}
-            onInteractOutside={() => field.onBlur()}
-            collection={frameworks}
-          >
-            <Select.HiddenSelect />
-            <Select.Control>
-              <Select.Trigger>
-                <Select.ValueText placeholder={placeholder} />
-              </Select.Trigger>
-              <Select.IndicatorGroup>
-                <Select.Indicator />
-              </Select.IndicatorGroup>
-            </Select.Control>
-
-            <Portal>
-              <Select.Positioner>
-                <Select.Content zIndex={99999}>
-                  {frameworks.items.map((framework) => (
-                    <Select.Item item={framework} key={framework.value}>
-                      {framework.label}
-                      <Select.ItemIndicator />
-                    </Select.Item>
-                  ))}
-                </Select.Content>
-              </Select.Positioner>
-            </Portal>
-          </Select.Root>
-        )}
+        render={({ field }) => {
+          return (
+            <Select.Root
+              size={size}
+              name={field.name}
+              value={field.value ? [field.value] : []}
+              onValueChange={(details: { value: string[] }) => {
+                field.onChange(details.value[0] ?? '');
+              }}
+              onInteractOutside={() => field.onBlur()}
+              collection={optionCollection}
+            >
+              <Select.HiddenSelect />
+              <Select.Control>
+                <Select.Trigger>
+                  <Select.ValueText placeholder={`Selecciona ${label}`} />
+                </Select.Trigger>
+                <Select.IndicatorGroup>
+                  <Select.Indicator />
+                </Select.IndicatorGroup>
+              </Select.Control>
+              <Portal>
+                <Select.Positioner>
+                  <Select.Content>
+                    {optionCollection.items.map((framework: any) => (
+                      <Select.Item item={framework} key={framework.value}>
+                        {framework.label}
+                        <Select.ItemIndicator />
+                      </Select.Item>
+                    ))}
+                  </Select.Content>
+                </Select.Positioner>
+              </Portal>
+            </Select.Root>
+          );
+        }}
       />
-      
-      {errorMessage && <Field.ErrorText>{errorMessage}</Field.ErrorText>}
+      <Field.ErrorText>
+        {errors[name]?.message as React.ReactNode}
+      </Field.ErrorText>
     </Field.Root>
   );
 };

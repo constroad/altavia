@@ -1,7 +1,7 @@
-'use client'
+'use client';
 
 import { Box, Button, Flex, Text, VStack } from '@chakra-ui/react';
-import { FormControl, FormLabel } from '@chakra-ui/form-control'
+import { FormControl, FormLabel } from '@chakra-ui/form-control';
 import { useForm, FormProvider, Controller } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { InputField, SelectField } from '../form';
@@ -19,17 +19,27 @@ interface UserFormProps {
 
 export const UserForm = (props: UserFormProps) => {
   const { user } = props;
+  console.log('user en userForm para pasar al mutate:', user);
 
   const methods = useForm<IUserSchemaValidation>({
     resolver: zodResolver(userSchemaValidation),
     defaultValues: user,
   });
 
+  const {
+    formState: { errors },
+  } = methods;
+
   // API
-  const { mutate: createUser, isMutating: creatingUser } = useMutate(API_ROUTES.user);
-  const { mutate: updateUser, isMutating: updatingUser } = useMutate(`${API_ROUTES.user}/:id`, {
-    urlParams: { id: user?._id ?? '' },
-  });
+  const { mutate: createUser, isMutating: creatingUser } = useMutate(
+    API_ROUTES.user
+  );
+  const { mutate: updateUser, isMutating: updatingUser } = useMutate(
+    `${API_ROUTES.user}/:id`,
+    {
+      urlParams: { id: user?._id ?? '' },
+    }
+  );
 
   useEffect(() => {
     if (user) {
@@ -39,8 +49,8 @@ export const UserForm = (props: UserFormProps) => {
 
   const onSubmit = (data: IUserSchemaValidation) => {
     data.userName = data.userName.toLowerCase();
-    console.log('id:', props.user?._id)
-    console.log('data:', data)
+    console.log('id:', props.user?._id);
+    console.log('data:', data);
 
     if (props.user?._id) {
       //edit
@@ -75,8 +85,8 @@ export const UserForm = (props: UserFormProps) => {
     { label: 'Laboratorio', value: 'laboratory' },
     { label: 'Supervisor', value: 'supervisor' },
     { label: 'Invitado', value: 'guest' },
-  ]
-  
+  ];
+
   return (
     <FormProvider {...methods}>
       <form onSubmit={methods.handleSubmit(onSubmit)} noValidate>
@@ -84,20 +94,29 @@ export const UserForm = (props: UserFormProps) => {
           <InputField name="name" label="Nombre" isRequired />
           <InputField name="lastName" label="Apellido" isRequired />
           <InputField name="userName" label="Usuario" isRequired />
-          <InputField name="password" label="Contraseña" isRequired type="password" />
-          <InputField name="doi" label="Documento de Identidad (DOI)" type='number' /> 
+          <InputField
+            name="password"
+            label="Contraseña"
+            isRequired
+            type="password"
+          />
+          <InputField
+            name="doi"
+            label="Documento de Identidad (DOI)"
+            type="number"
+          />
 
-          <Box w='100%'>
+          <Box w="100%">
             <SelectField
               name="role"
               label="Rol"
               isRequired
               options={options}
-            />
+            />  
           </Box>
 
           {/* Campo para el estado activo (Checkbox) */}
-          <Box w='100%'>
+          <Box w="100%">
             <FormControl>
               <FormLabel fontSize={13}>Activo</FormLabel>
               <Controller
@@ -106,11 +125,13 @@ export const UserForm = (props: UserFormProps) => {
                 render={({ field }) => (
                   <Checkbox
                     {...field}
-                    checked={field.value}  // Aquí usamos isChecked para vincular el estado del Checkbox
-                    value={field.value ? 'true' : 'false'}  // Convertimos el valor a string
+                    checked={field.value} // Aquí usamos isChecked para vincular el estado del Checkbox
+                    value={field.value ? 'true' : 'false'} // Convertimos el valor a string
                     fontSize={10}
                   >
-                    <Text fontSize={13}>{field.value ? 'Activo' : 'Inactivo'}</Text>
+                    <Text fontSize={13}>
+                      {field.value ? 'Activo' : 'Inactivo'}
+                    </Text>
                   </Checkbox>
                 )}
               />

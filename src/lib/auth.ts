@@ -29,7 +29,7 @@ export const authOptions: NextAuthOptions = {
           
         } catch (error: any) {
           console.error("❌ Error en authorize:", error.message);
-          throw new Error(error.message || "Error al iniciar sesión");
+          throw new Error(error.message ?? "Error al iniciar sesión");
         }
       },
     }),

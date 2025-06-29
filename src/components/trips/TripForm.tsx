@@ -31,6 +31,8 @@ import { ImageView } from '../telegramFileView/imageView';
 import { metadata } from '../../app/nosotros/page';
 import { IMediaValidationSchema } from '@/models/media';
 import { useState } from 'react';
+import { IconWrapper } from '../IconWrapper/IconWrapper';
+import { RefreshIcon } from '@/common/icons';
 
 type ITripForm = {
   trip: ITripSchemaValidation | null;
@@ -67,15 +69,14 @@ export default function TripForm(props: Readonly<ITripForm>) {
     },
     enabled: trip?._id !== undefined,
   });
-  const { data: medias, refetch: refetchMedias } = useFetch<IMediaValidationSchema[]>(
-    API_ROUTES.media,
-    {
-      queryParams: {
-        resourceId: trip?._id,
-      },
-      enabled: trip?._id !== undefined,
-    }
-  );
+  const { data: medias, refetch: refetchMedias } = useFetch<
+    IMediaValidationSchema[]
+  >(API_ROUTES.media, {
+    queryParams: {
+      resourceId: trip?._id,
+    },
+    enabled: trip?._id !== undefined,
+  });
 
   const { mutate: mutateTrip, isMutating } = useMutate(API_ROUTES.trips);
   const { mutate: mutateExpense } = useMutate(API_ROUTES.expenses);
@@ -84,11 +85,10 @@ export default function TripForm(props: Readonly<ITripForm>) {
 
   const methods = useForm<ITripSchemaValidation>({
     resolver: zodResolver(TripSchemaValidation),
-    defaultValues:
-      {
-        ...(trip ?? {}),
-        startDate: trip?.startDate?.split?.('T')[0] ?? '',
-      },
+    defaultValues: {
+      ...(trip ?? {}),
+      startDate: trip?.startDate?.split?.('T')[0] ?? '',
+    },
   });
 
   const statusArr = [
@@ -357,11 +357,29 @@ export default function TripForm(props: Readonly<ITripForm>) {
                       fontSize="12px"
                       m={1}
                     >
-                      <Button size="xs" colorScheme="blue" onClick={onOpen}>
-                        + Gasto
-                      </Button>
+                      <Flex>
+                        <Button
+                          size="xs"
+                          colorScheme="blue"
+                          onClick={() => {
+                            onOpen();
+                            setExpenseSelected(undefined);
+                          }}
+                        >
+                          + Gasto
+                        </Button>
+                        <Button
+                          onClick={() => {
+                            refetchExpenses();
+                            refetchMedias();
+                          }}
+                          size="xs"
+                        >
+                          <IconWrapper icon={RefreshIcon} size="18px" />
+                        </Button>
+                      </Flex>
                       <Text fontWeight={600}>
-                        Total:{' '}
+                        Total:
                         {expenses?.reduce((acc, curr) => acc + curr.amount, 0)}
                       </Text>
                     </Flex>
@@ -377,6 +395,7 @@ export default function TripForm(props: Readonly<ITripForm>) {
           resourceId={trip?._id!}
           open={open}
           onClose={() => {
+            setExpenseSelected(undefined);
             onClose();
             refetchExpenses();
             refetchMedias();

@@ -357,10 +357,9 @@ export default function TripForm(props: Readonly<ITripForm>) {
                       fontSize="12px"
                       m={1}
                     >
-                      <Flex>
+                      <Flex gap={2}>
                         <Button
-                          size="xs"
-                          colorScheme="blue"
+                          size="xs"                          
                           onClick={() => {
                             onOpen();
                             setExpenseSelected(undefined);
@@ -369,6 +368,7 @@ export default function TripForm(props: Readonly<ITripForm>) {
                           + Gasto
                         </Button>
                         <Button
+                          variant="outline"
                           onClick={() => {
                             refetchExpenses();
                             refetchMedias();

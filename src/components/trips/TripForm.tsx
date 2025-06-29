@@ -1,36 +1,36 @@
 'use client';
 import { FormProvider, useForm } from 'react-hook-form';
 import {
-  Box,
   Button,
   VStack,
   HStack,
-  Field,
-  Textarea,
   Flex,
-  Icon,
   Text,
   useDisclosure,
 } from '@chakra-ui/react';
 import { ITripSchemaValidation, TripSchemaValidation } from 'src/models/trip';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { FormTextarea, InputField, SelectField } from '../form';
-import { UploadButton } from '../upload/UploadButton';
-import { ArrowLeftIcon } from 'src/common/icons';
-import { useScreenSize } from 'src/common/hooks';
-import { useFieldArray } from 'react-hook-form';
-import { useState } from 'react';
+
 import { ExpenseModal } from './ExpenseModal';
-import { v4 as uuidv4 } from 'uuid'; // asegúrate de tener 'uuid' instalado
 import { useUbigeos } from '@/common/hooks/useUbigeos';
-import { IconWrapper } from '../IconWrapper/IconWrapper';
+
 import { PageLayout } from '../layout/Dashboard/PageLayout';
 import { useFetch } from '@/common/hooks/useFetch';
 import { API_ROUTES, APP_ROUTES } from '@/common/consts';
 import { useMutate } from '@/common/hooks/useMutate';
-import { toast } from 'src/components';
+import { TableColumn, TableComponent, toast } from 'src/components';
 import { useRouter } from 'next/navigation';
-import { IExpenseSchema } from '@/models/generalExpense';
+import {
+  EXPENSE_STATUS_MAP,
+  EXPENSE_STATUS_TYPE,
+  IExpenseSchema,
+} from '@/models/generalExpense';
+import { formatUtcDateTime } from '@/utils/general';
+import { ImageView } from '../telegramFileView/imageView';
+import { metadata } from '../../app/nosotros/page';
+import { IMediaValidationSchema } from '@/models/media';
+import { useState } from 'react';
 
 type ITripForm = {
   trip: ITripSchemaValidation | null;
@@ -42,6 +42,9 @@ export default function TripForm(props: Readonly<ITripForm>) {
 
   const { open, onOpen, onClose } = useDisclosure();
   const router = useRouter();
+  const [expenseSelected, setExpenseSelected] = useState<
+    IExpenseSchema | undefined
+  >();
 
   // API
   const { data: drivers, isLoading: isLoadingDrivers } = useFetch(
@@ -53,14 +56,27 @@ export default function TripForm(props: Readonly<ITripForm>) {
   const { data: clients, isLoading: isLoadingClients } = useFetch(
     API_ROUTES.clients
   );
-  const { data: expenses, isLoading: isLoadingExpenses, refetch: refetchExpenses } = useFetch<
-    IExpenseSchema[]
-  >(API_ROUTES.expenses, {
+
+  const {
+    data: expenses,
+    isLoading: isLoadingExpenses,
+    refetch: refetchExpenses,
+  } = useFetch<IExpenseSchema[]>(API_ROUTES.expenses, {
     queryParams: {
       tripId: trip?._id,
     },
-    enabled: !!trip?._id,
+    enabled: trip?._id !== undefined,
   });
+  const { data: medias, refetch: refetchMedias } = useFetch<IMediaValidationSchema[]>(
+    API_ROUTES.media,
+    {
+      queryParams: {
+        resourceId: trip?._id,
+      },
+      enabled: trip?._id !== undefined,
+    }
+  );
+
   const { mutate: mutateTrip, isMutating } = useMutate(API_ROUTES.trips);
   const { mutate: mutateExpense } = useMutate(API_ROUTES.expenses);
 
@@ -68,27 +84,66 @@ export default function TripForm(props: Readonly<ITripForm>) {
 
   const methods = useForm<ITripSchemaValidation>({
     resolver: zodResolver(TripSchemaValidation),
-    defaultValues: trip ?? {},
+    defaultValues:
+      {
+        ...(trip ?? {}),
+        startDate: trip?.startDate?.split?.('T')[0] ?? '',
+      },
   });
-
-  const {
-    watch,
-    formState: { errors },
-  } = methods;
-
-  const values = watch();
-  console.log('values:', values);
 
   const statusArr = [
     { label: 'Pendiente', value: 'Pending' },
     { label: 'En Ruta', value: 'InProgress' },
-    { label: 'Eliminado', value: 'Deleted' },
+    { label: 'Completado', value: 'Completed' },
     { label: 'Eliminado', value: 'Deleted' },
   ];
   const regionsArr = regions.map((r) => ({
     label: r,
     value: r,
   }));
+
+  const columns: TableColumn[] = [
+    {
+      key: 'date',
+      label: 'Fecha',
+      width: '20%',
+      textAlign: 'center',
+      render: (item) => <Text>{formatUtcDateTime(item)}</Text>,
+    },
+    { key: 'description', label: 'Descripcion', width: '20%' },
+    {
+      key: 'amount',
+      label: 'Cantidad',
+      textAlign: 'center',
+      width: '10%',
+    },
+    {
+      key: 'status',
+      label: 'Estado',
+      textAlign: 'center',
+      width: '20%',
+      render: (item) => {
+        return <>{EXPENSE_STATUS_MAP[item as EXPENSE_STATUS_TYPE]}</>;
+      },
+    },
+    {
+      key: '_id',
+      label: 'Imagenes',
+      textAlign: 'center',
+      width: '20%',
+      render: (item, row) => {
+        const expenseMedias =
+          medias?.filter?.((x) => x.metadata.expenseId === row._id) ?? [];
+        return (
+          <Flex gap={1} alignItems="center" width="100%">
+            {expenseMedias.map?.((m) => (
+              <ImageView width="60px" height="60px" key={m._id} media={m} />
+            ))}
+          </Flex>
+        );
+      },
+    },
+  ];
 
   const onSubmit = (form: ITripSchemaValidation) => {
     try {
@@ -136,9 +191,13 @@ export default function TripForm(props: Readonly<ITripForm>) {
       }
     );
   };
+  const handleSelectExpense = (expense: IExpenseSchema) => {
+    setExpenseSelected(expense);
+    onOpen();
+  };
 
   return (
-    <PageLayout title="Nuevo Viaje" onBack={onClose}>
+    <PageLayout title="Nuevo Viaje" onBack={onCancel}>
       <FormProvider {...methods}>
         <form onSubmit={methods.handleSubmit(onSubmit)} noValidate>
           <VStack gap={2} w="100%" mt="10px">
@@ -282,54 +341,46 @@ export default function TripForm(props: Readonly<ITripForm>) {
               <FormTextarea name="notes" label="Notas" />
             </Flex>
 
-            {/* BOTÓN AGREGAR GASTO */}
-            <Flex w="100%" justifyContent="start">
-              <Button size="sm" colorScheme="blue" onClick={onOpen}>
-                Agregar gasto
-              </Button>
-            </Flex>
-
             <VStack align="start" w="100%">
-              <Text fontWeight="bold">Gastos agregados</Text>
               <Flex w="100%" gap="10px">
-                {expenses?.map((item, index) => (
-                  <Flex
-                    key={item._id}
-                    rounded="4px"
-                    p="3px"
-                    border="1px solid"
-                    flexDir="column"
-                  >
-                    <Text>{item.description}</Text>
-                    <Text>S/ {item.amount}</Text>
-
-                    {/* {expenseMedias[item.expenseId]?.map((file, i) => (
-                    <Box key={i} display="inline-block" position="relative" mr={2} mt={2}>
-                      <img
-                        src={URL.createObjectURL(file)}
-                        alt={`preview-${i}`}
-                        width="60"
-                        height="40"
-                        style={{ borderRadius: '6px', objectFit: 'cover' }}
-                      />
-                    </Box>
-                  ))} */}
-
-                    <Button size="xs" mt='5px' onClick={() => handleDeleteExpense(item)}>Eliminar</Button>
-                  </Flex>
-                ))}
+                <TableComponent
+                  isLoading={isLoadingExpenses}
+                  data={expenses ?? []}
+                  columns={columns}
+                  actions
+                  onEdit={handleSelectExpense}
+                  onDelete={handleDeleteExpense}
+                  toolbar={
+                    <Flex
+                      alignItems="center"
+                      justifyContent="space-between"
+                      fontSize="12px"
+                      m={1}
+                    >
+                      <Button size="xs" colorScheme="blue" onClick={onOpen}>
+                        + Gasto
+                      </Button>
+                      <Text fontWeight={600}>
+                        Total:{' '}
+                        {expenses?.reduce((acc, curr) => acc + curr.amount, 0)}
+                      </Text>
+                    </Flex>
+                  }
+                />
               </Flex>
             </VStack>
           </VStack>
         </form>
 
         <ExpenseModal
+          expense={expenseSelected}
           resourceId={trip?._id!}
           open={open}
           onClose={() => {
-            onClose()
-            refetchExpenses()
-          }}     
+            onClose();
+            refetchExpenses();
+            refetchMedias();
+          }}
         />
       </FormProvider>
     </PageLayout>

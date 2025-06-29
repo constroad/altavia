@@ -13,8 +13,8 @@ export async function connectToMongoDB() {
   }
 
   try {    
-    // const dbName = process.env.NODE_ENV === 'production' ? 'altavia' : 'test'
-    const dbName =  'altavia'
+    const dbName = process.env.NODE_ENV === 'production' ? 'altavia' : 'test'
+    // const dbName =  'altavia'
     if (!cached.promise) {
       const uri = process.env.MONGO_URI ?? '';
       cached.promise = mongoose.connect(uri, {

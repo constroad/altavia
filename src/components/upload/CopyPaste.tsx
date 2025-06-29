@@ -108,7 +108,7 @@ export const CopyPaste = (props: CopyPasteProps) => {
   }
 
   return (
-    <Box width={props.width}>
+    <Box width={props.width ?? '100%'}>
       <Input
         ref={fileInputRef}
         style={{ display: 'none' }}
@@ -129,7 +129,7 @@ export const CopyPaste = (props: CopyPasteProps) => {
         {(props.isUploading || isUploading) && <Spinner size="sm" />}
         <Flex alignItems="center" justifyContent="center" gap={1}>
           {props.icon || <IconWrapper icon={UploadIcon} fontSize={20} />}
-          {props.title}
+          {props.title ?? "Copiar y pegar archivo"}
         </Flex>
       </Flex>
     </Box>

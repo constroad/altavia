@@ -1,4 +1,4 @@
-import { getQueryParameters, withApi } from "src/common/utils/middleware";
+import { getPathParams, getQueryParameters, withApi } from "src/common/utils/middleware";
 import { NextRequest } from 'next/server';
 import { json } from 'src/common/utils/response';
 import { mediaRepository } from 'src/repositories/mediaRepository';
@@ -13,6 +13,17 @@ export async function PUT(request: NextRequest) {
 
   })
 }
+
+export async function DELETE(request: NextRequest) {
+  return withApi(async () => {
+
+    const { id } = getPathParams(request, ['api', 'medias', '[id]'])
+    const created = await mediaRepository.deleteById(id);
+    return json(created, 201)
+
+  })
+}
+
 
 export async function GET(request: NextRequest) {  
   return withApi(async () => {

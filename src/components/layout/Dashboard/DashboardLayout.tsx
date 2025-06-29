@@ -2,7 +2,7 @@
 
 import React, { ReactNode } from 'react';
 import { CustomHead } from '../Portal/CustomHead';
-import { Button, Flex, Show, Text } from '@chakra-ui/react';
+import { Flex, Show, Text } from '@chakra-ui/react';
 import Sidebar from './Sidebar';
 import { useSession } from 'next-auth/react';
 import { dashboardTabs } from 'src/components/Dashboard';
@@ -22,7 +22,7 @@ export const DashboardLayout = (props: DashboardLayoutProps) => {
     <div style={{ width: '100vw', minHeight: '100vh' }}>
       <CustomHead />
 
-      {/* {session && ( */}
+      {session && (
       <Flex>
         <Sidebar menuOptions={dashboardTabs}>
           <Flex width="100%" justifyContent="space-between" alignItems="center" mb={4}>
@@ -40,11 +40,11 @@ export const DashboardLayout = (props: DashboardLayoutProps) => {
           {props.children}
         </Sidebar>
       </Flex>
-      {/* )} */}
+     )}
 
-      {/* {!session && (
+      {!session && (
         <NoSessionPage />
-      )} */}
+      )}
     </div>
   );
 };

@@ -14,7 +14,7 @@ export async function connectToMongoDB() {
 
   try {    
     const dbName = process.env.NODE_ENV === 'production' ? 'altavia' : 'test'    
-    // const dbName = 'altavia'
+    // const dbName = 'test'
     // console.log('dbName::', dbName)
     if (!cached.promise) {
       const uri = process.env.MONGO_URI ?? '';

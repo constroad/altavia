@@ -17,7 +17,7 @@ export default function Page() {
         <Button
           colorPalette="primary"
           size="xs"
-          onClick={() => router.push(`${APP_ROUTES.expenses}/new`)}
+          onClick={() => router.push(`${APP_ROUTES.trips}/new`)}
         >
           Nuevo viaje
         </Button>

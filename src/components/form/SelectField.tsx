@@ -54,7 +54,7 @@ export const SelectField = (props: SelectFieldProps) => {
 
   if (props.controlled) {
     return (
-      <Field.Root required={isRequired ?? !!error} width="fit-content">
+      <Field.Root required={isRequired ?? !!error} width={width}>
         <Field.Label>
           {label}
           <Field.RequiredIndicator />
@@ -84,7 +84,7 @@ export const SelectField = (props: SelectFieldProps) => {
           </Select.Control>
           <Portal>
             <Select.Positioner>
-            <Select.Content zIndex={99999}>
+              <Select.Content zIndex={99999}>
                 {optionCollection.items.map((item: any) => (
                   <Select.Item item={item} key={item.value}>
                     {item.label}
@@ -105,7 +105,7 @@ export const SelectField = (props: SelectFieldProps) => {
     <Field.Root
       invalid={isInvalidField}
       required={isRequired ?? !!error}
-      width="320px"
+      width={width}
     >
       <Field.Label>
         {label}
@@ -117,6 +117,7 @@ export const SelectField = (props: SelectFieldProps) => {
         render={({ field }) => {
           return (
             <Select.Root
+              width={width}
               size={size}
               name={field.name}
               multiple={multiple}
@@ -145,7 +146,7 @@ export const SelectField = (props: SelectFieldProps) => {
               </Select.Control>
               <Portal>
                 <Select.Positioner>
-                <Select.Content zIndex={99999}> 
+                  <Select.Content zIndex={99999}>
                     {optionCollection.items.map((framework: any) => (
                       <Select.Item item={framework} key={framework.value}>
                         {framework.label}

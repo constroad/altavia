@@ -1,36 +1,17 @@
 'use client';
 import { FormProvider, useForm } from 'react-hook-form';
-import {
-  Button,
-  VStack,
-  HStack,
-  Flex,
-  Text,
-  useDisclosure,
-} from '@chakra-ui/react';
+import { Button, VStack, HStack, Flex } from '@chakra-ui/react';
 import { ITripSchemaValidation, TripSchemaValidation } from 'src/models/trip';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { FormTextarea, InputField, SelectField } from '../form';
 
-import { ExpenseModal } from './ExpenseModal';
 import { useUbigeos } from '@/common/hooks/useUbigeos';
 
 import { useFetch } from '@/common/hooks/useFetch';
 import { API_ROUTES, APP_ROUTES } from '@/common/consts';
 import { useMutate } from '@/common/hooks/useMutate';
-import { TableColumn, TableComponent, toast } from 'src/components';
+import { toast } from 'src/components';
 import { useRouter } from 'next/navigation';
-import {
-  EXPENSE_STATUS_MAP,
-  EXPENSE_STATUS_TYPE,
-  IExpenseSchema,
-} from '@/models/generalExpense';
-import { formatUtcDateTime } from '@/utils/general';
-import { ImageView } from '../telegramFileView/imageView';
-import { IMediaValidationSchema } from '@/models/media';
-import { useState } from 'react';
-import { IconWrapper } from '../IconWrapper/IconWrapper';
-import { RefreshIcon } from '@/common/icons';
 
 type ITripForm = {
   trip: ITripSchemaValidation | null;
@@ -38,12 +19,7 @@ type ITripForm = {
 
 export default function TripForm(props: Readonly<ITripForm>) {
   const { trip } = props;
-
-  const { open, onOpen, onClose } = useDisclosure();
   const router = useRouter();
-  const [expenseSelected, setExpenseSelected] = useState<
-    IExpenseSchema | undefined
-  >();
 
   // API
   const { data: drivers, isLoading: isLoadingDrivers } = useFetch(
@@ -56,27 +32,7 @@ export default function TripForm(props: Readonly<ITripForm>) {
     API_ROUTES.clients
   );
 
-  const {
-    data: expenses,
-    isLoading: isLoadingExpenses,
-    refetch: refetchExpenses,
-  } = useFetch<IExpenseSchema[]>(API_ROUTES.expenses, {
-    queryParams: {
-      tripId: trip?._id,
-    },
-    enabled: trip?._id !== undefined,
-  });
-  const { data: medias, refetch: refetchMedias } = useFetch<
-    IMediaValidationSchema[]
-  >(API_ROUTES.media, {
-    queryParams: {
-      resourceId: trip?._id,
-    },
-    enabled: trip?._id !== undefined,
-  });
-
   const { mutate: mutateTrip, isMutating } = useMutate(API_ROUTES.trips);
-  const { mutate: mutateExpense } = useMutate(API_ROUTES.expenses);
 
   const { regions } = useUbigeos();
 
@@ -98,49 +54,6 @@ export default function TripForm(props: Readonly<ITripForm>) {
     label: r,
     value: r,
   }));
-
-  const columns: TableColumn[] = [
-    {
-      key: 'date',
-      label: 'Fecha',
-      width: '20%',
-      textAlign: 'center',
-      render: (item) => <Text>{formatUtcDateTime(item)}</Text>,
-    },
-    { key: 'description', label: 'Descripcion', width: '20%' },
-    {
-      key: 'amount',
-      label: 'Cantidad',
-      textAlign: 'center',
-      width: '10%',
-    },
-    {
-      key: 'status',
-      label: 'Estado',
-      textAlign: 'center',
-      width: '20%',
-      render: (item) => {
-        return <>{EXPENSE_STATUS_MAP[item as EXPENSE_STATUS_TYPE]}</>;
-      },
-    },
-    {
-      key: '_id',
-      label: 'Imagenes',
-      textAlign: 'center',
-      width: '20%',
-      render: (item, row) => {
-        const expenseMedias =
-          medias?.filter?.((x) => x.metadata.expenseId === row._id) ?? [];
-        return (
-          <Flex gap={1} alignItems="center" width="100%">
-            {expenseMedias.map?.((m) => (
-              <ImageView width="60px" height="60px" key={m._id} media={m} />
-            ))}
-          </Flex>
-        );
-      },
-    },
-  ];
 
   const onSubmit = (form: ITripSchemaValidation) => {
     try {
@@ -175,122 +88,106 @@ export default function TripForm(props: Readonly<ITripForm>) {
     }
   };
 
-  const handleDeleteExpense = (expense: IExpenseSchema) => {
-    mutateExpense(
-      'DELETE',
-      {},
-      {
-        requestUrl: `${API_ROUTES.expenses}/${expense._id}`,
-        onSuccess: () => {
-          toast.success('Gasto eliminado');
-          refetchExpenses();
-        },
-      }
-    );
-  };
-  const handleSelectExpense = (expense: IExpenseSchema) => {
-    setExpenseSelected(expense);
-    onOpen();
-  };
-
   return (
-    
-      <FormProvider {...methods}>
-        <form onSubmit={methods.handleSubmit(onSubmit)} noValidate>
-          <VStack gap={2} w="100%" mt="10px">
-            {/* CLIENTES */}
-            <Flex w="100%" justifyContent="space-between">
+    <FormProvider {...methods}>
+      <form
+        id="form-trip-id"
+        onSubmit={methods.handleSubmit(onSubmit)}
+        noValidate
+      >
+        <VStack gap={2} w="100%" mt="10px">
+          {/* CLIENTES */}
+          <Flex gap={4} w="100%" alignItems="center">
+            <SelectField
+              loading={isLoadingClients}
+              isRequired
+              size="xs"
+              name="client"
+              label="Cliente"
+              options={(clients ?? []).map((x: any) => ({
+                label: x.name,
+                value: x._id,
+              }))}
+            />
+            <InputField
+              type="date"
+              name="startDate"
+              label="Fecha inicio"
+              size={'xs'}
+              isRequired
+            />
+
+            <InputField
+              type="number"
+              size="xs"
+              name="Income"
+              label="Monto"
+              isRequired
+            />
+          </Flex>
+
+          {/* ORIGEN - DESTINO */}
+          <HStack gap={4} w="100%">
+            <Flex w="100%" gap={4}>
               <SelectField
-                loading={isLoadingClients}
                 isRequired
                 size="xs"
-                name="client"
-                label="Cliente"
-                options={(clients ?? []).map((x: any) => ({
+                name="origin"
+                label="Origen"
+                options={regionsArr}
+              />
+              <SelectField
+                isRequired
+                size="xs"
+                name="destination"
+                label="Destino"
+                options={regionsArr}
+              />
+            </Flex>
+          </HStack>
+
+          {/* VEHICLE - DRIVER */}
+          <HStack gap={4} w="100%">
+            <Flex w="100%" gap={4}>
+              <SelectField
+                name="vehicle"
+                label="Vehículo"
+                options={(vehicles ?? []).map((x: any) => ({
+                  label: x.plate,
+                  value: x._id,
+                }))}
+                multiple
+                size="xs"
+                loading={isLoadingVehicles}
+              />
+              <SelectField
+                name="driver"
+                label="Conductor"
+                options={(drivers ?? []).map((x: any) => ({
                   label: x.name,
                   value: x._id,
                 }))}
-              />
-              <Button
-                type="submit"
-                colorScheme="primary"
-                w="fit-content"
+                multiple
                 size="xs"
-                loading={isMutating}
-              >
-                Guardar
-              </Button>
+                loading={isLoadingDrivers}
+              />
             </Flex>
+          </HStack>
 
-            {/* ORIGEN - DESTINO */}
-            <HStack gap={4} w="100%">
-              <Flex w="100%" gap={4}>
-                <SelectField
-                  isRequired
-                  size="xs"
-                  name="origin"
-                  label="Origen"
-                  options={regionsArr}
-                />
-                <SelectField
-                  isRequired
-                  size="xs"
-                  name="destination"
-                  label="Destino"
-                  options={regionsArr}
-                />
-              </Flex>
-            </HStack>
+          {/* START DATE - END DATE */}
+          {/* <HStack gap={4} w="100%">
+            <Flex w="100%" gap={4}>
+              <InputField
+                type="date"
+                name="endDate"
+                label="Fecha fin"
+                size={'xs'}
+              />
+            </Flex>
+          </HStack> */}
 
-            {/* VEHICLE - DRIVER */}
-            <HStack gap={4} w="100%">
-              <Flex w="100%" gap={4}>
-                <SelectField
-                  name="vehicle"
-                  label="Vehículo"
-                  options={(vehicles ?? []).map((x: any) => ({
-                    label: x.plate,
-                    value: x._id,
-                  }))}
-                  multiple
-                  size="xs"
-                  loading={isLoadingVehicles}
-                />
-                <SelectField
-                  name="driver"
-                  label="Conductor"
-                  options={(drivers ?? []).map((x: any) => ({
-                    label: x.name,
-                    value: x._id,
-                  }))}
-                  multiple
-                  size="xs"
-                  loading={isLoadingDrivers}
-                />
-              </Flex>
-            </HStack>
-
-            {/* START DATE - END DATE */}
-            <HStack gap={4} w="100%">
-              <Flex w="100%" gap={4}>
-                <InputField
-                  type="date"
-                  name="startDate"
-                  label="Fecha inicio"
-                  size={'xs'}
-                  isRequired
-                />
-                <InputField
-                  type="date"
-                  name="endDate"
-                  label="Fecha fin"
-                  size={'xs'}
-                />
-              </Flex>
-            </HStack>
-
-            {/* GANANCIA - KILOMETRAJE */}
-            {/* <Flex w="100%" gap={4}>
+          {/* GANANCIA - KILOMETRAJE */}
+          {/* <Flex w="100%" gap={4}>
               <Flex w="50%">
                 <InputField
                   type="number"
@@ -311,18 +208,18 @@ export default function TripForm(props: Readonly<ITripForm>) {
               </Flex>
             </Flex> */}
 
-            {/* STATUS - FECHA DE PAGO */}
-            <HStack gap={4} w="100%">
-              <Flex w="100%" gap={4}>
-                <Flex w="50%">
-                  <SelectField
-                    name="status"
-                    label="Estado"
-                    options={statusArr}
-                    size={{ base: 'xs', md: 'sm' }}
-                  />
-                </Flex>
-                {/* <Flex w="50%">
+          {/* STATUS - FECHA DE PAGO */}
+          <HStack gap={4} w="100%">
+            <Flex w="100%" gap={4}>
+              <Flex w="50%">
+                <SelectField
+                  name="status"
+                  label="Estado"
+                  options={statusArr}
+                  size={{ base: 'xs', md: 'sm' }}
+                />
+              </Flex>
+              {/* <Flex w="50%">
                   <InputField
                     type="date"
                     name="paymentDueDate"
@@ -330,75 +227,11 @@ export default function TripForm(props: Readonly<ITripForm>) {
                     size={{ base: 'xs', md: 'sm' }}
                   />
                 </Flex> */}
-              </Flex>
-            </HStack>
-
-            {/* NOTAS */}
-            <Flex w="100%">
-              <FormTextarea name="notes" label="Notas" />
+                <FormTextarea name="notes" label="Notas" />
             </Flex>
-
-            <VStack align="start" w="100%">
-              <Flex w="100%" gap="10px">
-                <TableComponent
-                  isLoading={isLoadingExpenses}
-                  data={expenses ?? []}
-                  columns={columns}
-                  actions
-                  onEdit={handleSelectExpense}
-                  onDelete={handleDeleteExpense}
-                  toolbar={
-                    <Flex
-                      alignItems="center"
-                      justifyContent="space-between"
-                      fontSize="12px"
-                      m={1}
-                    >
-                      <Flex gap={2}>
-                        <Button
-                          size="xs"                          
-                          onClick={() => {
-                            onOpen();
-                            setExpenseSelected(undefined);
-                          }}
-                        >
-                          + Gasto
-                        </Button>
-                        <Button
-                          variant="outline"
-                          onClick={() => {
-                            refetchExpenses();
-                            refetchMedias();
-                          }}
-                          size="xs"
-                        >
-                          <IconWrapper icon={RefreshIcon} size="18px" />
-                        </Button>
-                      </Flex>
-                      <Text fontWeight={600}>
-                        Total:
-                        {expenses?.reduce((acc, curr) => acc + curr.amount, 0)}
-                      </Text>
-                    </Flex>
-                  }
-                />
-              </Flex>
-            </VStack>
-          </VStack>
-        </form>
-
-        <ExpenseModal
-          expense={expenseSelected}
-          resourceId={trip?._id!}
-          open={open}
-          onClose={() => {
-            setExpenseSelected(undefined);
-            onClose();
-            refetchExpenses();
-            refetchMedias();
-          }}
-        />
-      </FormProvider>
-    
+          </HStack>          
+        </VStack>
+      </form>
+    </FormProvider>
   );
 }

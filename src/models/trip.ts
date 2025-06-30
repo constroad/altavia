@@ -33,6 +33,7 @@ export const TripSchemaValidation = z.object({
   paymentDueDate: z.string().optional(),
   waybills: z.array(z.string()).optional(),
   invoices: z.array(z.string()).optional(),
+  Income: z.number(),
   revenue: z.number().optional(),
   locationLogs: z.array(z.object({
     timestamp: z.string(),
@@ -57,7 +58,8 @@ export interface ITrip extends Document {
   endDate?: Date;
   waybills?: string[];
   invoices?: string[];
-  revenue?: number;
+  Income?: number; //ingreso
+  revenue?: number; //ganancia
   locationLogs?: ILocationLog[];
   kmTravelled?: number;
   status?: TripStatus;
@@ -74,6 +76,7 @@ const TripSchema: Schema = new Schema({
   endDate: { type: Date, required: false },
   waybills: [String],
   invoices: [String],
+  Income: { type: Number, default: 0 },
   revenue: { type: Number, default: 0 },
   locationLogs: [{
     timestamp: Date,

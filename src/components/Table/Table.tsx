@@ -13,6 +13,8 @@ import { ButtonConfirm } from '../ButtonConfirm/ButtonConfirm';
 import { IconWrapper } from '../IconWrapper/IconWrapper';
 
 export type TableAction = 'paginate' | 'filter';
+import { v4 as uuidv4 } from 'uuid';
+
 export type TablePagination = {
   page: number;
   itemsPerPage: number;
@@ -34,7 +36,8 @@ interface Props {
   totalRecords?: number;
   // Renders
   toolbar?: React.ReactNode;
-  // tableProps?: TableProps
+  // tableProps?: TableProps;
+  forUpdateEachTime?: boolean;
 }
 
 export const TableComponent = (props: Props) => {
@@ -182,8 +185,11 @@ export const TableComponent = (props: Props) => {
             !isLoading &&
             rows.map((row, index) => (
               <Tr
-                // key={`row-${uuidv4()}`}
-                key={`row-${row?._id ? `${row?._id}-${row?.key}` : index}`}
+              key={
+                props.forUpdateEachTime
+                  ? `row-${uuidv4()}`
+                  : `row-${row?._id ? `${row?._id}-${row?.key}` : index}`
+              }
                 onClick={() => handleSelectRow(row)}
                 _hover={{
                   background: 'whitesmoke',

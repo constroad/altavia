@@ -23,6 +23,7 @@ interface Props {
   data: TableData[];
   columns: TableColumn[];
   onDelete?: (item: any) => void;
+  deleteMessage?: string;
   onSelectRow?: (item: any) => void;
   onEdit?: (item: any) => void;
   onShare?: (item: any) => void;
@@ -236,7 +237,11 @@ export const TableComponent = (props: Props) => {
 
                       {onDelete && (
                         <ButtonConfirm
-                          message="Esta seguro de eliminar este gasto?"
+                          message={
+                            props.deleteMessage 
+                              ? props.deleteMessage
+                              : "Esta seguro de eliminar este gasto?"
+                          }
                           onOk={() => onDelete(row)}
                           size="xs"
                         >

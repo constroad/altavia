@@ -34,7 +34,7 @@ export default function Page() {
     <DashboardLayout
       title="Viaje"
       actions={
-        <Flex>
+        <Flex gap={2}>
           <Button
             size="xs"
             variant="outline"

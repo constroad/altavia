@@ -1,5 +1,5 @@
+import { connectToMongoDB } from "@/config/mongoose";
 import bcrypt from "bcryptjs";
-import { connectToDatabase } from "src/common/utils/db";
 import User, {IUser} from "src/models/user";
 
 export const UserRepository = {
@@ -26,7 +26,7 @@ export const UserRepository = {
   deleteById: (id: string) => User.findByIdAndDelete(id),
   authenticateUser: async (username: string, password: string): Promise<IUser | null> => {
     try {
-      await connectToDatabase();
+      await connectToMongoDB();
 
       const foundUser = await User.findOne({ userName: username });
 

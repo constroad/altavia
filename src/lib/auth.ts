@@ -13,7 +13,6 @@ export const authOptions: NextAuthOptions = {
       async authorize(credentials) {
         try {
           if (credentials?.username && credentials?.password) {
-            // const repo = new UserRepository();
             const user = await UserRepository.authenticateUser(credentials.username, credentials.password);
 
             if (user && user._id && user.userName) {

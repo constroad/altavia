@@ -150,6 +150,7 @@ export default function TripForm(props: Readonly<ITripForm>) {
           <HStack gap={4} w="100%">
             <Flex w="100%" gap={4}>
               <SelectField
+                isRequired
                 name="vehicle"
                 label="Vehículo"
                 options={(vehicles ?? []).map((x: any) => ({
@@ -161,6 +162,7 @@ export default function TripForm(props: Readonly<ITripForm>) {
                 loading={isLoadingVehicles}
               />
               <SelectField
+                isRequired
                 name="driver"
                 label="Conductor"
                 options={(drivers ?? []).map((x: any) => ({

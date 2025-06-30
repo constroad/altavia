@@ -11,7 +11,6 @@ import { useMutate } from 'src/common/hooks/useMutate';
 export default function Page() {
   const [userSelected, setUserSelected] = useState<IUserSchemaValidation>();
   const { open, onOpen, onClose } = useDisclosure();
-  const { open: isOpenDelete, onOpen: onOpenDelete, onClose: onCloseDelete } = useDisclosure();
 
   const { data, isLoading, refetch } = useFetch<IUserSchemaValidation[]>(
     API_ROUTES.user
@@ -27,14 +26,12 @@ export default function Page() {
   };
 
   const handleCloseDelete = () => {
-    onCloseDelete()
     setUserSelected(undefined);
     refetch()
   }
 
-  const handleDeleteDriver = () => {
-    if (!userSelected) return;
-    const deletePath = `${API_ROUTES.user}/${userSelected._id}`
+  const handleDeleteUser = (user: IUserSchemaValidation) => {
+    const deletePath = `${API_ROUTES.user}/${user._id}`
     mutate(
       'DELETE',
       {},
@@ -48,17 +45,6 @@ export default function Page() {
     )
   }
 
-  // consts
-  const deleteFooter = (
-    <Button
-      colorPalette="danger"
-      variant="outline"
-      onClick={handleDeleteDriver}
-      loading={isMutating}
-    >
-      Confirmar
-    </Button>
-  )
   return (
     <DashboardLayout>
       <Flex
@@ -89,10 +75,8 @@ export default function Page() {
               itemsPerPage={100}
               data={data ?? []}
               columns={columns}
-              onDelete={(item) => {
-                setUserSelected(item);
-                onOpenDelete();
-              }}
+              onDelete={(item) => handleDeleteUser(item)}
+              deleteMessage='Esta seguro de eliminar este usuario?'
               onEdit={(item) => {
                 setUserSelected(item);
                 onOpen();
@@ -115,13 +99,6 @@ export default function Page() {
             closeModal={handleCloseUserModal}
           />
         </Modal>
-
-        <Modal
-          isOpen={isOpenDelete}
-          onClose={handleCloseDelete}
-          heading={`¿Estás seguro de eliminar al usuario ${userSelected?.name}?`}
-          footer={deleteFooter}
-        />
       </Flex>
     </DashboardLayout>
   )

@@ -13,7 +13,6 @@ export const GenerateNavOptions = () => {
 
   const navOptions = [
     {label: 'Inicio', path: APP_ROUTES.home, display: true},
-    {label: 'Egresos', path: APP_ROUTES.expenses, display: true},
     {label: 'Nosotros', path: APP_ROUTES.nosotros, display: true},
     {label: 'Servicios', path: APP_ROUTES.servicios, display: true},
     {label: 'PROVEEDORES', path: APP_ROUTES.proveedores, display: false},

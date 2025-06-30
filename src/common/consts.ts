@@ -23,6 +23,7 @@ export const APP_ROUTES = {
   alerts: '/alerts',
   configuration: '/configuration',
   users: '/users',
+  clients: '/clients',
 }
 
 export const API_ROUTES = {

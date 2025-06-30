@@ -14,7 +14,8 @@ export async function connectToMongoDB() {
 
   try {    
     const dbName = process.env.NODE_ENV === 'production' ? 'altavia' : 'test'    
-    console.log('dbName::', dbName)
+    // const dbName = 'altavia'
+    // console.log('dbName::', dbName)
     if (!cached.promise) {
       const uri = process.env.MONGO_URI ?? '';
       cached.promise = mongoose.connect(uri, {

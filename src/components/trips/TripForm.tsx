@@ -152,7 +152,7 @@ export default function TripForm(props: Readonly<ITripForm>) {
       //Update
       if (_id) {
         mutateTrip('PUT', payload, {
-          requestUrl: `${API_ROUTES.expenses}/${_id}`,
+          requestUrl: `${API_ROUTES.trips}/${_id}`,
           onSuccess: () => {
             toast.success('Viaje Actualizado');
             useFetch.mutate(API_ROUTES.trips);

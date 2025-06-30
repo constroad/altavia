@@ -1,15 +1,8 @@
-import { z } from 'zod';
-import { withApi, withQueryValidation } from "src/common/utils/middleware";
+import { getQueryParameters, withApi } from "src/common/utils/middleware";
 import { NextRequest } from 'next/server';
 import { json } from 'src/common/utils/response';
 import { tripRepository } from '@/repositories/tripRepository';
 
-const querySchema = z.object({
-  from: z.string().optional(),
-  to: z.string().optional(),
-  client: z.string().length(24).optional(),
-  vehicle: z.string().length(24).optional(),
-});
 
 export async function POST(request: NextRequest) {
   return withApi(async () => {
@@ -24,19 +17,28 @@ export async function POST(request: NextRequest) {
 export async function GET(request: NextRequest) {
 
 
-  return withApi(() =>
-    withQueryValidation(querySchema, request, async ({ from, to, client, vehicle }) => {
-      const filter: any = {};
-      if (from || to) {
-        filter.startDate = {};
-        if (from) filter.startDate.$gte = new Date(from);
-        if (to) filter.startDate.$lte = new Date(to);
-      }
-      if (client) filter.client = client;
-      if (vehicle) filter.vehicle = vehicle;
+  return withApi(async () => {
+    const { startDate, endDate, status, type } = getQueryParameters(request)
 
-      const trips = await tripRepository.findAll(filter);
-      return json(trips);
-    })
+    const filter: any = {};
+    if (type) {
+      filter.type = type
+    }
+    if (status) {
+      filter.status = status
+    }
+    if (startDate && endDate) {
+      const date1 = new Date(startDate)
+      const date2 = new Date(endDate)
+      const startOfDay = new Date(date1.setHours(0, 0, 0, 0));
+      const endOfDay = new Date(date2.setHours(23, 59, 59, 999));
+
+      filter.startDate = { $gte: startOfDay, $lte: endOfDay };
+    }
+
+    const trips = await tripRepository.findAll(filter);
+    return json(trips);
+  }
+
   );
 }

@@ -1,6 +1,6 @@
 'use client';
 
-import { Button, Flex, Box, Text } from '@chakra-ui/react';
+import { Button, Flex, Box, Text, Spinner } from '@chakra-ui/react';
 
 import { SortColumnStatus, TableColumn, TableData } from './TableTypes';
 import { CONSTROAD_COLORS } from 'src/styles/shared';
@@ -9,7 +9,6 @@ import { useEffect, useMemo, useState } from 'react';
 import { Pagination } from './Pagination';
 import { WithSort } from './WithSort';
 import { Table, Tbody, Td, Th, Thead, Tr } from '../ui/table';
-import { ProgressCircle } from '../ui/progress-circle';
 import { ButtonConfirm } from '../ButtonConfirm/ButtonConfirm';
 import { IconWrapper } from '../IconWrapper/IconWrapper';
 
@@ -163,12 +162,7 @@ export const TableComponent = (props: Props) => {
                 position="absolute"
                 fontSize={12}
               >
-                <ProgressCircle
-                  color="white"
-                  size="md"
-                  thickness="10px"
-                  trackColor="green.500"
-                />
+                <Spinner />
               </Td>
             </Tr>
           )}

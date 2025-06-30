@@ -55,9 +55,6 @@ export const UploadButton = (props: UploadButtonProps) => {
     },
   });
 
-  console.log('medias:', medias)
-  console.log('resourceId:', resourceId)
-
   useEffect(() => {
     if (enableOnPaste) {
       document.addEventListener('paste', onPasteImages);

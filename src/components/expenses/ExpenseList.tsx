@@ -58,6 +58,7 @@ export const ExpenseList = (props: ExpenseListProps) => {
       }
     );
   };
+  
   const handleSelectExpense = (expense: IExpenseSchema) => {
     router.push(`${APP_ROUTES.expenses}/${expense._id}`);
   };

@@ -15,7 +15,6 @@ import { FormTextarea, InputField, SelectField } from '../form';
 import { ExpenseModal } from './ExpenseModal';
 import { useUbigeos } from '@/common/hooks/useUbigeos';
 
-import { PageLayout } from '../layout/Dashboard/PageLayout';
 import { useFetch } from '@/common/hooks/useFetch';
 import { API_ROUTES, APP_ROUTES } from '@/common/consts';
 import { useMutate } from '@/common/hooks/useMutate';
@@ -28,7 +27,6 @@ import {
 } from '@/models/generalExpense';
 import { formatUtcDateTime } from '@/utils/general';
 import { ImageView } from '../telegramFileView/imageView';
-import { metadata } from '../../app/nosotros/page';
 import { IMediaValidationSchema } from '@/models/media';
 import { useState } from 'react';
 import { IconWrapper } from '../IconWrapper/IconWrapper';
@@ -36,11 +34,10 @@ import { RefreshIcon } from '@/common/icons';
 
 type ITripForm = {
   trip: ITripSchemaValidation | null;
-  onCancel: () => void;
 };
 
 export default function TripForm(props: Readonly<ITripForm>) {
-  const { onCancel, trip } = props;
+  const { trip } = props;
 
   const { open, onOpen, onClose } = useDisclosure();
   const router = useRouter();
@@ -197,7 +194,7 @@ export default function TripForm(props: Readonly<ITripForm>) {
   };
 
   return (
-    <PageLayout title="Nuevo Viaje" onBack={onCancel}>
+    
       <FormProvider {...methods}>
         <form onSubmit={methods.handleSubmit(onSubmit)} noValidate>
           <VStack gap={2} w="100%" mt="10px">
@@ -402,6 +399,6 @@ export default function TripForm(props: Readonly<ITripForm>) {
           }}
         />
       </FormProvider>
-    </PageLayout>
+    
   );
 }

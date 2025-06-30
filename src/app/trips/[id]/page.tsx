@@ -4,7 +4,7 @@ import { API_ROUTES, APP_ROUTES } from '@/common/consts';
 import { useFetch } from '@/common/hooks/useFetch';
 import TripForm from '@/components/trips/TripForm';
 import { ITripSchemaValidation } from '@/models/trip';
-import { Spinner } from '@chakra-ui/react';
+import { Button, Spinner } from '@chakra-ui/react';
 import { useParams, useRouter } from 'next/navigation';
 import React from 'react'
 import { DashboardLayout } from 'src/components'
@@ -32,8 +32,18 @@ export default function Page() {
 
   
   return (
-    <DashboardLayout>
-      <TripForm trip={data} onCancel={() =>    router.push(`${APP_ROUTES.trips}`)} />
+    <DashboardLayout title='Viaje' actions={
+      <Button
+      size="xs"
+      variant="outline"
+      onClick={() => {
+        router.push(`${APP_ROUTES.trips}`);
+      }}
+    >
+      Regresar
+    </Button>
+    }>
+      <TripForm trip={data} />
     </DashboardLayout>
   )
 }

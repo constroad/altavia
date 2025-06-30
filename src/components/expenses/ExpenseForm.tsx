@@ -113,84 +113,82 @@ export const ExpenseForm = (props: ExpenseFormProps) => {
         </Button>
       }
     >
-      <Box p={8}>
-        <FormProvider {...methods}>
-          <form onSubmit={methods.handleSubmit(onSubmit)} noValidate>
-            <Heading size="xl" mb={6}>
-              Registrar Gasto General
-            </Heading>
-            <Stack gap={4}>
-              <InputField
-                size="xs"
-                name="description"
-                label="Nombre"
-                isRequired
-              />
-              <InputField
-                type="number"
-                size="xs"
-                name="amount"
-                label="Cantidad"
-                isRequired
-              />
-
-              <HStack width="100%">
-                <SelectField
-                  isRequired
-                  label="Tipo"
-                  name="type"
-                  size="xs"
-                  error={errors.type?.message}
-                  options={EXPENSE_TYPES.map((type) => ({
-                    value: type,
-                    label: EXPENSE_TYPES_MAP[type],
-                  }))}
-                />
-                <SelectField
-                  isRequired
-                  label="Estado"
-                  name="status"
-                  size="xs"
-                  options={EXPENSE_STATUS.map((status) => ({
-                    value: status,
-                    label: EXPENSE_STATUS_MAP[status],
-                  }))}
-                />
-              </HStack>
-
-              <DateField size="xs" name="date" label="Fecha" isRequired />
-              <Flex width="100%" justifyContent="end" gap={1}>
-                <Show when={expense?._id}>
-                  <UploadButton
-                    title="Adjuntar comprobante"
-                    type="TRIP_EXPENSE"
-                    resourceId={expense?._id}
-                    onSuccess={refetchMedias}
-                  />
-                </Show>
-                <Button size="xs" loading={isMutating} type="submit">
-                  Guardar
-                </Button>
-              </Flex>
-            </Stack>
-          </form>
-        </FormProvider>
-
-        <Flex gap={2}>
-          {medias.map((media) => (
-            <TelegramFileView
-              key={media._id}
-              media={media}
-              description={media.name}
-              canDelete
-              onRefresh={refetchMedias}
-              imageStyle={{
-                height: '300px',
-              }}
+      <FormProvider {...methods}>
+        <form onSubmit={methods.handleSubmit(onSubmit)} noValidate>
+          <Heading size="xl" mb={6}>
+            Registrar Gasto General
+          </Heading>
+          <Stack gap={4}>
+            <InputField
+              size="xs"
+              name="description"
+              label="Nombre"
+              isRequired
             />
-          ))}
-        </Flex>
-      </Box>
+            <InputField
+              type="number"
+              size="xs"
+              name="amount"
+              label="Cantidad"
+              isRequired
+            />
+
+            <HStack width="100%">
+              <SelectField
+                isRequired
+                label="Tipo"
+                name="type"
+                size="xs"
+                error={errors.type?.message}
+                options={EXPENSE_TYPES.map((type) => ({
+                  value: type,
+                  label: EXPENSE_TYPES_MAP[type],
+                }))}
+              />
+              <SelectField
+                isRequired
+                label="Estado"
+                name="status"
+                size="xs"
+                options={EXPENSE_STATUS.map((status) => ({
+                  value: status,
+                  label: EXPENSE_STATUS_MAP[status],
+                }))}
+              />
+            </HStack>
+
+            <DateField size="xs" name="date" label="Fecha" isRequired />
+            <Flex width="100%" justifyContent="end" gap={1}>
+              <UploadButton
+                title="Adjuntar comprobante"
+                type="TRIP_EXPENSE"
+                resourceId={expense?._id}
+                onSuccess={refetchMedias}
+                isDisabled={expense?._id === undefined}
+              />
+
+              <Button size="xs" loading={isMutating} type="submit">
+                Guardar
+              </Button>
+            </Flex>
+          </Stack>
+        </form>
+      </FormProvider>
+
+      <Flex gap={2}>
+        {medias.map((media) => (
+          <TelegramFileView
+            key={media._id}
+            media={media}
+            description={media.name}
+            canDelete
+            onRefresh={refetchMedias}
+            imageStyle={{
+              height: '300px',
+            }}
+          />
+        ))}
+      </Flex>
     </DashboardLayout>
   );
 };

@@ -38,8 +38,6 @@ export async function GET(request: NextRequest) {
       filter.tripId = new mongoose.Types.ObjectId(tripId)
     }
 
-    console.log('filter-expense', filter)
-
     if (startDate && endDate) {      
       const date1 = new Date(startDate)
       const date2 = new Date(endDate)
@@ -48,7 +46,6 @@ export async function GET(request: NextRequest) {
   
       filter.date = { $gte: startOfDay, $lte: endOfDay };
     }
-
 
     const expenses = await expenseRepository.findAll(filter);
     return json(expenses);

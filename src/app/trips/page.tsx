@@ -12,7 +12,7 @@ export default function Page() {
 
   return (
     <DashboardLayout
-      title="Trips"
+      title="Viajes"
       actions={
         <Button
           colorPalette="primary"

@@ -41,6 +41,10 @@ export const Navbar = (props: INavbar) => {
     }
   }
 
+  const handleGoToDashboardClick = () => {
+    router.push('/dashboard')
+  }
+
   return (
     <Flex
       id='navbar'
@@ -113,6 +117,31 @@ export const Navbar = (props: INavbar) => {
           className='font-logo'
           fontWeight={600}
         >
+          {session && (
+            <Box
+              as='li'
+              fontWeight={600}
+              display='flex'
+              justifyContent='center'
+              alignItems='end'
+              paddingBottom='10px'
+              paddingX={5}
+              height='50px'
+              color='white'
+              position='relative'
+              roundedTop='4px'
+              _hover={{
+                background: 'primary.700',
+                color: 'white',
+                cursor: 'pointer',
+              }}
+              onClick={handleGoToDashboardClick}
+            >
+              <Text className='font-logo'>
+                Intranet
+              </Text>
+            </Box>
+          )}
           {GenerateNavOptions().map(opt => (
             <Box
               as="li"
@@ -251,11 +280,11 @@ export const Navbar = (props: INavbar) => {
               paddingBottom='10px'
               paddingX={5}
               height='50px'
-              color='black'
+              color='white'
               position='relative'
               roundedTop='4px'
               _hover={{
-                background: '#feb100',
+                background: 'primary.700',
                 color: 'white',
                 cursor: 'pointer',
               }}

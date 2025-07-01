@@ -147,9 +147,10 @@ export const WhastAppGroups = [
 // --------------
 
 const LOCAL_SERVER_WHATSAPP = 'http://localhost:3001/api';
-
+export const ALTAVIA_BOT ='🤖 Altavia Informa:'
+export const CONSTROAD_SERVER_URL = process.env.NEXT_PUBLIC_CONSTROAD_APIS ?? LOCAL_SERVER_WHATSAPP;
 export const WHATSAPP_SENDER = '51949376824'
-export const WHATSAPP_SERVER_URL = process.env.NEXT_PUBLIC_WHATSAPP_SERVER ?? LOCAL_SERVER_WHATSAPP;
+export const WHATSAPP_SENDER_ALTAVIA = '51949376824'
 
 export const TELEGRAM_GROUP_ID_ERRORS = '-4556555230';
 export const TELEGRAM_TOKEN = '7278967592:AAHLnzjx3L-uYl3a96JhvIWbQ-YpBtF1kz8';

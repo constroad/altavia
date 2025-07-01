@@ -186,11 +186,11 @@ export const TableComponent = (props: Props) => {
             !isLoading &&
             rows.map((row, index) => (
               <Tr
-              key={
-                props.forUpdateEachTime
-                  ? `row-${uuidv4()}`
-                  : `row-${row?._id ? `${row?._id}-${row?.key}` : index}`
-              }
+                key={
+                  props.forUpdateEachTime
+                    ? `row-${uuidv4()}`
+                    : `row-${row?._id ? `${row?._id}-${row?.key}` : index}`
+                }
                 onClick={() => handleSelectRow(row)}
                 _hover={{
                   background: 'whitesmoke',
@@ -200,6 +200,8 @@ export const TableComponent = (props: Props) => {
               >
                 {columns.map((column, idx) => (
                   <Td
+                    p={0}
+                    m={0}
                     key={`item-${column.key}-${idx}`}
                     maxWidth={column.width as any}
                     width={column.width as any}
@@ -213,16 +215,17 @@ export const TableComponent = (props: Props) => {
                   </Td>
                 ))}
                 {(onEdit || onDelete || onShare) && (
-                  <Td py={1} px={{ base: 1.5, md: 2 }} textAlign="center">
+                  <Td p={0} px={{ base: 1.5, md: 2 }} textAlign="center">
                     <Flex
                       width="100%"
                       justifyContent={{
                         base: 'space-between',
                         md: 'space-evenly',
                       }}
+                      py={1}
                     >
                       {onEdit && (
-                        <Button                          
+                        <Button
                           padding={0}
                           margin={0}
                           height="fit-content"
@@ -238,15 +241,16 @@ export const TableComponent = (props: Props) => {
                       {onDelete && (
                         <ButtonConfirm
                           message={
-                            props.deleteMessage 
+                            props.deleteMessage
                               ? props.deleteMessage
-                              : "Esta seguro de eliminar este gasto?"
+                              : 'Esta seguro de eliminar este gasto?'
                           }
                           onOk={() => onDelete(row)}
                           size="xs"
+                          width="fit-content"
                         >
                           <IconWrapper icon={TrashIcon} size={10} color="red" />
-                        </ButtonConfirm>                        
+                        </ButtonConfirm>
                       )}
 
                       {onShare && (

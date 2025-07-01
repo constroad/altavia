@@ -127,7 +127,10 @@ export const CopyPaste = (props: CopyPasteProps) => {
         cursor="pointer"
       >
         {(props.isUploading || isUploading) && <Spinner size="sm" />}
-        <Flex alignItems="center" justifyContent="center" gap={1}>
+        <Flex alignItems="center" justifyContent="center" gap={1} 
+        color={props.isDisabled ? 'gray.300' : 'inherit'}
+        
+        >
           {props.icon || <IconWrapper icon={UploadIcon} fontSize={20} />}
           {props.title ?? "Copiar y pegar archivo"}
         </Flex>

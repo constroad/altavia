@@ -3,12 +3,14 @@ import { z } from 'zod';
 import mongoose, { Document, Schema } from 'mongoose';
 
 export type MediaType =
-  'ROUTE_TRACKING' |
-  'TRIP_EXPENSE' |
-  'TRIP_WAYBILL' |
+  'GENERAL_EXPENSE' | // SEGUIMIENTO DE VIAJE
+  'TRIP_TRACKING' | // SEGUIMIENTO DE VIAJE
+  'TRIP_EXPENSE' | // GASTO DE VIAJE
+  'TRIP_BILL_OF_LOADING' | // GUIA REMISION
+  'TRIP_BILL_OF_LOADING_CARRIER' | // GUIA REMISION TRANSPORTE
   'TRIP_INVOICE' |
+  'TRIP_CREDIT_NOTE' |
   'ORDER_PAYMENT' |  
-  'DISPATCH_PICTURES' |
   'EMPLOYEE_AVATAR'
 
 export type MediaStatus = 'ACTIVE'| 'DELETE_REQUESTED' | 'DELETED'

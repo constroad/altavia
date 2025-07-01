@@ -67,7 +67,7 @@ const buildUrl = (
   if (pathParameters) {
     Object.keys(pathParameters).forEach(key => {
       if (pathParameters[ key ] !== undefined) {
-        builtUrl = builtUrl.replace(`:${key}`, pathParameters[ key ] as any);
+        builtUrl = builtUrl.replace(`:${key}`, pathParameters[ key ]!);
       } else {
         builtUrl = builtUrl.replace(`:${key}`, '');
       }
@@ -142,7 +142,7 @@ export const useFetch = <T = any>(baseUrl: string, params?: FetchParams<T>, cach
     keyCache = `${keyCache}, ${JSON.stringify(options.body)}`;
   }
 
-  const [ data, setData ] = useState<T | null>(cache[ keyCache ] ?? null);
+  const [ data, setData ] = useState<T | null>(cache[ keyCache ] || null);
   const [ loading, setLoading ] = useState<boolean>(!cache[ keyCache ]);
   const [ error, setError ] = useState<any>(null);
   const abortControllerRef = useRef<AbortController | null>(null);
@@ -184,7 +184,8 @@ export const useFetch = <T = any>(baseUrl: string, params?: FetchParams<T>, cach
         onError,
         signal,
       );
-      if (isDirty) {
+      const needsToUpdate = (JSON.stringify(data) !== JSON.stringify(result))
+      if (isDirty || needsToUpdate) {
         setData(result);
       }
     } catch (error: any) {

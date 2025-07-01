@@ -1,9 +1,9 @@
 'use client';
 
 import { useEffect, useState } from 'react';
-import { Input, Button, VStack, Text, Box, Show, Flex } from '@chakra-ui/react';
+import { Button, VStack, Show, Flex, Grid } from '@chakra-ui/react';
 import { Modal } from '../modal';
-import { SelectField } from '../form';
+import { InputField, SelectField } from '../form';
 import {
   EXPENSE_STATUS,
   EXPENSE_STATUS_MAP,
@@ -11,42 +11,56 @@ import {
 } from '@/models/generalExpense';
 import { CopyPaste } from '../upload/CopyPaste';
 import { useMutate } from '@/common/hooks/useMutate';
-import { API_ROUTES, TELEGRAM_GROUP_ID_ALTAVIA_MEDIA } from '@/common/consts';
+import {
+  ALTAVIA_BOT,
+  API_ROUTES,
+  GROUP_ADMINISTRACION_ALTAVIA,
+  TELEGRAM_GROUP_ID_ALTAVIA_MEDIA,
+} from '@/common/consts';
 import { useFetch } from '@/common/hooks/useFetch';
 import { toast } from 'src/components';
 import { useMedias } from '@/common/hooks/useMedias';
 import { TelegramFileView } from '../telegramFileView';
+import { formatISODate, formatUtcDateTime } from '@/utils/general';
+import { useWhatsapp } from '@/common/hooks/useWhatsapp';
+import { ITripSchemaValidation } from '@/models/trip';
 
 interface ExpenseModalProps {
+  trip: ITripSchemaValidation | null;
   expense?: IExpenseSchema;
   resourceId: string;
   open: boolean;
   onClose: () => void;
+  onRefresh?: () => void;
 }
 
-export const ExpenseModal = ({
-  open,
-  onClose,
-  resourceId,
-  expense,
-}: ExpenseModalProps) => {
+export const ExpenseModal = (props: ExpenseModalProps) => {
+  const { open, onClose, resourceId, expense, trip } = props;
   const [description, setDescription] = useState('');
-  const [status, setStatus] = useState('');
+  const [status, setStatus] = useState('paid');
+  const [date, setDate] = useState(formatISODate(new Date()));
   const [amount, setAmount] = useState<number | ''>('');
   const [uploadedFile, setUploadedFile] = useState<File | undefined>();
+  const { onSendWhatsAppText } = useWhatsapp({
+    page: 'ExpenseModal',
+  });
 
   useEffect(() => {
     if (expense) {
       setDescription(expense.description);
       setStatus(expense.status);
       setAmount(expense.amount);
+      setDate(formatISODate(expense.date));
     }
   }, [expense]);
+
+  const isValidExpense = !!expense;
 
   const { mutate: mutateExpense, isMutating } = useMutate(API_ROUTES.expenses);
   const type = 'TRIP_EXPENSE';
   const metadata = {
     tripId: resourceId,
+    expenseId: expense?._id,
   };
   const { onUpload, isUploading, medias, refetch } = useMedias({
     chat_id: TELEGRAM_GROUP_ID_ALTAVIA_MEDIA,
@@ -78,48 +92,24 @@ export const ExpenseModal = ({
     if (expense) {
       mutateExpense('PUT', payload, {
         requestUrl: `${API_ROUTES.expenses}/${expense._id}`,
-        onSuccess: (response) => {
+        onSuccess: () => {
           toast.success('Gasto Actualizado');
-          useFetch.mutate(API_ROUTES.expenses);
-          // upload
-          if (uploadedFile) {
-            onUpload(uploadedFile, {
-              type,
-              fileName: uploadedFile.name,
-              metadata: {
-                ...metadata,
-                expenseId: response._id,
-              },
-              onSuccess: () => {
-                useFetch.mutate(API_ROUTES.media);
-                onClose();
-                // reset
-                setDescription('');
-                setAmount('');
-                setUploadedFile(undefined);
-              },
-            });
-          } else {
-            onClose();
-            // reset
-            setDescription('');
-            setAmount('');
-            setUploadedFile(undefined);
-          }
+          handleRefreshMedias();
+          resetForm();
         },
       });
       return;
     }
+
     if (!uploadedFile) {
       toast.error('Seleccione un archivo');
       return;
     }
     mutateExpense('POST', payload, {
       onSuccess: (response) => {
-        toast.success('Gasto de viaje registrado');
-        useFetch.mutate(API_ROUTES.expenses);
-        // upload
 
+        toast.success('Gasto de viaje registrado');
+        // upload
         onUpload(uploadedFile, {
           type,
           fileName: uploadedFile.name,
@@ -128,17 +118,39 @@ export const ExpenseModal = ({
             expenseId: response._id,
           },
           onSuccess: () => {
-            useFetch.mutate(API_ROUTES.media);
-            onClose();
-            // reset
-            setDescription('');
-            setAmount('');
-            setUploadedFile(undefined);
+            handleRefreshMedias();
+            handleClose();
           },
         });
+        // sending alert
+        sendingAlert(response);
       },
     });
   };
+
+  function sendingAlert(expense: IExpenseSchema) {    
+    //@ts-ignore
+    const date = formatUtcDateTime(expense.date as string)
+
+    onSendWhatsAppText({
+      message: `${ALTAVIA_BOT}
+
+Se ha agregado un nuevo *Gasto* al viaje con destino a *${
+        trip?.destination
+      }*
+- Fecha: ${date}
+- Descripcion: ${expense.description}
+- monto: ${expense.amount}
+      `,
+      to: GROUP_ADMINISTRACION_ALTAVIA,
+    });
+  }
+
+  function resetForm() {
+    setDescription('');
+    setAmount('');
+    setUploadedFile(undefined);
+  }
 
   const onSelect = (file: File | File[]) => {
     if (file instanceof File) {
@@ -148,44 +160,58 @@ export const ExpenseModal = ({
     setUploadedFile(file[0]);
   };
 
-  return (
-    <Modal
-      isOpen={open}
-      onClose={onClose}
-      heading="Agregar Gasto"
-      footer={
-        <Button
-          onClick={handleSave}
-          colorScheme="blue"
-          size="sm"
-          loading={isMutating || isUploading}
-        >
-          Guardar gasto
-        </Button>
-      }
-    >
-      <VStack spaceY={2} w="100%">
-        <Box w="100%">
-          <Text>Descripción</Text>
-          <Input
-            size="sm"
-            placeholder="Descripción"
-            value={description}
-            onChange={(e) => setDescription(e.target.value)}
-          />
-        </Box>
+  const handleRefreshMedias = () => {
+    useFetch.mutate(API_ROUTES.expenses);
+    useFetch.mutate(API_ROUTES.media);
+    props.onRefresh?.();
+    refetch();
+  };
+  const handleClose = () => {
+    onClose();
+    resetForm();
+  };
 
-        <Box w="100%">
-          <Text>Monto</Text>
-          <Input
-            size="sm"
-            type="number"
-            placeholder="Monto"
-            value={amount}
-            onChange={(e) => setAmount(Number(e.target.value))}
+  return (
+    <Modal isOpen={open} onClose={handleClose} heading="Agregar Gasto">
+      <VStack spaceY={0} w="100%" alignItems="start">
+        <InputField
+          size="xs"
+          name="description"
+          label="Descripcion"
+          controlled
+          value={description}
+          onChange={(value) => setDescription(value as string)}
+          isRequired
+        />
+        <Flex justifyContent="space-between" width="100%" gap={2}>
+          <InputField
+            type="date"
+            size="xs"
+            name="startDate"
+            label="Fecha"
+            controlled
+            value={date}
+            onChange={(value) => setDate(value as string)}
+            isRequired
           />
-        </Box>
-        <Box w="100%">
+          <InputField
+            type="number"
+            size="xs"
+            name="startDate"
+            label="Monto"
+            controlled
+            value={amount}
+            onChange={(value) => setAmount(value as number)}
+            isRequired
+          />
+        </Flex>
+
+        <Flex
+          justifyContent="space-between"
+          width="100%"
+          gap={2}
+          alignItems="end"
+        >
           <SelectField
             width="150px"
             isRequired
@@ -200,12 +226,25 @@ export const ExpenseModal = ({
               label: EXPENSE_STATUS_MAP[status],
             }))}
           />
-        </Box>
+          <Button
+            onClick={handleSave}
+            colorScheme="blue"
+            size="xs"
+            loading={isMutating || isUploading}
+          >
+            Guardar
+          </Button>
+        </Flex>
+
         <CopyPaste
           type="TRIP_EXPENSE"
           resourceId={resourceId}
-          onSelect={onSelect}
-          onPaste={onSelect}
+          onSelect={!isValidExpense ? onSelect : undefined}
+          onPaste={!isValidExpense ? onSelect : undefined}
+          metadata={metadata}
+          onSuccess={() => {
+            handleRefreshMedias();
+          }}
         />
         <Show when={uploadedFile}>
           <Flex width="100%" alignItems="center" justifyContent="space-between">
@@ -220,7 +259,7 @@ export const ExpenseModal = ({
           </Flex>
         </Show>
         <Show when={medias?.length > 0}>
-          <Flex gap={1}>
+          <Grid templateColumns="repeat(2, 1fr)" gap="2">
             {medias
               ?.filter?.((x) => x.metadata.expenseId === expense?._id)
               ?.map?.((media) => (
@@ -229,13 +268,13 @@ export const ExpenseModal = ({
                   media={media}
                   description={media.name}
                   canDelete
-                  onRefresh={refetch}
+                  onRefresh={handleRefreshMedias}
                   imageStyle={{
-                    height: '300px',
+                    height: '200px',
                   }}
                 />
               ))}
-          </Flex>
+          </Grid>
         </Show>
       </VStack>
     </Modal>

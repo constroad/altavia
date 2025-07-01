@@ -10,6 +10,7 @@ import { InputField, SelectField, toast } from 'src/components';
 import { useState } from 'react';
 import { IconWrapper } from '../IconWrapper/IconWrapper';
 import { RefreshIcon } from '@/common/icons';
+import { useWhatsapp } from '@/common/hooks/useWhatsapp';
 
 interface TripListProps {}
 
@@ -20,6 +21,8 @@ export const TripList = () => {
   const [status, setStatus] = useState('');
 
   const router = useRouter();
+  // loading by default whatsApp contacts
+  useWhatsapp({ page: 'TripList' });
   
   //API
   const { data, isLoading, refetch } = useFetch(API_ROUTES.trips, {

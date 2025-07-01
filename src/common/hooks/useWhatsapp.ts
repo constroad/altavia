@@ -1,5 +1,5 @@
 
-import { API_ROUTES, GROUP_ERRORS_TRACKING, WHATSAPP_SENDER, WHATSAPP_SERVER_URL, WtspMessageType } from "../consts";
+import { API_ROUTES, CONSTROAD_SERVER_URL, GROUP_ERRORS_TRACKING, WHATSAPP_SENDER, WtspMessageType } from "../consts";
 import { useMutate } from "./useMutate";
 import { useFetch } from "./useFetch";
 import { toast } from "src/components";
@@ -29,11 +29,11 @@ type UseWhatsappProps = {
 export const useWhatsapp = (props: UseWhatsappProps) => {
   const { page } = props
 
-  const URL = `${WHATSAPP_SERVER_URL}/message/${WHATSAPP_SENDER}`
-  const URL_GROUPS = `${WHATSAPP_SERVER_URL}/session/${WHATSAPP_SENDER}/groups`
+  const URL = `${CONSTROAD_SERVER_URL}/message/${WHATSAPP_SENDER}`
+  const URL_GROUPS = `${CONSTROAD_SERVER_URL}/session/${WHATSAPP_SENDER}/groups`
 
   //API
-  const { data: groups, isLoading: isLoadingGroups } = useFetch(URL_GROUPS)
+  const { data: groups, isLoading: isLoadingGroups, refetch: refetchGroups } = useFetch(URL_GROUPS)
   const { mutate: onSendTextMessage } = useMutate(API_ROUTES.notificationWhatsApp);
   const { mutate: onSendFileMessage, isMutating, mutateData, mutateError } = useMutateFormData(URL);
 
@@ -126,6 +126,7 @@ export const useWhatsapp = (props: UseWhatsappProps) => {
     onSendWhatsAppText,
     isSending: isMutating,
     groups,
+    refetchGroups,
     isLoadingGroups,
     mutateData,
     mutateError,

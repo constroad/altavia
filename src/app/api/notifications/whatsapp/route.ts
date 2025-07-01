@@ -1,10 +1,10 @@
 import { NextRequest, NextResponse } from 'next/server'
 import axios from 'axios'
-import { WHATSAPP_SERVER_URL, WtspMessageType } from 'src/common/consts'
+import { CONSTROAD_SERVER_URL, WtspMessageType } from 'src/common/consts'
 
 const API_WHATSAPP = process.env.API_WHATSAPP
 const PHONE_SENDER = '51949376824'
-const BASE_URL = `${WHATSAPP_SERVER_URL}/message/${PHONE_SENDER}`
+const BASE_URL = `${CONSTROAD_SERVER_URL}/message/${PHONE_SENDER}`
 
 const sendWhatsAppTextMessage = async (phone: string, message: string) => {
   const url = `${BASE_URL}/text`
@@ -43,10 +43,6 @@ export async function POST(req: NextRequest) {
       fileUrl,
       API_WHATSAPP,
     })
-
-    if (!API_WHATSAPP) {
-      return NextResponse.json({ message: 'API Key is missing' }, { status: 400 })
-    }
 
     if (!phone) {
       return NextResponse.json({ message: 'phone is missing' }, { status: 400 })

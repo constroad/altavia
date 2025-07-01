@@ -9,7 +9,16 @@ import {
 } from '@/models/generalExpense';
 import { IMediaValidationSchema } from '@/models/media';
 import { ITripSchemaValidation } from '@/models/trip';
-import { Flex, VStack, Text, Button, useDisclosure } from '@chakra-ui/react';
+import {
+  Flex,
+  VStack,
+  Text,
+  Button,
+  useDisclosure,
+  Box,
+  Tabs,
+  Show
+} from '@chakra-ui/react';
 import { TableColumn, TableComponent } from '../Table';
 import { formatUtcDateTime } from '@/utils/general';
 import { ImageView } from '../telegramFileView/imageView';
@@ -19,6 +28,8 @@ import { useMutate } from '@/common/hooks/useMutate';
 import { useState } from 'react';
 import { toast } from '../Toast';
 import { ExpenseModal } from './ExpenseModal';
+import { TripDocuments } from './TripDocuments';
+import { TripTracking } from './TripTracking';
 
 interface TripExpenseProps {
   trip: ITripSchemaValidation | null;
@@ -26,6 +37,7 @@ interface TripExpenseProps {
 
 export const TripExpense = (props: TripExpenseProps) => {
   const { trip } = props;
+  const [tabSelected, setTabSelected] = useState<string | null>('Gastos');
   const [expenseSelected, setExpenseSelected] = useState<
     IExpenseSchema | undefined
   >();
@@ -52,6 +64,7 @@ export const TripExpense = (props: TripExpenseProps) => {
     enabled: trip?._id !== undefined,
   });
 
+  const isValidTrip = trip && trip._id !== 'new';
   const columns: TableColumn[] = [
     {
       key: 'date',
@@ -114,62 +127,128 @@ export const TripExpense = (props: TripExpenseProps) => {
     onOpen();
   };
 
+  const totalToPay =
+    expenses
+      ?.filter((x) => x.status === 'to_pay')
+      ?.reduce((acc, curr) => acc + curr.amount, 0) ?? 0;
+  const totalExpenses =
+    expenses?.reduce((acc, curr) => acc + curr.amount, 0) ?? 0;
+  const totalRevenue = (trip?.Income ?? 0) - totalExpenses;
+
   return (
     <VStack align="start" w="100%">
-      <Flex w="100%" gap="10px">
-        <TableComponent
-          isLoading={isLoadingExpenses}
-          data={expenses ?? []}
-          columns={columns}
-          actions
-          onEdit={handleSelectExpense}
-          onDelete={handleDeleteExpense}
-          toolbar={
-            <Flex
-              alignItems="center"
-              justifyContent="space-between"
-              fontSize="12px"
-              m={1}
-            >
-              <Flex gap={2}>
-                <Button
-                  size="xs"
-                  onClick={() => {
-                    onOpen();
-                    setExpenseSelected(undefined);
-                  }}
+      <Tabs.Root
+        defaultValue="Gastos"
+        width="100%"
+        value={tabSelected}
+        onValueChange={(e) => setTabSelected(e.value)}
+      >
+        <Tabs.List>
+          <Tabs.Trigger value="Gastos">Gastos</Tabs.Trigger>
+          <Tabs.Trigger value="Sunat">Sunat</Tabs.Trigger>
+          <Tabs.Trigger value="Tracking">Tracking</Tabs.Trigger>
+        </Tabs.List>
+        <Tabs.Content value="Gastos" padding={0}>
+          <Show when={tabSelected === 'Gastos'}>
+            <TableComponent
+              isLoading={isLoadingExpenses}
+              data={expenses ?? []}
+              columns={columns}
+              actions
+              onEdit={handleSelectExpense}
+              onDelete={handleDeleteExpense}
+              toolbar={
+                <Flex
+                  alignItems="center"
+                  justifyContent="space-between"
+                  fontSize="12px"
                 >
-                  + Gasto
-                </Button>
-                <Button
-                  variant="outline"
-                  onClick={() => {
-                    refetchExpenses();
-                    refetchMedias();
-                  }}
-                  size="xs"
-                >
-                  <IconWrapper icon={RefreshIcon} size="18px" />
-                </Button>
-              </Flex>
-              <Text fontWeight={600}>
-                Total:
-                {expenses?.reduce((acc, curr) => acc + curr.amount, 0)}
-              </Text>
-            </Flex>
-          }
-        />
-      </Flex>
+                  <Flex flexDir="column">
+                    <Flex>
+                      <Box bg="primary.500" color="white" width="80px">
+                        Gastos:
+                      </Box>
+                      <Box
+                        bg="gray.300"
+                        width={{ base: '80px', md: '100px' }}
+                        textAlign="right"
+                      >
+                        S/.{totalExpenses}
+                      </Box>
+                    </Flex>
+                    <Flex>
+                      <Box bg="primary.500" color="white" width="80px">
+                        Rentabilidad:
+                      </Box>
+                      <Box
+                        bg="gray.300"
+                        width={{ base: '80px', md: '100px' }}
+                        textAlign="right"
+                        fontWeight={600}
+                      >
+                        S/.{totalRevenue}
+                      </Box>
+                    </Flex>
+                  </Flex>
+                  <Flex gap={1} alignItems="end">
+                    <Flex
+                      color="red"
+                      fontWeight={500}
+                      flexDir={{ base: 'column', md: 'row' }}
+                    >
+                      <Text>Deuda:</Text>
+                      <Text>S/.{totalToPay}</Text>
+                    </Flex>
+                    <Button
+                      size="xs"
+                      onClick={() => {
+                        onOpen();
+                        setExpenseSelected(undefined);
+                      }}
+                      disabled={!isValidTrip}
+                    >
+                      +
+                    </Button>
+                    <Button
+                      variant="outline"
+                      onClick={() => {
+                        refetchExpenses();
+                        refetchMedias();
+                      }}
+                      size="xs"
+                    >
+                      <IconWrapper icon={RefreshIcon} size="18px" />
+                    </Button>
+                  </Flex>
+                </Flex>
+              }
+            />
+          </Show>
+        </Tabs.Content>
+        <Tabs.Content value="Sunat">
+          <Show when={tabSelected === 'Sunat'}>
+            <TripDocuments trip={trip} />
+          </Show>
+        </Tabs.Content>
+        <Tabs.Content value="Tracking">
+          <Show when={tabSelected === 'Tracking'}>
+            <TripTracking trip={trip} />
+          </Show>
+        </Tabs.Content>
+      </Tabs.Root>
 
       <ExpenseModal
+        trip={trip}
         expense={expenseSelected}
         resourceId={trip?._id!}
         open={open}
+        onRefresh={() => {
+          refetchExpenses();
+          refetchMedias();
+        }}
         onClose={() => {
           setExpenseSelected(undefined);
           onClose();
-          refetchExpenses();
-          refetchMedias();
         }}
       />
     </VStack>

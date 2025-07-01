@@ -9,7 +9,6 @@ import { useSidebar } from 'src/context'
 
 export const DashboardNavbar = () => {
   const { data: session } = useSession() 
-  console.log('session:', session)
   const { isExpanded } = useSidebar();
 
   const handleSignOut = async() => {

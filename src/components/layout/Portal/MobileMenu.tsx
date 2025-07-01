@@ -4,6 +4,9 @@ import { Flex, Text } from '@chakra-ui/react'
 
 import { DisplayOptionIcon, HideOptionIcon } from 'src/common/icons'
 import { GenerateNavOptions, serviciosOptions } from './config'
+import { signOut, useSession } from 'next-auth/react'
+import { APP_ROUTES } from '@/common/consts'
+import { toast } from '@/components/Toast'
 
 interface IMobileMenu {
   toggleNosotrosMenu: (option: string) => void
@@ -15,9 +18,14 @@ interface IMobileMenu {
 
 export const MobileMenu = (props: IMobileMenu) => {
   const router = useRouter()
-  // const path = router.pathname
   const path = usePathname()
+  const { data: session } = useSession()
 
+  const handleSignOut = () => {
+    signOut({redirect: false});
+    router.push(APP_ROUTES.home);
+    toast.info('Cerraste sesión');
+  }
 
   const handleOptionClick = async(e: MouseEvent<HTMLDivElement>, option: any) => {
     e.preventDefault()
@@ -100,38 +108,71 @@ export const MobileMenu = (props: IMobileMenu) => {
               }
             >
               {serviciosOptions.map(sopt => (
-              <Flex
-                flexDir='column'
-                justifyContent='center'
-                width='full'
-                height='51px'
-                paddingY='10px'
-                paddingX='20px'
-                key={sopt.label}
-                borderTop="1px solid rgba(0, 0, 0, 0.1)"
-                cursor='pointer'
-                _hover={{shadow: 'md'}}
-                onClick={(e) => {
-                  e.stopPropagation()
-                  router.push(`${opt.path}${sopt.path}`)
-                }}
-              >
-                <Text
-                  width='100%'
-                  fontSize={12}
-                  fontWeight={700}
-                  paddingX='40px'
-                  color={path === `${opt.path}${sopt.path}` ? 'white' : 'black'}
+                <Flex
+                  flexDir='column'
+                  justifyContent='center'
+                  width='full'
+                  height='51px'
+                  paddingY='10px'
+                  paddingX='20px'
+                  key={sopt.label}
+                  borderTop="1px solid rgba(0, 0, 0, 0.1)"
+                  cursor='pointer'
+                  _hover={{shadow: 'md'}}
+                  onClick={(e) => {
+                    e.stopPropagation()
+                    router.push(`${opt.path}${sopt.path}`)
+                  }}
                 >
-                  - {sopt.label}
-                </Text>
-              </Flex>
-            ))}
+                  <Text
+                    width='100%'
+                    fontSize={12}
+                    fontWeight={700}
+                    paddingX='40px'
+                    color={path === `${opt.path}${sopt.path}` ? 'white' : 'black'}
+                  >
+                    - {sopt.label}
+                  </Text>
+                </Flex>
+              ))}
             </Flex>
-            
           )}
         </Flex>
       ))}
+
+      {!session && (
+        <Flex
+          flexDir='row'
+          fontSize={14}
+          fontWeight={700}
+          height={'70px'}
+          color={path === APP_ROUTES.login ? 'white' : 'black'}
+          padding='30px'
+          width='100%'
+          cursor='pointer'
+          _hover={{shadow: 'md'}}
+          onClick={() => router.push(APP_ROUTES.login)}
+        >
+          Inicia sesión
+        </Flex>
+      )}
+
+      {session && (
+        <Flex
+          flexDir='row'
+          fontSize={14}
+          fontWeight={700}
+          height={'70px'}
+          color={path === APP_ROUTES.login ? 'white' : 'black'}
+          padding='30px'
+          width='100%'
+          cursor='pointer'
+          _hover={{shadow: 'md'}}
+          onClick={handleSignOut}
+        >
+          Cerrar sesión
+        </Flex>
+      )}
     </Flex>
   )
 }

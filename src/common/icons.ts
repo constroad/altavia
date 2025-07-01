@@ -22,7 +22,7 @@ import {
   FaCloudUploadAlt,
 } from "react-icons/fa";
 import { FiMoreVertical } from 'react-icons/fi'
-import { FaUserTie, FaUserShield, FaTruckFast, FaRoadBarrier } from "react-icons/fa6";
+import { FaUserTie, FaUserShield, FaTruckFast, FaRoadBarrier, FaGear } from "react-icons/fa6";
 import { IoLogoWhatsapp, IoMdMail, IoMdClose, IoMdRefresh, IoIosSave } from "react-icons/io";
 import { BsArrowLeft, BsArrowRight, BsCalculatorFill } from "react-icons/bs";
 import { IoArrowBackOutline, IoSearch } from "react-icons/io5";
@@ -74,6 +74,7 @@ export const IdeaIcon = HiLightBulb
 export const GoalIcon = GoGoal
 export const BusinessIcon = MdBusinessCenter
 export const PixCircleIcon = PiXCircleFill
+export const GearIcon = FaGear
 
 // admin menu
 export const ProductionIcon = MdOutlinePrecisionManufacturing

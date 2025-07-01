@@ -23,7 +23,6 @@ export const Navbar = (props: INavbar) => {
   const router = useRouter()
   const { isDesktop, isMobile } = useScreenSize()
   const { data: session } = useSession()
-  console.log('session:', session)
 
   const handleSignOut = async() => {
     await signOut({redirect: false});
@@ -56,7 +55,7 @@ export const Navbar = (props: INavbar) => {
       top={{ base: '', md: '0px'}}
       zIndex={1000}
       justifyContent='center'
-      boxShadow='lg'
+      boxShadow="0 4px 6px -1px rgba(15, 92, 61, 0.5)" // primary500
     >
       <Flex
         as='header'

@@ -15,10 +15,11 @@ import { useRouter } from 'next/navigation';
 
 type ITripForm = {
   trip: ITripSchemaValidation | null;
+  onSavingChange?: (saving: boolean) => void;
 };
 
 export default function TripForm(props: Readonly<ITripForm>) {
-  const { trip } = props;
+  const { trip, onSavingChange } = props;
   const router = useRouter();
 
   // API
@@ -56,6 +57,7 @@ export default function TripForm(props: Readonly<ITripForm>) {
   }));
 
   const onSubmit = (form: ITripSchemaValidation) => {
+    onSavingChange?.(true)
     try {
       const { _id, ...rest } = form;
       const payload = {
@@ -85,6 +87,8 @@ export default function TripForm(props: Readonly<ITripForm>) {
     } catch (error) {
       console.log(error);
       toast.error('Error al registrar viaje');
+    } finally {
+      onSavingChange?.(false)
     }
   };
 

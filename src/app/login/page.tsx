@@ -44,7 +44,7 @@ export default function Page() {
 
   return (
     <PortalLayout>
-      <Flex flexDir='column' alignItems='center'>
+      <Flex flexDir='column' alignItems='center' mt='15px'>
         <SubtitleComponent text='INICIA SESIÓN' />
 
         <Box width='400px' paddingX='30px' marginTop={{ base: '30px', md: '60px' }} textAlign='center'>

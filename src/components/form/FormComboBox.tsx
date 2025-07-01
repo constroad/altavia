@@ -45,6 +45,7 @@ export const FormComboBox = (props: FormComboBoxProps) => {
         onChange?.(e.value)
       }}
       width="100%"
+      size="xs"
     >
       <Combobox.Label>{props.label}</Combobox.Label>
       <Combobox.Control>

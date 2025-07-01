@@ -33,7 +33,7 @@ export const useWhatsapp = (props: UseWhatsappProps) => {
   const URL_GROUPS = `${CONSTROAD_SERVER_URL}/session/${WHATSAPP_SENDER}/groups`
 
   //API
-  const { data: groups, isLoading: isLoadingGroups } = useFetch(URL_GROUPS)
+  const { data: groups, isLoading: isLoadingGroups, refetch: refetchGroups } = useFetch(URL_GROUPS)
   const { mutate: onSendTextMessage } = useMutate(API_ROUTES.notificationWhatsApp);
   const { mutate: onSendFileMessage, isMutating, mutateData, mutateError } = useMutateFormData(URL);
 
@@ -126,6 +126,7 @@ export const useWhatsapp = (props: UseWhatsappProps) => {
     onSendWhatsAppText,
     isSending: isMutating,
     groups,
+    refetchGroups,
     isLoadingGroups,
     mutateData,
     mutateError,

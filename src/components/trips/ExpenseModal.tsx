@@ -11,14 +11,22 @@ import {
 } from '@/models/generalExpense';
 import { CopyPaste } from '../upload/CopyPaste';
 import { useMutate } from '@/common/hooks/useMutate';
-import { API_ROUTES, TELEGRAM_GROUP_ID_ALTAVIA_MEDIA } from '@/common/consts';
+import {
+  ALTAVIA_BOT,
+  API_ROUTES,
+  GROUP_ADMINISTRACION_ALTAVIA,
+  TELEGRAM_GROUP_ID_ALTAVIA_MEDIA,
+} from '@/common/consts';
 import { useFetch } from '@/common/hooks/useFetch';
 import { toast } from 'src/components';
 import { useMedias } from '@/common/hooks/useMedias';
 import { TelegramFileView } from '../telegramFileView';
-import { formatISODate } from '@/utils/general';
+import { formatISODate, formatUtcDateTime } from '@/utils/general';
+import { useWhatsapp } from '@/common/hooks/useWhatsapp';
+import { ITripSchemaValidation } from '@/models/trip';
 
 interface ExpenseModalProps {
+  trip: ITripSchemaValidation | null;
   expense?: IExpenseSchema;
   resourceId: string;
   open: boolean;
@@ -27,12 +35,15 @@ interface ExpenseModalProps {
 }
 
 export const ExpenseModal = (props: ExpenseModalProps) => {
-  const { open, onClose, resourceId, expense } = props;
+  const { open, onClose, resourceId, expense, trip } = props;
   const [description, setDescription] = useState('');
   const [status, setStatus] = useState('paid');
   const [date, setDate] = useState(formatISODate(new Date()));
   const [amount, setAmount] = useState<number | ''>('');
   const [uploadedFile, setUploadedFile] = useState<File | undefined>();
+  const { onSendWhatsAppText } = useWhatsapp({
+    page: 'ExpenseModal',
+  });
 
   useEffect(() => {
     if (expense) {
@@ -83,8 +94,8 @@ export const ExpenseModal = (props: ExpenseModalProps) => {
         requestUrl: `${API_ROUTES.expenses}/${expense._id}`,
         onSuccess: () => {
           toast.success('Gasto Actualizado');
-          handleRefreshMedias()
-          resetForm();          
+          handleRefreshMedias();
+          resetForm();
         },
       });
       return;
@@ -96,7 +107,8 @@ export const ExpenseModal = (props: ExpenseModalProps) => {
     }
     mutateExpense('POST', payload, {
       onSuccess: (response) => {
-        toast.success('Gasto de viaje registrado');        
+
+        toast.success('Gasto de viaje registrado');
         // upload
         onUpload(uploadedFile, {
           type,
@@ -106,13 +118,33 @@ export const ExpenseModal = (props: ExpenseModalProps) => {
             expenseId: response._id,
           },
           onSuccess: () => {
-            handleRefreshMedias()
+            handleRefreshMedias();
             handleClose();
           },
         });
+        // sending alert
+        sendingAlert(response);
       },
     });
   };
+
+  function sendingAlert(expense: IExpenseSchema) {    
+    //@ts-ignore
+    const date = formatUtcDateTime(expense.date as string)
+
+    onSendWhatsAppText({
+      message: `${ALTAVIA_BOT}
+
+Se ha agregado un nuevo *Gasto* al viaje con destino a *${
+        trip?.destination
+      }*
+- Fecha: ${date}
+- Descripcion: ${expense.description}
+- monto: ${expense.amount}
+      `,
+      to: GROUP_ADMINISTRACION_ALTAVIA,
+    });
+  }
 
   function resetForm() {
     setDescription('');
@@ -132,8 +164,8 @@ export const ExpenseModal = (props: ExpenseModalProps) => {
     useFetch.mutate(API_ROUTES.expenses);
     useFetch.mutate(API_ROUTES.media);
     props.onRefresh?.();
-    refetch()
-  }
+    refetch();
+  };
   const handleClose = () => {
     onClose();
     resetForm();
@@ -174,7 +206,12 @@ export const ExpenseModal = (props: ExpenseModalProps) => {
           />
         </Flex>
 
-        <Flex justifyContent="space-between" width="100%" gap={2} alignItems="end">
+        <Flex
+          justifyContent="space-between"
+          width="100%"
+          gap={2}
+          alignItems="end"
+        >
           <SelectField
             width="150px"
             isRequired
@@ -206,7 +243,7 @@ export const ExpenseModal = (props: ExpenseModalProps) => {
           onPaste={!isValidExpense ? onSelect : undefined}
           metadata={metadata}
           onSuccess={() => {
-            handleRefreshMedias()            
+            handleRefreshMedias();
           }}
         />
         <Show when={uploadedFile}>

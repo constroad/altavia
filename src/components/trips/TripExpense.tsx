@@ -225,6 +225,7 @@ export const TripExpense = (props: TripExpenseProps) => {
       </Tabs.Root>
 
       <ExpenseModal
+        trip={trip}
         expense={expenseSelected}
         resourceId={trip?._id!}
         open={open}

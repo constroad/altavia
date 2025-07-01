@@ -12,7 +12,7 @@ import { DashboardLayout, toast } from 'src/components';
 import { SelectField } from '../../components/form/SelectField';
 import { UploadButton } from 'src/components/upload/UploadButton';
 import { useMutate } from 'src/common/hooks/useMutate';
-import { API_ROUTES, APP_ROUTES } from 'src/common/consts';
+import { ALTAVIA_BOT, API_ROUTES, APP_ROUTES, GROUP_ADMINISTRACION_ALTAVIA } from 'src/common/consts';
 import { useRouter } from 'next/navigation';
 import {
   EXPENSE_STATUS,
@@ -29,6 +29,7 @@ import { InputField } from '../form/InputField';
 import { useFetch } from 'src/common/hooks/useFetch';
 import { useMedias } from '@/common/hooks/useMedias';
 import { TelegramFileView } from '../telegramFileView';
+import { useWhatsapp } from '@/common/hooks/useWhatsapp';
 
 interface ExpenseFormProps {
   expense: IExpenseSchema | null;
@@ -52,6 +53,9 @@ export const ExpenseForm = (props: ExpenseFormProps) => {
     formState: { errors },
   } = methods;
   const router = useRouter();
+  const { onSendWhatsAppText } = useWhatsapp({
+    page: 'ExpenseForm',
+  });
 
   // API
   const { mutate: mutateExpense, isMutating } = useMutate(API_ROUTES.expenses);
@@ -84,6 +88,7 @@ export const ExpenseForm = (props: ExpenseFormProps) => {
       //Save
       mutateExpense('POST', payload, {
         onSuccess: (response) => {
+          sendingAlert(response)
           toast.success('Gasto registrado');
           useFetch.mutate(API_ROUTES.expenses);
           router.push(`${APP_ROUTES.expenses}/${response._id}`);
@@ -94,6 +99,23 @@ export const ExpenseForm = (props: ExpenseFormProps) => {
       toast.error('Error al registrar gasto');
     }
   };
+
+  function sendingAlert(expense: IExpenseSchema) {    
+    //@ts-ignore
+    const date = formatUtcDateTime(expense.date as string)
+
+    onSendWhatsAppText({
+      message: `${ALTAVIA_BOT}
+
+Se ha agregado un nuevo *Gasto* :
+- Tipo: ${expense.type}
+- Fecha: ${date}
+- Descripcion: ${expense.description}
+- monto: ${expense.amount}
+      `,
+      to: GROUP_ADMINISTRACION_ALTAVIA,
+    });
+  }
 
   const medias = mediaResponse ?? [];
 
@@ -129,7 +151,7 @@ export const ExpenseForm = (props: ExpenseFormProps) => {
               type="number"
               size="xs"
               name="amount"
-              label="Cantidad"
+              label="Monto"
               isRequired
             />
 

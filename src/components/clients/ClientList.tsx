@@ -9,6 +9,7 @@ import { useFetch } from "@/common/hooks/useFetch";
 import { useMutate } from "@/common/hooks/useMutate";
 import { generateClientColumns } from "./columnsConfig";
 import { toast } from "../Toast";
+import { useWhatsapp } from "@/common/hooks/useWhatsapp";
 
 interface IClientList {
   open: boolean;
@@ -23,6 +24,9 @@ export const ClientList = (props: IClientList) => {
   const { data, isLoading, refetch } = useFetch<IClientSchemaValidation[]>(
     API_ROUTES.clients
   );
+  // loading by default whatsApp contacts
+  useWhatsapp({ page: 'ClientList' });
+  
   const { mutate } = useMutate(API_ROUTES.clients)
 
   const filteredClients: IClientSchemaValidation[] = data?.filter(client =>

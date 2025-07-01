@@ -14,7 +14,8 @@ import {
 } from '@/models/client';
 import { useWhatsapp } from '@/common/hooks/useWhatsapp';
 import { FormComboBox } from '../form/FormComboBox';
-
+import { IconWrapper } from '../IconWrapper/IconWrapper';
+import { RefreshIcon } from '@/common/icons';
 
 interface ClientFormProps {
   client?: IClientSchemaValidation;
@@ -36,7 +37,9 @@ export const ClientForm = (props: ClientFormProps) => {
   } = methods;
 
   // API
-  const { groups, isLoadingGroups } = useWhatsapp({ page: 'ClientForm' });
+  const { groups, isLoadingGroups, refetchGroups } = useWhatsapp({
+    page: 'ClientForm',
+  });
   const { mutate: createClient, isMutating: creatingClient } = useMutate(
     API_ROUTES.clients
   );
@@ -96,28 +99,32 @@ export const ClientForm = (props: ClientFormProps) => {
     <FormProvider {...methods}>
       <form onSubmit={methods.handleSubmit(onSubmit)} noValidate>
         <VStack spaceY={1}>
-          <InputField name="name" label="Nombre" isRequired />
-          <InputField name="ruc" label="RUC" />
-          <InputField name="address" label="Dirección" />
+          <InputField size="xs" name="name" label="Nombre" isRequired />
+          <InputField size="xs" name="ruc" label="RUC" />
+          <InputField size="xs" name="address" label="Dirección" />
           <Flex gap={1} justifyContent="space-between" width="100%">
-
-          <InputField name="phone" label="Teléfono" />
-          <InputField name="email" label="Correo" type="email" />
+            <InputField size="xs" name="phone" label="Teléfono" />
+            <InputField size="xs" name="email" label="Correo" type="email" />
           </Flex>
-          <FormComboBox
-            name="whatsAppAlerts"
-            label="WhatsApp para envio de alertas:"
-            placeholder="Seleccione grupo"
-            options={
-              groups?.map((x: any) => ({
-                value: x.id,
-                label: x.name,
-              })) ?? []
-            }
-            value={client?.notifications?.whatsAppAlerts ?? ''}
-            loading={isLoadingGroups}
-            onChange={handleSelectWhatsAppNotification('whatsAppAlerts')}            
-          />
+          <Flex width="100%" gap={2} alignItems="end">
+            <FormComboBox
+              name="whatsAppAlerts"
+              label="WhatsApp para envio de alertas:"
+              placeholder="Escriba un grupo"
+              options={
+                groups?.map((x: any) => ({
+                  value: x.id,
+                  label: x.name,
+                })) ?? []
+              }
+              value={client?.notifications?.whatsAppAlerts ?? ''}
+              loading={isLoadingGroups}
+              onChange={handleSelectWhatsAppNotification('whatsAppAlerts')}
+            />
+            <Button onClick={refetchGroups} size="xs" loading={isLoadingGroups}>
+              <IconWrapper icon={RefreshIcon} size="18px" />
+            </Button>
+          </Flex>
 
           <Flex w="100%" justifyContent="end" gap={2} mt="10px">
             <Button

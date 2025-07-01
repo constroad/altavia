@@ -1,18 +1,14 @@
-import {
-  Box,
-  Button,
-  Heading,
-  Stack,
-  Flex,
-  Show,
-  HStack,
-} from '@chakra-ui/react';
+import { Button, Stack, Flex, HStack, Grid, Show } from '@chakra-ui/react';
 
 import { DashboardLayout, toast } from 'src/components';
 import { SelectField } from '../../components/form/SelectField';
-import { UploadButton } from 'src/components/upload/UploadButton';
 import { useMutate } from 'src/common/hooks/useMutate';
-import { ALTAVIA_BOT, API_ROUTES, APP_ROUTES, GROUP_ADMINISTRACION_ALTAVIA } from 'src/common/consts';
+import {
+  ALTAVIA_BOT,
+  API_ROUTES,
+  APP_ROUTES,
+  GROUP_ADMINISTRACION_ALTAVIA,
+} from 'src/common/consts';
 import { useRouter } from 'next/navigation';
 import {
   EXPENSE_STATUS,
@@ -30,6 +26,9 @@ import { useFetch } from 'src/common/hooks/useFetch';
 import { useMedias } from '@/common/hooks/useMedias';
 import { TelegramFileView } from '../telegramFileView';
 import { useWhatsapp } from '@/common/hooks/useWhatsapp';
+import { useState } from 'react';
+import { CopyPaste } from '../upload/CopyPaste';
+import { formatUtcDateTime } from '@/utils/general';
 
 interface ExpenseFormProps {
   expense: IExpenseSchema | null;
@@ -37,6 +36,15 @@ interface ExpenseFormProps {
 
 export const ExpenseForm = (props: ExpenseFormProps) => {
   const { expense } = props;
+  const [fileSelected, setFileSelected] = useState<File | undefined>();
+
+  const isValidExpense = !!expense;
+  const resourceId = expense?._id;
+  const type = 'GENERAL_EXPENSE';
+  const metadata = {
+    expenseId: expense?._id,
+  };
+
   const methods = useForm<IExpenseSchema>({
     resolver: zodResolver(expenseValidationSchema),
     defaultValues: {
@@ -59,7 +67,12 @@ export const ExpenseForm = (props: ExpenseFormProps) => {
 
   // API
   const { mutate: mutateExpense, isMutating } = useMutate(API_ROUTES.expenses);
-  const { medias: mediaResponse, refetch: refetchMedias } = useMedias({
+  const {
+    medias: mediaResponse,
+    refetch: refetchMedias,
+    onUpload,
+    isUploading,
+  } = useMedias({
     resourceId: expense?._id,
     enabled: expense?._id !== undefined,
   });
@@ -85,13 +98,34 @@ export const ExpenseForm = (props: ExpenseFormProps) => {
         return;
       }
 
+      if (!fileSelected) {
+        toast.error('Seleccione un archivo');
+        return;
+      }
+
       //Save
       mutateExpense('POST', payload, {
         onSuccess: (response) => {
-          sendingAlert(response)
           toast.success('Gasto registrado');
-          useFetch.mutate(API_ROUTES.expenses);
-          router.push(`${APP_ROUTES.expenses}/${response._id}`);
+
+          // upload
+          onUpload(fileSelected, {
+            type,
+            fileName: fileSelected.name,
+            resourceId: response._id,
+            metadata: {
+              ...metadata,
+              expenseId: response._id,
+            },
+            onSuccess: () => {
+              useFetch.mutate(API_ROUTES.expenses);
+              refetchMedias();
+              router.push(`${APP_ROUTES.expenses}/${response._id}`);
+            },
+          });
+
+          // sending alert
+          sendingAlert(response);
         },
       });
     } catch (error) {
@@ -100,9 +134,17 @@ export const ExpenseForm = (props: ExpenseFormProps) => {
     }
   };
 
-  function sendingAlert(expense: IExpenseSchema) {    
+  const onSelectFile = (file: File | File[]) => {
+    if (file instanceof File) {
+      setFileSelected(file);
+      return;
+    }
+    setFileSelected(file[0]);
+  };
+
+  function sendingAlert(expense: IExpenseSchema) {
     //@ts-ignore
-    const date = formatUtcDateTime(expense.date as string)
+    const date = formatUtcDateTime(expense.date as string);
 
     onSendWhatsAppText({
       message: `${ALTAVIA_BOT}
@@ -137,9 +179,6 @@ Se ha agregado un nuevo *Gasto* :
     >
       <FormProvider {...methods}>
         <form onSubmit={methods.handleSubmit(onSubmit)} noValidate>
-          <Heading size="xl" mb={6}>
-            Registrar Gasto General
-          </Heading>
           <Stack gap={4}>
             <InputField
               size="xs"
@@ -179,25 +218,50 @@ Se ha agregado un nuevo *Gasto* :
               />
             </HStack>
 
-            <DateField size="xs" name="date" label="Fecha" isRequired />
-            <Flex width="100%" justifyContent="end" gap={1}>
-              <UploadButton
-                title="Adjuntar comprobante"
-                type="TRIP_EXPENSE"
-                resourceId={expense?._id}
-                onSuccess={refetchMedias}
-                isDisabled={expense?._id === undefined}
-              />
+            <HStack width="100%" align="end">
+              <DateField size="xs" name="date" label="Fecha" isRequired />
 
-              <Button size="xs" loading={isMutating} type="submit">
+              <Button
+                size="xs"
+                loading={isMutating || isUploading}
+                type="submit"
+              >
                 Guardar
               </Button>
-            </Flex>
+            </HStack>
+
+            <CopyPaste
+              title="Copiar y pegar comprobante"
+              type="GENERAL_EXPENSE"
+              resourceId={resourceId}
+              onSelect={!isValidExpense ? onSelectFile : undefined}
+              onPaste={!isValidExpense ? onSelectFile : undefined}
+              metadata={metadata}
+              onSuccess={() => {
+                refetchMedias();
+              }}
+            />
           </Stack>
         </form>
       </FormProvider>
 
-      <Flex gap={2}>
+      <Show when={fileSelected}>
+        <Flex width="100%" alignItems="center" mt={2} justifyContent="space-between">
+          {fileSelected?.name}
+          <Button
+            size="xs"
+            variant="outline"
+            onClick={() => setFileSelected(undefined)}
+          >
+            x
+          </Button>
+        </Flex>
+      </Show>
+
+      <Grid
+        templateColumns={{ base: 'repeat(2, 1fr)', md: 'repeat(4, 1fr)' }}
+        gap="2"
+      >
         {medias.map((media) => (
           <TelegramFileView
             key={media._id}
@@ -206,11 +270,11 @@ Se ha agregado un nuevo *Gasto* :
             canDelete
             onRefresh={refetchMedias}
             imageStyle={{
-              height: '300px',
+              height: '200px',
             }}
           />
         ))}
-      </Flex>
+      </Grid>
     </DashboardLayout>
   );
 };

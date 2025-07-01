@@ -7,7 +7,6 @@ import {
   GearBoldIcon,
   SignupIcon,
   TripIcon,
-  TruckIcon,
   VehiclesIcon
 } from "src/common/icons";
 
@@ -27,35 +26,35 @@ export const dashboardTabs = [
     icon: ClientsIcon
   },
   {
-    name: 'Vehicles',
+    name: 'Vehiculos',
     path: APP_ROUTES.vehicles,
     bgColor: 'primary',
     textColor: 'white',
     icon: VehiclesIcon
   },
   {
-    name: 'Trips',
+    name: 'Viajes',
     path: APP_ROUTES.trips,
     bgColor: 'primary',
     textColor: 'white',
     icon: TripIcon
   },
   {
-    name: 'Egresos',
+    name: 'Gastos',
     path: APP_ROUTES.expenses,
     bgColor: 'primary',
     textColor: 'white',
     icon: CashRegisterBoldIcon
   },
   {
-    name: 'Alerts',
+    name: 'Alertas',
     path: APP_ROUTES.alerts,
     bgColor: 'black',
     textColor: 'white',
     icon: AlertsIcon
   },
  {
-    name: 'Users',
+    name: 'Usuarios',
     path: APP_ROUTES.users,
     bgColor: 'black',
     textColor: 'white',

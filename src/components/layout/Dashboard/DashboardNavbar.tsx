@@ -5,12 +5,10 @@ import { Button, Flex, Text } from '@chakra-ui/react'
 import { signOut, useSession } from 'next-auth/react'
 import { APP_ROUTES } from 'src/common/consts'
 import { toast } from 'src/components/Toast'
-import { useSidebar } from 'src/context'
 
 export const DashboardNavbar = () => {
   const { data: session } = useSession() 
   console.log('session:', session)
-  const { isExpanded } = useSidebar();
 
   const handleSignOut = async() => {
     await signOut({ callbackUrl: APP_ROUTES.login });
@@ -20,8 +18,8 @@ export const DashboardNavbar = () => {
   return (
     <Flex
       width={{
-        base: '',
-        md: isExpanded ? 'calc(100vw - 250px)' : 'calc(100vw - 60px)'
+        base: '',        
+        md: '100%'
       }}
       justifyContent='end'
       p={{ base: 2, md: 4 }}

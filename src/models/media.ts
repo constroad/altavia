@@ -3,6 +3,7 @@ import { z } from 'zod';
 import mongoose, { Document, Schema } from 'mongoose';
 
 export type MediaType =
+  'GENERAL_EXPENSE' | // SEGUIMIENTO DE VIAJE
   'TRIP_TRACKING' | // SEGUIMIENTO DE VIAJE
   'TRIP_EXPENSE' | // GASTO DE VIAJE
   'TRIP_BILL_OF_LOADING' | // GUIA REMISION

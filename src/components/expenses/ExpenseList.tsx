@@ -1,8 +1,9 @@
-import { Flex, Text, Button } from '@chakra-ui/react';
+import { Flex, Text, Button, Box } from '@chakra-ui/react';
 import { TableColumn, TableComponent } from '../Table';
 import { useFetch } from 'src/common/hooks/useFetch';
 import { API_ROUTES, APP_ROUTES } from 'src/common/consts';
 import {
+  formatMoney,
   formatUtcDateTime,
   getDateStringRange,
   parseLocalDate,
@@ -25,6 +26,23 @@ import { SelectField } from '../form/SelectField';
 import { IconWrapper } from '../IconWrapper/IconWrapper';
 
 interface ExpenseListProps {}
+const Summary = (value: number, bgColor?: string) => {
+  return (
+    <Box
+      as={Flex}
+      alignItems="center"
+      justifyContent="end"
+      bgColor={bgColor ?? 'primary.600'}
+      color={'white'}
+      fontWeight={600}
+      fontSize={11}
+      height={30}
+    >
+      S/.
+      {formatMoney(value)}
+    </Box>
+  );
+};
 
 export const ExpenseList = (props: ExpenseListProps) => {
   const { dateTo, dateFrom } = getDateStringRange(30);
@@ -35,13 +53,16 @@ export const ExpenseList = (props: ExpenseListProps) => {
   const router = useRouter();
 
   // API
-  const { data, isLoading, refetch } = useFetch(API_ROUTES.expenses, {
-    queryParams: {
-      startDate: parseLocalDate(startDate).toDateString(),
-      endDate: parseLocalDate(endDate).toDateString(),
-      status
-    },
-  });
+  const { data, isLoading, refetch } = useFetch<IExpenseSchema[]>(
+    API_ROUTES.expenses,
+    {
+      queryParams: {
+        startDate: parseLocalDate(startDate).toDateString(),
+        endDate: parseLocalDate(endDate).toDateString(),
+        status,
+      },
+    }
+  );
   const { mutate, isMutating } = useMutate(API_ROUTES.expenses);
 
   // handlers
@@ -58,7 +79,7 @@ export const ExpenseList = (props: ExpenseListProps) => {
       }
     );
   };
-  
+
   const handleSelectExpense = (expense: IExpenseSchema) => {
     router.push(`${APP_ROUTES.expenses}/${expense._id}`);
   };
@@ -70,12 +91,7 @@ export const ExpenseList = (props: ExpenseListProps) => {
       width: '20%',
       render: (item) => <Text>{formatUtcDateTime(item)}</Text>,
     },
-    { key: 'description', label: 'Descripcion', width: '20%' },
-    {
-      key: 'amount',
-      label: 'Cantidad',
-      width: '10%',
-    },
+    { key: 'description', label: 'Descripcion', width: '20%' },  
     {
       key: 'type',
       label: 'Tipo',
@@ -86,14 +102,40 @@ export const ExpenseList = (props: ExpenseListProps) => {
     },
     {
       key: 'status',
-      label: 'Estado',
+      label: 'Tipo',
+      textAlign: 'center',
       width: '20%',
       render: (item) => {
         return <>{EXPENSE_STATUS_MAP[item as EXPENSE_STATUS_TYPE]}</>;
       },
     },
+    {
+      key: 'amount',
+      label: 'Monto',
+      textAlign: 'end',
+      bgColor: 'primary.600',
+      width: '10%',
+      summary: (value) => Summary(value),
+      render: (item, row) => {
+        return (
+          <Box
+          p={1}
+          height="100%"
+          bgColor={row.status === 'paid' ? '#d7ead4' : 'pink'}
+          rounded={2}
+          textAlign="right"
+        >
+          {<>S/.{formatMoney(item, 1)}</>}          
+        </Box>
+        )
+      }
+    },
   ];
-  const statusList = ['',...EXPENSE_STATUS]
+  const statusList = ['', ...EXPENSE_STATUS];
+
+  const totalToPay =
+    data
+      ?.reduce((acc, curr) => acc + curr.amount, 0) ?? 0;
 
   return (
     <>
@@ -130,7 +172,7 @@ export const ExpenseList = (props: ExpenseListProps) => {
           options={statusList.map((status) => ({
             value: status,
             //@ts-ignore
-            label: EXPENSE_STATUS_MAP[status]
+            label: EXPENSE_STATUS_MAP[status],
           }))}
           width="150px"
           value={status}
@@ -148,6 +190,18 @@ export const ExpenseList = (props: ExpenseListProps) => {
         actions
         onEdit={handleSelectExpense}
         onDelete={handleDeleteExpense}
+        toolbar={
+          <Flex justifyContent="end" p={1}>
+            <Flex
+              gap={1}
+              fontWeight={500}
+              flexDir={{ base: 'column', md: 'row' }}
+            >
+              <Text>Nro Gastos:</Text>
+              <Text>{data?.length ?? 0}</Text>
+            </Flex>
+          </Flex>
+        }
       />
     </>
   );

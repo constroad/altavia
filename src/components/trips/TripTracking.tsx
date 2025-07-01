@@ -56,7 +56,6 @@ La unidad de placa *${vehicle.plate}* con destino a *${trip?.destination}* se en
     refetchMedias();
   }
 
-
   return (
     <Stack gap={3}>
       <CopyPaste

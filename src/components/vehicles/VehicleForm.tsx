@@ -84,12 +84,19 @@ export const VehicleForm = (props: VehicleFormProps) => {
     <FormProvider {...methods}>
       <form onSubmit={methods.handleSubmit(onSubmit)} noValidate>
         <VStack spaceY={2}>
-          <InputField name="plate" label="Placa" isRequired />
-          <InputField name="brand" label="Marca" />
-          <InputField name="modelVehicle" label="Modelo" />
-          <InputField name="year" label="Año de fab." type='number' isRequired />
-          <InputField name="soatExpiry" label="Soat expira" type='date' />
-          <InputField name="inspectionExpiry" label="Revisión Tec. expira" type='date' />
+          <InputField name="plate" label="Placa" isRequired size='xs' />
+          <Flex gap={1} justifyContent="space-between" width="100%">
+            <InputField name="brand" label="Marca" size='xs' />
+            <InputField name="modelVehicle" label="Modelo" size='xs' />
+          </Flex>
+          <Flex gap={1} justifyContent="space-between" width="100%">
+            <InputField name="year" label="Año de fab." type='number' isRequired size='xs' />
+            <InputField name="km" label="Kilometraje" type='number' size='xs' />
+          </Flex>
+          <Flex gap={1} justifyContent="space-between" width="100%">
+            <InputField name="soatExpiry" label="Soat expira" type='date' size='xs' />
+            <InputField name="inspectionExpiry" label="Revisión Tec. expira" type='date' size='xs' />
+          </Flex>
 
           <VStack w="100%" align="start" spaceY={2}>
             <Flex justify="space-between" w="100%" align="center">
@@ -111,17 +118,19 @@ export const VehicleForm = (props: VehicleFormProps) => {
             {fields.map((field, index) => (
               <Flex key={field.id} w="100%" gap={2} align="end">
                 <InputField
+                  size='xs'
                   name={`maintenanceLogs.${index}.date`}
                   type="date"
                   label="Fecha"
                 />
                 <InputField
+                  size='xs'
                   name={`maintenanceLogs.${index}.description`}
                   label="Descripción"
                 />
                 <Button
                   onClick={() => remove(index)}
-                  size="sm"
+                  size='xs'
                   colorScheme="red"
                   variant="ghost"
                 >
@@ -130,8 +139,6 @@ export const VehicleForm = (props: VehicleFormProps) => {
               </Flex>
             ))}
           </VStack>
-
-          <InputField name="km" label="Kilometraje" type='number' />
 
           <Flex w='100%' justifyContent='end' gap={2} mt='10px'>
             <Button

@@ -1,5 +1,5 @@
 
-import { API_ROUTES, GROUP_ERRORS_TRACKING, WHATSAPP_SENDER, WHATSAPP_SERVER_URL, WtspMessageType } from "../consts";
+import { API_ROUTES, CONSTROAD_SERVER_URL, GROUP_ERRORS_TRACKING, WHATSAPP_SENDER, WtspMessageType } from "../consts";
 import { useMutate } from "./useMutate";
 import { useFetch } from "./useFetch";
 import { toast } from "src/components";
@@ -29,8 +29,8 @@ type UseWhatsappProps = {
 export const useWhatsapp = (props: UseWhatsappProps) => {
   const { page } = props
 
-  const URL = `${WHATSAPP_SERVER_URL}/message/${WHATSAPP_SENDER}`
-  const URL_GROUPS = `${WHATSAPP_SERVER_URL}/session/${WHATSAPP_SENDER}/groups`
+  const URL = `${CONSTROAD_SERVER_URL}/message/${WHATSAPP_SENDER}`
+  const URL_GROUPS = `${CONSTROAD_SERVER_URL}/session/${WHATSAPP_SENDER}/groups`
 
   //API
   const { data: groups, isLoading: isLoadingGroups } = useFetch(URL_GROUPS)

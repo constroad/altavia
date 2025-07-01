@@ -91,7 +91,7 @@ export const ImageView = (props: ImageViewProps) => {
   const getImageThumbnail = (fileUrl: string) => {
     const mediaType = type as MediaType;
 
-    if (mediaType === 'TRIP_WAYBILL') {
+    if (mediaType === 'TRIP_BILL_OF_LOADING' || mediaType === 'TRIP_BILL_OF_LOADING_CARRIER') {
       return '/img/placeholders/guia.png';
     }
 

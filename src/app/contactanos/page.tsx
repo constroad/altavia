@@ -12,6 +12,7 @@ import { LocationIcon, MailIcon, WhatsAppIcon } from 'src/common/icons'
 import { FaYoutube } from "react-icons/fa";
 import { CONSTROAD_COLORS } from '../../styles/shared';
 import { useWhatsapp } from 'src/common/hooks/useWhatsapp'
+import { IconWrapper } from '@/components/IconWrapper/IconWrapper'
 
 const postEmail = (path: string, data: ContactFormType) => axios.post(path, data);
 
@@ -121,7 +122,7 @@ export default function Page() {
           <Flex w={{ base: '100%', md: '25%' }} p='10px' borderRight={{ base: 'none', md: '1px solid #e2e8f0' }} flexDir='column' justifyContent=''>
             <Flex alignItems='center' gap='8px'>
               <Text className='font-logo' fontSize={20} fontWeight={600} >Dirección</Text>
-              <Flex mb='5px'><LocationIcon fontSize={18} color={CONSTROAD_COLORS.darkOrange} /></Flex>
+              <Flex mb='5px'><IconWrapper icon={LocationIcon} fontSize={18} color={CONSTROAD_COLORS.darkOrange} /></Flex>
             </Flex>
             <Text className='font-logo' fontSize={14} fontWeight={300} lineHeight={{ base: '12px', md: '15px' }}>
               Carapongo S/N Urbanización El Portillo <br/>
@@ -132,7 +133,7 @@ export default function Page() {
           <Flex w={{ base: '100%', md: '25%' }} p='10px' borderRight={{ base: 'none', md: '1px solid #e2e8f0' }} flexDir='column' justifyContent=''>
             <Flex alignItems='center' gap='8px'>
               <Text className='font-logo' fontSize={20} fontWeight={600} >Correo</Text>
-              <Flex mb='5px'><MailIcon color={CONSTROAD_COLORS.darkOrange} /></Flex>
+              <Flex mb='5px'><IconWrapper icon={MailIcon} color={CONSTROAD_COLORS.darkOrange} /></Flex>
             </Flex>
             <Text className='font-logo' fontSize={14} fontWeight={300} lineHeight={{ base: '12px', md: '15px' }}>administracion@altaviaperu.com</Text>
           </Flex>
@@ -140,7 +141,7 @@ export default function Page() {
           <Flex w={{ base: '100%', md: '25%' }} p='10px' borderRight={{ base: 'none', md: '1px solid #e2e8f0' }} flexDir='column' justifyContent=''>
             <Flex alignItems='center' gap='8px'>
               <Text className='font-logo' fontSize={20} fontWeight={600} >Teléfono</Text>
-              <Flex mb='5px'><WhatsAppIcon color={CONSTROAD_COLORS.darkOrange} /></Flex>
+              <Flex mb='5px'><IconWrapper icon={WhatsAppIcon} color={CONSTROAD_COLORS.darkOrange} /></Flex>
             </Flex>
             <Text className='font-logo' fontSize={14} fontWeight={300} lineHeight={{ base: '12px', md: '15px' }}>949 376 824 | 902 049 935</Text>
           </Flex>
@@ -148,9 +149,9 @@ export default function Page() {
           <Flex w={{ base: '100%', md: '25%' }} p='10px' borderRight={{ base: 'none', md: '1px solid #e2e8f0' }} flexDir='column' justifyContent=''>
             <Text className='font-logo' fontSize={20} fontWeight={600} >Síguenos en:</Text>
             <Flex gap='15px'>
-              <Flex w='25px' h='25px' rounded='4px' border='1px solid gray' justifyContent='center' alignItems='center' _hover={{ bg: 'black', color: 'white', cursor: 'pointer' }}><SiFacebook/></Flex>
-              <Flex w='25px' h='25px' rounded='4px' border='1px solid gray' justifyContent='center' alignItems='center' _hover={{ bg: 'black', color: 'white', cursor: 'pointer' }}><AiFillInstagram/></Flex>
-              <Flex w='25px' h='25px' rounded='4px' border='1px solid gray' justifyContent='center' alignItems='center' _hover={{ bg: 'black', color: 'white', cursor: 'pointer' }}><FaYoutube/></Flex>
+              <Flex w='25px' h='25px' rounded='4px' border='1px solid gray' justifyContent='center' alignItems='center' _hover={{ bg: 'black', color: 'white', cursor: 'pointer' }}><IconWrapper icon={SiFacebook}/></Flex>
+              <Flex w='25px' h='25px' rounded='4px' border='1px solid gray' justifyContent='center' alignItems='center' _hover={{ bg: 'black', color: 'white', cursor: 'pointer' }}><IconWrapper icon={AiFillInstagram}/></Flex>
+              <Flex w='25px' h='25px' rounded='4px' border='1px solid gray' justifyContent='center' alignItems='center' _hover={{ bg: 'black', color: 'white', cursor: 'pointer' }}><IconWrapper icon={FaYoutube}/></Flex>
             </Flex>
           </Flex>
 

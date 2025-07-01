@@ -233,7 +233,7 @@ export const ExpenseModal = (props: ExpenseModalProps) => {
                   canDelete
                   onRefresh={handleRefreshMedias}
                   imageStyle={{
-                    height: '300px',
+                    height: '200px',
                   }}
                 />
               ))}

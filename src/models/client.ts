@@ -8,6 +8,10 @@ export const clientSchemaValidation = z.object({
   address: z.string().optional(),
   phone: z.string().optional(),
   email: z.string().email('Correo inválido').optional(),
+  notifications: z.object({
+    whatsAppAlerts: z.string().optional(),
+    whatsAppManagement: z.string().optional(), // pagos
+  }).optional(),
   createdAt: z.string().optional(),
   updatedAt: z.string().optional(),
 });
@@ -20,6 +24,10 @@ export interface IClient extends Document {
   address?: string;
   phone?: string;
   email?: string;
+  notifications?: {
+    whatsAppAlerts?: string,
+    whatsAppManagement?: string,
+  }
 }
 
 //Esquema de mongoose
@@ -35,7 +43,11 @@ const ClientSchema: Schema = new Schema({
       message: (props: { value: string }) => `${props.value} no es un email válido.`,
     },
     required: false,
-  }
+  },
+  notifications: {
+    whatsAppAlerts: { type: String, required: false },
+    whatsAppManagement: { type: String, required: false },
+  },
 }, {
   timestamps: true
 });

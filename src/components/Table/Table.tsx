@@ -244,6 +244,7 @@ export const TableComponent = (props: Props) => {
                           }
                           onOk={() => onDelete(row)}
                           size="xs"
+                          width="fit-content"
                         >
                           <IconWrapper icon={TrashIcon} size={10} color="red" />
                         </ButtonConfirm>                        

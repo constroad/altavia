@@ -56,8 +56,7 @@ export default function Page() {
         </Flex>
       }
     >
-      <TripForm trip={data} />
-      <br />
+      <TripForm trip={data} />      
       <TripExpense trip={data} />
     </DashboardLayout>
   );

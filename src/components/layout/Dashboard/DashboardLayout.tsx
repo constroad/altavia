@@ -17,12 +17,14 @@ interface DashboardLayoutProps {
 export const DashboardLayout = (props: DashboardLayoutProps) => {
   const { title, actions } = props;
   const { data: session } = useSession();
+  const isProduction = process.env.NODE_ENV !== 'production'
+  const isValidSession = isProduction || session
 
   return (
     <div style={{ width: '100vw', minHeight: '100vh' }}>
       <CustomHead />
 
-      {session && (
+      {isValidSession && (
         <Flex>
           <Sidebar menuOptions={dashboardTabs}>
             <Flex
@@ -47,7 +49,7 @@ export const DashboardLayout = (props: DashboardLayoutProps) => {
         </Flex>
       )}
 
-      {!session && <NoSessionPage />}
+      {!isValidSession && <NoSessionPage />}
     </div>
   );
 };

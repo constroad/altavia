@@ -121,7 +121,7 @@ export const SelectField = (props: SelectFieldProps) => {
               size={size}
               name={field.name}
               multiple={multiple}
-              value={multiple ? field.value : field.value ? [field.value] : []}
+              value={multiple ? field.value : (field.value ? [field.value] : [])}
               onValueChange={(details: { value: string[] }) => {
                 if (multiple) {
                   field.onChange(details.value);

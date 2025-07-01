@@ -9,7 +9,14 @@ import {
 } from '@/models/generalExpense';
 import { IMediaValidationSchema } from '@/models/media';
 import { ITripSchemaValidation } from '@/models/trip';
-import { Flex, VStack, Text, Button, useDisclosure } from '@chakra-ui/react';
+import {
+  Flex,
+  VStack,
+  Text,
+  Button,
+  useDisclosure,
+  Box,
+} from '@chakra-ui/react';
 import { TableColumn, TableComponent } from '../Table';
 import { formatUtcDateTime } from '@/utils/general';
 import { ImageView } from '../telegramFileView/imageView';
@@ -52,6 +59,7 @@ export const TripExpense = (props: TripExpenseProps) => {
     enabled: trip?._id !== undefined,
   });
 
+  const isValidTrip = trip && trip._id !== 'new';
   const columns: TableColumn[] = [
     {
       key: 'date',
@@ -114,6 +122,12 @@ export const TripExpense = (props: TripExpenseProps) => {
     onOpen();
   };
 
+  const totalToPay = (expenses?.filter((x => x.status === 'to_pay'))?.reduce((acc, curr) => acc + curr.amount, 0) ?? 0)
+  const totalExpenses = (expenses?.reduce((acc, curr) => acc + curr.amount, 0) ?? 0)
+  const totalRevenue = (trip?.Income ?? 0) - totalExpenses
+
+  console.log('expenses:', expenses)
+
   return (
     <VStack align="start" w="100%">
       <Flex w="100%" gap="10px">
@@ -129,17 +143,34 @@ export const TripExpense = (props: TripExpenseProps) => {
               alignItems="center"
               justifyContent="space-between"
               fontSize="12px"
-              m={1}
             >
-              <Flex gap={2}>
+              <Flex flexDir="column">
+                <Flex>
+                  <Box bg="primary.500" color="white" width="80px">
+                    Gastos:
+                  </Box>
+                  <Box bg="gray.300" width="100px" textAlign="right">S/.{totalExpenses}</Box>
+                </Flex>
+                <Flex>
+                  <Box bg="primary.500" color="white" width="80px">
+                    Rentabilidad:
+                  </Box>
+                  <Box bg="gray.300" width="100px" textAlign="right" fontWeight={600}>S/.{totalRevenue}</Box>
+                </Flex>
+              </Flex>
+              <Flex gap={1} alignItems="end">
+                <Flex color="red" fontWeight={500}>
+                  Por Pagar: S/.{totalToPay}
+                </Flex>
                 <Button
                   size="xs"
                   onClick={() => {
                     onOpen();
                     setExpenseSelected(undefined);
                   }}
+                  disabled={!isValidTrip}
                 >
-                  + Gasto
+                  +
                 </Button>
                 <Button
                   variant="outline"
@@ -151,11 +182,7 @@ export const TripExpense = (props: TripExpenseProps) => {
                 >
                   <IconWrapper icon={RefreshIcon} size="18px" />
                 </Button>
-              </Flex>
-              <Text fontWeight={600}>
-                Total:
-                {expenses?.reduce((acc, curr) => acc + curr.amount, 0)}
-              </Text>
+              </Flex>              
             </Flex>
           }
         />
@@ -165,11 +192,13 @@ export const TripExpense = (props: TripExpenseProps) => {
         expense={expenseSelected}
         resourceId={trip?._id!}
         open={open}
-        onClose={() => {
-          setExpenseSelected(undefined);
-          onClose();
+        onRefresh={() => {
           refetchExpenses();
           refetchMedias();
+        }}
+        onClose={() => {
+          setExpenseSelected(undefined);
+          onClose();          
         }}
       />
     </VStack>

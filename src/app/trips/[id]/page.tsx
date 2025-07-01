@@ -49,7 +49,6 @@ export default function Page() {
             colorScheme="primary"
             w="fit-content"
             size="xs"
-            // loading={isMutating}
             form="form-trip-id"
           >
             Guardar

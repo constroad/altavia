@@ -8,6 +8,7 @@ import { GenerateNavOptions, serviciosOptions } from './config'
 import { useScreenSize } from 'src/common/hooks';
 import { signOut, useSession } from 'next-auth/react';
 import { toast } from 'src/components/Toast';
+import { IconWrapper } from '@/components/IconWrapper/IconWrapper';
 
 interface INavbar {
   isHoverButton: boolean
@@ -184,7 +185,7 @@ export const Navbar = (props: INavbar) => {
                 </Text>
                 {opt.label === 'Servicios' && (
                   <Flex mb='4px'>
-                    <ArrowDown />
+                    <IconWrapper icon={ArrowDown} />
                   </Flex>
                 )}
               </Flex>
@@ -305,7 +306,7 @@ export const Navbar = (props: INavbar) => {
             onClick={(e) => props.handleMobileMenuClick(e)}
             backgroundColor='primary.700'
           >
-            {props.showMobileOptions ? <HideMenuMobileIcon fontSize={10}/> : <ShowMenuMobileIcon fontSize={10}/>}
+            {props.showMobileOptions ? <IconWrapper icon={HideMenuMobileIcon} fontSize={10}/> : <IconWrapper icon={ShowMenuMobileIcon} fontSize={10}/>}
           </Button>
         </Flex>
       </Flex>

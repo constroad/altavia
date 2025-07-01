@@ -42,7 +42,7 @@ export const ExpenseForm = (props: ExpenseFormProps) => {
       description: expense?.description,
       amount: expense?.amount,
       type: expense?.type,
-      status: expense?.status ?? 'active',
+      status: expense?.status ?? 'paid',
       date: expense?.date ?? new Date(),
     },
   });

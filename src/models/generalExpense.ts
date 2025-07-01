@@ -12,7 +12,7 @@ export const EXPENSE_TYPES_MAP = {
 }
 export const EXPENSE_STATUS_MAP = {
   '': 'Todos',
-  active: 'Activo',
+  paid: 'Pagado',
   to_pay: 'Por Pagar',
   deleted: 'Eliminado',
 }
@@ -20,7 +20,7 @@ export const EXPENSE_STATUS_MAP = {
 export const EXPENSE_TYPES = ['service', 'spare_part', 'driver_payment', 'trip'] as const;
 export type EXPENSE_TYPE = typeof EXPENSE_TYPES[number]; 
 
-export const EXPENSE_STATUS = ['active', 'to_pay', 'deleted'] as const;
+export const EXPENSE_STATUS = ['paid', 'to_pay', 'deleted'] as const;
 export type EXPENSE_STATUS_TYPE = typeof EXPENSE_STATUS[number];
 
 export const expenseValidationSchema = z.object({
@@ -28,7 +28,7 @@ export const expenseValidationSchema = z.object({
   description: z.string(),
   amount: z.number(),
   type: z.enum(EXPENSE_TYPES),
-  status: z.enum(EXPENSE_STATUS).default('active'),
+  status: z.enum(EXPENSE_STATUS).default('paid'),
   date: z.coerce.date(),
   note: z.string().optional(),
   tripId: z.string().optional(),

@@ -30,9 +30,8 @@ const Summary = (value: number, bgColor?: string) => {
       fontWeight={600}
       fontSize={11}
       height={30}
-    >
-      S/.
-      {formatMoney(value)}
+    >      
+      {formatMoney(value, 1)}km
     </Box>
   );
 };
@@ -95,6 +94,7 @@ export const TripList = () => {
       label: 'Recorrido',
       bgColor: 'primary.600',
       width: '5%',
+      textAlign: 'end',
       summary: (value) => Summary(value),
     },
   ];

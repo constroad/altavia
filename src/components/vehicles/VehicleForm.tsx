@@ -1,17 +1,22 @@
 'use client';
 
-import { Button, Flex, VStack } from '@chakra-ui/react';
+import { Button, Flex, Grid, Show, VStack } from '@chakra-ui/react';
 import { useForm, FormProvider } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { InputField } from '../form';
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import { useMutate } from 'src/common/hooks/useMutate';
-import { API_ROUTES } from 'src/common/consts';
+import { ALTAVIA_BOT, API_ROUTES, GROUP_ADMINISTRACION_ALTAVIA, TELEGRAM_GROUP_ID_ALTAVIA_MEDIA } from 'src/common/consts';
 import { toast } from '../Toast';
 import { IVehicleSchemaValidation, vehicleSchemaValidation } from '@/models/vehicle';
 import { useFieldArray } from 'react-hook-form';
 import { Input, IconButton } from '@chakra-ui/react';
 import { FiPlus, FiTrash } from 'react-icons/fi';
+import { CopyPaste } from '../upload/CopyPaste';
+import { useMedias } from '@/common/hooks/useMedias';
+import { useFetch } from '@/common/hooks/useFetch';
+import { useWhatsapp } from '@/common/hooks/useWhatsapp';
+import { TelegramFileView } from '../telegramFileView';
 
 interface VehicleFormProps {
   vehicle?: IVehicleSchemaValidation;
@@ -20,6 +25,12 @@ interface VehicleFormProps {
 
 export const VehicleForm = (props: VehicleFormProps) => {
   const { vehicle } = props;
+  const [uploadedFile, setUploadedFile] = useState<File | undefined>();
+  const { onSendWhatsAppText } = useWhatsapp({
+    page: 'VehicleForm',
+  });
+
+  console.log('vehicle?:', vehicle)
 
   const methods = useForm<IVehicleSchemaValidation>({
     resolver: zodResolver(vehicleSchemaValidation),
@@ -46,17 +57,66 @@ export const VehicleForm = (props: VehicleFormProps) => {
     }
   );
 
+  const type = 'VEHICLE';
+  const metadata = {
+    resourceId: vehicle?._id,
+    //
+  };
+  const { onUpload, isUploading, medias, refetch } = useMedias({
+    chat_id: TELEGRAM_GROUP_ID_ALTAVIA_MEDIA,
+    enabled: true,
+    type,
+    resourceId: vehicle?._id,
+    onPasteMetadata: {
+      fileName: uploadedFile?.name ?? `${type}_upload.jpg`,
+      type,
+      metadata,
+    },
+  });
+
   useEffect(() => {
     if (vehicle) {
       methods.reset(vehicle);
     }
   }, [vehicle, methods]);
 
+  const handleSave = (file: any) => {
+    if (vehicle) {
+      if (!file) {
+        toast.error('Seleccione un archivo');
+        return;
+      }
+      onUpload(file, {
+        type,
+        fileName: file.name,
+        metadata,
+        onSuccess: () => {
+          handleRefreshMedias();
+          props.closeModal();
+        },
+      });
+      // sending alert
+      sendingAlert(vehicle);
+    }
+  };
+
+  function sendingAlert(vehicle: IVehicleSchemaValidation) { 
+    const plate = vehicle?.plate   
+    onSendWhatsAppText({
+      message: `${ALTAVIA_BOT}
+
+Se ha agregado un nuevo *Media* al vehicle con placa a *${plate}*
+`,
+      to: GROUP_ADMINISTRACION_ALTAVIA,
+    });
+  }
+
   const onSubmit = (data: IVehicleSchemaValidation) => {
     if (props.vehicle?._id) {
       //edit
       updateVehicle('PUT', data, {
         onSuccess: () => {
+          handleSave(uploadedFile)
           toast.success('El vehículo se actualizó correctamente');
           props.closeModal();
         },
@@ -79,6 +139,23 @@ export const VehicleForm = (props: VehicleFormProps) => {
       },
     });
   };
+
+  const onSelect = (file: File | File[]) => {
+    if (file instanceof File) {
+      setUploadedFile(file);
+      return;
+    }
+    setUploadedFile(file[0]);
+  };
+
+  const handleRefreshMedias = () => {
+    useFetch.mutate(API_ROUTES.expenses);
+    useFetch.mutate(API_ROUTES.media);
+    // props.onRefresh?.();
+    refetch();
+  };
+
+  console.log('medias:', medias)
 
   return (
     <FormProvider {...methods}>
@@ -139,6 +216,53 @@ export const VehicleForm = (props: VehicleFormProps) => {
               </Flex>
             ))}
           </VStack>
+
+          {vehicle && (
+            <>
+              <CopyPaste 
+                type="VEHICLE"
+                resourceId={vehicle._id}
+                onSelect={onSelect}
+                onPaste={onSelect}
+                metadata={metadata}
+                onSuccess={() => {
+                  handleRefreshMedias();
+                }}
+              />
+
+              <Show when={uploadedFile}>
+                <Flex width="100%" alignItems="center" justifyContent="space-between">
+                  {uploadedFile?.name}
+                  <Button
+                    size="xs"
+                    variant="outline"
+                    onClick={() => setUploadedFile(undefined)}
+                  >
+                    x
+                  </Button>
+                </Flex>
+              </Show>
+
+              <Show when={medias?.length > 0}>
+                <Grid templateColumns="repeat(2, 1fr)" gap="2">
+                  {medias
+                    ?.filter?.((x) => x.metadata.resourceId === vehicle?._id)
+                    ?.map?.((media) => (
+                      <TelegramFileView 
+                        key={media._id}
+                        media={media}
+                        description={media.name}
+                        canDelete
+                        onRefresh={handleRefreshMedias}
+                        imageStyle={{
+                          height: '200px',
+                        }}
+                      />
+                    ))}
+                </Grid>
+              </Show>
+            </>
+          )}
 
           <Flex w='100%' justifyContent='end' gap={2} mt='10px'>
             <Button

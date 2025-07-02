@@ -1,10 +1,10 @@
 import { TableColumn } from '../Table';
 
-export const generateVehicleColumns = () => {
+export const generateDriverColumns = () => {
   const columns: TableColumn[] = [
     {
-      key: 'plate',
-      label: 'Placa',
+      key: 'name',
+      label: 'Nombre',
       width: '20%',
       render: (item, row) => (
         <>
@@ -13,8 +13,8 @@ export const generateVehicleColumns = () => {
       ),
     },
     {
-      key: 'brand',
-      label: 'Marca',
+      key: 'dni',
+      label: 'DNI',
       width: '10%',
       render: (item, row) => (
         <>
@@ -23,8 +23,8 @@ export const generateVehicleColumns = () => {
       ),
     },
     {
-      key: 'modelVehicle',
-      label: 'Modelo',
+      key: 'phone',
+      label: 'Teléfono',
       width: '10%',
       render: (item) => (
         <>
@@ -33,8 +33,18 @@ export const generateVehicleColumns = () => {
       ),
     },
     {
-      key: 'year',
-      label: 'Año fab.',
+      key: 'licenseNumber',
+      label: 'Licencia',
+      width: '10%',
+      render: (item) => (
+        <>
+          {item}
+        </>
+      ),
+    },
+    {
+      key: 'licenseExpiry',
+      label: 'Licencia Exp.',
       width: '10%',
       render: (item) => (
         <>

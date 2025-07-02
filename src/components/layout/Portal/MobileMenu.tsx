@@ -36,6 +36,10 @@ export const MobileMenu = (props: IMobileMenu) => {
     }
   }
 
+  const handleGoToDashboardClick = () => {
+    router.push('/dashboard')
+  }
+
   return (
     <Flex
       position='fixed'
@@ -53,6 +57,23 @@ export const MobileMenu = (props: IMobileMenu) => {
       borderColor='lightgray'
       className={`${props.display ? 'opacity-100 unfold' : 'opacity-0'}`}
     >
+      {session && (
+        <Flex
+          flexDir='row'
+          fontSize={14}
+          fontWeight={700}
+          height={'70px'}
+          color={path === APP_ROUTES.login ? 'white' : 'white'}
+          padding='30px'
+          width='100%'
+          cursor='pointer'
+          _hover={{shadow: 'md'}}
+          onClick={handleGoToDashboardClick}
+          borderBottom="1px solid rgba(0, 0, 0, 0.1)"
+        >
+          Intranet
+        </Flex>
+      )}
       {GenerateNavOptions().map(opt => (
         <Flex
           flexDir='column'
@@ -71,7 +92,7 @@ export const MobileMenu = (props: IMobileMenu) => {
             fontSize={14}
             fontWeight={700}
             height={'70px'}
-            color={path === opt.path ? 'white' : 'black'}
+            color={path === opt.path ? 'white' : 'white'}
             paddingX='30px'
             paddingY='30px'
             width='100%'
@@ -85,8 +106,8 @@ export const MobileMenu = (props: IMobileMenu) => {
               <Flex width='full' justifyContent='space-between'>
                 {opt.label}
                 {props.serviciosMenu ?
-                  <HideOptionIcon color='black' fontSize={19} /> :
-                  <DisplayOptionIcon color='black' fontSize={19} />
+                  <HideOptionIcon color='white' fontSize={19} /> :
+                  <DisplayOptionIcon color='white' fontSize={19} />
                 }
               </Flex>
             )}
@@ -129,7 +150,7 @@ export const MobileMenu = (props: IMobileMenu) => {
                     fontSize={12}
                     fontWeight={700}
                     paddingX='40px'
-                    color={path === `${opt.path}${sopt.path}` ? 'white' : 'black'}
+                    color={path === `${opt.path}${sopt.path}` ? 'white' : 'white'}
                   >
                     - {sopt.label}
                   </Text>
@@ -146,7 +167,7 @@ export const MobileMenu = (props: IMobileMenu) => {
           fontSize={14}
           fontWeight={700}
           height={'70px'}
-          color={path === APP_ROUTES.login ? 'white' : 'black'}
+          color={path === APP_ROUTES.login ? 'white' : 'white'}
           padding='30px'
           width='100%'
           cursor='pointer'
@@ -163,7 +184,7 @@ export const MobileMenu = (props: IMobileMenu) => {
           fontSize={14}
           fontWeight={700}
           height={'70px'}
-          color={path === APP_ROUTES.login ? 'white' : 'black'}
+          color={path === APP_ROUTES.login ? 'white' : 'white'}
           padding='30px'
           width='100%'
           cursor='pointer'

@@ -59,7 +59,7 @@ export default function Page() {
               size="xs"
               form="form-trip-id"
             >
-              Guardar pedido
+              Guardar
               {savingTrip ? <Spinner /> : <SaveIcon />}
             </Button>
 

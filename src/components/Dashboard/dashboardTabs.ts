@@ -4,6 +4,7 @@ import {
   CashRegisterBoldIcon,
   ClientsIcon,
   DashboardIcon,
+  DriverIcon,
   GearBoldIcon,
   SignupIcon,
   TripIcon,
@@ -24,6 +25,13 @@ export const dashboardTabs = [
     bgColor: 'primary',
     textColor: 'white',
     icon: ClientsIcon
+  },
+  {
+    name: 'Conductores',
+    path: APP_ROUTES.drivers,
+    bgColor: 'primary',
+    textColor: 'white',
+    icon: DriverIcon
   },
   {
     name: 'Vehiculos',

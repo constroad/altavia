@@ -24,6 +24,7 @@ export const APP_ROUTES = {
   configuration: '/configuration',
   users: '/users',
   clients: '/clients',
+  drivers: '/drivers',
 }
 
 export const API_ROUTES = {

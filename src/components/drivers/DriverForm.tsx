@@ -17,27 +17,23 @@ import { useMedias } from '@/common/hooks/useMedias';
 import { useFetch } from '@/common/hooks/useFetch';
 import { useWhatsapp } from '@/common/hooks/useWhatsapp';
 import { TelegramFileView } from '../telegramFileView';
+import { IDriverSchemaValidation, driverSchemaValidation } from '@/models/driver';
 
-interface VehicleFormProps {
-  vehicle?: IVehicleSchemaValidation;
+interface DriverFormProps {
+  driver?: IDriverSchemaValidation;
   closeModal: () => void;
 }
 
-export const VehicleForm = (props: VehicleFormProps) => {
-  const { vehicle } = props;
+export const DriverForm = (props: DriverFormProps) => {
+  const { driver } = props;
   const [uploadedFile, setUploadedFile] = useState<File | undefined>();
   const { onSendWhatsAppText } = useWhatsapp({
-    page: 'VehicleForm',
+    page: 'DriverForm',
   });
 
-  const methods = useForm<IVehicleSchemaValidation>({
-    resolver: zodResolver(vehicleSchemaValidation),
-    defaultValues: vehicle,
-  });
-
-  const { fields, append, remove } = useFieldArray({
-    control: methods.control,
-    name: "maintenanceLogs",
+  const methods = useForm<IDriverSchemaValidation>({
+    resolver: zodResolver(driverSchemaValidation),
+    defaultValues: driver,
   });
 
   const {
@@ -45,26 +41,26 @@ export const VehicleForm = (props: VehicleFormProps) => {
   } = methods;
 
   // API
-  const { mutate: createVehicle, isMutating: creatingVehicle } = useMutate(
-    API_ROUTES.vehicles
+  const { mutate: createDriver, isMutating: creatingDriver } = useMutate(
+    API_ROUTES.drivers
   );
-  const { mutate: updateVehicle, isMutating: updatingVehicle } = useMutate(
-    `${API_ROUTES.vehicles}/:id`,
+  const { mutate: updateDriver, isMutating: updatingDriver } = useMutate(
+    `${API_ROUTES.drivers}/:id`,
     {
-      urlParams: { id: vehicle?._id ?? '' },
+      urlParams: { id: driver?._id ?? '' },
     }
   );
 
-  const type = 'VEHICLE';
+  const type = 'DRIVER';
   const metadata = {
-    resourceId: vehicle?._id,
+    resourceId: driver?._id,
     //
   };
   const { onUpload, isUploading, medias, refetch } = useMedias({
     chat_id: TELEGRAM_GROUP_ID_ALTAVIA_MEDIA,
     enabled: true,
     type,
-    resourceId: vehicle?._id,
+    resourceId: driver?._id,
     onPasteMetadata: {
       fileName: uploadedFile?.name ?? `${type}_upload.jpg`,
       type,
@@ -73,13 +69,13 @@ export const VehicleForm = (props: VehicleFormProps) => {
   });
 
   useEffect(() => {
-    if (vehicle) {
-      methods.reset(vehicle);
+    if (driver) {
+      methods.reset(driver);
     }
-  }, [vehicle, methods]);
+  }, [driver, methods]);
 
   const handleSave = (file: any) => {
-    if (vehicle) {
+    if (driver) {
       if (!file) {
         toast.error('Seleccione un archivo');
         return;
@@ -94,45 +90,45 @@ export const VehicleForm = (props: VehicleFormProps) => {
         },
       });
       // sending alert
-      sendingAlert(vehicle);
+      sendingAlert(driver);
     }
   };
 
-  function sendingAlert(vehicle: IVehicleSchemaValidation) { 
-    const plate = vehicle?.plate   
+  function sendingAlert(driver: IDriverSchemaValidation) { 
+    const name = driver?.name   
     onSendWhatsAppText({
       message: `${ALTAVIA_BOT}
 
-Se ha agregado un nuevo *Media* al vehículo de placa a *${plate}*
+Se ha agregado un nuevo *Media* al conductor *${name}*
 `,
       to: GROUP_ADMINISTRACION_ALTAVIA,
     });
   }
 
-  const onSubmit = (data: IVehicleSchemaValidation) => {
-    if (props.vehicle?._id) {
+  const onSubmit = (data: IDriverSchemaValidation) => {
+    if (props.driver?._id) {
       //edit
-      updateVehicle('PUT', data, {
+      updateDriver('PUT', data, {
         onSuccess: () => {
           handleSave(uploadedFile)
-          toast.success('El vehículo se actualizó correctamente');
+          toast.success('El conductor se actualizó correctamente');
           props.closeModal();
         },
         onError: (err) => {
-          toast.error('Error al actualizar el vehículo');
+          toast.error('Error al actualizar el conductor');
           console.log(err);
         },
       });
       return;
     }
     // create
-    createVehicle('POST', data, {
+    createDriver('POST', data, {
       onSuccess: () => {
-        toast.success('El vehículo se registro correctamente');
+        toast.success('El conductor se registro correctamente');
         props.closeModal();
       },
       onError: (err) => {
-        toast.error('Error al registrar el nuevo vehículo');
+        toast.error('Error al registrar el nuevo conductor');
         console.log(err);
       },
     });
@@ -156,67 +152,21 @@ Se ha agregado un nuevo *Media* al vehículo de placa a *${plate}*
     <FormProvider {...methods}>
       <form onSubmit={methods.handleSubmit(onSubmit)} noValidate>
         <VStack spaceY={2}>
-          <InputField name="plate" label="Placa" isRequired size='xs' />
+          <InputField name="name" label="Nombre" isRequired size='xs' />
           <Flex gap={1} justifyContent="space-between" width="100%">
-            <InputField name="brand" label="Marca" size='xs' />
-            <InputField name="modelVehicle" label="Modelo" size='xs' />
+            <InputField name="dni" label="DNI" size='xs' isRequired />
+            <InputField name="phone" label="Teléfono" size='xs' isRequired />
           </Flex>
           <Flex gap={1} justifyContent="space-between" width="100%">
-            <InputField name="year" label="Año de fab." type='number' isRequired size='xs' />
-            <InputField name="km" label="Kilometraje" type='number' size='xs' />
-          </Flex>
-          <Flex gap={1} justifyContent="space-between" width="100%">
-            <InputField name="soatExpiry" label="Soat expira" type='date' size='xs' />
-            <InputField name="inspectionExpiry" label="Revisión Tec. expira" type='date' size='xs' />
+            <InputField name="licenseNumber" label="Licencia" isRequired size='xs' />
+            <InputField name="licenseExpiry" label="Licencia Exp." type='date' size='xs' isRequired />
           </Flex>
 
-          <VStack w="100%" align="start" spaceY={2}>
-            <Flex justify="space-between" w="100%" align="center">
-              <b>Mantenimientos</b>
-              <Button
-                size="xs"
-                onClick={() =>
-                  append({
-                    date: new Date(), // ← Esto sí es un Date válido
-                    description: '',
-                  })
-                }
-              >
-                <FiPlus style={{ marginRight: '4px' }} />
-                Añadir
-              </Button>
-            </Flex>
-
-            {fields.map((field, index) => (
-              <Flex key={field.id} w="100%" gap={2} align="end">
-                <InputField
-                  size='xs'
-                  name={`maintenanceLogs.${index}.date`}
-                  type="date"
-                  label="Fecha"
-                />
-                <InputField
-                  size='xs'
-                  name={`maintenanceLogs.${index}.description`}
-                  label="Descripción"
-                />
-                <Button
-                  onClick={() => remove(index)}
-                  size='xs'
-                  colorScheme="red"
-                  variant="ghost"
-                >
-                  <FiTrash />
-                </Button>
-              </Flex>
-            ))}
-          </VStack>
-
-          {vehicle && (
+          {driver && (
             <>
               <CopyPaste 
-                type="VEHICLE"
-                resourceId={vehicle._id}
+                type="DRIVER"
+                resourceId={driver._id}
                 onSelect={onSelect}
                 onPaste={onSelect}
                 metadata={metadata}
@@ -241,7 +191,7 @@ Se ha agregado un nuevo *Media* al vehículo de placa a *${plate}*
               <Show when={medias?.length > 0}>
                 <Grid templateColumns="repeat(2, 1fr)" gap="2">
                   {medias
-                    ?.filter?.((x) => x.metadata.resourceId === vehicle?._id)
+                    ?.filter?.((x) => x.metadata.resourceId === driver?._id)
                     ?.map?.((media) => (
                       <TelegramFileView 
                         key={media._id}
@@ -271,7 +221,7 @@ Se ha agregado un nuevo *Media* al vehículo de placa a *${plate}*
             <Button
               colorScheme="blue"
               type="submit"
-              loading={vehicle?._id ? updatingVehicle : creatingVehicle }
+              loading={driver?._id ? updatingDriver : creatingDriver }
               size='sm'
             >
               Guardar

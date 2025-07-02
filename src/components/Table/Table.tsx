@@ -200,7 +200,7 @@ export const TableComponent = (props: Props) => {
               >
                 {columns.map((column, idx) => (
                   <Td
-                    p={0}
+                    p={1}
                     m={0}
                     key={`item-${column.key}-${idx}`}
                     maxWidth={column.width as any}

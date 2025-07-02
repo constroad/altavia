@@ -145,8 +145,8 @@ export const TripExpense = (props: TripExpenseProps) => {
       >
         <Tabs.List>
           <Tabs.Trigger value="Gastos">Gastos</Tabs.Trigger>
-          <Tabs.Trigger value="Sunat">Sunat</Tabs.Trigger>
-          <Tabs.Trigger value="Tracking">Tracking</Tabs.Trigger>
+          <Tabs.Trigger value="Sunat" disabled={!isValidTrip}>Sunat</Tabs.Trigger>
+          <Tabs.Trigger value="Tracking" disabled={!isValidTrip}>Tracking</Tabs.Trigger>
         </Tabs.List>
         <Tabs.Content value="Gastos" padding={0}>
           <Show when={tabSelected === 'Gastos'}>

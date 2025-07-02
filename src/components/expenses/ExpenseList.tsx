@@ -88,14 +88,14 @@ export const ExpenseList = (props: ExpenseListProps) => {
     {
       key: 'date',
       label: 'Fecha',
-      width: '20%',
+      width: '10%',
       render: (item) => <Text>{formatUtcDateTime(item)}</Text>,
     },
-    { key: 'description', label: 'Descripcion', width: '20%' },  
+    { key: 'description', label: 'Descripcion', width: '30%' },  
     {
       key: 'type',
       label: 'Tipo',
-      width: '20%',
+      width: '10%',
       render: (item) => {
         return <>{EXPENSE_TYPES_MAP[item as EXPENSE_TYPE]}</>;
       },
@@ -104,7 +104,7 @@ export const ExpenseList = (props: ExpenseListProps) => {
       key: 'status',
       label: 'Tipo',
       textAlign: 'center',
-      width: '20%',
+      width: '10%',
       render: (item) => {
         return <>{EXPENSE_STATUS_MAP[item as EXPENSE_STATUS_TYPE]}</>;
       },

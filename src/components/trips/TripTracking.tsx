@@ -67,8 +67,8 @@ La unidad de placa *${vehicle.plate}* con destino a *${trip?.destination}* se en
       />
 
       <Grid
-        templateColumns={{ base: 'repeat(2, 1fr)', md: 'repeat(4, 1fr)' }}
-        gap="2"
+        templateColumns={{ base: 'repeat(2, 1fr)', md: 'repeat(5, 1fr)' }}
+        gap={4}
       >
         {medias
           ?.filter?.((x) => x.type === 'TRIP_TRACKING')
@@ -80,7 +80,7 @@ La unidad de placa *${vehicle.plate}* con destino a *${trip?.destination}* se en
               canDelete
               onRefresh={refetchMedias}
               imageStyle={{
-                height: '150px',
+                height: '100px',
               }}
             />
           ))}

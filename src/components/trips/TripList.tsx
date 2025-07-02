@@ -62,9 +62,10 @@ export const TripList = () => {
     {
       key: 'origin',
       label: 'Origen',
-      width: '20%',
+      width: '10%',
     },
-    { key: 'destination', label: 'Destino', width: '20%' },
+    { key: 'destination', label: 'Destino', width: '10%' },
+    { key: 'description', label: 'Description', width: '20%' },
     { key: 'status', label: 'Estado', width: '5%' },
   ];
 

@@ -3,6 +3,7 @@
 import { API_ROUTES, APP_ROUTES } from '@/common/consts';
 import { useFetch } from '@/common/hooks/useFetch';
 import { DisplayOptionIcon, GearIcon, SaveIcon, TrashIcon } from '@/common/icons';
+import { IconWrapper } from '@/components/IconWrapper/IconWrapper';
 import { TripExpense } from '@/components/trips/TripExpense';
 import TripForm from '@/components/trips/TripForm';
 import { ITripSchemaValidation } from '@/models/trip';
@@ -60,7 +61,7 @@ export default function Page() {
               form="form-trip-id"
             >
               Guardar pedido
-              {savingTrip ? <Spinner /> : <SaveIcon />}
+              {savingTrip ? <Spinner /> : <IconWrapper icon={SaveIcon} />}
             </Button>
 
             <Menu.Root>
@@ -71,14 +72,14 @@ export default function Page() {
                   size="xs"
                   roundedLeft='0px'
                 >
-                  <DisplayOptionIcon />
+                  <IconWrapper icon={DisplayOptionIcon} />
                 </Button>
               </Menu.Trigger>
               <Portal>
                 <Menu.Positioner>
                   <Menu.Content>
                     <Menu.Item value="rename">
-                      <GearIcon />
+                      <IconWrapper icon={GearIcon} />
                       <Box flex="1" fontSize={12}>Avanzados</Box>
                     </Menu.Item>
                     <Menu.Item
@@ -86,7 +87,7 @@ export default function Page() {
                       color="fg.error"
                       _hover={{ bg: "bg.error", color: "fg.error" }}
                     >
-                      <TrashIcon />
+                      <IconWrapper icon={TrashIcon} />
                       <Box flex="1" fontSize={12}>Solicitar eliminación</Box>
                     </Menu.Item>
                   </Menu.Content>

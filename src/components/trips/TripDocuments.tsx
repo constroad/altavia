@@ -109,7 +109,7 @@ Se adjunta la  *${document}* ${response.file_name}`
         isDisabled={isLoadingDrivers || loadingClient}
       />
 
-      <Grid templateColumns={{base: "repeat(2, 1fr)", md: "repeat(4, 1fr)"}} gap="2">
+      <Grid templateColumns={{base: "repeat(2, 1fr)", md: "repeat(5, 1fr)"}} gap={4}>
         {medias
           ?.filter?.((x) => sunatDocuments.includes(x.type))
           ?.map?.((media) => (
@@ -120,7 +120,7 @@ Se adjunta la  *${document}* ${response.file_name}`
               canDelete
               onRefresh={refetchMedias}
               imageStyle={{
-                height: '150px',
+                height: '100px',
               }}
             />
           ))}

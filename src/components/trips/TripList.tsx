@@ -106,6 +106,10 @@ export const TripList = () => {
     { label: 'Completado', value: 'Completed' },
   ];
 
+  const sortedData = [...(data ?? [])].sort(
+    (a, b) => new Date(b.startDate).getTime() - new Date(a.startDate).getTime()
+  );
+
   return (
     <>
       <Flex>
@@ -151,7 +155,7 @@ export const TripList = () => {
       </Flex>
       <TableComponent
         isLoading={isLoading || isMutating}
-        data={data ?? []}
+        data={sortedData}
         columns={columns}
         onEdit={handleSelectTrip}
         onDelete={handleDeleteTrip}

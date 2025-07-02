@@ -1,8 +1,13 @@
 import { useFetch } from 'src/common/hooks/useFetch';
 import { TableColumn, TableComponent } from '../Table';
 import { API_ROUTES, APP_ROUTES } from 'src/common/consts';
-import { Button, Flex, Text } from '@chakra-ui/react';
-import { formatUtcDateTime, getDateStringRange, parseLocalDate } from '@/utils/general';
+import { Box, Button, Flex, Text } from '@chakra-ui/react';
+import {
+  formatMoney,
+  formatUtcDateTime,
+  getDateStringRange,
+  parseLocalDate,
+} from '@/utils/general';
 import { useMutate } from '@/common/hooks/useMutate';
 import { ITripSchemaValidation } from '@/models/trip';
 import { useRouter } from 'next/navigation';
@@ -14,6 +19,24 @@ import { useWhatsapp } from '@/common/hooks/useWhatsapp';
 
 interface TripListProps {}
 
+const Summary = (value: number, bgColor?: string) => {
+  return (
+    <Box
+      as={Flex}
+      alignItems="center"
+      justifyContent="end"
+      bgColor={bgColor ?? 'primary.600'}
+      color={'white'}
+      fontWeight={600}
+      fontSize={11}
+      height={30}
+    >
+      S/.
+      {formatMoney(value)}
+    </Box>
+  );
+};
+
 export const TripList = () => {
   const { dateTo, dateFrom } = getDateStringRange(30);
   const [startDate, setStartDate] = useState(dateFrom);
@@ -23,13 +46,13 @@ export const TripList = () => {
   const router = useRouter();
   // loading by default whatsApp contacts
   useWhatsapp({ page: 'TripList' });
-  
+
   //API
   const { data, isLoading, refetch } = useFetch(API_ROUTES.trips, {
     queryParams: {
       startDate: parseLocalDate(startDate).toDateString(),
       endDate: parseLocalDate(endDate).toDateString(),
-      status
+      status,
     },
   });
   const { mutate, isMutating } = useMutate(API_ROUTES.trips);
@@ -65,15 +88,22 @@ export const TripList = () => {
       width: '10%',
     },
     { key: 'destination', label: 'Destino', width: '10%' },
-    { key: 'description', label: 'Description', width: '20%' },
+    { key: 'notes', label: 'Nota', width: '20%' },
     { key: 'status', label: 'Estado', width: '5%' },
+    {
+      key: 'kmTravelled',
+      label: 'Recorrido',
+      bgColor: 'primary.600',
+      width: '5%',
+      summary: (value) => Summary(value),
+    },
   ];
 
   const statusArr = [
     { label: 'Todos', value: '' },
     { label: 'Pendiente', value: 'Pending' },
     { label: 'En Ruta', value: 'InProgress' },
-    { label: 'Completado', value: 'Completed' },    
+    { label: 'Completado', value: 'Completed' },
   ];
 
   return (

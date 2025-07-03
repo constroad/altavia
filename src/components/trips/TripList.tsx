@@ -39,7 +39,7 @@ const Summary = (value: number, bgColor?: string) => {
 };
 
 export const TripList = () => {
-  const { dateTo, dateFrom } = getDateStringRange(30);
+  const { dateTo, dateFrom } = getDateStringRange(60);
   const [startDate, setStartDate] = useState(dateFrom);
   const [endDate, setEndDate] = useState(dateTo);
   const [status, setStatus] = useState('');
@@ -162,8 +162,6 @@ export const TripList = () => {
   const sortedData = [...(data ?? [])].sort(
     (a, b) => new Date(b.startDate).getTime() - new Date(a.startDate).getTime()
   );
-
-  console.log('data', { clients });
 
   return (
     <>

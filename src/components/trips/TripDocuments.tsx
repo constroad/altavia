@@ -79,6 +79,8 @@ Se adjunta la  *${document}* ${response.file_name}`
     refetchMedias();
   }
 
+  const documentMap = Object.fromEntries(items.map((x) => [x.value, x.label]))
+
   return (
     <Stack gap={3}>
       <RadioGroup.Root
@@ -103,7 +105,7 @@ Se adjunta la  *${document}* ${response.file_name}`
         type={value as MediaType}
         resourceId={trip?._id}
         metadata={{
-          documentType: items.find((x) => x.value === value)?.label
+          documentType: documentMap[value]
         }}
         onSuccess={handleSuccessUpload}
         isDisabled={isLoadingDrivers || loadingClient}
@@ -116,7 +118,7 @@ Se adjunta la  *${document}* ${response.file_name}`
             <TelegramFileView
               key={media._id}
               media={media}
-              description={`${media.metadata?.documentType} ${media.name}`}              
+              description={`${documentMap[media.type]} ${media.name}`}              
               canDelete
               onRefresh={refetchMedias}
               imageStyle={{

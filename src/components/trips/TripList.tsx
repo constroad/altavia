@@ -16,6 +16,8 @@ import { useState } from 'react';
 import { IconWrapper } from '../IconWrapper/IconWrapper';
 import { RefreshIcon } from '@/common/icons';
 import { useWhatsapp } from '@/common/hooks/useWhatsapp';
+import { FormComboBox } from '../form/FormComboBox';
+import { useUbigeos } from '@/common/hooks/useUbigeos';
 
 interface TripListProps {}
 
@@ -30,17 +32,19 @@ const Summary = (value: number, bgColor?: string) => {
       fontWeight={600}
       fontSize={11}
       height={30}
-    >      
-      {formatMoney(value, 1)}km
+    >
+      {formatMoney(value, 1)}
     </Box>
   );
 };
 
 export const TripList = () => {
-  const { dateTo, dateFrom } = getDateStringRange(30);
+  const { dateTo, dateFrom } = getDateStringRange(60);
   const [startDate, setStartDate] = useState(dateFrom);
   const [endDate, setEndDate] = useState(dateTo);
   const [status, setStatus] = useState('');
+  const [client, setClient] = useState('');
+  const [origin, setOrigin] = useState('');
 
   const router = useRouter();
   // loading by default whatsApp contacts
@@ -52,9 +56,15 @@ export const TripList = () => {
       startDate: parseLocalDate(startDate).toDateString(),
       endDate: parseLocalDate(endDate).toDateString(),
       status,
+      client,
+      origin,
     },
   });
+  const { data: clients, isLoading: loadingClients } = useFetch(
+    API_ROUTES.clients
+  );
   const { mutate, isMutating } = useMutate(API_ROUTES.trips);
+  const { regions } = useUbigeos();
 
   // handlers
   const handleDeleteTrip = (trip: ITripSchemaValidation) => {
@@ -74,26 +84,69 @@ export const TripList = () => {
     router.push(`${APP_ROUTES.trips}/${trip._id}`);
   };
 
-  const columns: TableColumn[] = [
+  const clientsMap = Object.fromEntries(
+    (clients ?? []).map((x: any) => [x._id, x])
+  );
+  const statusMap = {
+    Pending: 'yellow.300',
+    InProgress: 'orange.300',
+    Completed: 'green.500',
+    Deleted: 'red.400',
+  };
+  const columns: TableColumn<ITripSchemaValidation>[] = [
+    {
+      key: 'client',
+      label: 'Cliente',
+      width: '20%',
+      render: (item) => <Text>{clientsMap[item]?.name ?? ''}</Text>,
+    },
     {
       key: 'startDate',
       label: 'Fecha',
-      width: '10%',
+      width: '5%',
+      textAlign: 'center',
       render: (item) => <Text>{formatUtcDateTime(item)}</Text>,
     },
     {
       key: 'origin',
       label: 'Origen',
+      textAlign: 'center',
       width: '10%',
     },
-    { key: 'destination', label: 'Destino', width: '10%' },
+    {
+      key: 'destination',
+      textAlign: 'center',
+      label: 'Destino',
+      width: '10%',
+    },
     { key: 'notes', label: 'Nota', width: '20%' },
-    { key: 'status', label: 'Estado', width: '5%' },
+    {
+      key: 'status',
+      label: 'Estado',
+      width: '5%',
+      textAlign: 'center',
+      render: (item, row) => {
+        return (
+          <Text rounded={4} bgColor={statusMap[row.status ?? 'Pending']}>
+            {item}
+          </Text>
+        );
+      },
+    },
     {
       key: 'kmTravelled',
-      label: 'Recorrido',
-      bgColor: 'primary.600',
+      label: 'KM',
+      bgColor: 'gray.300',
+      color: 'black',
       width: '5%',
+      textAlign: 'center',
+      summary: (value) => Summary(value, 'gray.500'),
+    },
+    {
+      key: 'revenue',
+      label: 'Rent S/.',
+      bgColor: 'primary.600',
+      width: '8%',
       textAlign: 'end',
       summary: (value) => Summary(value),
     },
@@ -138,13 +191,42 @@ export const TripList = () => {
               setEndDate(value as string);
             }}
           />
+          <FormComboBox
+            controlled
+            name="client"
+            label="Cliente"
+            placeholder="Buscar cliente"
+            loading={loadingClients}
+            options={
+              clients?.map((x: any) => ({
+                value: x._id,
+                label: x.name,
+              })) ?? []
+            }
+            value={client}
+            onChange={([value]: string[]) => setClient(value)}
+          />
+          <FormComboBox
+            controlled
+            name="origin"
+            label="Origen"
+            placeholder="Buscar Origen"
+            options={
+              regions?.map((r: any) => ({
+                value: r,
+                label: r,
+              })) ?? []
+            }
+            value={origin}
+            onChange={([value]: string[]) => setOrigin(value)}
+          />
           <SelectField
             controlled
             size="xs"
             label="Estado"
             name="status"
             options={statusArr}
-            width="150px"
+            width="120px"
             value={status}
             onChange={setStatus}
           />

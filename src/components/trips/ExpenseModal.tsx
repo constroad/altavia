@@ -86,7 +86,7 @@ export const ExpenseModal = (props: ExpenseModalProps) => {
       amount,
       type: 'trip',
       status,
-      date: new Date(),
+      date,
     };
 
     if (expense) {

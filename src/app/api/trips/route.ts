@@ -18,7 +18,7 @@ export async function GET(request: NextRequest) {
 
 
   return withApi(async () => {
-    const { startDate, endDate, status, type } = getQueryParameters(request)
+    const { startDate, endDate, status, type, client } = getQueryParameters(request)
 
     const filter: any = {};
     if (type) {
@@ -26,6 +26,9 @@ export async function GET(request: NextRequest) {
     }
     if (status) {
       filter.status = status
+    }
+    if (client) {
+      filter.client = client
     }
     if (startDate && endDate) {
       const date1 = new Date(startDate)

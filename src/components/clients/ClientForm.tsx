@@ -86,12 +86,12 @@ export const ClientForm = (props: ClientFormProps) => {
   };
 
   const handleSelectWhatsAppNotification =
-    (key: string) => (value: string[]) => {
+    (key: string) => ([value]: string[]) => {
       const notifications = client?.notifications;
 
       setValue('notifications', {
         ...notifications,
-        [key]: value[0],
+        [key]: value,
       } as IClientSchemaValidation['notifications']);
     };
 
@@ -108,6 +108,7 @@ export const ClientForm = (props: ClientFormProps) => {
           </Flex>
           <Flex width="100%" gap={2} alignItems="end">
             <FormComboBox
+              controlled
               name="whatsAppAlerts"
               label="WhatsApp para envio de alertas:"
               placeholder="Escriba un grupo"

@@ -186,7 +186,7 @@ export const TripExpense = (props: TripExpenseProps) => {
                         textAlign="right"
                         fontWeight={600}
                       >
-                        S/.{totalRevenue}
+                        S/.{totalRevenue.toFixed(2)}
                       </Box>
                     </Flex>
                   </Flex>

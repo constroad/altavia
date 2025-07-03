@@ -13,6 +13,10 @@ import { useEffect, useState } from 'react';
 import { Field } from '@chakra-ui/react';
 import { Controller, useFormContext } from 'react-hook-form';
 
+type IOption = {
+  value: string;
+  label: string;
+};
 export type FormComboBoxProps = {
   label: string;
   placeholder?: string;
@@ -47,10 +51,18 @@ export const FormComboBox = (props: FormComboBoxProps) => {
     formState: { errors },
   } = useFormContext() ?? { formState: {} };
 
-  const { collection, filter } = useListCollection({
-    initialItems: options,
+  const { collection, filter, set } = useListCollection<IOption>({
+    initialItems: [],
     filter: contains,
   });
+
+  console.log('localvalue', localValue)
+
+  useEffect(() => {
+    if (options.length > 0) {
+      set(options);
+    }
+  }, [options]);
 
   useEffect(() => {
     if (value) {
@@ -65,7 +77,12 @@ export const FormComboBox = (props: FormComboBoxProps) => {
         onInputValueChange={(e) => filter(e.inputValue)}
         value={localValue}
         onValueChange={(e) => {
-          setLocalValue(e.value);
+          if(!props.controlled) {
+            setLocalValue(e.value);
+          }
+          if (e.value.length === 0) {
+            setLocalValue([]);
+          }
           onChange?.(e.value);
         }}
         width="100%"
@@ -77,6 +94,9 @@ export const FormComboBox = (props: FormComboBoxProps) => {
             placeholder={props.placeholder ?? 'escriba para filtrar'}
           />
           <Combobox.IndicatorGroup>
+            <Show when={props.loading}>
+              <Spinner size="xs" />
+            </Show>
             <Combobox.ClearTrigger />
             <Combobox.Trigger />
           </Combobox.IndicatorGroup>
@@ -84,9 +104,6 @@ export const FormComboBox = (props: FormComboBoxProps) => {
         <Portal>
           <Combobox.Positioner>
             <Combobox.Content zIndex={99999}>
-              <Show when={props.loading}>
-                <Spinner />
-              </Show>
               <Combobox.Empty>No items found</Combobox.Empty>
               {collection.items.map((item) => (
                 <Combobox.Item item={item} key={item.value}>
@@ -133,6 +150,9 @@ export const FormComboBox = (props: FormComboBoxProps) => {
                   placeholder={props.placeholder ?? 'escriba para filtrar'}
                 />
                 <Combobox.IndicatorGroup>
+                    <Show when={props.loading}>
+                      <Spinner />
+                    </Show>
                   <Combobox.ClearTrigger />
                   <Combobox.Trigger />
                 </Combobox.IndicatorGroup>
@@ -140,9 +160,6 @@ export const FormComboBox = (props: FormComboBoxProps) => {
               <Portal>
                 <Combobox.Positioner>
                   <Combobox.Content zIndex={99999}>
-                    <Show when={props.loading}>
-                      <Spinner />
-                    </Show>
                     <Combobox.Empty>No items found</Combobox.Empty>
                     {collection.items.map((item) => (
                       <Combobox.Item item={item} key={item.value}>

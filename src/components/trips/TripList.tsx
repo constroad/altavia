@@ -17,6 +17,7 @@ import { IconWrapper } from '../IconWrapper/IconWrapper';
 import { RefreshIcon } from '@/common/icons';
 import { useWhatsapp } from '@/common/hooks/useWhatsapp';
 import { FormComboBox } from '../form/FormComboBox';
+import { useUbigeos } from '@/common/hooks/useUbigeos';
 
 interface TripListProps {}
 
@@ -43,6 +44,7 @@ export const TripList = () => {
   const [endDate, setEndDate] = useState(dateTo);
   const [status, setStatus] = useState('');
   const [client, setClient] = useState('');
+  const [origin, setOrigin] = useState('');
 
   const router = useRouter();
   // loading by default whatsApp contacts
@@ -55,10 +57,14 @@ export const TripList = () => {
       endDate: parseLocalDate(endDate).toDateString(),
       status,
       client,
+      origin,
     },
   });
-  const { data: clients } = useFetch(API_ROUTES.clients);
+  const { data: clients, isLoading: loadingClients } = useFetch(
+    API_ROUTES.clients
+  );
   const { mutate, isMutating } = useMutate(API_ROUTES.trips);
+  const { regions } = useUbigeos();
 
   // handlers
   const handleDeleteTrip = (trip: ITripSchemaValidation) => {
@@ -138,7 +144,7 @@ export const TripList = () => {
     },
     {
       key: 'revenue',
-      label: 'Rentabilidad S/.',
+      label: 'Rent S/.',
       bgColor: 'primary.600',
       width: '8%',
       textAlign: 'end',
@@ -156,6 +162,8 @@ export const TripList = () => {
   const sortedData = [...(data ?? [])].sort(
     (a, b) => new Date(b.startDate).getTime() - new Date(a.startDate).getTime()
   );
+
+  console.log('data', { clients });
 
   return (
     <>
@@ -185,6 +193,35 @@ export const TripList = () => {
               setEndDate(value as string);
             }}
           />
+          <FormComboBox
+            controlled
+            name="client"
+            label="Cliente"
+            placeholder="Buscar cliente"
+            loading={loadingClients}
+            options={
+              clients?.map((x: any) => ({
+                value: x._id,
+                label: x.name,
+              })) ?? []
+            }
+            value={client}
+            onChange={([value]: string[]) => setClient(value)}
+          />
+          <FormComboBox
+            controlled
+            name="origin"
+            label="Origen"
+            placeholder="Buscar Origen"
+            options={
+              regions?.map((r: any) => ({
+                value: r,
+                label: r,
+              })) ?? []
+            }
+            value={origin}
+            onChange={([value]: string[]) => setOrigin(value)}
+          />
           <SelectField
             controlled
             size="xs"
@@ -194,20 +231,6 @@ export const TripList = () => {
             width="120px"
             value={status}
             onChange={setStatus}
-          />
-          <FormComboBox
-            controlled
-            name="client"
-            label="Cliente"
-            placeholder="Escriba un grupo"
-            options={
-              clients?.map((x: any) => ({
-                value: x._id,
-                label: x.name,
-              })) ?? []
-            }
-            value={client}
-            onChange={([value]: string[]) => setClient(value)}
           />
           <Button onClick={refetch} size="xs">
             <IconWrapper icon={RefreshIcon} size="18px" />

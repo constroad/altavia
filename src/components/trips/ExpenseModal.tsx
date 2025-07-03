@@ -79,7 +79,6 @@ export const ExpenseModal = (props: ExpenseModalProps) => {
       toast.error('Ingrese datos obligatorios');
       return;
     }
-
     const payload = {
       tripId: resourceId,
       description,

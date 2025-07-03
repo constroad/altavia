@@ -52,11 +52,12 @@ export const FormComboBox = (props: FormComboBoxProps) => {
   } = useFormContext() ?? { formState: {} };
 
   const { collection, filter, set } = useListCollection<IOption>({
+    // initialItems: options,
     initialItems: [],
     filter: contains,
   });
 
-  console.log('localvalue', localValue)
+  console.log('localvalue', {localValue, value, options})
 
   useEffect(() => {
     if (options.length > 0) {
@@ -70,19 +71,37 @@ export const FormComboBox = (props: FormComboBoxProps) => {
     }
   }, [value]);
 
+  const handleInputChange = (details: Combobox.InputValueChangeDetails) => {
+    const filteredItems = options.filter((item) => {
+      const searchLower = details.inputValue.toLowerCase()
+      const nameParts = item.label.toLowerCase().split(" ")
+      // const emailParts = item.email.toLowerCase().split("@")[0].split(".")
+
+      return (
+        item.label.toLowerCase().includes(searchLower)
+        // nameParts.some((part) => part.includes(searchLower)) ||
+        // emailParts.some((part) => part.includes(searchLower)) ||
+        // item.role.toLowerCase().includes(searchLower)
+      )
+    })
+    set(filteredItems)
+  }
+
   if (props.controlled) {
     return (
       <Combobox.Root
         collection={collection}
-        onInputValueChange={(e) => filter(e.inputValue)}
+        // onInputValueChange={(e) => filter(e.inputValue)}
+        
+        onInputValueChange={handleInputChange}
         value={localValue}
         onValueChange={(e) => {
-          if(!props.controlled) {
+          // if(!props.controlled) {
             setLocalValue(e.value);
-          }
-          if (e.value.length === 0) {
-            setLocalValue([]);
-          }
+          // }
+          // if (e.value.length === 0) {
+          //   setLocalValue([]);
+          // }
           onChange?.(e.value);
         }}
         width="100%"

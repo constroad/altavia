@@ -38,7 +38,7 @@ export const Sidebar = (props: AdminSidebarProps) => {
         flexDirection="column"
         bgColor="primary.700"
         color="white"
-        h="100vh"
+        minH="100vh"
         flexDir="column"
         w={{
           base: '50px',
@@ -185,13 +185,12 @@ export const Sidebar = (props: AdminSidebarProps) => {
 
         <Flex
           px={{ base: 4, md: 6 }}
-          height={{
+          minHeight={{
             base: 'calc(100vh - 48px)',
             md: 'calc(100vh - 72px)',
           }}
           py={4}
-          // pt={6}
-          overflowY="scroll"
+          // className='scrollbar-fino'
           w={isMobile ? 'calc(100vw - 50px)' : ''}
           flexDir="column"
         >

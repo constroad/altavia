@@ -153,13 +153,15 @@ export const TripList = () => {
           </Button>
         </Flex>
       </Flex>
-      <TableComponent
-        isLoading={isLoading || isMutating}
-        data={sortedData}
-        columns={columns}
-        onEdit={handleSelectTrip}
-        onDelete={handleDeleteTrip}
-      />
+      <Box className='scrollbar-fino'>
+        <TableComponent
+          isLoading={isLoading || isMutating}
+          data={sortedData}
+          columns={columns}
+          onEdit={handleSelectTrip}
+          onDelete={handleDeleteTrip}
+        />
+      </Box>
     </>
   );
 };

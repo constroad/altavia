@@ -150,7 +150,7 @@ const Page = () => {
               label: r,
             })) ?? []
           }
-          value={origin}
+          value={destination}
           onChange={([value]: string[]) => setDestination(value)}
         />
         <Button onClick={refetch} size="xs">

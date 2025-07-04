@@ -120,7 +120,7 @@ const Page = () => {
       title="Costo de Ruta"
       actions={
         <Button size="xs" onClick={onOpen}>
-          + Nuevo Gasto
+          + Nuevo Costo
         </Button>
       }
     >
@@ -184,7 +184,10 @@ const Page = () => {
       <Modal
         hideCancelButton
         isOpen={open}
-        onClose={onClose}
+        onClose={() => {
+          onClose()
+          setCostSelected(undefined)
+        }}
         heading={costSelected ? 'Editar Costo' : 'Añadir Costo'}
       >
         <RouteCostForm
@@ -192,6 +195,7 @@ const Page = () => {
           onSuccess={() => {
             onClose();
             refetch();
+            setCostSelected(undefined)
           }}
         />
       </Modal>

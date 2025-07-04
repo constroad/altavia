@@ -24,7 +24,6 @@ interface ClientFormProps {
 
 export const ClientForm = (props: ClientFormProps) => {
   const { client } = props;
-  console.log('client en userForm para pasar al mutate:', client);
 
   const methods = useForm<IClientSchemaValidation>({
     resolver: zodResolver(clientSchemaValidation),

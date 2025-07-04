@@ -19,6 +19,7 @@ export const APP_ROUTES = {
   // clientReport: '/public/client-report',
   dashboard: '/dashboard',
   vehicles: '/vehicles',
+  routeCost: '/routeCost',
   trips: '/trips',
   alerts: '/alerts',
   configuration: '/configuration',
@@ -36,6 +37,7 @@ export const API_ROUTES = {
   vehicles: '/api/vehicles',    
   drivers: '/api/drivers',    
   expenses: '/api/expenses',    
+  routeCost: '/api/routeCost',    
   notificationWhatsApp: '/api/notifications/whatsapp',
   user: '/api/user',
 }

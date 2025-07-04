@@ -148,7 +148,7 @@ export const TripExpense = (props: TripExpenseProps) => {
           <Tabs.Trigger value="Sunat" disabled={!isValidTrip}>Sunat</Tabs.Trigger>
           <Tabs.Trigger value="Tracking" disabled={!isValidTrip}>Tracking</Tabs.Trigger>
         </Tabs.List>
-        <Tabs.Content value="Gastos" padding={0}>
+        <Tabs.Content value="Gastos" paddingX={0}>
           <Show when={tabSelected === 'Gastos'}>
             <TableComponent
               isLoading={isLoadingExpenses}

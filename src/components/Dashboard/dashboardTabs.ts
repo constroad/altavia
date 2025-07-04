@@ -6,6 +6,7 @@ import {
   DashboardIcon,
   DriverIcon,
   GearBoldIcon,
+  MoneyIcon,
   SignupIcon,
   TripIcon,
   VehiclesIcon
@@ -39,6 +40,13 @@ export const dashboardTabs = [
     bgColor: 'primary',
     textColor: 'white',
     icon: VehiclesIcon
+  },
+  {
+    name: 'Costos de Ruta',
+    path: APP_ROUTES.routeCost,
+    bgColor: 'primary',
+    textColor: 'white',
+    icon: MoneyIcon
   },
   {
     name: 'Viajes',

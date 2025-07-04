@@ -1,6 +1,6 @@
 'use client';
 import { FormProvider, useForm } from 'react-hook-form';
-import { VStack, HStack, Flex, Grid, GridItem } from '@chakra-ui/react';
+import { Flex, Grid, GridItem, Button } from '@chakra-ui/react';
 import {
   ITripSchemaValidation,
   TripSchemaValidation,
@@ -17,6 +17,10 @@ import { useMutate } from '@/common/hooks/useMutate';
 import { toast } from 'src/components';
 import { useRouter } from 'next/navigation';
 import DateField from '../form/DateField';
+import { IconWrapper } from '../IconWrapper/IconWrapper';
+import { MoneyIcon } from '@/common/icons';
+import { PopOver } from '../ui/popover';
+import { RouteCostSummary } from '../routeCost/routeCostSummary';
 
 type ITripForm = {
   trip: ITripSchemaValidation | null;
@@ -26,6 +30,21 @@ type ITripForm = {
 export default function TripForm(props: Readonly<ITripForm>) {
   const { trip, onSavingChange } = props;
   const router = useRouter();
+  const { regions } = useUbigeos();
+  
+  const methods = useForm<ITripSchemaValidation>({
+    resolver: zodResolver(TripSchemaValidation),
+    defaultValues: {
+      ...(trip ?? {
+        status: 'Pending' as TripStatus,
+      }),
+      startDate: trip?.startDate?.split?.('T')[0] ?? new Date().toDateString(),
+    },
+  });
+
+  const {watch} = methods
+  const origin = watch('origin')
+  const destination = watch('destination')
 
   // API
   const { data: drivers, isLoading: isLoadingDrivers } = useFetch(
@@ -37,20 +56,14 @@ export default function TripForm(props: Readonly<ITripForm>) {
   const { data: clients, isLoading: isLoadingClients } = useFetch(
     API_ROUTES.clients
   );
-
-  const { mutate: mutateTrip } = useMutate(API_ROUTES.trips);
-
-  const { regions } = useUbigeos();
-
-  const methods = useForm<ITripSchemaValidation>({
-    resolver: zodResolver(TripSchemaValidation),
-    defaultValues: {
-      ...(trip ?? {
-        status: 'Pending' as TripStatus,
-      }),
-      startDate: trip?.startDate?.split?.('T')[0] ?? new Date().toDateString(),
+  const { data: routeCostData } = useFetch(API_ROUTES.routeCost, {
+    queryParams: {
+      origin,
+      destination,
     },
   });
+
+  const { mutate: mutateTrip } = useMutate(API_ROUTES.trips);
 
   const statusArr = [
     { label: 'Pendiente', value: 'Pending' },
@@ -63,8 +76,10 @@ export default function TripForm(props: Readonly<ITripForm>) {
     value: r,
   }));
 
+  const routeCost  = routeCostData?.reduce?.((acc: any, curr: any) => curr.amount + acc, 0)  ?? 0
+
   const onSubmit = (form: ITripSchemaValidation) => {
-    onSavingChange?.(true)
+    onSavingChange?.(true);
     try {
       const { _id, ...rest } = form;
       const payload = {
@@ -95,7 +110,7 @@ export default function TripForm(props: Readonly<ITripForm>) {
       console.log(error);
       toast.error('Error al registrar viaje');
     } finally {
-      onSavingChange?.(false)
+      onSavingChange?.(false);
     }
   };
 
@@ -150,13 +165,20 @@ export default function TripForm(props: Readonly<ITripForm>) {
             />
           </GridItem>
           <GridItem>
-            <SelectField
-              isRequired
-              size="xs"
-              name="destination"
-              label="Destino"
-              options={regionsArr}
-            />
+            <Flex gap={1} alignItems="end">
+              <SelectField
+                isRequired
+                size="xs"
+                name="destination"
+                label={`Destino S/.(${routeCost})`}
+                options={regionsArr}
+              />
+              <PopOver content={<RouteCostSummary origin={origin} destination={destination} />}>
+                <Button size="xs">
+                  <IconWrapper icon={MoneyIcon} size="10px" />
+                </Button>
+              </PopOver>
+            </Flex>
           </GridItem>
           <GridItem>
             <SelectField

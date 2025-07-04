@@ -222,7 +222,7 @@ export const TableComponent = (props: Props) => {
                         base: 'space-between',
                         md: 'space-evenly',
                       }}
-                      py={1}
+                      py={0}
                     >
                       {onEdit && (
                         <Button

@@ -126,7 +126,7 @@ export const FormComboBox = (props: FormComboBoxProps) => {
         </Combobox.Control>
         <Portal>
           <Combobox.Positioner>
-            <Combobox.Content zIndex={99999}>
+            <Combobox.Content zIndex={99999} className='scrollbar-fino'>
               <Combobox.Empty>No items found</Combobox.Empty>
               {collection.items.map((item) => (
                 <Combobox.Item item={item} key={item.value}>
@@ -156,7 +156,6 @@ export const FormComboBox = (props: FormComboBoxProps) => {
         name={name}
         control={control}
         render={({ field }) => {
-          console.log('field', field)
           return (
             <Combobox.Root
               multiple={multiple}
@@ -193,7 +192,7 @@ export const FormComboBox = (props: FormComboBoxProps) => {
               </Combobox.Control>
               <Portal>
                 <Combobox.Positioner>
-                  <Combobox.Content zIndex={99999}>
+                  <Combobox.Content zIndex={99999} className='scrollbar-fino'>
                     <Combobox.Empty>No items found</Combobox.Empty>
                     {collection.items.map((item) => (
                       <Combobox.Item item={item} key={item.value}>

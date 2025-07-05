@@ -41,16 +41,25 @@ export const TripTracking = (props: TripTrackingProps) => {
     API_ROUTES.vehicles,    
   );
 
-  const handleSuccessUpload = (response: TelegramMedia) => {    
+  const handleSuccessUpload = (response: TelegramMedia) => {
+
+    let phonesToNotify = [GROUP_ADMINISTRACION_ALTAVIA]
+    if (client?.notifications?.whatsAppAlerts) {
+      phonesToNotify= client?.notifications?.whatsAppAlerts
+    }
+    trip?.notifications?.notifyDestination?.forEach?.((x) => {
+      phonesToNotify.push(x)
+    })
+
     const vehicleId = trip?.vehicle[0] ?? ''
     const vehicle = vehicles.find((x: any) => x._id === vehicleId)
     onSendWhatsAppFile({
       type: 'image',
       message: `${ALTAVIA_BOT}
 
-La unidad de placa *${vehicle.plate}* con destino a *${trip?.destination}* se encuentra en
+La unidad de placa *${vehicle.plate}* con destino a *${trip?.destination}* se encuentra en esta ubicación
       `,
-      to: client?.notifications?.whatsAppAlerts ?? GROUP_ADMINISTRACION_ALTAVIA,
+      to: phonesToNotify,
       file: response.file,
     })
     refetchMedias();

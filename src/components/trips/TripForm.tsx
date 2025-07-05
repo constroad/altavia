@@ -14,9 +14,10 @@ import { useUbigeos } from '@/common/hooks/useUbigeos';
 import { useFetch } from '@/common/hooks/useFetch';
 import { API_ROUTES, APP_ROUTES } from '@/common/consts';
 import { useMutate } from '@/common/hooks/useMutate';
-import { toast } from 'src/components';
+import { DrawerComponent, toast } from 'src/components';
 import { useRouter } from 'next/navigation';
 import DateField from '../form/DateField';
+import { TripAdvanced } from './TripAdvanced';
 import { IconWrapper } from '../IconWrapper/IconWrapper';
 import { MoneyIcon } from '@/common/icons';
 import { PopOver } from '../ui/popover';
@@ -27,13 +28,19 @@ import { useWhatsapp } from '@/common/hooks/useWhatsapp';
 type ITripForm = {
   trip: ITripSchemaValidation | null;
   onSavingChange?: (saving: boolean) => void;
+  openAdvance: boolean;
+  setOpenAdvance: (open: boolean) => void;
 };
 
 export default function TripForm(props: Readonly<ITripForm>) {
-  const { trip, onSavingChange } = props;
+  const { trip, onSavingChange, openAdvance, setOpenAdvance } = props;
   const router = useRouter();
   const { regions } = useUbigeos();
 
+  const { contacts, isLoadingContacts } = useWhatsapp({
+    page: 'TripForm',
+  });
+  const { mutate: mutateTrip } = useMutate(API_ROUTES.trips);
   const methods = useForm<ITripSchemaValidation>({
     resolver: zodResolver(TripSchemaValidation),
     defaultValues: {
@@ -41,6 +48,11 @@ export default function TripForm(props: Readonly<ITripForm>) {
         status: 'Pending' as TripStatus,
       }),
       startDate: trip?.startDate?.split?.('T')[0] ?? new Date().toDateString(),
+      paymentDueDate: trip?.paymentDueDate?.split?.('T')[0] ?? '',
+      payments: trip?.payments?.map(p => ({
+        ...p,
+        date: p.date?.split?.('T')[0] ?? '',
+      })) ?? []
     },
   });
 
@@ -48,7 +60,6 @@ export default function TripForm(props: Readonly<ITripForm>) {
   const origin = watch('origin');
   const destination = watch('destination');
   const notifications = watch('notifications');
-  console.log('values', watch())
 
   // API
   const { data: drivers, isLoading: isLoadingDrivers } = useFetch(
@@ -60,17 +71,13 @@ export default function TripForm(props: Readonly<ITripForm>) {
   const { data: clients, isLoading: isLoadingClients } = useFetch(
     API_ROUTES.clients
   );
+
   const { data: routeCostData } = useFetch(API_ROUTES.routeCost, {
     queryParams: {
       origin,
       destination,
     },
-  });
-  const { contacts, isLoadingContacts } = useWhatsapp({
-    page: 'TripForm',
-  });
-
-  const { mutate: mutateTrip } = useMutate(API_ROUTES.trips);
+  })
 
   const statusArr = [
     { label: 'Pendiente', value: 'Pending' },
@@ -274,7 +281,19 @@ export default function TripForm(props: Readonly<ITripForm>) {
             />
           </GridItem>
         </Grid>
+
+        {trip && (
+          <DrawerComponent
+            title='Avanzados'
+            open={openAdvance}
+            onChangeOpen={(e) => setOpenAdvance(e.open)}
+          >
+            <TripAdvanced trip={trip} />
+          </DrawerComponent>
+        )}
+
       </form>
+
     </FormProvider>
   );
 }

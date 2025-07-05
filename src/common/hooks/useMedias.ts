@@ -87,13 +87,20 @@ export const useMedias = (props: UseMediasProps) => {
   };
 
   const onUpload = (file: string | File, params: UploadParams) => {
+    let fileToResponse: File | undefined = undefined;
     if (isUploading || isMutating) {
       return
     }
     if (typeof file !== "string" && file.size > maxSize) {
       toast.error('El archivo es demasiado grande. Por favor, selecciona un archivo de menos de 18 MB.')
       return
+    } 
+    if (typeof file !== "string" && file?.size) {      
+      fileToResponse = file
     }
+    
+    
+
     const { fileName = 'upload', type, metadata } = params
     uploadTelegram(file, {
       fileName,
@@ -130,7 +137,7 @@ export const useMedias = (props: UseMediasProps) => {
           },
           {
             onSuccess: (mediaCreated) => {
-              params.onSuccess?.(fileUploaded, mediaCreated)
+              params.onSuccess?.({...fileUploaded, file: fileToResponse}, mediaCreated)
             },
           }
         );

@@ -21,6 +21,12 @@ export enum TripStatus {
   Deleted = 'Deleted',
 }
 
+export interface IPayment {
+  date: Date;
+  amount: number;
+  note?: string;
+}
+
 export const TripSchemaValidation = z.object({
   _id: z.string().optional(),
   origin: z.string(),
@@ -47,6 +53,16 @@ export const TripSchemaValidation = z.object({
   kmTravelled: z.number().optional(),
   status: z.nativeEnum(TripStatus).optional(),
   notes: z.string().optional(),
+  destinationContact: z.object({
+    name: z.string(),
+    phone: z.string(),
+  }).optional(),
+  mapsUrl: z.string().optional(),
+  payments: z.array(z.object({
+    date: z.string(),
+    amount: z.number(),
+    note: z.string().optional(),
+  })).optional()
 });
 
 export type ITripSchemaValidation = z.infer<typeof TripSchemaValidation>;
@@ -59,6 +75,7 @@ export interface ITrip extends Document {
   client: mongoose.Types.ObjectId;
   startDate: Date;
   endDate?: Date;
+  paymentDueDate?: Date;
   waybills?: string[];
   invoices?: string[];
   Income?: number; //ingreso
@@ -69,7 +86,13 @@ export interface ITrip extends Document {
   notes?: string;
   notifications?: {
     notifyDestination?: string[],
-  }
+  };
+  destinationContact?: {
+    name: string;
+    phone: string;
+  };
+  mapsUrl?: string;
+  payments?: IPayment[];
 }
 
 const TripSchema: Schema = new Schema({
@@ -80,6 +103,7 @@ const TripSchema: Schema = new Schema({
   client: { type: Schema.Types.ObjectId, ref: 'Client', required: true },
   startDate: { type: Date, required: true },
   endDate: { type: Date, required: false },
+  paymentDueDate: { type: Date, required: false },
   waybills: [String],
   invoices: [String],
   Income: { type: Number, default: 0 },
@@ -100,6 +124,16 @@ const TripSchema: Schema = new Schema({
   notifications: {
     notifyDestination: { type: [String], required: false },    
   },
+  destinationContact: {
+    name: { type: String },
+    phone: { type: String },
+  },
+  mapsUrl: { type: String },
+  payments: [{
+    date: { type: Date, required: true },
+    amount: { type: Number, required: true },
+    note: { type: String }
+  }],
 }, {
   timestamps: true,
 });

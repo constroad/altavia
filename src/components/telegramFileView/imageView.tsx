@@ -155,7 +155,7 @@ export const ImageView = (props: ImageViewProps) => {
             </Button>
           </Box>
         )}
-        {!hasError && isVisible && (
+        {!hasError && isVisible && urlThumbnail && (
           <img
             src={urlThumbnail}
             alt={''}

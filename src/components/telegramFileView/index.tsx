@@ -245,12 +245,14 @@ export const TelegramFileView = (props: TelegramFileViewProps) => {
           </Flex>
         </Flex>
       </Overlay>
-      <img
-        src={getImageThumbnail(url)}
-        style={{ display: 'none' }}
-        onLoad={handleImageLoad}
-        alt=""
-      />
+      {getImageThumbnail(url) && (
+        <img
+          src={getImageThumbnail(url)}
+          style={{ display: 'none' }}
+          onLoad={handleImageLoad}
+          alt=""
+        />
+      )}
     </>
   );
 };

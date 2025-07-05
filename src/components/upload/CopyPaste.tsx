@@ -26,7 +26,7 @@ type CopyPasteProps = {
 };
 export const CopyPaste = (props: CopyPasteProps) => {
   const fileInputRef = useRef<HTMLInputElement>(null);
-  const { type, resourceId, metadata, onSuccess, fileName } = props;
+  const { type, resourceId, metadata, fileName } = props;
 
   const { onUpload, isUploading, onPasteImages } = useMedias({
     chat_id: props.chat_Id,
@@ -84,7 +84,7 @@ export const CopyPaste = (props: CopyPasteProps) => {
       fileName: file.name,
       metadata,
       onSuccess: (response) => {
-        onSuccess?.({...response, file})
+        props.onSuccess?.({...response, file})
       },
     });
   };

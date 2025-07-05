@@ -25,7 +25,7 @@ export const DashboardLayout = (props: DashboardLayoutProps) => {
       <CustomHead />
 
       {isValidSession && (
-        <Flex width="100%">
+        <Flex width="100%" minHeight="100vh">
           <Sidebar menuOptions={dashboardTabs}>
             <Flex
               width="100%"

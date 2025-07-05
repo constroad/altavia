@@ -1,14 +1,14 @@
 import { getPathParams, withApi } from "src/common/utils/middleware";
 import { NextRequest } from 'next/server';
 import { json } from 'src/common/utils/response';
-import { mediaRepository } from 'src/repositories/mediaRepository';
+import { routeCostRepository } from "@/repositories/routeCostRepository";
 
 export async function PUT(request: NextRequest) {
   return withApi(async () => {
 
-    const { id } = getPathParams(request, ['api', 'medias', '[id]'])
+    const { id } = getPathParams(request, ['api', 'routeCost', '[id]'])
     const data = await request.json();
-    const created = await mediaRepository.updateById(id, data);
+    const created = await routeCostRepository.updateById(id, data);
     return json(created, 201)
 
   })
@@ -17,8 +17,8 @@ export async function PUT(request: NextRequest) {
 export async function DELETE(request: NextRequest) {
   return withApi(async () => {
 
-    const { id } = getPathParams(request, ['api', 'medias', '[id]'])
-    const created = await mediaRepository.deleteById(id);
+    const { id } = getPathParams(request, ['api', 'routeCost', '[id]'])
+    const created = await routeCostRepository.deleteById(id);
     return json(created, 201)
 
   })
@@ -29,9 +29,9 @@ export async function GET(request: NextRequest) {
   return withApi(async () => {
 
     const filter: any = {};
-    const { id } = getPathParams(request, ['api', 'medias', '[id]'])
+    const { id } = getPathParams(request, ['api', 'trips', '[id]'])
 
-    const trips = await mediaRepository.findById(id);
+    const trips = await routeCostRepository.findById(id);
     return json(trips);
   });
 }

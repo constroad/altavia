@@ -24,7 +24,6 @@ interface ClientFormProps {
 
 export const ClientForm = (props: ClientFormProps) => {
   const { client } = props;
-  console.log('client en userForm para pasar al mutate:', client);
 
   const methods = useForm<IClientSchemaValidation>({
     resolver: zodResolver(clientSchemaValidation),
@@ -99,8 +98,12 @@ export const ClientForm = (props: ClientFormProps) => {
     <FormProvider {...methods}>
       <form onSubmit={methods.handleSubmit(onSubmit)} noValidate>
         <VStack spaceY={1}>
+        <Flex gap={1} justifyContent="space-between" width="100%">
+
           <InputField size="xs" name="name" label="Nombre" isRequired />
           <InputField size="xs" name="ruc" label="RUC" />
+        </Flex>
+        
           <InputField size="xs" name="address" label="Dirección" />
           <Flex gap={1} justifyContent="space-between" width="100%">
             <InputField size="xs" name="phone" label="Teléfono" />
@@ -119,6 +122,26 @@ export const ClientForm = (props: ClientFormProps) => {
                 })) ?? []
               }
               value={client?.notifications?.whatsAppAlerts ?? ''}
+              loading={isLoadingGroups}
+              onChange={handleSelectWhatsAppNotification('whatsAppAlerts')}
+            />
+            <Button onClick={refetchGroups} size="xs" loading={isLoadingGroups}>
+              <IconWrapper icon={RefreshIcon} size="18px" />
+            </Button>
+          </Flex>
+          <Flex width="100%" gap={2} alignItems="end">
+            <FormComboBox
+              controlled
+              name="whatsAppAlerts"
+              label="WhatsApp para envio pagos y facturas:"
+              placeholder="Escriba un grupo"
+              options={
+                groups?.map((x: any) => ({
+                  value: x.id,
+                  label: x.name,
+                })) ?? []
+              }
+              value={client?.notifications?.whatsAppManagement ?? ''}
               loading={isLoadingGroups}
               onChange={handleSelectWhatsAppNotification('whatsAppAlerts')}
             />

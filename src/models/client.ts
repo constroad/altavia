@@ -45,8 +45,8 @@ const ClientSchema: Schema = new Schema({
     required: false,
   },
   notifications: {
-    whatsAppAlerts: { type: String, required: false },
-    whatsAppManagement: { type: String, required: false },
+    whatsAppAlerts: { type: String, required: false }, // whatsAppAlerts
+    whatsAppManagement: { type: String, required: false }, //payments, invoices
   },
 }, {
   timestamps: true

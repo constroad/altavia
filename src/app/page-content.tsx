@@ -1,6 +1,6 @@
 'use client'
 
-import { Box, Flex, Grid, GridItem, Icon, Image, Text, SimpleGrid } from '@chakra-ui/react'
+import { Box, Flex, Grid, GridItem, Icon, Image, Text } from '@chakra-ui/react'
 import { useEffect, useState } from 'react'
 import { FaAnglesDown } from 'react-icons/fa6'
 import {

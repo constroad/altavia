@@ -9,8 +9,8 @@ export const clientSchemaValidation = z.object({
   phone: z.string().optional(),
   email: z.string().email('Correo inválido').optional(),
   notifications: z.object({
-    whatsAppAlerts: z.string().optional(),
-    whatsAppManagement: z.string().optional(), // pagos
+    whatsAppAlerts: z.array(z.string()).optional(), //tracking
+    whatsAppManagement: z.array(z.string()).optional(), // pagos, facturas, guias
   }).optional(),
   createdAt: z.string().optional(),
   updatedAt: z.string().optional(),
@@ -25,8 +25,8 @@ export interface IClient extends Document {
   phone?: string;
   email?: string;
   notifications?: {
-    whatsAppAlerts?: string,
-    whatsAppManagement?: string,
+    whatsAppAlerts?: string[],
+    whatsAppManagement?: string[],
   }
 }
 
@@ -45,8 +45,8 @@ const ClientSchema: Schema = new Schema({
     required: false,
   },
   notifications: {
-    whatsAppAlerts: { type: String, required: false }, // whatsAppAlerts
-    whatsAppManagement: { type: String, required: false }, //payments, invoices
+    whatsAppAlerts: { type: [String], required: false }, // whatsAppAlerts
+    whatsAppManagement: { type: [String], required: false }, //payments, invoices
   },
 }, {
   timestamps: true

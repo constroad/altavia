@@ -1,11 +1,13 @@
 'use client';
 
 import {
+  Badge,
   Combobox,
   ConditionalValue,
   Portal,
   Show,
   Spinner,
+  Wrap,
   useFilter,
   useListCollection,
 } from '@chakra-ui/react';
@@ -22,7 +24,7 @@ export type FormComboBoxProps = {
   placeholder?: string;
   name: string;
   options: { value: string; label: string }[];
-  value?: string;
+  value?: string | string[];
   loading?: boolean;
   onChange?: (value: string[]) => void;
   isRequired?: boolean;
@@ -30,6 +32,8 @@ export type FormComboBoxProps = {
   size?: ConditionalValue<'sm' | 'md' | 'lg' | 'xs' | undefined>;
   width?: string;
   controlled?: boolean;
+  multiple?: boolean;
+  showOptionSelected?: boolean
 };
 export const FormComboBox = (props: FormComboBoxProps) => {
   const {
@@ -42,6 +46,8 @@ export const FormComboBox = (props: FormComboBoxProps) => {
     error,
     size,
     width,
+    multiple = false,
+    showOptionSelected = false,
   } = props;
   const [localValue, setLocalValue] = useState<string[]>([]);
   const { contains } = useFilter({ sensitivity: 'base' });
@@ -57,7 +63,7 @@ export const FormComboBox = (props: FormComboBoxProps) => {
     filter: contains,
   });
 
-  console.log('localvalue', {localValue, value, options})
+  const optionsMap = Object.fromEntries(options.map((x) => [x.value, x.label] ))
 
   useEffect(() => {
     if (options.length > 0) {
@@ -66,47 +72,45 @@ export const FormComboBox = (props: FormComboBoxProps) => {
   }, [options]);
 
   useEffect(() => {
-    if (value) {
+    if (typeof value === 'string') {
       setLocalValue([value]);
+    }
+    if (Array.isArray(value)) {
+      setLocalValue(value);
     }
   }, [value]);
 
   const handleInputChange = (details: Combobox.InputValueChangeDetails) => {
     const filteredItems = options.filter((item) => {
-      const searchLower = details.inputValue.toLowerCase()
-      const nameParts = item.label.toLowerCase().split(" ")
-      // const emailParts = item.email.toLowerCase().split("@")[0].split(".")
+      const searchLower = details.inputValue.toLowerCase();
 
-      return (
-        item.label.toLowerCase().includes(searchLower)
-        // nameParts.some((part) => part.includes(searchLower)) ||
-        // emailParts.some((part) => part.includes(searchLower)) ||
-        // item.role.toLowerCase().includes(searchLower)
-      )
-    })
-    set(filteredItems)
-  }
+      return item.label?.toLowerCase().includes(searchLower);
+    });
+    set(filteredItems);
+  };
 
   if (props.controlled) {
     return (
       <Combobox.Root
+        multiple={multiple}
         collection={collection}
-        // onInputValueChange={(e) => filter(e.inputValue)}
-        
         onInputValueChange={handleInputChange}
         value={localValue}
-        onValueChange={(e) => {
-          // if(!props.controlled) {
-            setLocalValue(e.value);
-          // }
-          // if (e.value.length === 0) {
-          //   setLocalValue([]);
-          // }
+        onValueChange={(e) => {          
+          setLocalValue(e.value);
           onChange?.(e.value);
         }}
         width="100%"
-        size="xs"
-      >
+        size={size ?? "xs"}
+      >        
+        <Show when={showOptionSelected}>
+
+        <Wrap gap="1">
+          {localValue.map((skill) => (
+            <Badge key={skill}>{optionsMap[skill]}</Badge>
+          ))}
+        </Wrap>
+        </Show>
         <Combobox.Label>{props.label}</Combobox.Label>
         <Combobox.Control>
           <Combobox.Input
@@ -152,26 +156,37 @@ export const FormComboBox = (props: FormComboBoxProps) => {
         name={name}
         control={control}
         render={({ field }) => {
+          console.log('field', field)
           return (
             <Combobox.Root
+              multiple={multiple}
               name={field.name}
               collection={collection}
-              onInputValueChange={(e) => filter(e.inputValue)}
-              value={field.value ? [field.value] : []}
+              onInputValueChange={handleInputChange}              
+              value={multiple ? field.value : (field.value ? [field.value] : [])}              
               onValueChange={(e) => {
-                field.onChange(e.value);
+                if (multiple) {
+                  field.onChange(e.value);
+                  return;
+                }
+                field.onChange(e.value[0] ?? '');
               }}
               width="100%"
-              size="xs"
+              size={size ?? "xs"}
             >
               <Combobox.Control>
                 <Combobox.Input
                   placeholder={props.placeholder ?? 'escriba para filtrar'}
+                  value={
+                    multiple
+                      ? ''
+                      : optionsMap[field.value] ?? ''
+                  }
                 />
                 <Combobox.IndicatorGroup>
-                    <Show when={props.loading}>
-                      <Spinner />
-                    </Show>
+                  <Show when={props.loading}>
+                    <Spinner />
+                  </Show>
                   <Combobox.ClearTrigger />
                   <Combobox.Trigger />
                 </Combobox.IndicatorGroup>

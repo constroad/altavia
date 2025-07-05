@@ -21,6 +21,8 @@ import { IconWrapper } from '../IconWrapper/IconWrapper';
 import { MoneyIcon } from '@/common/icons';
 import { PopOver } from '../ui/popover';
 import { RouteCostSummary } from '../routeCost/routeCostSummary';
+import { FormComboBox } from '../form/FormComboBox';
+import { useWhatsapp } from '@/common/hooks/useWhatsapp';
 
 type ITripForm = {
   trip: ITripSchemaValidation | null;
@@ -31,7 +33,7 @@ export default function TripForm(props: Readonly<ITripForm>) {
   const { trip, onSavingChange } = props;
   const router = useRouter();
   const { regions } = useUbigeos();
-  
+
   const methods = useForm<ITripSchemaValidation>({
     resolver: zodResolver(TripSchemaValidation),
     defaultValues: {
@@ -42,9 +44,11 @@ export default function TripForm(props: Readonly<ITripForm>) {
     },
   });
 
-  const {watch} = methods
-  const origin = watch('origin')
-  const destination = watch('destination')
+  const { watch, setValue } = methods;
+  const origin = watch('origin');
+  const destination = watch('destination');
+  const notifications = watch('notifications');
+  console.log('values', watch())
 
   // API
   const { data: drivers, isLoading: isLoadingDrivers } = useFetch(
@@ -62,6 +66,9 @@ export default function TripForm(props: Readonly<ITripForm>) {
       destination,
     },
   });
+  const { contacts, isLoadingContacts } = useWhatsapp({
+    page: 'TripForm',
+  });
 
   const { mutate: mutateTrip } = useMutate(API_ROUTES.trips);
 
@@ -76,7 +83,8 @@ export default function TripForm(props: Readonly<ITripForm>) {
     value: r,
   }));
 
-  const routeCost  = routeCostData?.reduce?.((acc: any, curr: any) => curr.amount + acc, 0)  ?? 0
+  const routeCost =
+    routeCostData?.reduce?.((acc: any, curr: any) => curr.amount + acc, 0) ?? 0;
 
   const onSubmit = (form: ITripSchemaValidation) => {
     onSavingChange?.(true);
@@ -114,6 +122,16 @@ export default function TripForm(props: Readonly<ITripForm>) {
     }
   };
 
+  const handleSelectWhatsAppNotification =
+  (key: string) => (value: string[]) => {
+    const notifications = trip?.notifications;
+
+    setValue('notifications', {
+      ...notifications,
+      [key]: value,
+    } as ITripSchemaValidation['notifications']);
+  };
+
   return (
     <FormProvider {...methods}>
       <form
@@ -125,16 +143,15 @@ export default function TripForm(props: Readonly<ITripForm>) {
           {/* CLIENTES */}
 
           <GridItem>
-            <SelectField
-              loading={isLoadingClients}
+            <FormComboBox
               isRequired
-              size="xs"
               name="client"
               label="Cliente"
               options={(clients ?? []).map((x: any) => ({
                 label: x.name,
                 value: x._id,
               }))}
+              loading={isLoadingClients}
             />
           </GridItem>
           <GridItem>
@@ -173,7 +190,11 @@ export default function TripForm(props: Readonly<ITripForm>) {
                 label={`Destino S/.(${routeCost})`}
                 options={regionsArr}
               />
-              <PopOver content={<RouteCostSummary origin={origin} destination={destination} />}>
+              <PopOver
+                content={
+                  <RouteCostSummary origin={origin} destination={destination} />
+                }
+              >
                 <Button size="xs">
                   <IconWrapper icon={MoneyIcon} size="10px" />
                 </Button>
@@ -230,6 +251,27 @@ export default function TripForm(props: Readonly<ITripForm>) {
 
           <GridItem>
             <FormTextarea name="notes" label="Notas" />
+          </GridItem>
+
+          <GridItem>
+            <FormComboBox
+              controlled
+              multiple
+              showOptionSelected
+              name="whatsAppAlerts"
+              label="Notificar a:"
+              placeholder="Escriba un grupo"
+              options={
+                contacts
+                .map((x: any) => ({
+                  value: x.id,
+                  label: x.name ?? '',
+                })) ?? []
+              }
+              value={notifications?.notifyDestination}
+              loading={isLoadingContacts}
+              onChange={handleSelectWhatsAppNotification('notifyDestination')}
+            />
           </GridItem>
         </Grid>
       </form>

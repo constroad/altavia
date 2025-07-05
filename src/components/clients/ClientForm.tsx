@@ -30,10 +30,7 @@ export const ClientForm = (props: ClientFormProps) => {
     defaultValues: client,
   });
 
-  const {
-    setValue,
-    formState: { errors },
-  } = methods;
+  const { setValue } = methods;
 
   // API
   const { groups, isLoadingGroups, refetchGroups } = useWhatsapp({
@@ -58,7 +55,6 @@ export const ClientForm = (props: ClientFormProps) => {
   const onSubmit = (data: IClientSchemaValidation) => {
     if (props.client?._id) {
       //edit
-      console.log('ID que se enviará:', props.client?._id);
       updateClient('PUT', data, {
         onSuccess: () => {
           toast.success('El cliente se actualizó correctamente');
@@ -85,7 +81,7 @@ export const ClientForm = (props: ClientFormProps) => {
   };
 
   const handleSelectWhatsAppNotification =
-    (key: string) => ([value]: string[]) => {
+    (key: string) => (value: string[]) => {
       const notifications = client?.notifications;
 
       setValue('notifications', {
@@ -98,12 +94,11 @@ export const ClientForm = (props: ClientFormProps) => {
     <FormProvider {...methods}>
       <form onSubmit={methods.handleSubmit(onSubmit)} noValidate>
         <VStack spaceY={1}>
-        <Flex gap={1} justifyContent="space-between" width="100%">
+          <Flex gap={1} justifyContent="space-between" width="100%">
+            <InputField size="xs" name="name" label="Nombre" isRequired />
+            <InputField size="xs" name="ruc" label="RUC" />
+          </Flex>
 
-          <InputField size="xs" name="name" label="Nombre" isRequired />
-          <InputField size="xs" name="ruc" label="RUC" />
-        </Flex>
-        
           <InputField size="xs" name="address" label="Dirección" />
           <Flex gap={1} justifyContent="space-between" width="100%">
             <InputField size="xs" name="phone" label="Teléfono" />
@@ -112,8 +107,10 @@ export const ClientForm = (props: ClientFormProps) => {
           <Flex width="100%" gap={2} alignItems="end">
             <FormComboBox
               controlled
+              multiple
+              showOptionSelected
               name="whatsAppAlerts"
-              label="WhatsApp para envio de alertas:"
+              label="WhatsApp alertas:"
               placeholder="Escriba un grupo"
               options={
                 groups?.map((x: any) => ({
@@ -121,7 +118,7 @@ export const ClientForm = (props: ClientFormProps) => {
                   label: x.name,
                 })) ?? []
               }
-              value={client?.notifications?.whatsAppAlerts ?? ''}
+              value={client?.notifications?.whatsAppAlerts}
               loading={isLoadingGroups}
               onChange={handleSelectWhatsAppNotification('whatsAppAlerts')}
             />
@@ -131,9 +128,11 @@ export const ClientForm = (props: ClientFormProps) => {
           </Flex>
           <Flex width="100%" gap={2} alignItems="end">
             <FormComboBox
+              multiple
               controlled
-              name="whatsAppAlerts"
-              label="WhatsApp para envio pagos y facturas:"
+              showOptionSelected
+              name="whatsAppManagement"
+              label="WhatsApp documentos:"
               placeholder="Escriba un grupo"
               options={
                 groups?.map((x: any) => ({
@@ -141,9 +140,9 @@ export const ClientForm = (props: ClientFormProps) => {
                   label: x.name,
                 })) ?? []
               }
-              value={client?.notifications?.whatsAppManagement ?? ''}
+              value={client?.notifications?.whatsAppManagement}
               loading={isLoadingGroups}
-              onChange={handleSelectWhatsAppNotification('whatsAppAlerts')}
+              onChange={handleSelectWhatsAppNotification('whatsAppManagement')}
             />
             <Button onClick={refetchGroups} size="xs" loading={isLoadingGroups}>
               <IconWrapper icon={RefreshIcon} size="18px" />

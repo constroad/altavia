@@ -41,6 +41,9 @@ export const TripSchemaValidation = z.object({
     longitude: z.number(),
     km: z.number(),
   })).optional(),
+  notifications: z.object({
+    notifyDestination: z.array(z.string()).optional(), //tracking    
+  }).optional(),
   kmTravelled: z.number().optional(),
   status: z.nativeEnum(TripStatus).optional(),
   notes: z.string().optional(),
@@ -64,6 +67,9 @@ export interface ITrip extends Document {
   kmTravelled?: number;
   status?: TripStatus;
   notes?: string;
+  notifications?: {
+    notifyDestination?: string[],
+  }
 }
 
 const TripSchema: Schema = new Schema({
@@ -91,6 +97,9 @@ const TripSchema: Schema = new Schema({
     default: TripStatus.Pending
   },
   notes: { type: String, required: false },
+  notifications: {
+    notifyDestination: { type: [String], required: false },    
+  },
 }, {
   timestamps: true,
 });

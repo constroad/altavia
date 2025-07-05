@@ -242,6 +242,7 @@ export const TripList = () => {
           columns={columns}
           onEdit={handleSelectTrip}
           onDelete={handleDeleteTrip}
+          pagination
         />
       </Box>
     </>

@@ -72,6 +72,7 @@ export default function TripForm(props: Readonly<ITripForm>) {
       origin,
       destination,
     },
+    enabled: !!destination
   })
 
   const statusArr = [
@@ -187,7 +188,7 @@ export default function TripForm(props: Readonly<ITripForm>) {
                   <RouteCostSummary origin={origin} destination={destination} />
                 }
               >
-                <Button size="xs">
+                <Button size="xs" disabled={!destination}>
                   <IconWrapper icon={MoneyIcon} size="10px" />
                 </Button>
               </PopOver>

@@ -23,8 +23,7 @@ export const TripPayments = (props: TripPaymentsProps) => {
   const [payments, setPayments] = useState<IPayment[]>([]);
   const type = 'TRIP_PAYMENT';
   const metadata = {
-    resourceId: props.trip?._id,
-    //
+    resourceId: props.trip?._id,    
   };
 
   useEffect(() => {
@@ -85,10 +84,11 @@ export const TripPayments = (props: TripPaymentsProps) => {
     useFetch.mutate(API_ROUTES.media);
     refetch();
   };
-
+  const isValidTrip = trip !== null;
   const totalPayments = payments
     ?.reduce?.((sum: number, p: IPayment) => sum + (p.amount || 0), 0)
     ?.toFixed(2);
+
 
   return (
     <Stack
@@ -97,8 +97,8 @@ export const TripPayments = (props: TripPaymentsProps) => {
       direction={{base: 'column', md: 'row'}}      
       justifyContent="space-between"
     >
-      <Stack gap={3}>
-        <Flex justify="space-between" align="center" mb={2}>
+      <Stack gap={3} width="40%">
+        <Flex justify="space-between" align="center" mb={2} >
           <Text fontWeight={500} fontSize={14}>
             Pagos: S/. ({totalPayments})
           </Text>
@@ -107,6 +107,7 @@ export const TripPayments = (props: TripPaymentsProps) => {
               variant="outline"
               size="xs"
               px="2px"
+              disabled={!isValidTrip}
               onClick={() =>
                 setPayments((prev) => [
                   ...prev,
@@ -122,7 +123,7 @@ export const TripPayments = (props: TripPaymentsProps) => {
             </Button>
             <Button
               size="xs"
-              disabled={payments.length === 0}
+              disabled={payments.length === 0 || !isValidTrip}
               onClick={onUpdateTrip}
               loading={isMutating}
             >
@@ -186,6 +187,7 @@ export const TripPayments = (props: TripPaymentsProps) => {
           Vouchers:
         </Text>
         <CopyPaste
+          isDisabled={!isValidTrip}
           type="TRIP_PAYMENT"
           resourceId={props.trip?._id}          
           metadata={metadata}

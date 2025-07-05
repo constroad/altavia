@@ -1,6 +1,12 @@
 // repositories/BaseRepository.ts
 import { Model, Document, Types, isValidObjectId } from 'mongoose';
 
+interface IPagination {
+  page: string
+  limit: string
+}
+
+
 export class BaseRepository<T extends Document> {
   protected model: Model<T>;
 
@@ -17,8 +23,15 @@ export class BaseRepository<T extends Document> {
     return this.model.findById(id).exec();
   }
 
-  findAll(filter: object = {}): Promise<T[]> {
-    return this.model.find(filter).sort({ createdAt: -1 }).exec();
+  findAll(filter: object = {}, pagination?: IPagination): Promise<T[]> {
+    const { page, limit } = pagination || {}
+    const pageNumber = page ? parseInt(page, 10) : 1;
+    const limitNumber = limit ? parseInt(limit, 10) : 50;
+    return this.model.find(filter)
+      .sort({ createdAt: -1 })
+      .skip((pageNumber - 1) * limitNumber)
+      .limit(limitNumber)
+      .exec();
   }
 
   updateById(id: string, data: Partial<T>): Promise<T | null> {

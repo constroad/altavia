@@ -18,8 +18,9 @@ export async function GET(request: NextRequest) {
 
 
   return withApi(async () => {
-    const { startDate, endDate, status, type, client, origin } = getQueryParameters(request)
+    const { startDate, endDate, status, type, client, origin, page, limit } = getQueryParameters(request)
 
+    const pagination = { page: page, limit: limit }
     const filter: any = {};
     if (type) {
       filter.type = type
@@ -42,7 +43,7 @@ export async function GET(request: NextRequest) {
       filter.startDate = { $gte: startOfDay, $lte: endOfDay };
     }
 
-    const trips = await tripRepository.findAll(filter);
+    const trips = await tripRepository.findAll(filter, pagination);
     return json(trips);
   }
 

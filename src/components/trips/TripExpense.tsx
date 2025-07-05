@@ -145,8 +145,8 @@ export const TripExpense = (props: TripExpenseProps) => {
         onValueChange={(e) => setTabSelected(e.value)}
       >
         <Tabs.List>
-          <Tabs.Trigger value="Pagos">Pagos</Tabs.Trigger>
-          <Tabs.Trigger value="Gastos">Gastos</Tabs.Trigger>
+          <Tabs.Trigger value="Pagos" disabled={!isValidTrip}>Pagos</Tabs.Trigger>
+          <Tabs.Trigger value="Gastos" disabled={!isValidTrip}>Gastos</Tabs.Trigger>
           <Tabs.Trigger value="Sunat" disabled={!isValidTrip}>
             Sunat
           </Tabs.Trigger>

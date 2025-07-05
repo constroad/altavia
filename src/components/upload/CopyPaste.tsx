@@ -90,6 +90,7 @@ export const CopyPaste = (props: CopyPasteProps) => {
   };
 
   function onPaste(event: ClipboardEvent) {
+    if (props.isDisabled) return;
     if (!props.onPaste) {
       onPasteImages(event);
       return;

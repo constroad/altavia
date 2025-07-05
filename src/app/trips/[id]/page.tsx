@@ -4,16 +4,18 @@ import { API_ROUTES, APP_ROUTES } from '@/common/consts';
 import { useFetch } from '@/common/hooks/useFetch';
 import { DisplayOptionIcon, GearIcon, SaveIcon, TrashIcon } from '@/common/icons';
 import { IconWrapper } from '@/components/IconWrapper/IconWrapper';
+import { TripAdvanced } from '@/components/trips/TripAdvanced';
 import { TripExpense } from '@/components/trips/TripExpense';
 import TripForm from '@/components/trips/TripForm';
 import { ITripSchemaValidation } from '@/models/trip';
-import { Button, Spinner, Flex, ButtonGroup, Menu, Portal, Box } from '@chakra-ui/react';
+import { Button, Spinner, Flex, ButtonGroup, Menu, Portal, Box, useDisclosure } from '@chakra-ui/react';
 import { useParams, useRouter } from 'next/navigation';
 import React, { useState } from 'react';
-import { DashboardLayout } from 'src/components';
+import { DashboardLayout, DrawerComponent } from 'src/components';
 
 export default function Page() {
   const [savingTrip, setSavingTrip] = useState(false)
+  const [open, setOpen] = useState(false);
   const params = useParams();
   const router = useRouter();
 
@@ -31,6 +33,10 @@ export default function Page() {
 
   if (isLoading) {
     return <Spinner />;
+  }
+
+  const handleChangeOpen = (e: any) => {
+    setOpen(e.open)
   }
 
   return (
@@ -78,7 +84,10 @@ export default function Page() {
               <Portal>
                 <Menu.Positioner>
                   <Menu.Content>
-                    <Menu.Item value="rename">
+                    <Menu.Item
+                      value="rename"
+                      onClick={ () => setOpen(true) }
+                    >
                       <IconWrapper icon={GearIcon} />
                       <Box flex="1" fontSize={12}>Avanzados</Box>
                     </Menu.Item>
@@ -98,7 +107,12 @@ export default function Page() {
         </Flex>
       }
     >
-      <TripForm trip={data} onSavingChange={setSavingTrip} />
+      <TripForm
+        trip={data}
+        onSavingChange={setSavingTrip}
+        openAdvance={open}
+        setOpenAdvance={setOpen}
+      />
       <br />
       <TripExpense trip={data} />
     </DashboardLayout>

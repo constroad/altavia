@@ -14,17 +14,20 @@ import { useUbigeos } from '@/common/hooks/useUbigeos';
 import { useFetch } from '@/common/hooks/useFetch';
 import { API_ROUTES, APP_ROUTES } from '@/common/consts';
 import { useMutate } from '@/common/hooks/useMutate';
-import { toast } from 'src/components';
+import { DrawerComponent, toast } from 'src/components';
 import { useRouter } from 'next/navigation';
 import DateField from '../form/DateField';
+import { TripAdvanced } from './TripAdvanced';
 
 type ITripForm = {
   trip: ITripSchemaValidation | null;
   onSavingChange?: (saving: boolean) => void;
+  openAdvance: boolean;
+  setOpenAdvance: (open: boolean) => void;
 };
 
 export default function TripForm(props: Readonly<ITripForm>) {
-  const { trip, onSavingChange } = props;
+  const { trip, onSavingChange, openAdvance, setOpenAdvance } = props;
   const router = useRouter();
 
   // API
@@ -49,6 +52,11 @@ export default function TripForm(props: Readonly<ITripForm>) {
         status: 'Pending' as TripStatus,
       }),
       startDate: trip?.startDate?.split?.('T')[0] ?? new Date().toDateString(),
+      paymentDueDate: trip?.paymentDueDate?.split?.('T')[0] ?? '',
+      payments: trip?.payments?.map(p => ({
+        ...p,
+        date: p.date?.split?.('T')[0] ?? '',
+      })) ?? []
     },
   });
 
@@ -210,7 +218,19 @@ export default function TripForm(props: Readonly<ITripForm>) {
             <FormTextarea name="notes" label="Notas" />
           </GridItem>
         </Grid>
+
+        {trip && (
+          <DrawerComponent
+            title='Avanzados'
+            open={openAdvance}
+            onChangeOpen={(e) => setOpenAdvance(e.open)}
+          >
+            <TripAdvanced trip={trip} />
+          </DrawerComponent>
+        )}
+
       </form>
+
     </FormProvider>
   );
 }

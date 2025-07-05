@@ -100,7 +100,7 @@ export const TripExpense = (props: TripExpenseProps) => {
         return (
           <Flex gap={1} alignItems="center" width="100%">
             {expenseMedias.map?.((m) => (
-              <ImageView width="60px" height="60px" key={m._id} media={m} />
+              <ImageView width="60px" height="60px" key={m._id} media={m} /> 
             ))}
           </Flex>
         );

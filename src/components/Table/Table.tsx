@@ -271,19 +271,21 @@ export const TableComponent = (props: Props) => {
             ))}
 
           {/* summaries */}
-          {!isLoading &&
-            columns.some((x) => x.summary) &&
-            columns.map((column, idx) => (
-              <Td key={`summary-${column.key}-${idx}`} padding={0}>
-                {column.summary?.(
-                  rows.reduce(
-                    (prev, curr) => prev + (curr[column.key] ?? 0),
-                    0
-                  ),
-                  data
-                )}
-              </Td>
-            ))}
+          {!isLoading && columns.some((x) => x.summary) && (
+            <Tr>
+              {columns.map((column, idx) => (
+                <Td key={`summary-${column.key}-${idx}`} padding={0}>
+                  {column.summary?.(
+                    rows.reduce(
+                      (prev, curr) => prev + (curr[column.key] ?? 0),
+                      0
+                    ),
+                    data
+                  )}
+                </Td>
+              ))}
+            </Tr>
+          )}
         </Tbody>
       </Table>
 

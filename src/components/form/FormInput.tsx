@@ -6,7 +6,7 @@ import { Input, Text } from '@chakra-ui/react' // este sí se queda
 interface FormInputProps {
   id: string;
   label?: string;
-  value: string | number | readonly string[] | undefined
+  value?: string | number | readonly string[] | undefined
   placeholder?: string;
   required?: boolean;
   disabled?: boolean;

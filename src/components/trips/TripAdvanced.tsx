@@ -1,109 +1,71 @@
 'use client';
 
-import { Box, Button, Flex, Grid, Input, Show, Text } from "@chakra-ui/react";
-import DateField from "../form/DateField";
-import { InputField } from "../form";
-import { useFieldArray, useFormContext } from "react-hook-form";
-import { IPayment, ITripSchemaValidation } from "@/models/trip";
-import { IconWrapper } from "../IconWrapper/IconWrapper";
-import { CloseIcon, PlusIcon } from "@/common/icons";
-import { CopyPaste } from "../upload/CopyPaste";
-import { useMedias } from "@/common/hooks/useMedias";
-import { API_ROUTES, TELEGRAM_GROUP_ID_ALTAVIA_MEDIA } from "@/common/consts";
-import { useFetch } from "@/common/hooks/useFetch";
-import { TelegramFileView } from "../telegramFileView";
+import { Button, Flex } from '@chakra-ui/react';
+import DateField from '../form/DateField';
+import { InputField } from '../form';
+import { useFormContext } from 'react-hook-form';
+import { ITripSchemaValidation } from '@/models/trip';
+import { useWhatsapp } from '@/common/hooks/useWhatsapp';
+import { FormComboBox } from '../form/FormComboBox';
+import { useMutate } from '@/common/hooks/useMutate';
+import { API_ROUTES } from '@/common/consts';
+import { toast } from '..';
+import { useFetch } from '@/common/hooks/useFetch';
 
 interface ITripAdvanced {
   trip: ITripSchemaValidation | null;
 }
 
 export const TripAdvanced = (props: ITripAdvanced) => {
-  const { watch, control, register } = useFormContext();
-  const { fields, append, remove } = useFieldArray({
-    control,
-    name: "payments",
-  });
+  const { trip } = props;
+  const { watch, setValue } = useFormContext();
 
-  const income = watch("Income") || 0;
-  const payments = watch("payments") || [];
-
-  const deuda = income - payments.reduce((sum: number, p: IPayment) => sum + p.amount, 0);
-  const deudaStr = deuda.toFixed(2).toString()
-
-  const type = 'TRIP_PAYMENT';
-  const metadata = {
-    resourceId: props.trip?._id,
-    //
-  };
-  const { onUpload, isUploading, medias, refetch } = useMedias({
-    chat_id: TELEGRAM_GROUP_ID_ALTAVIA_MEDIA,
-    enabled: true,
-    type,
-    resourceId: props.trip?._id,
-  });
-
-  const handleRefreshMedias = () => {
-    useFetch.mutate(API_ROUTES.media);
-    refetch();
-  };
-
-  const onSelect = (file: File | File[]) => {
-    const selectedFile = file instanceof File ? file : file[0];
-    if (!selectedFile) return;
-  
-    const metadata = {
-      resourceId: props.trip?._id,
-    };
-  
-    onUpload(selectedFile, {
-      fileName: selectedFile.name ?? `${type}_upload.jpg`,
-      type,
-      metadata,
-      onSuccess: () => {
-        console.log("✅ Media creado, forzando refetch");
-        refetch();
+  // API
+  const { mutate: mutateTrip, isMutating } = useMutate(
+    `${API_ROUTES.trips}/:id`,
+    {
+      urlParams: {
+        id: trip?._id,
       },
-    });
-  };
-  
-  return (
-    <Flex w='100%' flexDir='column' gapY={4}>
-      {/* destinycontact */}
-      <Flex gap={2}>
-        <InputField
-          name="destinationContact.name"
-          label="Contacto Destino"
-          placeholder="Nombre"
-          size="xs"
-        />
-        <InputField
-          name="destinationContact.phone"
-          label="Teléfono"
-          placeholder="999999999"
-          size="xs"
-        />
-      </Flex>
+    }
+  );
+  const { contacts, isLoadingContacts } = useWhatsapp({
+    page: 'TripForm',
+  });
 
+  const notifications = watch('notifications') || 0;
+  const tripForm = watch()
+  // const income = watch('Income') ?? 0;
+  // const payments = watch('payments') ?? [];
+
+  const handleSelectWhatsAppNotification =
+    (key: string) => (value: string[]) => {
+      const notifications = trip?.notifications;
+
+      setValue('notifications', {
+        ...notifications,
+        [key]: value,
+      } as ITripSchemaValidation['notifications']);
+    };
+
+  const onUpdateTrip = () => {
+    mutateTrip('PUT', tripForm, {
+      onSuccess: () => {
+        useFetch.mutate(API_ROUTES.trips);
+        toast.success("Viaje actualizado")
+      }
+    })
+  };
+
+  return (
+    <Flex w="100%" flexDir="column" gapY={4}>
       {/* deuda */}
-      <Flex gap={2} w='100%'>
+      <Flex gap={2} w="100%">
         <DateField
           size="xs"
           name="paymentDueDate"
           label="Fecha de Vencimiento"
         />
-
-        <Flex flexDir='column' w='50%'>
-          <Text fontWeight={500}>Deuda:</Text>
-          <Input
-            mt='6px'
-            value={deudaStr}
-            size="xs"
-            readOnly
-          />
-        </Flex>
-      </Flex>
-
-      <Flex>
         <InputField
           name="mapsUrl"
           label="Ubicación"
@@ -112,93 +74,28 @@ export const TripAdvanced = (props: ITripAdvanced) => {
         />
       </Flex>
 
-      {/* PAGOS */}
-      <Box>
-        <Flex justify="space-between" align="center" mb={2}>
-          <Text fontWeight={500} fontSize={14} >
-            Pagos: S/. ({payments.reduce((sum: number, p: IPayment) => sum + (p.amount || 0), 0).toFixed(2)})
-          </Text>
-          <Button
-            aria-label="Agregar pago"
-            size='xs'
-            px='2px'
-            onClick={() =>
-              append({
-                date: new Date().toISOString().split("T")[0],
-                amount: 0,
-                note: "",
-              })
-            }
-          >
-            <IconWrapper icon={PlusIcon} fontSize={12} />
-          </Button>
-        </Flex>
-
-        <Flex direction="column" gap={2}>
-          {fields.map((field, index) => (
-            <Flex key={field.id} gap={2}>
-              <Input
-                type="date"
-                size="xs"
-                {...register(`payments.${index}.date`)}
-              />
-              <Input
-                type="number"
-                size="xs"
-                {...register(`payments.${index}.amount`, { valueAsNumber: true })}
-              />
-              <Input
-                placeholder="Notas"
-                size="xs"
-                {...register(`payments.${index}.note`)}
-              />
-              <Button
-                px='2px'
-                aria-label="Eliminar pago"
-                size="xs"
-                onClick={() => remove(index)}
-                colorPalette='danger'
-              >
-                <IconWrapper icon={CloseIcon} />
-              </Button>
-            </Flex>
-          ))}
-        </Flex>
-
-        <Flex flexDir='column' mt='30px'>
-          <Text fontWeight={500} mb='10px'>Vouchers:</Text>
-          <CopyPaste
-            type="TRIP_PAYMENT"
-            resourceId={props.trip?._id}
-            onSelect={onSelect}
-            onPaste={onSelect}
-            metadata={metadata}
-            onSuccess={() => {
-              handleRefreshMedias();
-            }}
-            isUploading={isUploading}
-          />
-
-          <Show when={medias?.length > 0}>
-            <Grid templateColumns="repeat(2, 1fr)" gap="2">
-              {medias
-                ?.filter?.((x) => x.metadata.resourceId === props.trip?._id)
-                ?.map?.((media) => (
-                  <TelegramFileView
-                    key={media._id}
-                    media={media}
-                    description={media.name}
-                    canDelete
-                    onRefresh={handleRefreshMedias}
-                    imageStyle={{
-                      height: '200px',
-                    }}
-                  />
-                ))}
-            </Grid>
-          </Show>
-        </Flex>
-      </Box>
+      <FormComboBox
+        controlled
+        multiple
+        showOptionSelected
+        name="whatsAppAlerts"
+        label="Notificar a:"
+        placeholder="Escriba un grupo"
+        options={
+          contacts.map((x: any) => ({
+            value: x.id,
+            label: x.name ?? '',
+          })) ?? []
+        }
+        value={notifications?.notifyDestination}
+        loading={isLoadingContacts}
+        onChange={handleSelectWhatsAppNotification('notifyDestination')}
+      />
+      <Flex>
+        <Button size="xs" onClick={onUpdateTrip} loading={isMutating}>
+          Guardar
+        </Button>
+      </Flex>
     </Flex>
   );
 };

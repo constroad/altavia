@@ -22,7 +22,7 @@ export enum TripStatus {
 }
 
 export interface IPayment {
-  date: Date;
+  date: string;
   amount: number;
   note?: string;
 }

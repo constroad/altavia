@@ -23,7 +23,6 @@ import { MoneyIcon } from '@/common/icons';
 import { PopOver } from '../ui/popover';
 import { RouteCostSummary } from '../routeCost/routeCostSummary';
 import { FormComboBox } from '../form/FormComboBox';
-import { useWhatsapp } from '@/common/hooks/useWhatsapp';
 
 type ITripForm = {
   trip: ITripSchemaValidation | null;
@@ -37,9 +36,6 @@ export default function TripForm(props: Readonly<ITripForm>) {
   const router = useRouter();
   const { regions } = useUbigeos();
 
-  const { contacts, isLoadingContacts } = useWhatsapp({
-    page: 'TripForm',
-  });
   const { mutate: mutateTrip } = useMutate(API_ROUTES.trips);
   const methods = useForm<ITripSchemaValidation>({
     resolver: zodResolver(TripSchemaValidation),
@@ -56,10 +52,9 @@ export default function TripForm(props: Readonly<ITripForm>) {
     },
   });
 
-  const { watch, setValue } = methods;
+  const { watch } = methods;
   const origin = watch('origin');
   const destination = watch('destination');
-  const notifications = watch('notifications');
 
   // API
   const { data: drivers, isLoading: isLoadingDrivers } = useFetch(
@@ -127,16 +122,6 @@ export default function TripForm(props: Readonly<ITripForm>) {
     } finally {
       onSavingChange?.(false);
     }
-  };
-
-  const handleSelectWhatsAppNotification =
-  (key: string) => (value: string[]) => {
-    const notifications = trip?.notifications;
-
-    setValue('notifications', {
-      ...notifications,
-      [key]: value,
-    } as ITripSchemaValidation['notifications']);
   };
 
   return (
@@ -258,27 +243,6 @@ export default function TripForm(props: Readonly<ITripForm>) {
 
           <GridItem>
             <FormTextarea name="notes" label="Notas" />
-          </GridItem>
-
-          <GridItem>
-            <FormComboBox
-              controlled
-              multiple
-              showOptionSelected
-              name="whatsAppAlerts"
-              label="Notificar a:"
-              placeholder="Escriba un grupo"
-              options={
-                contacts
-                .map((x: any) => ({
-                  value: x.id,
-                  label: x.name ?? '',
-                })) ?? []
-              }
-              value={notifications?.notifyDestination}
-              loading={isLoadingContacts}
-              onChange={handleSelectWhatsAppNotification('notifyDestination')}
-            />
           </GridItem>
         </Grid>
 

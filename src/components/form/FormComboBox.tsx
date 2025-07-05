@@ -33,7 +33,7 @@ export type FormComboBoxProps = {
   width?: string;
   controlled?: boolean;
   multiple?: boolean;
-  showOptionSelected?: boolean
+  showOptionSelected?: boolean;
 };
 export const FormComboBox = (props: FormComboBoxProps) => {
   const {
@@ -63,7 +63,7 @@ export const FormComboBox = (props: FormComboBoxProps) => {
     filter: contains,
   });
 
-  const optionsMap = Object.fromEntries(options.map((x) => [x.value, x.label] ))
+  const optionsMap = Object.fromEntries(options.map((x) => [x.value, x.label]));
 
   useEffect(() => {
     if (options.length > 0) {
@@ -96,21 +96,13 @@ export const FormComboBox = (props: FormComboBoxProps) => {
         collection={collection}
         onInputValueChange={handleInputChange}
         value={localValue}
-        onValueChange={(e) => {          
+        onValueChange={(e) => {
           setLocalValue(e.value);
           onChange?.(e.value);
         }}
         width="100%"
-        size={size ?? "xs"}
-      >        
-        <Show when={showOptionSelected}>
-
-        <Wrap gap="1">
-          {localValue.map((skill) => (
-            <Badge key={skill}>{optionsMap[skill]}</Badge>
-          ))}
-        </Wrap>
-        </Show>
+        size={size ?? 'xs'}
+      >
         <Combobox.Label>{props.label}</Combobox.Label>
         <Combobox.Control>
           <Combobox.Input
@@ -124,9 +116,16 @@ export const FormComboBox = (props: FormComboBoxProps) => {
             <Combobox.Trigger />
           </Combobox.IndicatorGroup>
         </Combobox.Control>
+        <Show when={showOptionSelected}>
+          <Wrap gap="1">
+            {localValue.map((skill) => (
+              <Badge key={skill}>{optionsMap[skill]}</Badge>
+            ))}
+          </Wrap>
+        </Show>
         <Portal>
           <Combobox.Positioner>
-            <Combobox.Content zIndex={99999} className='scrollbar-fino'>
+            <Combobox.Content zIndex={99999} className="scrollbar-fino">
               <Combobox.Empty>No items found</Combobox.Empty>
               {collection.items.map((item) => (
                 <Combobox.Item item={item} key={item.value}>
@@ -161,8 +160,8 @@ export const FormComboBox = (props: FormComboBoxProps) => {
               multiple={multiple}
               name={field.name}
               collection={collection}
-              onInputValueChange={handleInputChange}              
-              value={multiple ? field.value : (field.value ? [field.value] : [])}              
+              onInputValueChange={handleInputChange}
+              value={multiple ? field.value : field.value ? [field.value] : []}
               onValueChange={(e) => {
                 if (multiple) {
                   field.onChange(e.value);
@@ -171,16 +170,12 @@ export const FormComboBox = (props: FormComboBoxProps) => {
                 field.onChange(e.value[0] ?? '');
               }}
               width="100%"
-              size={size ?? "xs"}
+              size={size ?? 'xs'}
             >
               <Combobox.Control>
                 <Combobox.Input
                   placeholder={props.placeholder ?? 'escriba para filtrar'}
-                  value={
-                    multiple
-                      ? ''
-                      : optionsMap[field.value] ?? ''
-                  }
+                  value={multiple ? '' : optionsMap[field.value] ?? ''}
                 />
                 <Combobox.IndicatorGroup>
                   <Show when={props.loading}>
@@ -190,9 +185,16 @@ export const FormComboBox = (props: FormComboBoxProps) => {
                   <Combobox.Trigger />
                 </Combobox.IndicatorGroup>
               </Combobox.Control>
+              <Show when={showOptionSelected}>
+                <Wrap gap="1">
+                  {field?.value?.map?.((skill: string) => (
+                    <Badge key={skill}>{optionsMap[skill]}</Badge>
+                  ))}
+                </Wrap>
+              </Show>
               <Portal>
                 <Combobox.Positioner>
-                  <Combobox.Content zIndex={99999} className='scrollbar-fino'>
+                  <Combobox.Content zIndex={99999} className="scrollbar-fino">
                     <Combobox.Empty>No items found</Combobox.Empty>
                     {collection.items.map((item) => (
                       <Combobox.Item item={item} key={item.value}>

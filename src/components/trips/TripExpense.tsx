@@ -17,7 +17,7 @@ import {
   useDisclosure,
   Box,
   Tabs,
-  Show
+  Show,
 } from '@chakra-ui/react';
 import { TableColumn, TableComponent } from '../Table';
 import { formatUtcDateTime } from '@/utils/general';
@@ -30,6 +30,7 @@ import { toast } from '../Toast';
 import { ExpenseModal } from './ExpenseModal';
 import { TripDocuments } from './TripDocuments';
 import { TripTracking } from './TripTracking';
+import { TripPayments } from './TripPayments';
 
 interface TripExpenseProps {
   trip: ITripSchemaValidation | null;
@@ -37,7 +38,7 @@ interface TripExpenseProps {
 
 export const TripExpense = (props: TripExpenseProps) => {
   const { trip } = props;
-  const [tabSelected, setTabSelected] = useState<string | null>('Gastos');
+  const [tabSelected, setTabSelected] = useState<string | null>('Pagos');
   const [expenseSelected, setExpenseSelected] = useState<
     IExpenseSchema | undefined
   >();
@@ -100,7 +101,7 @@ export const TripExpense = (props: TripExpenseProps) => {
         return (
           <Flex gap={1} alignItems="center" width="100%">
             {expenseMedias.map?.((m) => (
-              <ImageView width="60px" height="60px" key={m._id} media={m} /> 
+              <ImageView width="60px" height="60px" key={m._id} media={m} />
             ))}
           </Flex>
         );
@@ -144,10 +145,20 @@ export const TripExpense = (props: TripExpenseProps) => {
         onValueChange={(e) => setTabSelected(e.value)}
       >
         <Tabs.List>
+          <Tabs.Trigger value="Pagos">Pagos</Tabs.Trigger>
           <Tabs.Trigger value="Gastos">Gastos</Tabs.Trigger>
-          <Tabs.Trigger value="Sunat" disabled={!isValidTrip}>Sunat</Tabs.Trigger>
-          <Tabs.Trigger value="Tracking" disabled={!isValidTrip}>Tracking</Tabs.Trigger>
+          <Tabs.Trigger value="Sunat" disabled={!isValidTrip}>
+            Sunat
+          </Tabs.Trigger>
+          <Tabs.Trigger value="Tracking" disabled={!isValidTrip}>
+            Tracking
+          </Tabs.Trigger>
         </Tabs.List>
+        <Tabs.Content value="Pagos" paddingX={0}>
+          <Show when={tabSelected === 'Pagos'}>
+            <TripPayments trip={trip} />
+          </Show>
+        </Tabs.Content>
         <Tabs.Content value="Gastos" paddingX={0}>
           <Show when={tabSelected === 'Gastos'}>
             <TableComponent

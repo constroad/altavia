@@ -178,6 +178,9 @@ export const TripList = () => {
       width: '8%',
       textAlign: 'end',
       summary: (value) => Summary(value),
+      render: (value) => {
+        return <>{value.toFixed(1)}</>;
+      },
     },
   ];
 
@@ -270,7 +273,7 @@ export const TripList = () => {
           data={sortedData}
           columns={columns}
           onSelectRow={handleSelectTrip}
-          pagination          
+          pagination
         />
       </Box>
     </>

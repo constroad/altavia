@@ -194,7 +194,7 @@ export const TableComponent = (props: Props) => {
                 onClick={() => handleSelectRow(row)}
                 _hover={{
                   background: 'whitesmoke',
-                }}
+                }}                
                 height="fit-content"
                 p={0}
               >
@@ -207,6 +207,7 @@ export const TableComponent = (props: Props) => {
                     width={column.width as any}
                     height={'max-content' as any}
                     textAlign={(column.textAlign ?? 'start') as any}
+                    cursor={handleSelectRow !== undefined ? 'cursor' : 'inherit'}
                     {...(column.tdStyles as any)}
                   >
                     {column.render

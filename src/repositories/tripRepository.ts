@@ -38,7 +38,7 @@ class TripRepository extends BaseRepository<ITrip> {
         ...x.toObject(),
         __v: undefined,
         amountDue: totalPayments - (x.Income ?? 0),
-        revenue: (x.Income ?? 0) - totalExpense
+        revenue: ((x.Income ?? 0) - totalExpense).toFixed(1)
       }
     })
   }

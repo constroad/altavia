@@ -1,7 +1,7 @@
 import { useFetch } from 'src/common/hooks/useFetch';
 import { TableColumn, TableComponent } from '../Table';
 import { API_ROUTES, APP_ROUTES } from 'src/common/consts';
-import { Box, Button, Flex, Text } from '@chakra-ui/react';
+import { Box, Button, Flex, Show, Text } from '@chakra-ui/react';
 import {
   formatMoney,
   formatUtcDateTime,
@@ -109,15 +109,21 @@ export const TripList = () => {
     },
     {
       key: 'origin',
-      label: 'Origen',
+      label: 'Ruta',
       textAlign: 'center',
       width: '10%',
+      render: (item, row) => {
+        return <>{`${item} -> ${row.destination}`}</>;
+      },
     },
     {
-      key: 'destination',
+      key: 'kmTravelled',
+      label: 'KM',
+      bgColor: 'gray.300',
+      color: 'black',
+      width: '5%',
       textAlign: 'center',
-      label: 'Destino',
-      width: '10%',
+      summary: (value) => Summary(value, 'gray.500'),
     },
     { key: 'notes', label: 'Nota', width: '20%' },
     {
@@ -134,13 +140,36 @@ export const TripList = () => {
       },
     },
     {
-      key: 'kmTravelled',
-      label: 'KM',
+      key: 'Income',
+      label: 'TOTAL S/',
       bgColor: 'gray.300',
       color: 'black',
       width: '5%',
       textAlign: 'center',
-      summary: (value) => Summary(value, 'gray.500'),
+      summary: (value) => Summary(value),
+    },
+    {
+      key: 'amountDue',
+      label: 'DEBE S/',
+      bgColor: 'gray.300',
+      color: 'black',
+      width: '5%',
+      textAlign: 'center',
+      summary: (value) => Summary(value * -1, 'red.500'),
+      render: (value) => {
+        return (
+          <Box
+            height="100%"
+            bgColor={value < 0 ? 'pink' : '#d7ead4'}
+            rounded={2}
+            textAlign="right"
+            gap={1}
+          >
+            <Show when={value >= 0}>Pagado</Show>
+            <Show when={value < 0}>S/.{formatMoney(value * -1, 1)}</Show>
+          </Box>
+        );
+      },
     },
     {
       key: 'revenue',
@@ -235,14 +264,13 @@ export const TripList = () => {
           </Button>
         </Flex>
       </Flex>
-      <Box className='scrollbar-fino'>
+      <Box className="scrollbar-fino">
         <TableComponent
           isLoading={isLoading || isMutating}
           data={sortedData}
           columns={columns}
-          onEdit={handleSelectTrip}
-          onDelete={handleDeleteTrip}
-          pagination
+          onSelectRow={handleSelectTrip}
+          pagination          
         />
       </Box>
     </>

@@ -40,6 +40,7 @@ export const TripSchemaValidation = z.object({
   waybills: z.array(z.string()).optional(),
   invoices: z.array(z.string()).optional(),
   Income: z.number(),
+  amountDue: z.number().optional(),//monto debe
   revenue: z.number().optional(),
   locationLogs: z.array(z.object({
     timestamp: z.string(),

@@ -1,7 +1,7 @@
 // repositories/BaseRepository.ts
 import { Model, Document, Types, isValidObjectId } from 'mongoose';
 
-interface IPagination {
+export interface IPagination {
   page: string
   limit: string
 }

@@ -103,27 +103,31 @@ export const TripList = () => {
     {
       key: 'startDate',
       label: 'Fecha',
-      width: '5%',
+      width: '3%',
       textAlign: 'center',
       render: (item) => <Text>{formatUtcDateTime(item)}</Text>,
     },
-    {
-      key: 'origin',
-      label: 'Ruta',
-      textAlign: 'center',
-      width: '10%',
-      render: (item, row) => {
-        return <>{`${item} -> ${row.destination}`}</>;
-      },
-    },
+    // {
+    //   key: 'origin',
+    //   label: 'Ruta',
+    //   textAlign: 'center',
+    //   width: '10%',
+    //   render: (item, row) => {
+    //     return <>{`${item} -> ${row.destination}`}</>;
+    //   },
+    // },
     {
       key: 'kmTravelled',
-      label: 'KM',
-      bgColor: 'gray.300',
-      color: 'black',
-      width: '5%',
-      textAlign: 'center',
+      label: 'Ruta',
+      // bgColor: 'gray.600',
+      bgColor: 'primary.600',
+      color: 'white',
+      width: '12%',
+      textAlign: 'start',
       summary: (value) => Summary(value, 'gray.500'),
+      render: (value, row) => {
+        return <>{`${row.origin} -> ${row.destination} (${value}km)`}</>;
+      },
     },
     { key: 'notes', label: 'Nota', width: '20%' },
     {
@@ -145,7 +149,7 @@ export const TripList = () => {
       bgColor: 'gray.300',
       color: 'black',
       width: '5%',
-      textAlign: 'center',
+      textAlign: 'end',
       summary: (value) => Summary(value),
     },
     {
@@ -154,7 +158,7 @@ export const TripList = () => {
       bgColor: 'gray.300',
       color: 'black',
       width: '5%',
-      textAlign: 'center',
+      textAlign: 'end',
       summary: (value) => Summary(value * -1, 'red.500'),
       render: (value) => {
         return (
@@ -172,14 +176,34 @@ export const TripList = () => {
       },
     },
     {
+      key: 'expenses',
+      label: 'GASTO S/',
+      bgColor: 'gray.300',
+      color: 'black',
+      width: '5%',
+      textAlign: 'end',
+      summary: (value) => Summary(value),
+      render: (value) => <>S/.{formatMoney(value, 1)}</>,
+    },
+    {
       key: 'revenue',
       label: 'Rent S/.',
       bgColor: 'primary.600',
-      width: '8%',
+      width: '5%',
       textAlign: 'end',
       summary: (value) => Summary(value),
       render: (value) => {
-        return <>{value.toFixed(1)}</>;
+        return (
+          <Box
+            height="100%"
+            bgColor={value < 0 ? 'pink' : '#d7ead4'}
+            rounded={2}
+            textAlign="right"
+            gap={1}
+          >
+            S/.{formatMoney(value, 1)}
+          </Box>
+        );
       },
     },
   ];

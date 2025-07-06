@@ -1,7 +1,6 @@
 import Trip, { ITrip } from "src/models/trip";
 import { BaseRepository, IPagination } from "./baseRepository";
 import { expenseRepository } from "./expenseRepository";
-import { IGeneralExpense } from "@/models/generalExpense";
 
 class TripRepository extends BaseRepository<ITrip> {
   constructor() {
@@ -20,25 +19,22 @@ class TripRepository extends BaseRepository<ITrip> {
       .exec()
     
     const tripIds = allTrips.map((x) => x._id)
-    const tripExpenses = await expenseRepository.findAll({
+    const tripsExpenses = await expenseRepository.findAll({
       tripId: { $in: tripIds }
-    })
-
-    const expensesMap = Object.fromEntries(
-      tripExpenses.map((x) => [ x.tripId, tripExpenses.filter((y) => y.tripId === x.tripId) ])
-    )
+    })    
 
     return allTrips.map((x) => {
-      //@ts-ignore
-      const tripExpense: IGeneralExpense[] = expensesMap[ x._id ]
+      const item = x.toObject()      
+      const tripExpense = tripsExpenses.filter((y) => y.tripId?.toString() === item._id.toString()) ?? []
       const totalExpense = tripExpense?.reduce?.((prev, curr) => prev + curr.amount, 0) ?? 0    
       const totalPayments = x.payments?.reduce?.((prev, curr) => prev + curr.amount ,0) ?? 0
 
       return {
-        ...x.toObject(),
+        ...item,
         __v: undefined,
         amountDue: totalPayments - (x.Income ?? 0),
-        revenue: ((x.Income ?? 0) - totalExpense)
+        revenue: ((x.Income ?? 0) - totalExpense),
+        expenses: totalExpense
       }
     })
   }

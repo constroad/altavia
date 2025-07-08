@@ -36,7 +36,11 @@ export const InputField = (props: InputFieldProps) => {
     return (
       <Field.Root required={isRequired}>
         {label && (
-          <Field.Label htmlFor={name}>
+          <Field.Label
+            htmlFor={name}
+            fontWeight={600}
+            fontSize={ isMobile ? 12 : 14}
+          >
             {label}
             <Field.RequiredIndicator />
           </Field.Label>

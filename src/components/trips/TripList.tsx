@@ -1,7 +1,7 @@
 import { useFetch } from 'src/common/hooks/useFetch';
 import { TableColumn, TableComponent } from '../Table';
 import { API_ROUTES, APP_ROUTES } from 'src/common/consts';
-import { Box, Button, Flex, Show, Text } from '@chakra-ui/react';
+import { Box, Button, Flex, Link, Show, Text } from '@chakra-ui/react';
 import {
   formatMoney,
   formatUtcDateTime,
@@ -18,6 +18,9 @@ import { RefreshIcon } from '@/common/icons';
 import { useWhatsapp } from '@/common/hooks/useWhatsapp';
 import { FormComboBox } from '../form/FormComboBox';
 import { useUbigeos } from '@/common/hooks/useUbigeos';
+import { PopOver } from '../ui/popover';
+import { ClientPopover } from './ClientPopover';
+import { DriverPopover } from './DriverPopover';
 
 interface TripListProps {}
 
@@ -63,6 +66,12 @@ export const TripList = () => {
   const { data: clients, isLoading: loadingClients } = useFetch(
     API_ROUTES.clients
   );
+  const { data: drivers, isLoading: loadingDrivers } = useFetch(
+    API_ROUTES.drivers
+  );
+  const { data: vehicles, isLoading: loadingVehicles } = useFetch(
+    API_ROUTES.vehicles
+  );
   const { mutate, isMutating } = useMutate(API_ROUTES.trips);
   const { regions } = useUbigeos();
 
@@ -87,6 +96,12 @@ export const TripList = () => {
   const clientsMap = Object.fromEntries(
     (clients ?? []).map((x: any) => [x._id, x])
   );
+  const driversMap = Object.fromEntries(
+    (drivers ?? []).map((x: any) => [x._id, x])
+  );
+  const vehiclesMap = Object.fromEntries(
+    (vehicles ?? []).map((x: any) => [x._id, x])
+  );
   const statusMap = {
     Pending: 'yellow.300',
     InProgress: 'orange.300',
@@ -98,7 +113,19 @@ export const TripList = () => {
       key: 'client',
       label: 'Cliente',
       width: '20%',
-      render: (item) => <Text>{clientsMap[item]?.name ?? ''}</Text>,
+      render: (value, row) => {
+        const currentClient = clientsMap[value];
+        return (
+          <PopOver
+            title='Datos del cliente'
+            content={<ClientPopover client={currentClient} />}
+          >
+            <Link onClick={(e) => e.stopPropagation()} color='blue.500'>
+              {currentClient?.name ?? ''}
+            </Link>
+          </PopOver>
+        )
+      }
     },
     {
       key: 'startDate',
@@ -126,7 +153,21 @@ export const TripList = () => {
       textAlign: 'start',
       summary: (value) => Summary(value, 'gray.500'),
       render: (value, row) => {
-        return <>{`${row.origin} -> ${row.destination} (${value}km)`}</>;
+        const currentDrivers = row.driver
+          .map(id => driversMap[id])
+          .filter(Boolean);
+        const currentVehicles = row.vehicle
+          .map(id => vehiclesMap[id])
+          .filter(Boolean);
+        return (
+          <PopOver
+            content={<DriverPopover drivers={currentDrivers} vehicles={currentVehicles} />}
+          >
+            <Link onClick={(e) => e.stopPropagation()} color='blue.500'>
+              {`${row.origin} -> ${row.destination} (${value}km)`}
+            </Link>
+          </PopOver>
+        );
       },
     },
     { key: 'notes', label: 'Nota', width: '20%' },

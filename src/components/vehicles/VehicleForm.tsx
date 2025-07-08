@@ -1,6 +1,6 @@
 'use client';
 
-import { Button, Flex, Grid, Show, VStack } from '@chakra-ui/react';
+import { Button, Flex, Grid, Show, Text, VStack } from '@chakra-ui/react';
 import { useForm, FormProvider } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { InputField } from '../form';
@@ -17,6 +17,7 @@ import { useMedias } from '@/common/hooks/useMedias';
 import { useFetch } from '@/common/hooks/useFetch';
 import { useWhatsapp } from '@/common/hooks/useWhatsapp';
 import { TelegramFileView } from '../telegramFileView';
+import { useScreenSize } from '@/common/hooks';
 
 interface VehicleFormProps {
   vehicle?: IVehicleSchemaValidation;
@@ -29,6 +30,7 @@ export const VehicleForm = (props: VehicleFormProps) => {
   const { onSendWhatsAppText } = useWhatsapp({
     page: 'VehicleForm',
   });
+  const { isMobile } = useScreenSize()
 
   const methods = useForm<IVehicleSchemaValidation>({
     resolver: zodResolver(vehicleSchemaValidation),
@@ -166,23 +168,26 @@ Se ha agregado un nuevo *Media* al vehículo de placa a *${plate}*
             <InputField name="km" label="Kilometraje" type='number' size='xs' />
           </Flex>
           <Flex gap={1} justifyContent="space-between" width="100%">
+            <InputField name="tuce" label="Número de TUCE" size='xs' />
+          </Flex>
+          <Flex gap={1} justifyContent="space-between" width="100%">
             <InputField name="soatExpiry" label="Soat expira" type='date' size='xs' />
             <InputField name="inspectionExpiry" label="Revisión Tec. expira" type='date' size='xs' />
           </Flex>
 
           <VStack w="100%" align="start" spaceY={2}>
             <Flex justify="space-between" w="100%" align="center">
-              <b>Mantenimientos</b>
+              <Text fontSize={isMobile ? 12 : 14} fontWeight={600}>Mantenimientos</Text>
               <Button
-                size="xs"
+                size="2xs"
                 onClick={() =>
                   append({
-                    date: new Date(), // ← Esto sí es un Date válido
+                    date: new Date(),
                     description: '',
                   })
                 }
               >
-                <FiPlus style={{ marginRight: '4px' }} />
+                <FiPlus style={{ marginRight: '2px' }} />
                 Añadir
               </Button>
             </Flex>
@@ -264,7 +269,7 @@ Se ha agregado un nuevo *Media* al vehículo de placa a *${plate}*
               colorPalette='danger'
               variant='outline'
               onClick={props.closeModal}
-              size='sm'
+              size={ isMobile ? 'xs' : 'sm' }
             >
               Cancelar
             </Button>
@@ -272,7 +277,7 @@ Se ha agregado un nuevo *Media* al vehículo de placa a *${plate}*
               colorScheme="blue"
               type="submit"
               loading={vehicle?._id ? updatingVehicle : creatingVehicle }
-              size='sm'
+              size={ isMobile ? 'xs' : 'sm' }
             >
               Guardar
             </Button>

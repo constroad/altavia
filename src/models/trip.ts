@@ -80,6 +80,7 @@ export interface ITrip extends Document {
   waybills?: string[];
   invoices?: string[];
   Income?: number; //ingreso
+  amountDue?: number;
   revenue?: number; //ganancia
   locationLogs?: ILocationLog[];
   kmTravelled?: number;
@@ -108,6 +109,7 @@ const TripSchema: Schema = new Schema({
   waybills: [String],
   invoices: [String],
   Income: { type: Number, default: 0 },
+  amountDue: { type: Number, default: 0 },
   revenue: { type: Number, default: 0 },
   locationLogs: [{
     timestamp: Date,

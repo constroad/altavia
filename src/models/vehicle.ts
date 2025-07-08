@@ -6,6 +6,7 @@ export const vehicleSchemaValidation = z.object({
   plate: z.string().min(1),
   brand: z.string().optional(),
   modelVehicle: z.string().optional(),
+  tuce: z.string().optional(),
   year: z.number().min(1900).max(new Date().getFullYear()),
   soatExpiry: z.coerce.date().optional(),
   inspectionExpiry: z.coerce.date().optional(),
@@ -26,6 +27,7 @@ export interface IVehicle extends Document {
   plate: string;
   brand?: string;
   modelVehicle?: string;
+  tuce?: string;
   year: number;
   soatExpiry?: Date;
   inspectionExpiry?: Date;
@@ -37,6 +39,7 @@ const VehicleSchema: Schema = new Schema({
   plate: { type: String, required: true, unique: true },
   brand: { type: String, required: false },
   modelVehicle: { type: String, required: false },
+  tuce: { type: String, required: false },
   year: { type: Number, required: true },
   soatExpiry: { type: Date, required: false },
   inspectionExpiry: { type: Date, required: false },

@@ -1,6 +1,6 @@
 'use client';
 
-import { Button, ButtonProps, Popover, Portal } from '@chakra-ui/react';
+import { Box, Button, ButtonProps, Popover, Portal } from '@chakra-ui/react';
 import { PropsWithChildren, useState } from 'react';
 
 interface PopOverProps extends PropsWithChildren {
@@ -14,17 +14,24 @@ export const PopOver = (props: PopOverProps) => {
   return (
     <Popover.Root open={open} onOpenChange={(e) => setOpen(e.open)}>
       <Popover.Trigger asChild>
-        <Button p={0} m={0} variant="plain" width="fit-content" height="fit-content" {...buttonProps}>
+        {/* <Button p={0} m={0} variant="plain" width="fit-content" height="fit-content" {...buttonProps}> */}
           {props.children}
-        </Button>
+        {/* </Button> */}
       </Popover.Trigger>
       <Portal>
         <Popover.Positioner>
-          <Popover.Content>
+          <Popover.Content onClick={(e) => e.stopPropagation()}>
             <Popover.Arrow />
-            <Popover.Body>
+            <Popover.Body p='10px'>
               {props.title && (
-                <Popover.Title fontWeight="medium">{props.title}</Popover.Title>
+                <Popover.Title
+                  fontWeight='bold'
+                  fontSize={10}
+                  borderBottom='0.5px solid lightgray'
+                  mb='10px'
+                >
+                  {props.title}
+                </Popover.Title>
               )}
               {props.content}
             </Popover.Body>

@@ -2,7 +2,7 @@ import { Text } from '@chakra-ui/react';
 import { TableColumn } from '../Table';
 import { formatUtcDateTime } from '@/utils/general';
 
-export const generateDriverColumns = () => {
+export const generateAlertColumns = () => {
   const columns: TableColumn[] = [
     {
       key: 'name',
@@ -15,18 +15,18 @@ export const generateDriverColumns = () => {
       ),
     },
     {
-      key: 'dni',
-      label: 'DNI',
+      key: 'dueDate',
+      label: 'Vencimiento',
       width: '10%',
       render: (item, row) => (
         <>
-          {item}
+          <Text>{formatUtcDateTime(item)}</Text>
         </>
       ),
     },
     {
-      key: 'phone',
-      label: 'Teléfono',
+      key: 'type',
+      label: 'Tipo',
       width: '10%',
       render: (item) => (
         <>
@@ -35,24 +35,12 @@ export const generateDriverColumns = () => {
       ),
     },
     {
-      key: 'licenseNumber',
-      label: 'Licencia',
+      key: 'status',
+      label: 'Estado',
       width: '10%',
       render: (item) => (
         <>
           {item}
-        </>
-      ),
-    },
-    {
-      key: 'licenseExpiry',
-      label: 'Licencia Exp.',
-      width: '10%',
-      render: (item) => (
-        <>
-          { item !== undefined && (
-            <Text>{formatUtcDateTime(item)}</Text> 
-          )}
         </>
       ),
     }

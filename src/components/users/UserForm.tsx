@@ -19,8 +19,7 @@ interface UserFormProps {
 
 export const UserForm = (props: UserFormProps) => {
   const { user } = props;
-  console.log('user en userForm para pasar al mutate:', user);
-
+  
   const methods = useForm<IUserSchemaValidation>({
     resolver: zodResolver(userSchemaValidation),
     defaultValues: user,
@@ -49,12 +48,9 @@ export const UserForm = (props: UserFormProps) => {
 
   const onSubmit = (data: IUserSchemaValidation) => {
     data.userName = data.userName.toLowerCase();
-    console.log('id:', props.user?._id);
-    console.log('data:', data);
 
     if (props.user?._id) {
       //edit
-      console.log('ID que se enviará:', props.user?._id);
       updateUser('PUT', data, {
         onSuccess: () => {
           toast.success('El usuario se actualizo correctamente');

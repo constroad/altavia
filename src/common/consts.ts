@@ -40,6 +40,7 @@ export const API_ROUTES = {
   routeCost: '/api/routeCost',    
   notificationWhatsApp: '/api/notifications/whatsapp',
   user: '/api/user',
+  alerts: '/api/alerts',
 }
 
 export const ALTAVIA = {

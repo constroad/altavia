@@ -10,7 +10,6 @@ import { ALTAVIA_BOT, API_ROUTES, GROUP_ADMINISTRACION_ALTAVIA, TELEGRAM_GROUP_I
 import { toast } from '../Toast';
 import { IVehicleSchemaValidation, vehicleSchemaValidation } from '@/models/vehicle';
 import { useFieldArray } from 'react-hook-form';
-import { Input, IconButton } from '@chakra-ui/react';
 import { FiPlus, FiTrash } from 'react-icons/fi';
 import { CopyPaste } from '../upload/CopyPaste';
 import { useMedias } from '@/common/hooks/useMedias';

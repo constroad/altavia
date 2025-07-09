@@ -7,7 +7,7 @@ export const driverSchemaValidation = z.object({
   dni: z.string().min(8, "El DNI debe tener exactamente 8 dígitos"),
   phone: z.string().min(9, "El teléfono debe tener exactamente 9 dígitos"),
   licenseNumber: z.string().min(1),
-  licenseExpiry: z.coerce.date(),
+  licenseExpiry: z.string(),
   createdAt: z.string().optional(),
   updatedAt: z.string().optional(),
 });

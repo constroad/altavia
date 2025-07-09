@@ -14,8 +14,6 @@ export const UserRepository = {
     return User.create(data);
   },
   updateById: async (id: string, data: Partial<IUser>): Promise<IUser | null> => {
-    console.log('id:', id)
-    console.log('data:', data)
     if (data.password) {
       const salt = await bcrypt.genSalt(10);
       data.password = await bcrypt.hash(data.password, salt);

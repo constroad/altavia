@@ -6,7 +6,14 @@ export function formatUtcDateTime(
 ): string {
   // const date = new Date(isoString);
   // ⚠️ Reemplazar la 'Z' para que no se convierta a UTC automáticamente
+  if (!isoString || typeof isoString !== 'string') {
+    throw new Error('Invalid or missing ISO date string');
+  }
+
   const localDate = new Date(isoString.replace(/Z$/, ''));
+  if (isNaN(localDate.getTime())) {
+    throw new Error('Invalid ISO date string');
+  }
 
   if (isNaN(localDate.getTime())) {
     throw new Error("Invalid ISO date string");

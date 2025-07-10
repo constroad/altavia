@@ -9,11 +9,16 @@ import { NextRequest } from "next/server";
 export async function POST(request: NextRequest) {
   return withApi(async () => 
     withBodyValidation(alertSchemaValidation, request, async (data) => {
-      const created = await alertRepository.create(data);
+      const alertData = {
+        ...data,
+        dueDate: new Date(data.dueDate),
+      };
+      const created = await alertRepository.create(alertData);
       return json(created, 201);
     })
   )
 }
+
 
 export async function GET(request: NextRequest) {
   return withApi(async () => {

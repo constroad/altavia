@@ -2,7 +2,7 @@ import { connectToMongoDB } from "@/config/mongoose";
 import { alertRepository } from "@/repositories/alertRepository";
 import { GROUP_ADMINISTRACION_ALTAVIA } from "@/common/consts";
 import { json } from "@/common/utils/response";
-import { sendWhatsAppTextMessage } from "../notifications/whatsapp/route";
+import { sendWhatsAppTextMessage } from '@/services/whatsapp';
 
 function getDaysUntil(date: Date): number {
   const today = new Date();

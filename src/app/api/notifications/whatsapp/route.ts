@@ -7,7 +7,7 @@ const API_WHATSAPP = process.env.API_WHATSAPP
 const PHONE_SENDER = '51949376824'
 const BASE_URL = `${API_TEXT_ME_BOT_URL}/message/${PHONE_SENDER}`
 
-export const sendWhatsAppTextMessage = async (params: {
+const sendWhatsAppTextMessage = async (params: {
   phone: string,
   message: string,
 }) => {

@@ -1,7 +1,7 @@
 import axios from 'axios';
-import { GROUP_ERRORS_TRACKING } from '@/common/consts';
+import { CONSTROAD_SERVER_URL, GROUP_ERRORS_TRACKING } from '@/common/consts';
 
-const API_TEXT_ME_BOT_URL = process.env.CONSTROAD_SERVER_URL;
+const API_TEXT_ME_BOT_URL = CONSTROAD_SERVER_URL;
 const PHONE_SENDER = '51949376824';
 const BASE_URL = `${API_TEXT_ME_BOT_URL}/message/${PHONE_SENDER}`;
 

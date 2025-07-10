@@ -87,8 +87,8 @@ export async function GET() {
 
   if (message) {
     const response = await sendWhatsAppTextMessage({
-      // phone: GROUP_ADMINISTRACION_ALTAVIA,
-      phone: GROUP_ERRORS_TRACKING,
+      phone: GROUP_ADMINISTRACION_ALTAVIA,
+      // phone: GROUP_ERRORS_TRACKING,
       message,
     });
 

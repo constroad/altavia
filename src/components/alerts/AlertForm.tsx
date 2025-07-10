@@ -22,8 +22,6 @@ export const AlertForm = (props: IAlertForm) => {
   const [status, setStatus] = useState('');
   const { isMobile } = useScreenSize()
 
-  console.log('alert:', alert)
-
   const methods = useForm<IAlertSchemaValidation>({
     resolver: zodResolver(alertSchemaValidation),
     defaultValues: {
@@ -31,8 +29,6 @@ export const AlertForm = (props: IAlertForm) => {
       dueDate: alert?.dueDate?.split?.('T')[0] ?? ''
     },
   });
-
-  console.log('watch:', methods.watch())
 
   const {
     formState: { errors },

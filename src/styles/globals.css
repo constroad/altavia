@@ -144,3 +144,8 @@ html, body {
 .scrollbar-fino::-webkit-scrollbar-track {
   background-color: #f0f0f0;
 }
+
+.custom-select-trigger [data-part="trigger"] {
+  max-height: 28px !important;
+  min-height: 28px !important;
+}

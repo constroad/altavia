@@ -41,6 +41,8 @@ export const Pagination = (props: PaginationProps) => {
     }
   };
 
+  const safeItemsPerPage = parseInt(String(itemsPerPage)) || 0;
+
   return (
     <Flex
       justifyContent="space-between"
@@ -107,7 +109,7 @@ export const Pagination = (props: PaginationProps) => {
       </Flex>
       <Flex>
         <Text fontSize={{ base: 10, md: 12 }}>{`Registros: ${
-          itemsPerPage > props.totalRecords ? props.totalRecords : itemsPerPage
+          safeItemsPerPage > props.totalRecords ? props.totalRecords : safeItemsPerPage
         } de ${props.totalRecords}`}</Text>
       </Flex>
     </Flex>

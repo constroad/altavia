@@ -5,7 +5,7 @@ import { Button, Flex, Box, Text, Spinner } from '@chakra-ui/react';
 import { SortColumnStatus, TableColumn, TableData } from './TableTypes';
 import { CONSTROAD_COLORS } from 'src/styles/shared';
 import { EditIcon, ShareIcon, TrashIcon } from 'src/common/icons';
-import { useEffect, useMemo, useState } from 'react';
+import { useLayoutEffect, useMemo, useState } from 'react';
 import { Pagination } from './Pagination';
 import { WithSort } from './WithSort';
 import { Table, Tbody, Td, Th, Thead, Tr } from '../ui/table';
@@ -14,6 +14,7 @@ import { IconWrapper } from '../IconWrapper/IconWrapper';
 
 export type TableAction = 'paginate' | 'filter';
 import { v4 as uuidv4 } from 'uuid';
+import { CustomSelect } from '../ui/CustomSelect';
 
 export type TablePagination = {
   page: number;
@@ -58,13 +59,30 @@ export const TableComponent = (props: Props) => {
     [indexOfLastItem, itemsPerPage]
   );
 
-  useEffect(() => {
-    if (props.currentPage) {
+  useLayoutEffect(() => {
+    const paginacionActiva = !props.currentPage;
+  
+    if (!paginacionActiva) {
       setRows(data);
       return;
     }
-    setRows([...data.slice(indexOfFirstItem, indexOfLastItem)]);
-  }, [data, props.currentPage, indexOfLastItem, indexOfFirstItem]);
+  
+    const first = (currentPage - 1) * itemsPerPage;
+    const last = first + itemsPerPage;
+    const sliced = data.slice(first, last);
+  
+    console.log({
+      currentPage,
+      itemsPerPage,
+      first,
+      last,
+      total: data.length,
+      sliced,
+    });
+  
+    setRows(sliced);
+  }, [data, currentPage, itemsPerPage, props.currentPage]);
+  
 
   const handleSelectRow = (item: any) => {
     if (onSelectRow) {
@@ -94,7 +112,30 @@ export const TableComponent = (props: Props) => {
     setSortColumn(key);
   };
 
-  const totalPages = props.totalPages ?? Math.ceil(data.length / itemsPerPage);
+  const onChangePagination = (value: string) => {
+    const parsed = parseInt(value);
+  
+    if (!isNaN(parsed) && parsed > 0) {
+      setItemsPerPage(parsed);
+      setCurrentPage(1);
+      props.onChange?.("paginate", {
+        page: 1,
+        itemsPerPage: parsed,
+      });
+    } else {
+      console.warn("Valor inválido para itemsPerPage:", value);
+    }
+  };  
+
+  const paginationOptions = [
+    { label: "20 por página", value: "20" },
+    { label: "50 por página", value: "50" },
+    { label: "100 por página", value: "100" },
+    { label: "200 por página", value: "200" },
+  ];
+
+  const safeItemsPerPage = parseInt(String(itemsPerPage)) || 1;
+  const totalPages = props.totalPages ?? Math.ceil(data.length / safeItemsPerPage);
 
   return (
     <Flex
@@ -291,14 +332,25 @@ export const TableComponent = (props: Props) => {
       </Table>
 
       {props.pagination && (
-        <Pagination
-          currentPage={currentPage}
-          paginate={paginate}
-          itemsPerPage={itemsPerPage}
-          totalPages={totalPages}
-          totalRecords={props.totalRecords ?? data.length}
-          data={data}
-        />
+        <>
+          <Flex justifyContent="flex-end" maxHeight='28px' mb={1} px='4px'>
+            <CustomSelect
+              placeholder="Registros por página"
+              items={paginationOptions}
+              value={String(itemsPerPage)}
+              onChange={onChangePagination}
+              width={{ base: '120px', md: '130px' }}
+            />
+          </Flex>
+          <Pagination 
+            currentPage={currentPage}
+            paginate={paginate}
+            itemsPerPage={itemsPerPage}
+            totalPages={totalPages}
+            totalRecords={props.totalRecords ?? data.length}
+            data={data}
+          />
+        </>
       )}
     </Flex>
   );

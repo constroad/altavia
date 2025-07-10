@@ -24,10 +24,8 @@ export const AlertForm = (props: IAlertForm) => {
   const methods = useForm<IAlertSchemaValidation>({
     resolver: zodResolver(alertSchemaValidation),
     defaultValues: {
-      ...(alert ?? {
-        status: 'Pending',
-      }),
-      dueDate: alert?.dueDate?.split?.('T')[0] ?? '',
+      ...(alert ?? { status: 'Pending' }),
+      dueDate: (alert?.dueDate instanceof Date ? alert.dueDate.toISOString().split('T')[0] : '') as any,
     },
   });
 

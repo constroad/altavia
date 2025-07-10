@@ -1,16 +1,29 @@
 import { NextRequest, NextResponse } from 'next/server'
 import axios from 'axios'
-import { CONSTROAD_SERVER_URL, WtspMessageType } from 'src/common/consts'
+import { CONSTROAD_SERVER_URL, GROUP_ERRORS_TRACKING, WtspMessageType } from 'src/common/consts'
 
+const API_TEXT_ME_BOT_URL = CONSTROAD_SERVER_URL
 const API_WHATSAPP = process.env.API_WHATSAPP
 const PHONE_SENDER = '51949376824'
-const BASE_URL = `${CONSTROAD_SERVER_URL}/message/${PHONE_SENDER}`
+const BASE_URL = `${API_TEXT_ME_BOT_URL}/message/${PHONE_SENDER}`
 
-const sendWhatsAppTextMessage = async (phone: string, message: string) => {
+export const sendWhatsAppTextMessage = async (params: {
+  phone: string,
+  message: string,
+}) => {
+  const { phone, message } = params
+
+  const isDev = process.env.NODE_ENV === 'development'
+  let validPhoneNumber = phone
+  if (!phone.includes('+51') && !phone.includes('@g.us')) {
+    validPhoneNumber = `+51${phone}`
+  }
+
   const url = `${BASE_URL}/text`
-  return axios.post(url, {
-    to: phone,
-    message,
+  console.log('url:', url)
+  await axios.post(url, {
+    "to": isDev ? GROUP_ERRORS_TRACKING : validPhoneNumber,
+    "message": message
   })
 }
 
@@ -54,7 +67,7 @@ export async function POST(req: NextRequest) {
     }
 
     if (type === WtspMessageType.SendText) {
-      await sendWhatsAppTextMessage(validPhoneNumber, message)
+      await sendWhatsAppTextMessage({ phone: validPhoneNumber, message})
       return NextResponse.json({
         status: 'ok',
         message: 'Message sent successfully',

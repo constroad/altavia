@@ -11,7 +11,7 @@ export const alertSchemaValidation = z.object({
   _id: z.string().optional(),
   name: z.string().min(1, "El nombre es requerido"),
   description: z.string().optional(),
-  dueDate: z.string(),
+  dueDate: z.coerce.date({ required_error: "La fecha de vencimiento es obligatoria" }),
   type: z.enum(alertTypes),
   status: z.enum(alertStatus),
   createdAt: z.string().optional(),

@@ -10,6 +10,7 @@ import { toast } from '../Toast';
 import { useScreenSize } from '@/common/hooks';
 import { IAlertSchemaValidation, alertSchemaValidation } from '@/models/alert';
 import { useState } from 'react';
+import DateField from '../form/DateField';
 
 interface IAlertForm {
   alert?: IAlertSchemaValidation;
@@ -21,13 +22,17 @@ export const AlertForm = (props: IAlertForm) => {
   const [status, setStatus] = useState('');
   const { isMobile } = useScreenSize()
 
+  console.log('alert:', alert)
+
   const methods = useForm<IAlertSchemaValidation>({
     resolver: zodResolver(alertSchemaValidation),
     defaultValues: {
       ...(alert ?? { status: 'Pending' }),
-      dueDate: (alert?.dueDate instanceof Date ? alert.dueDate.toISOString().split('T')[0] : '') as any,
+      dueDate: alert?.dueDate?.split?.('T')[0] ?? ''
     },
   });
+
+  console.log('watch:', methods.watch())
 
   const {
     formState: { errors },
@@ -91,7 +96,12 @@ export const AlertForm = (props: IAlertForm) => {
         <VStack spaceY={2}>
           <InputField name="name" label="Nombre" isRequired size='xs' />
           <Flex gap={1} justifyContent="space-between" width="100%">
-            <InputField name="dueDate" label="Vence:" type='date' size='xs' isRequired />
+            <DateField
+              name="dueDate"
+              label="Vence:"
+              size="xs"
+              isRequired
+            />
             <SelectField
               size="xs"
               label="Estado"

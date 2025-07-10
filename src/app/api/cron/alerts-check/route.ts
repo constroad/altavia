@@ -1,17 +1,20 @@
 import { connectToMongoDB } from "@/config/mongoose";
 import { alertRepository } from "@/repositories/alertRepository";
-import { GROUP_ADMINISTRACION_ALTAVIA } from "@/common/consts";
+import { GROUP_ADMINISTRACION_ALTAVIA, GROUP_ERRORS_TRACKING } from "@/common/consts";
 import { json } from "@/common/utils/response";
 import { sendWhatsAppTextMessage } from '@/services/whatsapp';
 
 function getDaysUntil(date: Date): number {
-  const today = new Date();
-  today.setHours(0, 0, 0, 0);
+  const now = new Date();
+  const utcToday = new Date(Date.UTC(now.getUTCFullYear(), now.getUTCMonth(), now.getUTCDate()));
+
   const due = new Date(date);
-  due.setHours(0, 0, 0, 0);
-  const diff = due.getTime() - today.getTime();
+  const dueUTC = new Date(Date.UTC(due.getUTCFullYear(), due.getUTCMonth(), due.getUTCDate()));
+
+  const diff = dueUTC.getTime() - utcToday.getTime();
   return Math.floor(diff / (1000 * 60 * 60 * 24));
 }
+
 
 type AlertLevel = '7d' | '3d' | '1d' | '0d';
 
@@ -33,11 +36,11 @@ function buildAlertMessage(alerts: any[]) {
   };
 
   alerts.forEach((alert) => {
-    const label = `${alert.type.toUpperCase()}: ${alert.name}`;
+    const label = `${alert.name}`;
     grouped[alert.alertLevel as AlertLevel]?.push(`- ${label}`);
   });
 
-  let message = `🤖 *AltaviaBot*:\n\n📢 *Alertas de vencimiento detectadas:*\n\n`;
+  let message = `🤖 *AltaviaBot*:\n\n📢 *Alerta de vencimiento:*\n\n`;
 
   (['7d', '3d', '1d', '0d'] as AlertLevel[]).forEach((level) => {
     if (grouped[level].length) {
@@ -45,7 +48,7 @@ function buildAlertMessage(alerts: any[]) {
     }
   });
 
-  message += `Por favor tomar acciones inmediatas.\n@Wilson @Equipo`;
+  message += `Por favor tomar acciones inmediatas. @Altavía`;
   return message.trim();
 }
 
@@ -53,12 +56,15 @@ export async function GET() {
   await connectToMongoDB();
 
   const today = new Date();
-  const sevenDaysFromNow = new Date();
-  sevenDaysFromNow.setDate(today.getDate() + 7);
+  const utcToday = new Date(Date.UTC(today.getFullYear(), today.getMonth(), today.getDate(), 0, 0, 0, 0));
+
+  const utcSevenDaysFromNow = new Date(utcToday);
+  utcSevenDaysFromNow.setUTCDate(utcSevenDaysFromNow.getUTCDate() + 7);
+  utcSevenDaysFromNow.setUTCHours(23, 59, 59, 999);
 
   const alerts = await alertRepository.findAll({
     status: 'Pending',
-    dueDate: { $gte: today, $lte: sevenDaysFromNow },
+    dueDate: { $gte: utcToday, $lte: utcSevenDaysFromNow }
   });
 
   const filtered = alerts
@@ -81,7 +87,8 @@ export async function GET() {
 
   if (message) {
     const response = await sendWhatsAppTextMessage({
-      phone: GROUP_ADMINISTRACION_ALTAVIA,
+      // phone: GROUP_ADMINISTRACION_ALTAVIA,
+      phone: GROUP_ERRORS_TRACKING,
       message,
     });
 

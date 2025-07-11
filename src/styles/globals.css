@@ -148,4 +148,16 @@ html, body {
 .custom-select-trigger [data-part="trigger"] {
   max-height: 28px !important;
   min-height: 28px !important;
+  padding-left: 8px !important;
+  padding-right: 8px !important;
+}
+
+/* Para pantallas móviles (máximo 480px) */
+@media (max-width: 480px) {
+  .custom-select-trigger [data-part="trigger"] {
+    max-height: 24px !important;
+    min-height: 24px !important;
+    padding-left: 6px !important;
+    padding-right: 6px !important;
+  }
 }

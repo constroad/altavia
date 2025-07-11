@@ -14,7 +14,6 @@ import { IconWrapper } from '../IconWrapper/IconWrapper';
 
 export type TableAction = 'paginate' | 'filter';
 import { v4 as uuidv4 } from 'uuid';
-import { CustomSelect } from '../ui/CustomSelect';
 
 export type TablePagination = {
   page: number;
@@ -71,15 +70,6 @@ export const TableComponent = (props: Props) => {
     const last = first + itemsPerPage;
     const sliced = data.slice(first, last);
   
-    console.log({
-      currentPage,
-      itemsPerPage,
-      first,
-      last,
-      total: data.length,
-      sliced,
-    });
-  
     setRows(sliced);
   }, [data, currentPage, itemsPerPage, props.currentPage]);
   
@@ -125,14 +115,7 @@ export const TableComponent = (props: Props) => {
     } else {
       console.warn("Valor inválido para itemsPerPage:", value);
     }
-  };  
-
-  const paginationOptions = [
-    { label: "20 por página", value: "20" },
-    { label: "50 por página", value: "50" },
-    { label: "100 por página", value: "100" },
-    { label: "200 por página", value: "200" },
-  ];
+  };
 
   const safeItemsPerPage = parseInt(String(itemsPerPage)) || 1;
   const totalPages = props.totalPages ?? Math.ceil(data.length / safeItemsPerPage);
@@ -333,15 +316,6 @@ export const TableComponent = (props: Props) => {
 
       {props.pagination && (
         <>
-          <Flex justifyContent="flex-end" maxHeight='28px' mb={1} px='4px'>
-            <CustomSelect
-              placeholder="Registros por página"
-              items={paginationOptions}
-              value={String(itemsPerPage)}
-              onChange={onChangePagination}
-              width={{ base: '120px', md: '130px' }}
-            />
-          </Flex>
           <Pagination 
             currentPage={currentPage}
             paginate={paginate}
@@ -349,6 +323,7 @@ export const TableComponent = (props: Props) => {
             totalPages={totalPages}
             totalRecords={props.totalRecords ?? data.length}
             data={data}
+            onChangePagination={onChangePagination}
           />
         </>
       )}

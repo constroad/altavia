@@ -2,6 +2,8 @@ import React from 'react';
 import { Flex, Text } from '@chakra-ui/react';
 import { CONSTROAD_COLORS } from 'src/styles/shared';
 import { NextIcon, PrevIcon } from 'src/common/icons';
+import { CustomSelect } from '../ui/CustomSelect';
+import { useScreenSize } from '@/common/hooks';
 
 interface PaginationProps {
   currentPage: number;
@@ -10,10 +12,12 @@ interface PaginationProps {
   data?: any[];
   totalPages: number;
   totalRecords: number;
+  onChangePagination: (value: string) => void;
 }
 
 export const Pagination = (props: PaginationProps) => {
-  const { currentPage, paginate, itemsPerPage, totalPages } = props;
+  const { currentPage, paginate, itemsPerPage, totalPages, onChangePagination } = props;
+  const { isMobile } = useScreenSize();
 
   const disabledPrevButton = currentPage === 1;
   const bgPrevButton = disabledPrevButton
@@ -42,6 +46,13 @@ export const Pagination = (props: PaginationProps) => {
   };
 
   const safeItemsPerPage = parseInt(String(itemsPerPage)) || 0;
+
+  const paginationOptions = [
+    { label: "20", value: "20" },
+    { label: "50", value: "50" },
+    { label: "100", value: "100" },
+    { label: "200", value: "200" },
+  ];
 
   return (
     <Flex
@@ -75,7 +86,7 @@ export const Pagination = (props: PaginationProps) => {
         <Flex
           justifyContent="center"
           alignItems="center"
-          width="40px"
+          width={{ base: '30px', md: '40px' }}
           rounded="4px"
           border="1px solid"
           borderColor={CONSTROAD_COLORS.lightGray}
@@ -103,12 +114,21 @@ export const Pagination = (props: PaginationProps) => {
           <NextIcon />
         </Flex>
 
-        <Text fontSize={{ base: 10, md: 12 }} ml={{ base: '5px', md: '10px' }}>
+        <Text fontSize={{ base: 10, md: 12 }} lineHeight='20px' ml={{ base: '5px', md: '10px' }} textAlign='center'>
           Página {currentPage} de {totalPages === 0 ? 1 : totalPages}
         </Text>
       </Flex>
-      <Flex>
-        <Text fontSize={{ base: 10, md: 12 }}>{`Registros: ${
+      <Flex gapX={1} alignItems='center'>
+        <Flex justifyContent="flex-end" maxHeight='28px' px='4px'>
+          <CustomSelect
+            placeholder=""
+            items={paginationOptions}
+            value={String(itemsPerPage)}
+            onChange={onChangePagination}
+            width={{ base: '55px', md: '60px' }}
+          />
+        </Flex>
+        <Text fontSize={{ base: 10, md: 12 }}>{`${ isMobile ? '' : 'Registros:'} ${
           safeItemsPerPage > props.totalRecords ? props.totalRecords : safeItemsPerPage
         } de ${props.totalRecords}`}</Text>
       </Flex>

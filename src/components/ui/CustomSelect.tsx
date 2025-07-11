@@ -46,7 +46,7 @@ export const CustomSelect: FC<CustomSelectProps> = ({
       }}
       size={size}
       width={width}
-      className="custom-select-trigger"
+      className="custom-select-trigger custom-select-trigger"
       positioning={{
         placement: "top-start", // o "top", "top-end"
       }}

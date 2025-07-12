@@ -13,6 +13,7 @@ export async function PUT(request: NextRequest) {
 
   })
 }
+
 export async function DELETE(request: NextRequest) {
   return withApi(async () => {
 
@@ -31,5 +32,15 @@ export async function GET(request: NextRequest) {
 
     const trips = await tripRepository.findById(id);
     return json(trips);
+  });
+}
+
+export async function PATCH(request: NextRequest) {
+  return withApi(async () => {
+    const { id } = getPathParams(request, ['api', 'trips', '[id]']);
+    const data = await request.json();
+
+    const updatedTrip = await tripRepository.updateById(id, data);
+    return json(updatedTrip, 200);
   });
 }

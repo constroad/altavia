@@ -26,6 +26,7 @@ import { FormComboBox } from '../form/FormComboBox';
 
 type ITripForm = {
   trip: ITripSchemaValidation | null;
+  formMethods: ReturnType<typeof useForm<ITripSchemaValidation>>;
   onSavingChange?: (saving: boolean) => void;
   openAdvance: boolean;
   setOpenAdvance: (open: boolean) => void;
@@ -37,20 +38,7 @@ export default function TripForm(props: Readonly<ITripForm>) {
   const { regions } = useUbigeos();
 
   const { mutate: mutateTrip } = useMutate(API_ROUTES.trips);
-  const methods = useForm<ITripSchemaValidation>({
-    resolver: zodResolver(TripSchemaValidation),
-    defaultValues: {
-      ...(trip ?? {
-        status: 'Pending' as TripStatus,
-      }),
-      startDate: trip?.startDate?.split?.('T')[0] ?? new Date().toDateString(),
-      paymentDueDate: trip?.paymentDueDate?.split?.('T')[0] ?? '',
-      payments: trip?.payments?.map(p => ({
-        ...p,
-        date: p.date?.split?.('T')[0] ?? '',
-      })) ?? []
-    },
-  });
+  const methods = props.formMethods
 
   const { watch } = methods;
   const origin = watch('origin');

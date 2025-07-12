@@ -1,4 +1,4 @@
-'use client';
+  'use client';
 
 import { API_ROUTES } from '@/common/consts';
 import { useFetch } from '@/common/hooks/useFetch';
@@ -31,14 +31,17 @@ import { ExpenseModal } from './ExpenseModal';
 import { TripDocuments } from './TripDocuments';
 import { TripTracking } from './TripTracking';
 import { TripPayments } from './TripPayments';
+import { TripItems } from './TripItems';
+import { FormProvider, useForm } from 'react-hook-form';
 
 interface TripExpenseProps {
   trip: ITripSchemaValidation | null;
+  formMethods: ReturnType<typeof useForm<ITripSchemaValidation>>;
 }
 
 export const TripExpense = (props: TripExpenseProps) => {
-  const { trip } = props;
-  const [tabSelected, setTabSelected] = useState<string | null>('Pagos');
+  const { trip, formMethods } = props;
+  const [tabSelected, setTabSelected] = useState<string | null>('Items');
   const [expenseSelected, setExpenseSelected] = useState<
     IExpenseSchema | undefined
   >();
@@ -137,131 +140,140 @@ export const TripExpense = (props: TripExpenseProps) => {
   const totalRevenue = (trip?.Income ?? 0) - totalExpenses;
 
   return (
-    <VStack align="start" w="100%">
-      <Tabs.Root
-        defaultValue="Gastos"
-        width="100%"
-        value={tabSelected}
-        onValueChange={(e) => setTabSelected(e.value)}
-      >
-        <Tabs.List>
-          <Tabs.Trigger value="Pagos" disabled={!isValidTrip}>Pagos</Tabs.Trigger>
-          <Tabs.Trigger value="Gastos" disabled={!isValidTrip}>Gastos</Tabs.Trigger>
-          <Tabs.Trigger value="Sunat" disabled={!isValidTrip}>
-            Sunat
-          </Tabs.Trigger>
-          <Tabs.Trigger value="Tracking" disabled={!isValidTrip}>
-            Tracking
-          </Tabs.Trigger>
-        </Tabs.List>
-        <Tabs.Content value="Pagos" paddingX={0}>
-          <Show when={tabSelected === 'Pagos'}>
-            <TripPayments trip={trip} />
-          </Show>
-        </Tabs.Content>
-        <Tabs.Content value="Gastos" paddingX={0}>
-          <Show when={tabSelected === 'Gastos'}>
-            <TableComponent
-              isLoading={isLoadingExpenses}
-              data={expenses ?? []}
-              columns={columns}
-              actions
-              onEdit={handleSelectExpense}
-              onDelete={handleDeleteExpense}
-              toolbar={
-                <Flex
-                  alignItems="center"
-                  justifyContent="space-between"
-                  fontSize="12px"
-                >
-                  <Flex flexDir="column">
-                    <Flex>
-                      <Box bg="primary.500" color="white" width="80px">
-                        Gastos:
-                      </Box>
-                      <Box
-                        bg="gray.300"
-                        width={{ base: '80px', md: '100px' }}
-                        textAlign="right"
-                      >
-                        S/.{totalExpenses}
-                      </Box>
+    <FormProvider {...formMethods}>
+      <VStack align="start" w="100%">
+        <Tabs.Root
+          defaultValue="Gastos"
+          width="100%"
+          value={tabSelected}
+          onValueChange={(e) => setTabSelected(e.value)}
+        >
+          <Tabs.List>
+            <Tabs.Trigger value="Items" disabled={!isValidTrip}>Items</Tabs.Trigger>
+            <Tabs.Trigger value="Pagos" disabled={!isValidTrip}>Pagos</Tabs.Trigger>
+            <Tabs.Trigger value="Gastos" disabled={!isValidTrip}>Gastos</Tabs.Trigger>
+            <Tabs.Trigger value="Sunat" disabled={!isValidTrip}>
+              Sunat
+            </Tabs.Trigger>
+            <Tabs.Trigger value="Tracking" disabled={!isValidTrip}>
+              Tracking
+            </Tabs.Trigger>
+          </Tabs.List>
+          <Tabs.Content value="Items" paddingX={0}>
+            <Show when={tabSelected === 'Items'}>
+              <TripItems tripId={trip?._id!} />
+            </Show>
+          </Tabs.Content>
+          <Tabs.Content value="Pagos" paddingX={0}>
+            <Show when={tabSelected === 'Pagos'}>
+              <TripPayments trip={trip} />
+            </Show>
+          </Tabs.Content>
+          <Tabs.Content value="Gastos" paddingX={0}>
+            <Show when={tabSelected === 'Gastos'}>
+              <TableComponent
+                isLoading={isLoadingExpenses}
+                data={expenses ?? []}
+                columns={columns}
+                actions
+                onEdit={handleSelectExpense}
+                onDelete={handleDeleteExpense}
+                toolbar={
+                  <Flex
+                    alignItems="center"
+                    justifyContent="space-between"
+                    fontSize="12px"
+                  >
+                    <Flex flexDir="column">
+                      <Flex>
+                        <Box bg="primary.500" color="white" width="80px">
+                          Gastos:
+                        </Box>
+                        <Box
+                          bg="gray.300"
+                          width={{ base: '80px', md: '100px' }}
+                          textAlign="right"
+                        >
+                          S/.{totalExpenses}
+                        </Box>
+                      </Flex>
+                      <Flex>
+                        <Box bg="primary.500" color="white" width="80px">
+                          Rentabilidad:
+                        </Box>
+                        <Box
+                          bg="gray.300"
+                          width={{ base: '80px', md: '100px' }}
+                          textAlign="right"
+                          fontWeight={600}
+                        >
+                          S/.{totalRevenue.toFixed(2)}
+                        </Box>
+                      </Flex>
                     </Flex>
-                    <Flex>
-                      <Box bg="primary.500" color="white" width="80px">
-                        Rentabilidad:
-                      </Box>
-                      <Box
-                        bg="gray.300"
-                        width={{ base: '80px', md: '100px' }}
-                        textAlign="right"
-                        fontWeight={600}
+                    <Flex gap={1} alignItems="end">
+                      <Flex
+                        color="red"
+                        fontWeight={500}
+                        flexDir={{ base: 'column', md: 'row' }}
                       >
-                        S/.{totalRevenue.toFixed(2)}
-                      </Box>
+                        <Text>Deuda:</Text>
+                        <Text>S/.{totalToPay}</Text>
+                      </Flex>
+                      <Button
+                        size="xs"
+                        onClick={() => {
+                          onOpen();
+                          setExpenseSelected(undefined);
+                        }}
+                        disabled={!isValidTrip}
+                      >
+                        +
+                      </Button>
+                      <Button
+                        variant="outline"
+                        onClick={() => {
+                          refetchExpenses();
+                          refetchMedias();
+                        }}
+                        size="xs"
+                      >
+                        <IconWrapper icon={RefreshIcon} size="18px" />
+                      </Button>
                     </Flex>
                   </Flex>
-                  <Flex gap={1} alignItems="end">
-                    <Flex
-                      color="red"
-                      fontWeight={500}
-                      flexDir={{ base: 'column', md: 'row' }}
-                    >
-                      <Text>Deuda:</Text>
-                      <Text>S/.{totalToPay}</Text>
-                    </Flex>
-                    <Button
-                      size="xs"
-                      onClick={() => {
-                        onOpen();
-                        setExpenseSelected(undefined);
-                      }}
-                      disabled={!isValidTrip}
-                    >
-                      +
-                    </Button>
-                    <Button
-                      variant="outline"
-                      onClick={() => {
-                        refetchExpenses();
-                        refetchMedias();
-                      }}
-                      size="xs"
-                    >
-                      <IconWrapper icon={RefreshIcon} size="18px" />
-                    </Button>
-                  </Flex>
-                </Flex>
-              }
-            />
-          </Show>
-        </Tabs.Content>
-        <Tabs.Content value="Sunat">
-          <Show when={tabSelected === 'Sunat'}>
-            <TripDocuments trip={trip} />
-          </Show>
-        </Tabs.Content>
-        <Tabs.Content value="Tracking">
-          <Show when={tabSelected === 'Tracking'}>
-            <TripTracking trip={trip} />
-          </Show>
-        </Tabs.Content>
-      </Tabs.Root>
+                }
+              />
+            </Show>
+          </Tabs.Content>
+          <Tabs.Content value="Sunat">
+            <Show when={tabSelected === 'Sunat'}>
+              <TripDocuments trip={trip} />
+            </Show>
+          </Tabs.Content>
+          <Tabs.Content value="Tracking">
+            <Show when={tabSelected === 'Tracking'}>
+              <TripTracking trip={trip} />
+            </Show>
+          </Tabs.Content>
+        </Tabs.Root>
 
-      <ExpenseModal
-        trip={trip}
-        expense={expenseSelected}
-        resourceId={trip?._id!}
-        open={open}
-        onRefresh={() => {
-          refetchExpenses();
-          refetchMedias();
-        }}
-        onClose={() => {
-          setExpenseSelected(undefined);
-          onClose();
-        }}
-      />
-    </VStack>
+        <ExpenseModal
+          trip={trip}
+          expense={expenseSelected}
+          resourceId={trip?._id!}
+          open={open}
+          onRefresh={() => {
+            refetchExpenses();
+            refetchMedias();
+          }}
+          onClose={() => {
+            setExpenseSelected(undefined);
+            onClose();
+          }}
+        />
+      </VStack>
+    </FormProvider>
+    
   );
 };

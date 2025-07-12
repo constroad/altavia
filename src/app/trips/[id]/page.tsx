@@ -4,21 +4,21 @@ import { API_ROUTES, APP_ROUTES } from '@/common/consts';
 import { useFetch } from '@/common/hooks/useFetch';
 import { DisplayOptionIcon, GearIcon, SaveIcon, TrashIcon } from '@/common/icons';
 import { IconWrapper } from '@/components/IconWrapper/IconWrapper';
-import { TripAdvanced } from '@/components/trips/TripAdvanced';
 import { TripExpense } from '@/components/trips/TripExpense';
 import TripForm from '@/components/trips/TripForm';
-import { ITripSchemaValidation } from '@/models/trip';
-import { Button, Spinner, Flex, ButtonGroup, Menu, Portal, Box, useDisclosure } from '@chakra-ui/react';
+import { IPayment, ITripSchemaValidation, TripSchemaValidation, TripStatus } from '@/models/trip';
+import { Button, Spinner, Flex, ButtonGroup, Menu, Portal, Box } from '@chakra-ui/react';
+import { zodResolver } from '@hookform/resolvers/zod';
 import { useParams, useRouter } from 'next/navigation';
 import React, { useState } from 'react';
-import { DashboardLayout, DrawerComponent } from 'src/components';
+import { useForm } from 'react-hook-form';
+import { DashboardLayout } from 'src/components';
 
 export default function Page() {
   const [savingTrip, setSavingTrip] = useState(false)
   const [open, setOpen] = useState(false);
   const params = useParams();
   const router = useRouter();
-
   const { id: expenseId } = params;
 
   const { data, isLoading } = useFetch<ITripSchemaValidation>(
@@ -30,6 +30,22 @@ export default function Page() {
       enabled: !!expenseId && expenseId !== 'new',
     }
   );
+
+  const methods = useForm<ITripSchemaValidation>({
+    resolver: zodResolver(TripSchemaValidation),
+    defaultValues: {
+      ...(data ?? {
+        status: 'Pending' as TripStatus,
+      }),
+      startDate: data?.startDate?.split('T')[0] ?? new Date().toDateString(),
+      paymentDueDate: data?.paymentDueDate?.split('T')[0] ?? '',
+      payments: data?.payments?.map((p: IPayment) => ({
+        ...p,
+        date: p.date?.split('T')[0] ?? '',
+      })) ?? [],
+      items: data?.items ?? [],
+    },
+  });
 
   if (isLoading) {
     return <Spinner />;
@@ -109,12 +125,16 @@ export default function Page() {
     >
       <TripForm
         trip={data}
+        formMethods={methods}
         onSavingChange={setSavingTrip}
         openAdvance={open}
         setOpenAdvance={setOpen}
       />
       <br />
-      <TripExpense trip={data} />
+      <TripExpense
+        trip={data}
+        formMethods={methods}
+      />
     </DashboardLayout>
   );
 }

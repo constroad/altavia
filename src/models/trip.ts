@@ -27,6 +27,14 @@ export interface IPayment {
   note?: string;
 }
 
+export interface IItems {
+  code: string;
+  product: string;
+  unit: string;
+  amount: string;
+  weight: string;
+}
+
 export const TripSchemaValidation = z.object({
   _id: z.string().optional(),
   origin: z.string(),
@@ -63,7 +71,15 @@ export const TripSchemaValidation = z.object({
     date: z.string(),
     amount: z.number(),
     note: z.string().optional(),
-  })).optional()
+  })).optional(),
+  items: z.array(z.object({
+    _id: z.string().optional(),
+    code: z.string(),
+    product: z.string(),
+    unit: z.string(),
+    amount: z.string(),
+    weight: z.string(),
+  })).optional(),
 });
 
 export type ITripSchemaValidation = z.infer<typeof TripSchemaValidation>;
@@ -95,6 +111,7 @@ export interface ITrip extends Document {
   };
   mapsUrl?: string;
   payments?: IPayment[];
+  items?: IItems[];
 }
 
 const TripSchema: Schema = new Schema({
@@ -136,6 +153,13 @@ const TripSchema: Schema = new Schema({
     date: { type: Date, required: true },
     amount: { type: Number, required: true },
     note: { type: String }
+  }],
+  items: [{
+    code: { type: String, required: false },
+    product: { type: String, required: false },
+    unit: { type: String, required: false },
+    amount: { type: String, required: false },
+    weight: { type: String, required: false },
   }],
 }, {
   timestamps: true,

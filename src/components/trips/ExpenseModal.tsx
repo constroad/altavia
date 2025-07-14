@@ -24,6 +24,7 @@ import { TelegramFileView } from '../telegramFileView';
 import { formatISODate, formatUtcDateTime } from '@/utils/general';
 import { useWhatsapp } from '@/common/hooks/useWhatsapp';
 import { ITripSchemaValidation } from '@/models/trip';
+import { useBufferedFiles } from '@/common/hooks/useBufferedFiles';
 
 interface ExpenseModalProps {
   trip: ITripSchemaValidation | null;
@@ -40,9 +41,27 @@ export const ExpenseModal = (props: ExpenseModalProps) => {
   const [status, setStatus] = useState('paid');
   const [date, setDate] = useState(formatISODate(new Date()));
   const [amount, setAmount] = useState<number | ''>('');
-  const [uploadedFile, setUploadedFile] = useState<File | undefined>();
   const { onSendWhatsAppText } = useWhatsapp({
     page: 'ExpenseModal',
+  });
+
+  const {
+    uploadedFiles,
+    objectUrls,
+    onSelect,
+    onPaste,
+    removeFile,
+    resetFiles,
+  } = useBufferedFiles({
+    immediateUpload: !!expense, // si ya existe, sube al instante
+    onUpload: (file) => {
+      onUpload(file, {
+        type,
+        fileName: file.name,
+        metadata,
+        onSuccess: handleRefreshMedias,
+      });
+    },
   });
 
   useEffect(() => {
@@ -67,11 +86,6 @@ export const ExpenseModal = (props: ExpenseModalProps) => {
     enabled: true,
     type,
     resourceId,
-    onPasteMetadata: {
-      fileName: uploadedFile?.name ?? `${type}_upload.jpg`,
-      type,
-      metadata,
-    },
   });
 
   const handleSave = () => {
@@ -79,6 +93,7 @@ export const ExpenseModal = (props: ExpenseModalProps) => {
       toast.error('Ingrese datos obligatorios');
       return;
     }
+  
     const payload = {
       tripId: resourceId,
       description,
@@ -87,7 +102,7 @@ export const ExpenseModal = (props: ExpenseModalProps) => {
       status,
       date,
     };
-
+  
     if (expense) {
       mutateExpense('PUT', payload, {
         requestUrl: `${API_ROUTES.expenses}/${expense._id}`,
@@ -99,29 +114,36 @@ export const ExpenseModal = (props: ExpenseModalProps) => {
       });
       return;
     }
-
-    if (!uploadedFile) {
-      toast.error('Seleccione un archivo');
-      return;
-    }
+  
     mutateExpense('POST', payload, {
       onSuccess: (response) => {
-
         toast.success('Gasto de viaje registrado');
-        // upload
-        onUpload(uploadedFile, {
-          type,
-          fileName: uploadedFile.name,
-          metadata: {
-            ...metadata,
-            expenseId: response._id,
-          },
-          onSuccess: () => {
-            handleRefreshMedias();
-            handleClose();
-          },
-        });
-        // sending alert
+  
+        if (uploadedFiles && uploadedFiles.length > 0) {
+          let uploadedCount = 0;
+  
+          uploadedFiles.forEach((file) => {
+            onUpload(file, {
+              type,
+              fileName: file.name,
+              metadata: {
+                ...metadata,
+                expenseId: response._id,
+              },
+              onSuccess: () => {
+                uploadedCount++;
+                if (uploadedCount === uploadedFiles.length) {
+                  handleRefreshMedias();
+                  handleClose();
+                }
+              },
+            });
+          });
+        } else {
+          handleRefreshMedias();
+          handleClose();
+        }
+  
         sendingAlert(response);
       },
     });
@@ -146,18 +168,12 @@ Se ha agregado un nuevo *Gasto* al viaje con destino a *${
   }
 
   function resetForm() {
+    resetFiles();
     setDescription('');
     setAmount('');
-    setUploadedFile(undefined);
+    setStatus('paid');
+    setDate(formatISODate(new Date()));
   }
-
-  const onSelect = (file: File | File[]) => {
-    if (file instanceof File) {
-      setUploadedFile(file);
-      return;
-    }
-    setUploadedFile(file[0]);
-  };
 
   const handleRefreshMedias = () => {
     useFetch.mutate(API_ROUTES.expenses);
@@ -238,25 +254,42 @@ Se ha agregado un nuevo *Gasto* al viaje con destino a *${
         <CopyPaste
           type="TRIP_EXPENSE"
           resourceId={resourceId}
-          onSelect={!isValidExpense ? onSelect : undefined}
-          onPaste={!isValidExpense ? onSelect : undefined}
+          onSelect={onSelect}
+          onPaste={onPaste}
           metadata={metadata}
-          onSuccess={() => {
-            handleRefreshMedias();
-          }}
+          onSuccess={handleRefreshMedias}
         />
-        <Show when={uploadedFile}>
-          <Flex width="100%" alignItems="center" justifyContent="space-between">
-            {uploadedFile?.name}
-            <Button
-              size="xs"
-              variant="outline"
-              onClick={() => setUploadedFile(undefined)}
-            >
-              x
-            </Button>
-          </Flex>
+
+        <Show when={uploadedFiles.length > 0}>
+          <VStack width="100%" spaceY={1}>
+            {uploadedFiles.map((file, index) => (
+              <Flex
+                key={index}
+                width="100%"
+                alignItems="center"
+                justifyContent="space-between"
+              >
+                <Flex alignItems="center" gap="2">
+                  <img
+                    src={objectUrls[index]}
+                    alt={file.name}
+                    style={{ height: '80px', borderRadius: '4px' }}
+                  />
+                  <span>{file.name}</span>
+                </Flex>
+                <Button
+                  size="2xs"
+                  variant="outline"
+                  colorPalette='danger'
+                  onClick={() => removeFile(index)}
+                >
+                  x
+                </Button>
+              </Flex>
+            ))}
+          </VStack>
         </Show>
+
         <Show when={medias?.length > 0}>
           <Grid templateColumns="repeat(2, 1fr)" gap="2">
             {medias

@@ -1,6 +1,7 @@
 import { getPathParams, withApi } from "@/common/utils/middleware";
 import { json } from "@/common/utils/response";
 import { driverRepository } from "@/repositories/driverRepository";
+import { mediaRepository } from "@/repositories/mediaRepository";
 import { NextRequest } from "next/server";
 
 export async function PUT(request: NextRequest) {
@@ -19,7 +20,15 @@ export async function DELETE(request: NextRequest) {
 
     const { id } = getPathParams(request, ['api', 'drivers', '[id]'])
     const deleted = await driverRepository.deleteById(id);
-    return json(deleted?.$assertPopulated, 200)
+
+     if (!deleted) {
+      return json({ error: 'Conductor no encontrado' }, 404);
+    }
+
+    // Elimina los medias relacionados
+    await mediaRepository.deleteByResourceId(id);
+
+    return json(deleted, 200)
 
   })
 }

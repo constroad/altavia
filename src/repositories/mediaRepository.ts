@@ -10,6 +10,10 @@ class MediaRepository extends BaseRepository<IMedia> {
   findByType(type: string): Promise<IMedia[]> {
     return this.model.find({ type }).exec();
   }
+
+  deleteByResourceId(resourceId: string): Promise<{ deletedCount?: number }> {
+    return this.model.deleteMany({ resourceId }).exec();
+  }
 }
 
 export const mediaRepository = new MediaRepository();

@@ -1,4 +1,6 @@
-import { Box, Flex, Input, useDisclosure } from "@chakra-ui/react"
+'use client';
+
+import { Box, Flex, Input } from "@chakra-ui/react";
 import { TableComponent } from "../Table";
 import { Modal } from "../modal";
 import { useState } from "react";
@@ -21,38 +23,39 @@ export const DriverList = (props: IDriverList) => {
   const [driverSelected, setDriverSelected] = useState<IDriverSchemaValidation>();
 
   const { data, isLoading, refetch } = useFetch<IDriverSchemaValidation[]>(
-    API_ROUTES.drivers
+    API_ROUTES.drivers,
+    { enabled: true }
   );
-  const { mutate } = useMutate(API_ROUTES.drivers)
+
+  const { mutate } = useMutate(API_ROUTES.drivers);
 
   const filteredDrivers: IDriverSchemaValidation[] = data?.filter(driver =>
     driver.name.toLowerCase().includes(search.toLowerCase()) ||
     driver.dni?.toLowerCase().includes(search.toLowerCase())
   ) ?? [];
 
-  const columns = generateDriverColumns(); 
+  const columns = generateDriverColumns();
+
+  const handleDeleteDriver = (driver: IDriverSchemaValidation) => {
+    const deletePath = `${API_ROUTES.drivers}/${driver._id}`;
+    mutate('DELETE', {}, {
+      requestUrl: deletePath,
+      onSuccess: () => {
+        toast.success('Conductor eliminado correctamente');
+        setDriverSelected(undefined);
+        refetch();
+      },
+      onError: () => {
+        toast.error('Error al eliminar el conductor');
+      }
+    });
+  };
 
   const handleCloseDriverModal = () => {
     props.onClose();
     setDriverSelected(undefined);
-    refetch()
+    refetch();
   };
-
-  const handleDeleteDriver = (driver: IDriverSchemaValidation) => {
-    const deletePath = `${API_ROUTES.drivers}/${driver._id}`
-    mutate(
-      'DELETE',
-      {},
-      {
-        requestUrl: deletePath,
-        onSuccess() {
-          refetch()
-          toast.success('Conductor eliminado correctamente')
-        },
-      }
-    )
-  }
-  //API
 
   return (
     <Flex w='100%'>
@@ -64,13 +67,14 @@ export const DriverList = (props: IDriverList) => {
           maxW={{ base: '100%', md: '30%' }}
           size="xs"
         />
+
         <Box w="100%">
           <TableComponent
             itemsPerPage={100}
             data={filteredDrivers}
             columns={columns}
-            onDelete={(item) => handleDeleteDriver(item)}
-            deleteMessage="Esta seguro de eliminar este conductor?"
+            onDelete={handleDeleteDriver}
+            deleteMessage="¿Está seguro de eliminar este conductor?"
             onEdit={(item) => {
               setDriverSelected(item);
               props.onOpen();
@@ -78,7 +82,7 @@ export const DriverList = (props: IDriverList) => {
             isLoading={isLoading}
             pagination
             actions
-            /> 
+          />
         </Box>
       </Flex>
 
@@ -94,5 +98,5 @@ export const DriverList = (props: IDriverList) => {
         />
       </Modal>
     </Flex>
-  )
-}
+  );
+};

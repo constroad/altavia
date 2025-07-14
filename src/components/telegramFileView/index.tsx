@@ -220,13 +220,14 @@ export const TelegramFileView = (props: TelegramFileViewProps) => {
             <VideoView media={props.media} videoStyle={props.videoStyle} />
           )}
           {!props.media.mimeTye.includes('image') &&
-            !props.media.mimeTye.includes('video') && (
+            !props.media.mimeTye.includes('video') &&
+            getImageThumbnail(url) && (
               <img
                 src={getImageThumbnail(url)}
                 style={{ height: props.imageStyle?.height ?? '200px' }}
                 alt=""
               />
-            )}
+          )}
           {props.media.mimeTye.includes('image') && (
             <ImageView
               media={props.media}

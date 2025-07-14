@@ -1,6 +1,6 @@
 'use client';
 
-import { Button, Flex, Grid, Show, VStack } from '@chakra-ui/react';
+import { Button, Flex, Grid, Show, Text, VStack } from '@chakra-ui/react';
 import { useForm, FormProvider } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { InputField } from '../form';
@@ -18,6 +18,7 @@ import { useFetch } from '@/common/hooks/useFetch';
 import { useWhatsapp } from '@/common/hooks/useWhatsapp';
 import { TelegramFileView } from '../telegramFileView';
 import { IDriverSchemaValidation, driverSchemaValidation } from '@/models/driver';
+import DateField from '../form/DateField';
 
 interface DriverFormProps {
   driver?: IDriverSchemaValidation;
@@ -56,7 +57,7 @@ export const DriverForm = (props: DriverFormProps) => {
     resourceId: driver?._id,
     //
   };
-  const { onUpload, isUploading, medias, refetch } = useMedias({
+  const { onUpload, isUploading, medias, refetch, isLoading } = useMedias({
     chat_id: TELEGRAM_GROUP_ID_ALTAVIA_MEDIA,
     enabled: true,
     type,
@@ -75,7 +76,8 @@ export const DriverForm = (props: DriverFormProps) => {
   }, [driver, methods]);
 
   const handleSave = (file: any) => {
-    if (driver) {
+    if ( file === undefined ) return;
+    if ( driver ) {
       if (!file) {
         toast.error('Seleccione un archivo');
         return;
@@ -159,7 +161,7 @@ Se ha agregado un nuevo *Media* al conductor *${name}*
           </Flex>
           <Flex gap={1} justifyContent="space-between" width="100%">
             <InputField name="licenseNumber" label="Licencia" isRequired size='xs' />
-            <InputField name="licenseExpiry" label="Licencia Exp." type='date' size='xs' isRequired />
+            <DateField name='licenseExpiry' label='Licencia Exp.' size='xs' isRequired />
           </Flex>
 
           {driver && (
@@ -179,14 +181,17 @@ Se ha agregado un nuevo *Media* al conductor *${name}*
                 <Flex width="100%" alignItems="center" justifyContent="space-between">
                   {uploadedFile?.name}
                   <Button
-                    size="xs"
+                    size="2xs"
                     variant="outline"
+                    colorPalette='danger'
                     onClick={() => setUploadedFile(undefined)}
                   >
                     x
                   </Button>
                 </Flex>
               </Show>
+
+              {isLoading && <Text fontSize={12} lineHeight='12px'>cargando...</Text>}
 
               <Show when={medias?.length > 0}>
                 <Grid templateColumns="repeat(2, 1fr)" gap="2">
@@ -203,7 +208,8 @@ Se ha agregado un nuevo *Media* al conductor *${name}*
                           height: '200px',
                         }}
                       />
-                    ))}
+                    ))
+                  }
                 </Grid>
               </Show>
             </>

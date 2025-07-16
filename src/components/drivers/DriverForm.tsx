@@ -16,6 +16,7 @@ import { TelegramFileView } from '../telegramFileView';
 import { IDriverSchemaValidation, driverSchemaValidation } from '@/models/driver';
 import DateField from '../form/DateField';
 import { useBufferedFiles } from '@/common/hooks/useBufferedFiles';
+import { useScreenSize } from '@/common/hooks';
 
 interface DriverFormProps {
   driver?: IDriverSchemaValidation;
@@ -25,6 +26,10 @@ interface DriverFormProps {
 export const DriverForm = (props: DriverFormProps) => {
   const { driver } = props;
   const { onSendWhatsAppText } = useWhatsapp({ page: 'DriverForm' });
+  const { isMobile } = useScreenSize();
+
+  const resourceId = driver?._id;
+  const metadata = { resourceId };
 
   const methods = useForm<IDriverSchemaValidation>({
     resolver: zodResolver(driverSchemaValidation),
@@ -51,18 +56,18 @@ export const DriverForm = (props: DriverFormProps) => {
     removeFile,
     resetFiles,
   } = useBufferedFiles({
-    immediateUpload: !!driver,
+    immediateUpload: !!resourceId,
     onUpload: (file) => {
-      if (!driver?._id) return;
+      if (!resourceId) return;
       onUpload(file, {
-        resourceId: driver._id,
+        resourceId,
         type,
         fileName: file.name,
-        metadata: { resourceId: driver._id },
+        metadata,
         onSuccess: handleRefreshMedias,
       });
     },
-  });
+  });  
 
   const { mutate: createDriver, isMutating: creatingDriver } = useMutate(API_ROUTES.drivers);
   const { mutate: updateDriver, isMutating: updatingDriver } = useMutate(`${API_ROUTES.drivers}/:id`, {
@@ -85,59 +90,53 @@ Se ha agregado un nuevo *Media* al conductor *${name}*`,
     });
   };
 
+  const handleSave = (driver: IDriverSchemaValidation) => {
+    if (uploadedFiles.length === 0) {
+      handleRefreshMedias();
+      handleCloseModal();
+      return;
+    }
+  
+    let uploadedCount = 0;
+  
+    uploadedFiles.forEach((file) => {
+      onUpload(file, {
+        resourceId: driver._id,
+        type,
+        fileName: file.name,
+        metadata: { resourceId: driver._id },
+        onSuccess: () => {
+          uploadedCount++;
+          if (uploadedCount === uploadedFiles.length) {
+            handleRefreshMedias();
+            sendingAlert(driver);
+            handleCloseModal();
+          }
+        },
+      });
+    });
+  };
+
   const onSubmit = (data: IDriverSchemaValidation) => {
     if (props.driver?._id) {
       updateDriver('PUT', data, {
         onSuccess: () => {
-          if (uploadedFiles.length > 0 && driver?._id) {
-            uploadedFiles.forEach((file) => {
-              onUpload(file, {
-                resourceId: driver._id,
-                type,
-                fileName: file.name,
-                metadata: { resourceId: driver._id },
-                onSuccess: handleRefreshMedias,
-              });
-            });
-          }
           toast.success('El conductor se actualizó correctamente');
           handleCloseModal();
         },
         onError: (err) => {
           toast.error('Error al actualizar el conductor');
           console.log(err);
+          resetFiles();
         },
       });
       return;
     }
-
+  
     createDriver('POST', data, {
       onSuccess: (created) => {
         toast.success('El conductor se registró correctamente');
-
-        if (uploadedFiles.length > 0) {
-          let uploadedCount = 0;
-
-          uploadedFiles.forEach((file) => {
-            onUpload(file, {
-              resourceId: created._id,
-              type,
-              fileName: file.name,
-              metadata: { resourceId: created._id },
-              onSuccess: () => {
-                uploadedCount++;
-                if (uploadedCount === uploadedFiles.length) {
-                  handleRefreshMedias();
-                  sendingAlert(created);
-                  handleCloseModal();
-                }
-              },
-            });
-          });
-        } else {
-          handleRefreshMedias();
-          handleCloseModal();
-        }
+        handleSave(created);
       },
       onError: (err) => {
         toast.error('Error al registrar el nuevo conductor');
@@ -146,6 +145,7 @@ Se ha agregado un nuevo *Media* al conductor *${name}*`,
       },
     });
   };
+  
 
   const handleRefreshMedias = () => {
     useFetch.mutate(API_ROUTES.media);
@@ -157,8 +157,14 @@ Se ha agregado un nuevo *Media* al conductor *${name}*`,
     resetFiles();
   };
 
-  const resourceId = driver?._id!;
-  const loading = creatingDriver || updatingDriver || isUploading;
+  const isCreating = !driver;
+  const hasFiles = uploadedFiles.length > 0;
+
+  const isSubmitLoading = hasFiles
+    ? isUploading
+    : isCreating
+      ? creatingDriver
+      : updatingDriver;
 
   return (
     <FormProvider {...methods}>
@@ -175,41 +181,55 @@ Se ha agregado un nuevo *Media* al conductor *${name}*`,
           </Flex>
 
           <CopyPaste 
-            type="DRIVER"
+            title="Copiar y pegar documentos"
+            type={type}
             resourceId={resourceId}
             onSelect={onSelect}
             onPaste={onPaste}
-            metadata={{ resourceId }}
+            metadata={metadata}
             onSuccess={handleRefreshMedias}
           />
 
-          <Show when={!driver && uploadedFiles.length > 0}>
-            <VStack width="100%" spaceY={1}>
-              {uploadedFiles.map((file, index) => (
-                <Flex
-                  key={index}
-                  width="100%"
-                  alignItems="center"
-                  justifyContent="space-between"
-                >
-                  <Flex alignItems="center" gap="2">
-                    <img
-                      src={objectUrls[index]}
-                      alt={file.name}
-                      style={{ height: '80px', borderRadius: '4px' }}
-                    />
-                    <span>{file.name}</span>
-                  </Flex>
-                  <Button
-                    size="2xs"
-                    variant="outline"
-                    colorPalette="danger"
-                    onClick={() => removeFile(index)}
+          <Show when={uploadedFiles.length > 0}>
+            <VStack width="100%" spaceY={2}>
+              <Grid
+                templateColumns={{ base: 'repeat(2, 1fr)', md: 'repeat(3, 1fr)' }}
+                gap="2"
+                w='100%'
+              >
+                {uploadedFiles.map((file, index) => (
+                  <Flex
+                    key={index}
+                    width="100%"
+                    alignItems="center"
+                    justifyContent="space-between"
+                    borderWidth="1px"
+                    borderRadius="md"
+                    p={1}
                   >
-                    x
-                  </Button>
-                </Flex>
-              ))}
+                    <Flex flexDir="column" gapY={1} w="100%">
+                      <Flex justifyContent="space-between" w="100%" alignItems="center">
+                        <span style={{ fontSize: '12px' }}>{file.name}</span>
+                        <Button
+                          size="2xs"
+                          colorPalette="danger"
+                          variant="outline"
+                          onClick={() => removeFile(index)}
+                        >
+                          x
+                        </Button>
+                      </Flex>
+                      <Flex w="100%" justifyContent="center">
+                        <img
+                          src={objectUrls[index]}
+                          alt={file.name}
+                          style={{ height: '80px', borderRadius: '4px' }}
+                        />
+                      </Flex>
+                    </Flex>
+                  </Flex>
+                ))}
+              </Grid>
             </VStack>
           </Show>
 
@@ -236,15 +256,15 @@ Se ha agregado un nuevo *Media* al conductor *${name}*`,
               colorPalette='danger'
               variant='outline'
               onClick={handleCloseModal}
-              size='sm'
+              size={ isMobile ? 'xs' : 'sm' }
             >
               Cancelar
             </Button>
             <Button
               colorScheme="blue"
               type="submit"
-              loading={loading}
-              size='sm'
+              loading={isSubmitLoading}
+              size={ isMobile ? 'xs' : 'sm' }
             >
               Guardar
             </Button>

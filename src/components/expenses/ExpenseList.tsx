@@ -190,6 +190,7 @@ export const ExpenseList = (props: ExpenseListProps) => {
         actions
         onEdit={handleSelectExpense}
         onDelete={handleDeleteExpense}
+        pagination
         toolbar={
           <Flex justifyContent="end" p={1}>
             <Flex

@@ -26,9 +26,10 @@ import { useFetch } from 'src/common/hooks/useFetch';
 import { useMedias } from '@/common/hooks/useMedias';
 import { TelegramFileView } from '../telegramFileView';
 import { useWhatsapp } from '@/common/hooks/useWhatsapp';
-import { useState } from 'react';
 import { CopyPaste } from '../upload/CopyPaste';
 import { formatUtcDateTime } from '@/utils/general';
+import { useBufferedFiles } from '@/common/hooks/useBufferedFiles';
+
 
 interface ExpenseFormProps {
   expense: IExpenseSchema | null;
@@ -36,7 +37,6 @@ interface ExpenseFormProps {
 
 export const ExpenseForm = (props: ExpenseFormProps) => {
   const { expense } = props;
-  const [fileSelected, setFileSelected] = useState<File | undefined>();
 
   const isValidExpense = !!expense;
   const resourceId = expense?._id;
@@ -44,6 +44,26 @@ export const ExpenseForm = (props: ExpenseFormProps) => {
   const metadata = {
     expenseId: expense?._id,
   };
+
+  const {
+    uploadedFiles,
+    objectUrls,
+    onSelect,
+    onPaste,
+    removeFile,
+    resetFiles,
+  } = useBufferedFiles({
+    immediateUpload: !!expense,
+    onUpload: (file) => {
+      onUpload(file, {
+        type,
+        fileName: file.name,
+        resourceId: expense?._id,
+        metadata,
+        onSuccess: refetchMedias,
+      });
+    },
+  });
 
   const methods = useForm<IExpenseSchema>({
     resolver: zodResolver(expenseValidationSchema),
@@ -77,71 +97,6 @@ export const ExpenseForm = (props: ExpenseFormProps) => {
     enabled: expense?._id !== undefined,
   });
 
-  // handlers
-  const onSubmit = (form: IExpenseSchema) => {
-    try {
-      const payload = {
-        ...form,
-        amount: form.amount,
-        date: form.date,
-      };
-
-      //Update
-      if (expense?._id) {
-        mutateExpense('PUT', payload, {
-          requestUrl: `${API_ROUTES.expenses}/${expense._id}`,
-          onSuccess: () => {
-            toast.success('Gasto Actualizado');
-            useFetch.mutate(API_ROUTES.expenses);
-          },
-        });
-        return;
-      }
-
-      if (!fileSelected) {
-        toast.error('Seleccione un archivo');
-        return;
-      }
-
-      //Save
-      mutateExpense('POST', payload, {
-        onSuccess: (response) => {
-          toast.success('Gasto registrado');
-
-          // upload
-          onUpload(fileSelected, {
-            type,
-            fileName: fileSelected.name,
-            resourceId: response._id,
-            metadata: {
-              ...metadata,
-              expenseId: response._id,
-            },
-            onSuccess: () => {
-              useFetch.mutate(API_ROUTES.expenses);
-              refetchMedias();
-              router.push(`${APP_ROUTES.expenses}/${response._id}`);
-            },
-          });
-
-          // sending alert
-          sendingAlert(response);
-        },
-      });
-    } catch (error) {
-      console.log(error);
-      toast.error('Error al registrar gasto');
-    }
-  };
-
-  const onSelectFile = (file: File | File[]) => {
-    if (file instanceof File) {
-      setFileSelected(file);
-      return;
-    }
-    setFileSelected(file[0]);
-  };
-
   function sendingAlert(expense: IExpenseSchema) {
     //@ts-ignore
     const date = formatUtcDateTime(expense.date as string);
@@ -158,6 +113,70 @@ Se ha agregado un nuevo *Gasto* :
       to: GROUP_ADMINISTRACION_ALTAVIA,
     });
   }
+
+  // handlers
+  const handleSave = (expense: IExpenseSchema) => {
+    if (uploadedFiles.length === 0) {
+      useFetch.mutate(API_ROUTES.expenses);
+      refetchMedias();
+      router.push(`${APP_ROUTES.expenses}/${expense._id}`);
+      return;
+    }
+  
+    let uploadedCount = 0;
+  
+    uploadedFiles.forEach((file) => {
+      onUpload(file, {
+        type,
+        fileName: file.name,
+        resourceId: expense._id!,
+        metadata: {
+          ...metadata,
+          expenseId: expense._id!,
+        },
+        onSuccess: () => {
+          uploadedCount++;
+          if (uploadedCount === uploadedFiles.length) {
+            useFetch.mutate(API_ROUTES.expenses);
+            refetchMedias();
+            router.push(`${APP_ROUTES.expenses}/${expense._id}`);
+          }
+        },
+      });
+    });
+  
+    sendingAlert(expense);
+  };
+  
+  const onSubmit = (data: IExpenseSchema) => {
+    if (expense?._id) {
+      mutateExpense('PUT', data, {
+        requestUrl: `${API_ROUTES.expenses}/${expense._id}`,
+        onSuccess: () => {
+          toast.success('Gasto actualizado');
+          useFetch.mutate(API_ROUTES.expenses);
+        },
+        onError: (err) => {
+          toast.error('Error al actualizar gasto');
+          console.log(err);
+          resetFiles();
+        },
+      });
+      return;
+    }
+  
+    mutateExpense('POST', data, {
+      onSuccess: (created) => {
+        toast.success('Gasto registrado');
+        handleSave(created); // misma idea que VehicleForm
+      },
+      onError: (err) => {
+        toast.error('Error al registrar gasto');
+        console.log(err);
+        resetFiles();
+      },
+    });
+  };
 
   const medias = mediaResponse ?? [];
 
@@ -183,7 +202,7 @@ Se ha agregado un nuevo *Gasto* :
             <InputField
               size="xs"
               name="description"
-              label="Nombre"
+              label="Descripción"
               isRequired
             />
             <InputField
@@ -232,47 +251,76 @@ Se ha agregado un nuevo *Gasto* :
 
             <CopyPaste
               title="Copiar y pegar comprobante"
-              type="GENERAL_EXPENSE"
+              type={type}
               resourceId={resourceId}
-              onSelect={!isValidExpense ? onSelectFile : undefined}
-              onPaste={!isValidExpense ? onSelectFile : undefined}
+              onSelect={onSelect}
+              onPaste={onPaste}
               metadata={metadata}
-              onSuccess={() => {
-                refetchMedias();
-              }}
+              onSuccess={refetchMedias}
             />
           </Stack>
         </form>
       </FormProvider>
 
-      <Show when={fileSelected}>
-        <Flex width="100%" alignItems="center" mt={2} justifyContent="space-between">
-          {fileSelected?.name}
-          <Button
-            size="xs"
-            variant="outline"
-            onClick={() => setFileSelected(undefined)}
+      <Show when={uploadedFiles.length > 0}>
+        <Stack width="100%" mt={2} spaceY={2}>
+          <Grid
+            templateColumns={{ base: 'repeat(2, 1fr)', md: 'repeat(3, 1fr)' }}
+            gap="2"
+            w='100%'
           >
-            x
-          </Button>
-        </Flex>
+            {uploadedFiles.map((file, index) => (
+              <Flex
+                key={index}
+                width="100%"
+                alignItems="center"
+                justifyContent="space-between"
+                borderWidth="1px"
+                borderRadius="md"
+                p={1}
+              >
+                <Flex flexDir='column' gapY={1} w='100%'>
+                  <Flex justifyContent='space-between' w='100%' alignItems='center'>
+                    <span style={{ fontSize: '12px' }}>{file.name}</span>
+                    <Button
+                      size="2xs"
+                      colorPalette='danger'
+                      variant="outline"
+                      onClick={() => removeFile(index)}
+                    >
+                      x
+                    </Button>
+                  </Flex>
+
+                  <Flex w='100%' justifyContent="center">
+                    <img
+                      src={objectUrls[index]}
+                      alt={file.name}
+                      style={{ height: '80px', borderRadius: '4px' }}
+                    />
+                  </Flex>
+                </Flex>
+              </Flex>
+            ))}
+          </Grid>
+        </Stack>
       </Show>
 
       <Grid
         templateColumns={{ base: 'repeat(2, 1fr)', md: 'repeat(4, 1fr)' }}
         gap="2"
       >
-        {medias.map((media) => (
-          <TelegramFileView
-            key={media._id}
-            media={media}
-            description={media.name}
-            canDelete
-            onRefresh={refetchMedias}
-            imageStyle={{
-              height: '200px',
-            }}
-          />
+        {medias
+          .filter((media) => media.url && media.url.trim() !== '')
+          .map((media) => (
+            <TelegramFileView
+              key={media._id}
+              media={media}
+              description={media.name}
+              canDelete
+              onRefresh={refetchMedias}
+              imageStyle={{ height: '200px' }}
+            />
         ))}
       </Grid>
     </DashboardLayout>

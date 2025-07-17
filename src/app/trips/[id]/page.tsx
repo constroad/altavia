@@ -10,7 +10,7 @@ import { IPayment, ITripSchemaValidation, TripSchemaValidation, TripStatus } fro
 import { Button, Spinner, Flex, ButtonGroup, Menu, Portal, Box } from '@chakra-ui/react';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useParams, useRouter } from 'next/navigation';
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { DashboardLayout } from 'src/components';
 
@@ -31,23 +31,40 @@ export default function Page() {
     }
   );
 
+  const shouldLoadDefault = !!data || expenseId === 'new'
+
   const methods = useForm<ITripSchemaValidation>({
     resolver: zodResolver(TripSchemaValidation),
-    defaultValues: {
-      ...(data ?? {
-        status: 'Pending' as TripStatus,
-      }),
-      startDate: data?.startDate?.split('T')[0] ?? new Date().toDateString(),
-      paymentDueDate: data?.paymentDueDate?.split('T')[0] ?? '',
-      payments: data?.payments?.map((p: IPayment) => ({
-        ...p,
-        date: p.date?.split('T')[0] ?? '',
-      })) ?? [],
-      items: data?.items ?? [],
-    },
+    defaultValues: shouldLoadDefault
+      ? {
+          ...(data ?? { status: 'Pending' as TripStatus }),
+          startDate: data?.startDate?.split('T')[0] ?? new Date().toDateString(),
+          paymentDueDate: data?.paymentDueDate?.split('T')[0] ?? '',
+          payments: data?.payments?.map((p: IPayment) => ({
+            ...p,
+            date: p.date?.split('T')[0] ?? '',
+          })) ?? [],
+          items: data?.items ?? [],
+        }
+      : undefined,
   });
 
-  if (isLoading) {
+  useEffect(() => {
+    if (data) {
+      methods.reset({
+        ...data,
+        startDate: data?.startDate?.split('T')[0] ?? '',
+        paymentDueDate: data?.paymentDueDate?.split('T')[0] ?? '',
+        payments: data?.payments?.map((p: IPayment) => ({
+          ...p,
+          date: p.date?.split('T')[0] ?? '',
+        })) ?? [],
+        items: data?.items ?? [],
+      });
+    }
+  }, [data]);
+
+  if (isLoading || (!data && expenseId !== 'new')) {
     return <Spinner />;
   }
 

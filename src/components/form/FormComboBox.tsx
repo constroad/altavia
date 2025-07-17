@@ -175,7 +175,6 @@ export const FormComboBox = (props: FormComboBoxProps) => {
               <Combobox.Control>
                 <Combobox.Input
                   placeholder={props.placeholder ?? 'escriba para filtrar'}
-                  // value={multiple ? '' : optionsMap[field.value] ?? ''}
                 />
                 <Combobox.IndicatorGroup>
                   <Show when={props.loading}>

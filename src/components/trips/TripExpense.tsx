@@ -243,6 +243,7 @@ export const TripExpense = (props: TripExpenseProps) => {
                     </Flex>
                   </Flex>
                 }
+                pagination
               />
             </Show>
           </Tabs.Content>

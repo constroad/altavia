@@ -7,6 +7,8 @@ interface IClientPopover {
 }
 
 export const ClientPopover = (props: IClientPopover) => {
+  if (!props.client || typeof props.client !== 'object') return null;
+
   return (
     <Flex flexDir='column' fontWeight='light' fontSize={10} lineHeight='14px'>
       <Flex flexDir='column' gap={0.5}>

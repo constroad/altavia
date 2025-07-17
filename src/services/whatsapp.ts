@@ -1,9 +1,8 @@
 import axios from 'axios';
-import { CONSTROAD_SERVER_URL, GROUP_ERRORS_TRACKING } from '@/common/consts';
+import { CONSTROAD_SERVER_URL, GROUP_ERRORS_TRACKING, WHATSAPP_SENDER } from '@/common/consts';
 
 const API_TEXT_ME_BOT_URL = CONSTROAD_SERVER_URL;
-const PHONE_SENDER = '51949376824';
-const BASE_URL = `${API_TEXT_ME_BOT_URL}/message/${PHONE_SENDER}`;
+const BASE_URL = `${API_TEXT_ME_BOT_URL}/message/${WHATSAPP_SENDER}`;
 
 export const sendWhatsAppTextMessage = async ({
   phone,

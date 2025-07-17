@@ -1,11 +1,11 @@
 import { NextRequest, NextResponse } from 'next/server'
 import axios from 'axios'
-import { CONSTROAD_SERVER_URL, GROUP_ERRORS_TRACKING, WtspMessageType } from 'src/common/consts'
+import { CONSTROAD_SERVER_URL, GROUP_ERRORS_TRACKING, WHATSAPP_SENDER, WtspMessageType } from 'src/common/consts'
 
 const API_TEXT_ME_BOT_URL = CONSTROAD_SERVER_URL
 const API_WHATSAPP = process.env.API_WHATSAPP
-const PHONE_SENDER = '51949376824'
-const BASE_URL = `${API_TEXT_ME_BOT_URL}/message/${PHONE_SENDER}`
+
+const BASE_URL = `${API_TEXT_ME_BOT_URL}/message/${WHATSAPP_SENDER}`
 
 const sendWhatsAppTextMessage = async (params: {
   phone: string,

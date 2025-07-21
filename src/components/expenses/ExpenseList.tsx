@@ -1,4 +1,4 @@
-import { Flex, Text, Button, Box } from '@chakra-ui/react';
+import { Flex, Text, Button, Box, Input } from '@chakra-ui/react';
 import { TableColumn, TableComponent } from '../Table';
 import { useFetch } from 'src/common/hooks/useFetch';
 import { API_ROUTES, APP_ROUTES } from 'src/common/consts';
@@ -49,6 +49,7 @@ export const ExpenseList = (props: ExpenseListProps) => {
   const [startDate, setStartDate] = useState(dateFrom);
   const [endDate, setEndDate] = useState(dateTo);
   const [status, setStatus] = useState('');
+  const [searchText, setSearchText] = useState('');
 
   const router = useRouter();
 
@@ -133,13 +134,17 @@ export const ExpenseList = (props: ExpenseListProps) => {
   ];
   const statusList = ['', ...EXPENSE_STATUS];
 
+  const filteredData = (data ?? []).filter((item) =>
+    item.description.toLowerCase().includes(searchText.toLowerCase())
+  );
+
   const totalToPay =
     data
       ?.reduce((acc, curr) => acc + curr.amount, 0) ?? 0;
 
   return (
     <>
-      <Flex gap={1} alignItems="end" width="fit-content" mb={4}>
+      <Flex gap={1} alignItems="end" width="fit-content" mb={2}>
         <InputField
           width="120px"
           size="xs"
@@ -183,9 +188,18 @@ export const ExpenseList = (props: ExpenseListProps) => {
         </Button>
       </Flex>
 
+      <Flex mb={4} maxW="300px">
+        <Input
+          size="xs"
+          placeholder="Filtrar gasto por descripción"
+          value={searchText}
+          onChange={(e) => setSearchText(e.target.value)}
+        />
+      </Flex>
+
       <TableComponent
         isLoading={isLoading || isMutating}
-        data={data ?? []}
+        data={filteredData}
         columns={columns}
         actions
         onEdit={handleSelectExpense}

@@ -18,10 +18,7 @@ export const DashboardNavbar = () => {
 
   return (
     <Flex
-      width={{
-        base: '',        
-        md: '100%'
-      }}
+      width={{ base: '', md: '100%' }}
       justifyContent='end'
       p={{ base: 2, md: 4 }}
       shadow='md'

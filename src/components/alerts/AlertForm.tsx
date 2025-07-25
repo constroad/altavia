@@ -1,5 +1,3 @@
-'use client';
-
 import { Button, Flex, VStack } from '@chakra-ui/react';
 import { useForm, FormProvider } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';

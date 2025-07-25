@@ -1,20 +1,19 @@
 'use client'
 
-import { useEffect, useState } from 'react'
+import { useCallback, useEffect, useState } from 'react'
 
 import { Box, Flex, Link } from '@chakra-ui/react';
 
 import Footer from './Footer';
 import { Navbar } from './Navbar';
 import { MobileMenu } from './MobileMenu';
-import { CustomHead } from './CustomHead';
 import { useScreenSize } from 'src/common/hooks';
 import { useSession } from 'next-auth/react';
 import { WhatsappIcon } from 'src/common/icons';
 
 interface IPortalLayout { 
   children: React.ReactNode
-  noPaddingTop?: boolean
+  // noPaddingTop?: boolean
   bgColor?: string
 }
 
@@ -37,19 +36,21 @@ export const PortalLayout = (props: IPortalLayout) => {
   
   const displayMobileMenu = isMobile && showMobileOptions
 
-  const handleEnterMouse = (opt: string) => {
+  const handleEnterMouse = useCallback((opt: string) => {
     setIsHoverButton(true)
     setButtonHovered(opt)
-  }
-  const handleLeaveMouse = () => {
+  }, [])
+  
+  const handleLeaveMouse = useCallback(() => {
     setIsHoverButton(false)
     setButtonHovered(undefined)
-  }
-
-  const handleMobileMenuClick = (e: any) => {
+  }, [])
+  
+  const handleMobileMenuClick = useCallback((e: any) => {
     e.stopPropagation()
-    setShowMobileOptions(!showMobileOptions)
-  }
+    setShowMobileOptions(prev => !prev)
+  }, [])
+
   const toggleNosotrosMenu = (option: string) => {
     if (nosotrosMenu) {
       setNosotrosMenu(undefined)
@@ -68,7 +69,6 @@ export const PortalLayout = (props: IPortalLayout) => {
 
   return (
     <div className='w-full min-h-screen'>
-      <CustomHead />
       <Navbar
         isHoverButton={isHoverButton}
         buttonHovered={buttonHovered}
@@ -93,10 +93,10 @@ export const PortalLayout = (props: IPortalLayout) => {
         as='main'
         width='100%'
         minHeight='calc(100vh - 339px)'
-        paddingTop={{
-          base: props.noPaddingTop ? '0px' : '20px',
-          md: props.noPaddingTop ? '0px' : '50px'
-        }}
+        // paddingTop={{
+        //   base: props.noPaddingTop ? '0px' : '20px',
+        //   md: props.noPaddingTop ? '0px' : '50px'
+        // }}
         paddingBottom={{ base: '10px', md: '40px'}}
         position='relative'
         bgColor={props.bgColor ?? ''}

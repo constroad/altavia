@@ -110,7 +110,7 @@ export function getEnumOptions(enumObj: any): { value: string, label: string }[]
 
 export const getBaseUrl = (): string => {
   if (process.env.NODE_ENV === 'development') {
-    return 'http://localhost:3010';
+    return 'http://localhost:3001';
   }
 
   if (process.env.NODE_ENV === 'production') {

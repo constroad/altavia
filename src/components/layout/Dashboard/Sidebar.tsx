@@ -1,7 +1,7 @@
 'use client';
 
-import React from 'react';
-import { Box, Button, Flex, Icon, Image, Stack, Text } from '@chakra-ui/react';
+import React, { useEffect } from 'react';
+import { Box, Button, Flex, Icon, Stack, Text } from '@chakra-ui/react';
 import { AiOutlineDoubleLeft } from 'react-icons/ai';
 import { AiOutlineDoubleRight } from 'react-icons/ai';
 import { useRouter, usePathname } from 'next/navigation';
@@ -11,9 +11,12 @@ import { useScreenSize } from 'src/common/hooks';
 import DashboardNavbar from './DashboardNavbar';
 import { useSidebar } from 'src/context';
 import { IconWrapper } from '@/components/IconWrapper/IconWrapper';
+import Link from 'next/link';
+import Logo from './Logo';
+import { SidebarItem } from './SidebarItem';
 
 interface AdminSidebarProps {
-  menuOptions?: any[];
+  menuOptions?: readonly any[];
   children: React.ReactNode;
 }
 
@@ -23,6 +26,12 @@ export const Sidebar = (props: AdminSidebarProps) => {
   const { isMobile, isDesktop } = useScreenSize();
   const router = useRouter();
   const pathname = usePathname();
+
+  useEffect(() => {
+    router.prefetch(APP_ROUTES.dashboard)
+    router.prefetch(APP_ROUTES.expenses)
+    router.prefetch(APP_ROUTES.trips)
+  }, [])
 
   const handleToggleSidebar = () => {
     if (isMobile) return;
@@ -54,30 +63,9 @@ export const Sidebar = (props: AdminSidebarProps) => {
             h={{ base: '41px', md: '72px' }}
             shadow="md"
           >
-            <Flex
-              gap="6px"
-              alignItems="center"
-              h="72px"
-              cursor="pointer"
-              onClick={() => router.push(APP_ROUTES.dashboard)}
-            >
-              <Image
-                src="/img/logos/altavia.ico"
-                alt="altavia-logo"
-                w="25px"
-                h="25px"
-              />
-              {isExpanded && !isMobile && (
-                <Text
-                  fontWeight={600}
-                  fontSize={18}
-                  className="font-logo"
-                  mt="8px"
-                >
-                  Altavía Perú
-                </Text>
-              )}
-            </Flex>
+            <Link href={APP_ROUTES.dashboard} prefetch>
+              <Logo isExpanded={isExpanded} isMobile={isMobile} />
+            </Link>
 
             {!isMobile && (
               <Button
@@ -106,70 +94,43 @@ export const Sidebar = (props: AdminSidebarProps) => {
           <Stack mt="10px">
             {menuOptions?.map((opt, idx) => {
               return (
-                <Box key={idx}>
-                  <Flex
-                    alignItems="center"
-                    cursor="pointer"
-                    _hover={{ bg: 'primary.400' }}
-                    bg={pathname.includes(opt.path) ? 'primary.400' : ''}
-                    p={4}
-                    h="40px"
-                    maxH="56px"
-                    onClick={
-                      opt.path !== null
-                        ? () => router.push(opt.path)
-                        : () => null
-                    }
-                  >
-                    <Icon
-                      as={opt.icon}
-                      mr={2}
-                      w={{ base: '18px', md: '22px' }}
-                      h={{ base: '18px', md: '22px' }}
-                    />
-                    {!isMobile && (
-                      <Text fontWeight={500} fontSize={16}>
-                        {isExpanded && !isMobile ? opt.name : ''}
-                      </Text>
-                    )}
-                  </Flex>
-                </Box>
+                <SidebarItem
+                  key={idx}
+                  opt={opt}
+                  pathname={pathname}
+                  isExpanded={isExpanded}
+                  isMobile={isMobile}
+                />
               );
             })}
           </Stack>
         </Box>
 
-        <Flex>
-          <Box
-            p={4}
-            cursor="pointer"
-            onClick={() =>
-              isNotDashboard ? router.push(APP_ROUTES.dashboard) : null
-            }
-            _hover={{ bg: 'gray.600' }}
-            w="100%"
-            bg="black"
-            color="white"
-          >
-            <Flex
-              alignItems="center"
-              justifyContent={isNotDashboard ? '' : 'center'}
-            >
-              {isNotDashboard ? (
+        <Box
+          p={4}
+          _hover={{ bg: 'gray.600' }}
+          w="100%"
+          bg="black"
+          color="white"
+        >
+          {isNotDashboard ? (
+            <Link href={APP_ROUTES.dashboard} prefetch>
+              <Flex alignItems="center">
                 <IconWrapper icon={ArrowBackIcon} fontWeight={600} />
-              ) : (
-                <Box w="20px" h="20px" />
-              )}
+                <Text fontWeight={600}>
+                  {isExpanded && !isMobile ? 'Volver al dashboard' : ''}
+                </Text>
+              </Flex>
+            </Link>
+          ) : (
+            <Flex alignItems="center" justifyContent="center">
+              <Box w="20px" h="20px" />
               <Text fontWeight={600}>
-                {isExpanded && !isMobile
-                  ? isNotDashboard
-                    ? 'Volver al dashboard'
-                    : 'Altavía Perú'
-                  : ''}
+                {isExpanded && !isMobile ? 'Altavía Perú' : ''}
               </Text>
             </Flex>
-          </Box>
-        </Flex>
+          )}
+        </Box>
       </Flex>
 
       <Flex

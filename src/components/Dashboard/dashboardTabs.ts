@@ -83,4 +83,4 @@ export const dashboardTabs = [
     textColor: 'white',
     icon: GearBoldIcon
  },
-]
+] as const

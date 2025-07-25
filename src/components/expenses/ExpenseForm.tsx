@@ -1,6 +1,6 @@
 import { Button, Stack, Flex, HStack, Grid, Show } from '@chakra-ui/react';
 
-import { DashboardLayout, toast } from 'src/components';
+import { PageHeader, toast } from 'src/components';
 import { SelectField } from '../../components/form/SelectField';
 import { useMutate } from 'src/common/hooks/useMutate';
 import {
@@ -180,22 +180,22 @@ Se ha agregado un nuevo *Gasto* :
 
   const medias = mediaResponse ?? [];
 
-  return (
-    <DashboardLayout
-      title="Gastos"
-      actions={
-        <Button
-          size="xs"
-          variant="outline"
-          onClick={() => {
-            reset();
-            router.push(`${APP_ROUTES.expenses}`);
-          }}
-        >
-          Regresar
-        </Button>
-      }
+  const actions = (
+    <Button
+      size="xs"
+      variant="outline"
+      onClick={() => {
+        reset();
+        router.push(`${APP_ROUTES.expenses}`);
+      }}
     >
+      Regresar
+    </Button>
+  )
+
+  return (
+    <>
+      <PageHeader title='Gastos' actions={actions} />
       <FormProvider {...methods}>
         <form onSubmit={methods.handleSubmit(onSubmit)} noValidate>
           <Stack gap={4}>
@@ -323,6 +323,6 @@ Se ha agregado un nuevo *Gasto* :
             />
         ))}
       </Grid>
-    </DashboardLayout>
+    </>
   );
 };

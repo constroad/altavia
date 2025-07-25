@@ -15,6 +15,7 @@ export const toast = {
 export const ToastProvider = ({ children }: PropsWithChildren) => {
   return (
     <SnackbarProvider
+      maxSnack={3}
       anchorOrigin={{
         vertical: 'top',
         horizontal: 'right',

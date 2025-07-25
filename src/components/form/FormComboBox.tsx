@@ -72,11 +72,16 @@ export const FormComboBox = (props: FormComboBoxProps) => {
   }, [options]);
 
   useEffect(() => {
-    if (typeof value === 'string') {
-      setLocalValue([value]);
-    }
-    if (Array.isArray(value)) {
-      setLocalValue(value);
+    if (value !== undefined) {
+      if (typeof value === 'string') {
+        setLocalValue((prev) =>
+          prev.length !== 1 || prev[0] !== value ? [value] : prev
+        );
+      } else if (Array.isArray(value)) {
+        setLocalValue((prev) =>
+          JSON.stringify(prev) !== JSON.stringify(value) ? value : prev
+        );
+      }
     }
   }, [value]);
 

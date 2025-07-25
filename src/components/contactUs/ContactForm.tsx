@@ -21,7 +21,7 @@ export const ContactForm = (props: ContactFormProps) => {
   }
 
   return (
-    <VStack as="form" onSubmit={handleSubmit} spaceY={5} mt='10px' className='font-logo' w='100%'>
+    <VStack as="form" onSubmit={handleSubmit} spaceY={4.5} mt='10px' className='font-logo' w='100%'>
       <FormControl id="contact-name" w='100%'>
         <Flex alignItems='center' gap='5px' w='100%'>
           <Input

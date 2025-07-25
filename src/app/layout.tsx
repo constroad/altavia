@@ -2,22 +2,37 @@
 import '../styles/globals.css'
 import Providers from './providers'
 import type { ReactNode } from 'react'
+import { Rubik, Roboto, Anek_Devanagari } from 'next/font/google';
+
+const rubik = Rubik({
+  subsets: ['latin'],
+  weight: ['400', '500', '600', '700'],
+  display: 'swap',
+});
+
+const roboto = Roboto({
+  subsets: ['latin'],
+  weight: ['400', '500', '600', '700'],
+  display: 'swap',
+});
+
+const anek = Anek_Devanagari({
+  subsets: ['latin'],
+  weight: ['400', '600', '800'],
+  display: 'swap',
+});
 
 export const metadata = {
   title: 'Altavía',
   description: 'Transporte de carga en Perú',
+  metadataBase: new URL('https://altaviaperu.com'),
 }
 
 export default async function RootLayout({ children }: { children: ReactNode }) {
-  // const session = await getServerSession(authOptions)
-
   return (
-    <html lang="es">
+    <html lang="es" className={rubik.className}>
       <head>
         <link rel="icon" href="/img/logos/altavia.ico" />
-        <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Rubik:wght@400;500;600;700&display=swap" />
-        <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;600;700&display=swap" />
-        <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Anek+Devanagari:wght@400;600;800;900&display=swap" />
         <script async src="https://www.googletagmanager.com/gtag/js?id=AW-16451484138"></script>
         <script
           dangerouslySetInnerHTML={{

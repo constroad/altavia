@@ -8,7 +8,7 @@ import { toast } from 'src/components/Toast'
 import { useSidebar } from '@/context'
 
 export const DashboardNavbar = () => {
-  const { data: session } = useSession() 
+  const { data: session, status } = useSession() 
   const { isExpanded } = useSidebar();
 
   const handleSignOut = async() => {

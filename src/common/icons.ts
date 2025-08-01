@@ -20,6 +20,7 @@ import {
   FaCircle,
   FaUserClock,
   FaCloudUploadAlt,
+  FaImages,
 } from "react-icons/fa";
 import { FiMoreVertical } from 'react-icons/fi'
 import { FaUserTie, FaUserShield, FaTruckFast, FaRoadBarrier, FaGear } from "react-icons/fa6";
@@ -111,6 +112,7 @@ export const CashRegisterBoldIcon = PiCashRegisterBold
 export const MagnifyingGlassPlusLightIcon = PiMagnifyingGlassPlusLight
 export const MagnifyingGlassMinusLightIcon = PiMagnifyingGlassMinusLight
 export const DriverIcon = GiSteeringWheel
+export const MediasIcon = FaImages
 
 //media
 export const UploadIcon = FaCloudUploadAlt

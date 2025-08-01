@@ -8,14 +8,14 @@ export const metadata = {
     title: 'Altavía Perú',
     description: 'Transporte de carga por carretera',
     url: 'https://altaviaperu.com',
-    images: ['/img/logos/altavia-logo-1.png'],
+    images: ['/img/logos/altavia-peru.png'],
     type: 'website',
   },
   twitter: {
     card: 'summary_large_image',
     title: 'Altavía Perú',
     description: 'Transporte de carga por carretera',
-    images: ['/img/logos/altavia-logo-1.png'],
+    images: ['/img/logos/altavia-peru.png'],
   },
 }
 

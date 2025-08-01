@@ -6,6 +6,7 @@ import {
   DashboardIcon,
   DriverIcon,
   GearBoldIcon,
+  MediasIcon,
   MoneyIcon,
   SignupIcon,
   TripIcon,
@@ -83,4 +84,11 @@ export const dashboardTabs = [
     textColor: 'white',
     icon: GearBoldIcon
  },
+ {
+    name: 'Medias',
+    path: APP_ROUTES.medias,
+    bgColor: 'black',
+    textColor: 'white',
+    icon: MediasIcon
+  },
 ] as const

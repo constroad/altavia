@@ -3,6 +3,7 @@ import { useState, useCallback, useEffect } from 'react';
 interface UseBufferedFilesOptions {
   immediateUpload?: boolean;
   onUpload?: (file: File) => void;
+  maxFiles?: number;
 }
 
 export const useBufferedFiles = (props: UseBufferedFilesOptions) => {
@@ -20,14 +21,23 @@ export const useBufferedFiles = (props: UseBufferedFilesOptions) => {
   }, [objectUrls]);
 
   const addFiles = useCallback((files: File[]) => {
+    const limitedFiles = props.maxFiles === 1 ? [files[0]] : files;
+
     if (immediateUpload && onUpload) {
-      files.forEach((file) => onUpload(file));
+      limitedFiles.forEach((file) => onUpload(file));
     } else {
-      setUploadedFiles((prev) => [...prev, ...files]);
-      const newUrls = files.map((f) => URL.createObjectURL(f));
-      setObjectUrls((prev) => [...prev, ...newUrls]);
+      if (props.maxFiles === 1) {
+        // Reemplazar el archivo actual
+        uploadedFiles.forEach((_, i) => URL.revokeObjectURL(objectUrls[i]));
+        setUploadedFiles(limitedFiles);
+        setObjectUrls(limitedFiles.map((f) => URL.createObjectURL(f)));
+      } else {
+        setUploadedFiles((prev) => [...prev, ...limitedFiles]);
+        const newUrls = limitedFiles.map((f) => URL.createObjectURL(f));
+        setObjectUrls((prev) => [...prev, ...newUrls]);
+      }
     }
-  }, [immediateUpload, onUpload]);
+  }, [immediateUpload, onUpload, objectUrls]);
 
   const onSelect = useCallback((file: File | File[]) => {
     const files = Array.isArray(file) ? file : [file];

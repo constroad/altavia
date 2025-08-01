@@ -149,6 +149,63 @@ export const useMedias = (props: UseMediasProps) => {
     })
   }
 
+  const onReplace = async (media: IMediaValidationSchema, file: File, params?: UploadParams) => {
+    if (isUploading || isMutating) return;
+
+    const { fileName = media.name ?? 'reemplazo', type, metadata } = params ?? {};
+
+    uploadTelegram(file, {
+      fileName,
+      onSuccess: (fileUploaded) => {
+        const {
+          messageId,
+          fileId,
+          file_name,
+          fileUrl,
+          thumbnailUrl,
+          thumbnailFileId,
+          mime_type,
+        } = fileUploaded;
+
+        mutate(
+          'PUT',
+          {
+            resourceId: media.resourceId,
+            type: media.type,
+            name: fileName,
+            mimeTye: mime_type || file.type,
+            url: fileUrl,
+            thumbnailUrl: thumbnailUrl ?? fileUrl,
+            date: new Date(),
+            metadata: {
+              ...(media.metadata ?? {}),
+              ...(metadata ?? {}),
+              fileId,
+              messageId,
+              fileUrl,
+              thumbnailUrl,
+              file_name,
+              thumbnailFileId
+            },
+          },
+          {
+            requestUrl: `${API_ROUTES.media}/${media._id}`,
+            onSuccess: (updatedMedia) => {
+              params?.onSuccess?.(fileUploaded, updatedMedia);
+            },
+            onError: () => {
+              toast.error('Error actualizando media');
+            }
+          }
+        );
+      },
+      onError: (err) => {
+        toast.error('Error subiendo archivo a Telegram');
+        onPageError('useMedias - onReplace')(err);
+      }
+    });
+  };
+
   const onDelete = (id: string, params: DeleteParams) => {
     handleDelete('DELETE', {}, {
       requestUrl: `${API_ROUTES.media}/${id}`,
@@ -161,6 +218,7 @@ export const useMedias = (props: UseMediasProps) => {
   return {
     onPasteImages,
     onUpload,
+    onReplace,
     isUploading: isUploading || isMutating,
     onDelete,
     isDeleting: isDeleting || deletingMedia,

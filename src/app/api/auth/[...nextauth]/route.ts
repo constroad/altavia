@@ -6,11 +6,6 @@ const handler = NextAuth(authOptions);
 export { handler as GET, handler as POST };
 
 
-
-
-
-
-
 // ------>>>>>> ESTO SOLO SE USA CUANDO NO HAY USUARIOS CREADOS AUN (USER HARCODED) <<<<<<------
 
 // const parseEnvList = (envVar: string): string[] => {

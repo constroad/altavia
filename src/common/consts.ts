@@ -26,6 +26,7 @@ export const APP_ROUTES = {
   users: '/users',
   clients: '/clients',
   drivers: '/drivers',
+  medias: '/medias',
 }
 
 export const API_ROUTES = {

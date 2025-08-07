@@ -1,7 +1,7 @@
-import UsersPage from './page-content';
- 
+import MediasPage from "./page-content";
+
 export default function Page() {
   return (
-    <UsersPage />
+    <MediasPage />
   )
 }

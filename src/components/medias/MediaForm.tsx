@@ -50,8 +50,8 @@ export const MediaForm = (props: MediaFormProps) => {
       if (!media?._id) return;
       onReplace(media, file, {
         onSuccess: () => {
-          toast.success("Media reemplazada con éxito");
           refetchMedias();
+          toast.success("Media reemplazada con éxito");
         },
       });
     },
@@ -91,13 +91,15 @@ export const MediaForm = (props: MediaFormProps) => {
       }
 
       // Paso 3: Finalizar
-      toast.success("Media actualizada correctamente");
+      refetchMedias();
       props.onSuccess();
+      toast.success("Media actualizada correctamente");
 
     } catch (error) {
       console.error("Error al actualizar media:", error);
       toast.error("Hubo un problema actualizando el media");
     } finally {
+      refetchMedias();
       setIsSubmitting(false);
     }
   };
@@ -162,7 +164,7 @@ export const MediaForm = (props: MediaFormProps) => {
                         <Button
                           size="xs"
                           p='4px'
-                          colorScheme="red"
+                          colorPalette='danger'
                           variant="outline"
                           onClick={() => removeFile(index)}
                         >

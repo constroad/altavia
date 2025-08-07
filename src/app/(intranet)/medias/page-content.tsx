@@ -47,8 +47,10 @@ export default function MediasPage() {
   }
 
   const handleOnSuccess = () => {
-    refetch();
     handleCloseModal();
+    setTimeout(() => {
+      refetch();
+    }, 1000);
   }
 
   const columns = generateMediaColumns()

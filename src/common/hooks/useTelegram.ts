@@ -2,7 +2,7 @@ import { useState } from "react";
 import { TELEGRAM_TOKEN } from "../consts";
 import { sendTelegramImageText, sendTelegramTextMessage } from "src/utils/general";
 
-// curl -s "https://api.telegram.org/bot7278967592:AAHLnzjx3L-uYl3a96JhvIWbQ-YpBtF1kz8/getUpdates"
+// curl -s "https://api.telegram.org/bot<token>/getUpdates"
 
 export type TelegramMedia = {
   file_name: string,

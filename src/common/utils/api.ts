@@ -1,7 +1,7 @@
 import { NextApiRequest, NextApiResponse } from "next";
 import { NextHandler } from "next-connect";
 import { TELEGRAM_GROUP_ID_ERRORS } from "../consts";
-import { sendTelegramTextMessage } from "./general";
+import { sendTelegramTextMessage } from "@/utils/general";
 
 export const ApiTimeTracker = async (req: NextApiRequest, res: NextApiResponse, next: NextHandler) => {
   const start = Date.now();

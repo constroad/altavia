@@ -1,4 +1,6 @@
+import * as telegramApi from "@/common/utils/telegramClient";
 import { TELEGRAM_GROUP_ID_ERRORS, TELEGRAM_TOKEN } from "src/common/consts";
+
 
 export function formatUtcDateTime(
   isoString: string,
@@ -38,7 +40,6 @@ export function formatUtcDateTime(
 
   return parts.join(' ');
 }
-
 
 export function formatISODate(isoString: string | Date) {
   let date: Date;
@@ -95,7 +96,6 @@ export const parseStringDateWithTime = (dateString: string | Date) => {
   return date
 }
 
-
 // Util function to format date
 export function formatDate(date?: Date): string {
   // If no date is provided, use the current date
@@ -138,68 +138,90 @@ function escapeMarkdown(message: string) {
   return escapeMessage
 }
 
-export const sendTelegramTextMessage = async (message: string, chaiId?: string) => {
-  let url
-  if (process.env.NODE_ENV === 'development') {
-    url = `https://api.telegram.org/bot${TELEGRAM_TOKEN}/sendMessage?chat_id=${TELEGRAM_GROUP_ID_ERRORS}`;
-  } else {
-    url = `https://api.telegram.org/bot${TELEGRAM_TOKEN}/sendMessage?chat_id=${chaiId}`;
-  }
+export const sendTelegramTextMessage = async (message: string, chatId?: string) => {
+  // let url
+  // if (process.env.NODE_ENV === 'development') {
+  //   url = `https://api.telegram.org/bot${TELEGRAM_TOKEN}/sendMessage?chat_id=${TELEGRAM_GROUP_ID_ERRORS}`;
+  // } else {
+  //   url = `https://api.telegram.org/bot${TELEGRAM_TOKEN}/sendMessage?chat_id=${chatId}`;
+  // }
 
+  // try {
+  //   const response = await fetch(url, {
+  //     method: 'POST',
+  //     headers: {
+  //       'Content-Type': 'application/json',
+  //     },
+  //     body: JSON.stringify({
+  //       text: escapeMarkdown(message),
+  //       parse_mode: 'MarkdownV2',
+  //     }),
+  //   });
+
+  //   const data = await response.json();
+  //   if (data.ok) {
+  //     console.log('Message sent successfully');
+  //   } else {
+  //     console.error('Error sending message:', data.description);
+  //   }
+  // } catch (err) {
+  //   console.log('error', err);
+  // }
+  // return;
+  const cid = process.env.NODE_ENV === 'development' ? TELEGRAM_GROUP_ID_ERRORS : chatId!;
   try {
-    const response = await fetch(url, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify({
-        text: escapeMarkdown(message),
-        parse_mode: 'MarkdownV2',
-      }),
-    });
-
-    const data = await response.json();
-    if (data.ok) {
-      console.log('Message sent successfully');
-    } else {
-      console.error('Error sending message:', data.description);
-    }
-  } catch (err) {
-    console.log('error', err);
+    await telegramApi.send({ chatId: cid, text: escapeMarkdown(message), parseMode: 'MarkdownV2' });
+  } catch (e) {
+    console.error('sendTelegramTextMessage error', e);
   }
-  return;
 };
 
 export const sendTelegramImageText = async (imagesBase64: string | string[], text: string, chatId?: string) => {
-  const url =
-    process.env.NODE_ENV === 'development'
-      ? `https://api.telegram.org/bot${TELEGRAM_TOKEN}/sendPhoto?chat_id=${TELEGRAM_GROUP_ID_ERRORS}`
-      : `https://api.telegram.org/bot${TELEGRAM_TOKEN}/sendPhoto?chat_id=${chatId}`;
+  // const url =
+  //   process.env.NODE_ENV === 'development'
+  //     ? `https://api.telegram.org/bot${TELEGRAM_TOKEN}/sendPhoto?chat_id=${TELEGRAM_GROUP_ID_ERRORS}`
+  //     : `https://api.telegram.org/bot${TELEGRAM_TOKEN}/sendPhoto?chat_id=${chatId}`;
 
-  const message = escapeMarkdown(text);
+  // const message = escapeMarkdown(text);
 
-  const images = Array.isArray(imagesBase64) ? imagesBase64 : [ imagesBase64 ];
+  // const images = Array.isArray(imagesBase64) ? imagesBase64 : [ imagesBase64 ];
 
-  // Itera sobre las imágenes y envía cada una con sendPhoto
+  // // Itera sobre las imágenes y envía cada una con sendPhoto
+  // for (let i = 0; i < images.length; i++) {
+  //   try {
+  //     const formData = new FormData();
+  //     const response = await fetch(images[ i ]);
+  //     const blob = await response.blob();
+  //     formData.append('photo', blob, 'photo.png');
+
+  //     // Si es la última imagen, agrega el mensaje al caption
+  //     if (i === images.length - 1) {
+  //       formData.append('caption', message);
+  //       formData.append('parse_mode', 'MarkdownV2');
+  //     }
+
+  //     await fetch(url, {
+  //       method: 'POST',
+  //       body: formData,
+  //     });
+  //   } catch (err) {
+  //     console.error('Error al enviar la imagen a Telegram:', err);
+  //   }
+  // }
+  const cid = process.env.NODE_ENV === 'development' ? TELEGRAM_GROUP_ID_ERRORS : chatId!;
+  const images = Array.isArray(imagesBase64) ? imagesBase64 : [imagesBase64];
+  const toData = (b64: string) => (b64.startsWith('data:') ? b64 : `data:image/jpeg;base64,${b64}`);
+
   for (let i = 0; i < images.length; i++) {
     try {
-      const formData = new FormData();
-      const response = await fetch(images[ i ]);
-      const blob = await response.blob();
-      formData.append('photo', blob, 'photo.png');
-
-      // Si es la última imagen, agrega el mensaje al caption
-      if (i === images.length - 1) {
-        formData.append('caption', message);
-        formData.append('parse_mode', 'MarkdownV2');
-      }
-
-      await fetch(url, {
-        method: 'POST',
-        body: formData,
+      await telegramApi.send({
+        chatId: cid,
+        base64Image: toData(images[i]),
+        caption: i === images.length - 1 ? escapeMarkdown(text) : undefined,
+        parseMode: 'MarkdownV2',
       });
-    } catch (err) {
-      console.error('Error al enviar la imagen a Telegram:', err);
+    } catch (e) {
+      console.error('sendTelegramImageText error', e);
     }
   }
 };
